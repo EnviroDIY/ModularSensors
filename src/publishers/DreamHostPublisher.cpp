@@ -24,24 +24,28 @@ const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 // Constructors
 // Primary constructor with all parameters
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       const char* dhUrl, int sendEveryX)
-    : DreamHostPublisher(baseLogger, inClient, sendEveryX) {
+                                       const char* dhUrl, int sendEveryX,
+                                       uint8_t initialTransmissions)
+    : dataPublisher(baseLogger, inClient, sendEveryX, initialTransmissions) {
     if (dhUrl) setDreamHostPortalRX(dhUrl);
 }
 
 // Delegating constructors
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
+                                       int     sendEveryX,
+                                       uint8_t initialTransmissions)
+    : DreamHostPublisher(baseLogger, inClient, nullptr, sendEveryX,
+                         initialTransmissions) {}
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                                       int sendEveryX)
+                                       int     sendEveryX,
+                                       uint8_t initialTransmissions)
+    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr), dhUrl,
+                         sendEveryX, initialTransmissions) {}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX,
+                                       uint8_t initialTransmissions)
     : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
-                         sendEveryX) {
-    if (dhUrl) setDreamHostPortalRX(dhUrl);
-}
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX)
-    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
-                         sendEveryX) {}
+                         static_cast<const char*>(nullptr), sendEveryX,
+                         initialTransmissions) {}
 DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
 
 

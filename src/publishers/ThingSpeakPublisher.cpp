@@ -32,13 +32,13 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
-                                         int         sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
+                                         int         sendEveryX,
+                                         uint8_t     initialTransmissions)
+    : dataPublisher(baseLogger, inClient, sendEveryX, initialTransmissions) {
     if (thingSpeakClientName) setMQTTClient(thingSpeakClientName);
     if (thingSpeakMQTTUser) setUserName(thingSpeakMQTTUser);
     if (thingSpeakMQTTPassword) setPassword(thingSpeakMQTTPassword);
     if (thingSpeakChannelID) setChannelID(thingSpeakChannelID);
-    if (inClient) _inClient = inClient;
 }
 
 // Delegating constructors
@@ -47,21 +47,27 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
                                          const char* thingSpeakChannelID,
-                                         int         sendEveryX)
+                                         int         sendEveryX,
+                                         uint8_t     initialTransmissions)
     : ThingSpeakPublisher(baseLogger, nullptr, thingSpeakClientName,
                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
-                          thingSpeakChannelID, sendEveryX) {}
+                          thingSpeakChannelID, sendEveryX,
+                          initialTransmissions) {}
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         int sendEveryX)
+                                         int     sendEveryX,
+                                         uint8_t initialTransmissions)
     : ThingSpeakPublisher(
           baseLogger, inClient, static_cast<const char*>(nullptr),
           static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), sendEveryX) {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
+          static_cast<const char*>(nullptr), sendEveryX, initialTransmissions) {
+}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX,
+                                         uint8_t initialTransmissions)
     : ThingSpeakPublisher(
           baseLogger, nullptr, static_cast<const char*>(nullptr),
           static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), sendEveryX) {}
+          static_cast<const char*>(nullptr), sendEveryX, initialTransmissions) {
+}
 ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
 
 
@@ -106,10 +112,8 @@ void ThingSpeakPublisher::begin(Logger& baseLogger, Client* inClient,
                                 const char* thingSpeakMQTTUser,
                                 const char* thingSpeakMQTTPassword,
                                 const char* thingSpeakChannelID) {
-    setMQTTClient(thingSpeakClientName);
-    setChannelID(thingSpeakChannelID);
-    setPassword(thingSpeakMQTTPassword);
-    setUserName(thingSpeakMQTTUser);
+    setThingSpeakParams(thingSpeakClientName, thingSpeakMQTTUser,
+                        thingSpeakMQTTPassword, thingSpeakChannelID);
     dataPublisher::begin(baseLogger, inClient);
 }
 void ThingSpeakPublisher::begin(Logger&     baseLogger,
@@ -117,10 +121,8 @@ void ThingSpeakPublisher::begin(Logger&     baseLogger,
                                 const char* thingSpeakMQTTUser,
                                 const char* thingSpeakMQTTPassword,
                                 const char* thingSpeakChannelID) {
-    setMQTTClient(thingSpeakClientName);
-    setChannelID(thingSpeakChannelID);
-    setPassword(thingSpeakMQTTPassword);
-    setUserName(thingSpeakMQTTUser);
+    setThingSpeakParams(thingSpeakClientName, thingSpeakMQTTUser,
+                        thingSpeakMQTTPassword, thingSpeakChannelID);
     dataPublisher::begin(baseLogger);
 }
 

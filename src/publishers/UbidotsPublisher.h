@@ -60,11 +60,17 @@ class UbidotsPublisher : public dataPublisher {
      * @param deviceID The device API Label from Ubidots, derived from the
      * user-specified device name.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
+     * @param initialTransmissions Number of transmissions to send immediately
+     * after each data point is logged (default: 5).
+     *
+     * @remark The sendEveryX and initialTransmissions parameters are not
+     * implemented by this publisher. Data will be sent every time the logger
+     * records data.
      */
     UbidotsPublisher(Logger& baseLogger, Client* inClient,
                      const char* authenticationToken, const char* deviceID,
-                     int sendEveryX = 1);
+                     int sendEveryX = 1, uint8_t initialTransmissions = 5);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -76,10 +82,17 @@ class UbidotsPublisher : public dataPublisher {
      * @param deviceID The device API Label from Ubidots, derived from the
      * user-specified device name.
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
+     * @param initialTransmissions Number of transmissions to send immediately
+     * after each data point is logged (default: 5).
+     *
+     * @remark The sendEveryX and initialTransmissions parameters are not
+     * implemented by this publisher. Data will be sent every time the logger
+     * records data.
      */
     UbidotsPublisher(Logger& baseLogger, const char* authenticationToken,
-                     const char* deviceID, int sendEveryX = 1);
+                     const char* deviceID, int sendEveryX = 1,
+                     uint8_t initialTransmissions = 5);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -88,9 +101,16 @@ class UbidotsPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
+     * @param initialTransmissions Number of transmissions to send immediately
+     * after each data point is logged (default: 5).
+     *
+     * @remark The sendEveryX and initialTransmissions parameters are not
+     * implemented by this publisher. Data will be sent every time the logger
+     * records data.
      */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
+    UbidotsPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
+                     uint8_t initialTransmissions = 5);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -100,11 +120,19 @@ class UbidotsPublisher : public dataPublisher {
      *
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * attempted data transmissions.
+     * @param initialTransmissions Number of transmissions to send immediately
+     * after each data point is logged (default: 5).
+     *
+     * @remark The sendEveryX and initialTransmissions parameters are not
+     * implemented by this publisher. Data will be sent every time the logger
+     * records data.
      */
-    explicit UbidotsPublisher(Logger& baseLogger, int sendEveryX = 1);
+    explicit UbidotsPublisher(Logger& baseLogger, int sendEveryX = 1,
+                              uint8_t initialTransmissions = 5);
     /**
-     * @brief Construct a new Ubidots Publisher object with no members set.
+     * @brief Construct a new Ubidots Publisher object with all members set to
+     * defaults or null.
      */
     UbidotsPublisher();
     /**

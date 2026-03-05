@@ -5,9 +5,9 @@
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the EnviroDIYPublisher subclass of dataPublisher which is a
- * typedef reference to the MonitorMyWatershedPublisher for backward
- * compatibility.
+ * @brief Contains the EnviroDIYPublisher typedef, which provides backward
+ * compatibility by aliasing to MonitorMyWatershedPublisher (a subclass of
+ * dataPublisher).
  */
 
 // Header Guards

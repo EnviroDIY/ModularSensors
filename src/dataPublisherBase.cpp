@@ -24,17 +24,25 @@ const char* dataPublisher::hostHeader = "\r\nHost: ";
 
 // Primary constructor
 dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
-                             int sendEveryX)
+                             int sendEveryX, uint8_t initialTransmissions)
     : _baseLogger(&baseLogger),
       _inClient(inClient),
-      _sendEveryX(sendEveryX) {
+      _sendEveryX(sendEveryX),
+      _initialTransmissionsRemaining(initialTransmissions) {
     _baseModem =
         _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 // Constructors
-dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, nullptr, sendEveryX) {}
-dataPublisher::dataPublisher() {}
+dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX,
+                             uint8_t initialTransmissions)
+    : dataPublisher(baseLogger, nullptr, sendEveryX, initialTransmissions) {}
+// Default constructor with explicit initialization to ensure all members are
+// initialized
+dataPublisher::dataPublisher()
+    : _baseLogger(nullptr),
+      _inClient(nullptr),
+      _sendEveryX(1),
+      _initialTransmissionsRemaining(5) {}
 
 
 // Sets the client
@@ -60,6 +68,26 @@ void dataPublisher::setModemPointer(loggerModem& modemPointer) {
 // data transmissions
 void dataPublisher::setSendInterval(int sendEveryX) {
     _sendEveryX = sendEveryX;
+}
+
+
+// Get the number of initial transmissions remaining
+uint8_t dataPublisher::getInitialTransmissions() const {
+    return _initialTransmissionsRemaining;
+}
+
+
+// Set the number of initial transmissions to send immediately after logging
+void dataPublisher::setInitialTransmissions(uint8_t count) {
+    // Ensure minimum of 1 transmission
+    if (count < 1) {
+        MS_DBG(F("Initial transmissions count too low, setting to 1"));
+        _initialTransmissionsRemaining = 1;
+    } else {
+        _initialTransmissionsRemaining = count;
+    }
+    MS_DBG(F("Initial transmissions remaining set to:"),
+           _initialTransmissionsRemaining);
 }
 
 

@@ -34,8 +34,14 @@ const char* MonitorMyWatershedPublisher::timestampTag = "\",\"timestamp\":";
 // Primary constructor with all parameters
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
-    const char* samplingFeatureUUID, int sendEveryX)
-    : MonitorMyWatershedPublisher(baseLogger, inClient, sendEveryX) {
+    const char* samplingFeatureUUID, int sendEveryX,
+    uint8_t initialTransmissionsRemaining)
+    : dataPublisher(baseLogger, inClient, sendEveryX,
+                    initialTransmissionsRemaining) {
+    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+    setHost("monitormywatershed.org");
+    setPath("/api/data-stream/");
+    setPort(80);
     if (registrationToken) setToken(registrationToken);
     if (samplingFeatureUUID)
         _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
@@ -44,35 +50,33 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
 // Delegating constructors
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, const char* registrationToken,
-    const char* samplingFeatureUUID, int sendEveryX)
+    const char* samplingFeatureUUID, int sendEveryX,
+    uint8_t initialTransmissionsRemaining)
     : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
-                                  sendEveryX) {
-    if (registrationToken) setToken(registrationToken);
-    if (samplingFeatureUUID)
-        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-}
+                                  registrationToken, samplingFeatureUUID,
+                                  sendEveryX, initialTransmissionsRemaining) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
-    int sendEveryX)
+    int sendEveryX, uint8_t initialTransmissionsRemaining)
     : MonitorMyWatershedPublisher(baseLogger, inClient, registrationToken,
-                                  nullptr, sendEveryX) {}
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
-                                                         Client* inClient,
-                                                         int     sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
+                                  nullptr, sendEveryX,
+                                  initialTransmissionsRemaining) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
-    Logger& baseLogger, const char* registrationToken, int sendEveryX)
-    : MonitorMyWatershedPublisher(baseLogger, registrationToken, nullptr,
-                                  sendEveryX) {}
-MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(Logger& baseLogger,
-                                                         int     sendEveryX)
+    Logger& baseLogger, Client* inClient, int sendEveryX,
+    uint8_t initialTransmissionsRemaining)
+    : MonitorMyWatershedPublisher(baseLogger, inClient, nullptr, nullptr,
+                                  sendEveryX, initialTransmissionsRemaining) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, const char* registrationToken, int sendEveryX,
+    uint8_t initialTransmissionsRemaining)
     : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
-                                  sendEveryX) {}
+                                  registrationToken, nullptr, sendEveryX,
+                                  initialTransmissionsRemaining) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, int sendEveryX, uint8_t initialTransmissionsRemaining)
+    : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
+                                  nullptr, nullptr, sendEveryX,
+                                  initialTransmissionsRemaining) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher() : dataPublisher() {
     // NOTE: _logBuffer is not initialized here because _baseLogger is null
     // Must call begin(Logger&, ...) before use to properly initialize
@@ -203,9 +207,9 @@ bool MonitorMyWatershedPublisher::connectionNeeded() {
     if (percent >= 90) {
         interval = 1;
     } else if (percent >= 75) {
-        interval /= 4;
+        interval = max(1, interval / 4);
     } else if (percent >= 50) {
-        interval /= 2;
+        interval = max(1, interval / 2);
     }
 
     // the programmed interval is about to be reached by the next record, or it

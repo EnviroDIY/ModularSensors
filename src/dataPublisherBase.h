@@ -80,8 +80,14 @@ class dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
+     * @param initialTransmissions Number of transmissions to send immediately
+     * after each data point is logged, before beginning to cache data and only
+     * transmit every sendEveryX times the logger records data (default: 5).
+     * This allows faster in-field validation of initial data. Not respected by
+     * all publishers.
      */
-    explicit dataPublisher(Logger& baseLogger, int sendEveryX = 1);
+    explicit dataPublisher(Logger& baseLogger, int sendEveryX = 1,
+                           uint8_t initialTransmissions = 5);
     /**
      * @brief Construct a new data publisher object.
      *
@@ -95,8 +101,14 @@ class dataPublisher {
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
+     * @param initialTransmissions Number of transmissions to send immediately
+     * after each data point is logged, before beginning to cache data and only
+     * transmit every sendEveryX times the logger records data (default: 5).
+     * This allows faster in-field validation of initial data. Not respected by
+     * all publishers.
      */
-    dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
+    dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
+                  uint8_t initialTransmissions = 5);
     /**
      * @brief Destroy the data publisher object - no action is taken.
      */
@@ -122,6 +134,28 @@ class dataPublisher {
      * attempted data transmissions. Not respected by all publishers.
      */
     void setSendInterval(int sendEveryX);
+
+    /**
+     * @brief Get the number of initial transmissions remaining
+     *
+     * @return The number of transmissions that will be sent at one minute
+     * intervals for faster in-field validation
+     */
+    uint8_t getInitialTransmissions() const;
+
+    /**
+     * @brief Set the number of initial transmissions to send immediately after
+     * logging
+     *
+     * This controls how many of the first data points are transmitted
+     * immediately after each is logged, before beginning to cache data and only
+     * transmit every sendEveryX times the logger records data. This allows
+     * faster in-field validation of initial data.
+     *
+     * @param count Number of initial transmissions (must be 1-255, will be
+     * clamped to this range)
+     */
+    void setInitialTransmissions(uint8_t count);
 
     /**
      * @brief Attach the publisher to a logger.
@@ -382,6 +416,18 @@ class dataPublisher {
      * attempted data transmissions. Not respected by all publishers.
      */
     int _sendEveryX = 1;
+
+    /**
+     * @brief The number of transmissions remaining to send immediately after
+     * logging
+     *
+     * We send each of the first several data points immediately after they are
+     * logged, before beginning to cache data and only transmit every sendEveryX
+     * times the logger records data. This value is user-settable via
+     * constructor parameter or setInitialTransmissions() and allows faster
+     * in-field validation.
+     */
+    uint8_t _initialTransmissionsRemaining = 5;
 
     // Basic chunks of HTTP
     /**

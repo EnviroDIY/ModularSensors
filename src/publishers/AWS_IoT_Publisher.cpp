@@ -29,8 +29,9 @@ const char* AWS_IoT_Publisher::timestampTag       = "\"timestamp\":\"";
 AWS_IoT_Publisher::AWS_IoT_Publisher(
     Logger& baseLogger, Client* inClient, const char* awsIoTEndpoint,
     const char* caCertName, const char* clientCertName,
-    const char* clientKeyName, const char* samplingFeatureUUID, int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
+    const char* clientKeyName, const char* samplingFeatureUUID, int sendEveryX,
+    uint8_t initialTransmissions)
+    : dataPublisher(baseLogger, inClient, sendEveryX, initialTransmissions) {
     if (awsIoTEndpoint) setEndpoint(awsIoTEndpoint);
     if (caCertName) setCACertName(caCertName);
     if (clientCertName) setClientCertName(clientCertName);
@@ -46,30 +47,37 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(
 AWS_IoT_Publisher::AWS_IoT_Publisher(
     Logger& baseLogger, const char* awsIoTEndpoint, const char* caCertName,
     const char* clientCertName, const char* clientKeyName,
-    const char* samplingFeatureUUID, int sendEveryX)
+    const char* samplingFeatureUUID, int sendEveryX,
+    uint8_t initialTransmissions)
     : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint, caCertName,
                         clientCertName, clientKeyName, samplingFeatureUUID,
-                        sendEveryX) {}
+                        sendEveryX, initialTransmissions) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
                                      const char* awsIoTEndpoint,
                                      const char* caCertName,
                                      const char* clientCertName,
-                                     const char* clientKeyName, int sendEveryX)
+                                     const char* clientKeyName, int sendEveryX,
+                                     uint8_t initialTransmissions)
     : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint, caCertName,
-                        clientCertName, clientKeyName, nullptr, sendEveryX) {}
+                        clientCertName, clientKeyName, nullptr, sendEveryX,
+                        initialTransmissions) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                                      const char* awsIoTEndpoint,
                                      const char* samplingFeatureUUID,
-                                     int         sendEveryX)
+                                     int         sendEveryX,
+                                     uint8_t     initialTransmissions)
     : AWS_IoT_Publisher(baseLogger, inClient, awsIoTEndpoint, nullptr, nullptr,
-                        nullptr, samplingFeatureUUID, sendEveryX) {}
+                        nullptr, samplingFeatureUUID, sendEveryX,
+                        initialTransmissions) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
-                                     int sendEveryX)
+                                     int     sendEveryX,
+                                     uint8_t initialTransmissions)
     : AWS_IoT_Publisher(baseLogger, inClient, nullptr, nullptr, nullptr,
-                        nullptr, nullptr, sendEveryX) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, int sendEveryX)
+                        nullptr, nullptr, sendEveryX, initialTransmissions) {}
+AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, int sendEveryX,
+                                     uint8_t initialTransmissions)
     : AWS_IoT_Publisher(baseLogger, nullptr, nullptr, nullptr, nullptr, nullptr,
-                        nullptr, sendEveryX) {}
+                        nullptr, sendEveryX, initialTransmissions) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher() : dataPublisher() {
     init();
 }

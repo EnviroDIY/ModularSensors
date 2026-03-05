@@ -61,11 +61,16 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * Monitor My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
+     * @param initialTransmissionsRemaining Number of transmissions to send
+     * immediately after each data point is logged, before beginning to cache
+     * data and only transmit every sendEveryX times the logger records data
+     * (default: 5). This allows faster in-field validation of initial data.
      */
     MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
                                 const char* registrationToken,
                                 const char* samplingFeatureUUID,
-                                int         sendEveryX = 1);
+                                int         sendEveryX                    = 1,
+                                uint8_t     initialTransmissionsRemaining = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
      *
@@ -76,11 +81,16 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * Monitor My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
+     * @param initialTransmissionsRemaining Number of transmissions to send
+     * immediately after each data point is logged, before beginning to cache
+     * data and only transmit every sendEveryX times the logger records data
+     * (default: 5). This allows faster in-field validation of initial data.
      */
     MonitorMyWatershedPublisher(Logger&     baseLogger,
                                 const char* registrationToken,
                                 const char* samplingFeatureUUID,
-                                int         sendEveryX = 1);
+                                int         sendEveryX                    = 1,
+                                uint8_t     initialTransmissionsRemaining = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
      *
@@ -92,10 +102,15 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
+     * @param initialTransmissionsRemaining Number of transmissions to send
+     * immediately after each data point is logged, before beginning to cache
+     * data and only transmit every sendEveryX times the logger records data
+     * (default: 5). This allows faster in-field validation of initial data.
      */
     MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
                                 const char* registrationToken,
-                                int         sendEveryX = 1);
+                                int         sendEveryX                    = 1,
+                                uint8_t     initialTransmissionsRemaining = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
      *
@@ -105,9 +120,14 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
+     * @param initialTransmissionsRemaining Number of transmissions to send
+     * immediately after each data point is logged, before beginning to cache
+     * data and only transmit every sendEveryX times the logger records data
+     * (default: 5). This allows faster in-field validation of initial data.
      */
     MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
-                                int sendEveryX = 1);
+                                int     sendEveryX                    = 1,
+                                uint8_t initialTransmissionsRemaining = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
      *
@@ -116,10 +136,15 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * My Watershed.
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
+     * @param initialTransmissionsRemaining Number of transmissions to send
+     * immediately after each data point is logged, before beginning to cache
+     * data and only transmit every sendEveryX times the logger records data
+     * (default: 5). This allows faster in-field validation of initial data.
      */
     MonitorMyWatershedPublisher(Logger&     baseLogger,
                                 const char* registrationToken,
-                                int         sendEveryX = 1);
+                                int         sendEveryX                    = 1,
+                                uint8_t     initialTransmissionsRemaining = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
      *
@@ -130,12 +155,17 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions.
+     * @param initialTransmissionsRemaining Number of transmissions to send
+     * immediately after each data point is logged, before beginning to cache
+     * data and only transmit every sendEveryX times the logger records data
+     * (default: 5). This allows faster in-field validation of initial data.
      */
-    explicit MonitorMyWatershedPublisher(Logger& baseLogger,
-                                         int     sendEveryX = 1);
+    explicit MonitorMyWatershedPublisher(
+        Logger& baseLogger, int sendEveryX = 1,
+        uint8_t initialTransmissionsRemaining = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object with only
-     * default values for the host, path, and port set.
+     * default values for all parameters.
      */
     MonitorMyWatershedPublisher();
     /**
@@ -305,17 +335,6 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * respond within 30 seconds.
      */
     int16_t flushDataBuffer(Client* outClient);
-
-    /**
-     * @brief The number of transmissions remaining at the single minute
-     * intervals
-     *
-     * We send every one of the first five data points at only one minute
-     * intervals for faster in-field validation.
-     *
-     * @todo This should be a user-settable parameter.
-     */
-    uint8_t _initialTransmissionsRemaining = 5;
 
  private:
     /**
