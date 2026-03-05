@@ -660,10 +660,12 @@ int16_t loggerClock::getProcessorTimeZone() {
     // casting. If the timeY2K is less than 24 hours, it's a positive offset of
     // that many seconds. If it's more than 24 hours, it's a negative offset of
     // tz_offset (because the time would have rolled back to the previous day).
-    int16_t tz_offset;
-    if (timeY2K < 60 * 60 * 24) {
+    int16_t      tz_offset;
+    const time_t secondsInDay = 60L * 60L * 24L;  // 86400 seconds in a day
+    if (timeY2K < secondsInDay) {
         tz_offset = static_cast<int16_t>(timeY2K);
-    } else if (-1 * timeY2K < 60 * 60 * 24) {  // force roll-over and check size
+    } else if ((-1 * timeY2K) <
+               secondsInDay) {  // force roll-over and check size
         tz_offset = static_cast<int16_t>(-1 * (-1 * timeY2K));
     } else {  // If the difference is more than 24 hours, something is wrong and
               // we should just return 0 (UTC)
