@@ -324,6 +324,21 @@ class VariableArray {
     bool getSensorStatusBit(int                        arrayIndex,
                             Sensor::sensor_status_bits bitToGet);
 
+    /**
+     * @brief Populate the internal sensor list from the variable array
+     *
+     * This extracts unique sensors from the variable array and stores them
+     * in the internal sensor list for efficient access during operations.
+     *
+     * @return True if the sensor list was populated successfully
+     */
+    bool populateSensorList();
+
+    /**
+     * @brief Array of pointers to unique sensors derived from variables
+     */
+    Sensor* _sensorList[MAX_NUMBER_SENSORS];
+
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     /**
      * @brief Prints out the contents of an array with even spaces and commas
