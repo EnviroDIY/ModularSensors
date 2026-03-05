@@ -57,7 +57,6 @@ bool Espressif::modemWakeFxn() {
         MS_DEEP_DBG(
             F("Power pin"), _powerPin,
             F("takes priority over reset pin,  modem wakes on power on"));
-        digitalWrite(_modemSleepRqPin, !_wakeLevel);
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
@@ -72,7 +71,9 @@ bool Espressif::modemWakeFxn() {
         digitalWrite(_modemResetPin, LOW);
         delay(_resetPulse_ms);
         digitalWrite(_modemResetPin, HIGH);
-        digitalWrite(_modemSleepRqPin, !_wakeLevel);
+        if (_modemSleepRqPin >= 0) {
+            digitalWrite(_modemSleepRqPin, !_wakeLevel);
+        }
         success &= ESPwaitForBoot();
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, _wakeLevel);
