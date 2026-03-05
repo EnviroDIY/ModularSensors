@@ -26,7 +26,7 @@ ANBpH::ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
     _anb_sensor.setDebugStream(&MS_SERIAL_OUTPUT);
 #endif
     setSecondaryPowerPin(powerPin2);
-    setAllowedMeasurementRetries(ANB_PH_DEFAULT_MEASUREMENT_RETRIES);
+    setMaxRetries(ANB_PH_DEFAULT_MEASUREMENT_RETRIES);
 }
 // Delegating constructor
 ANBpH::ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
@@ -396,7 +396,7 @@ bool ANBpH::addSingleMeasurementResult() {
                 health == ANBHealthCode::NOT_IMMERSED);
 
     // Put values into the array - if it's a success or our last try
-    if (success || _retryAttemptsMade >= _allowedMeasurementRetries) {
+    if (success || _currentRetries >= _maxRetries) {
         verifyAndAddMeasurementResult(ANB_PH_PH_VAR_NUM, pH);
         verifyAndAddMeasurementResult(ANB_PH_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(ANB_PH_SALINITY_VAR_NUM, sal);
@@ -487,7 +487,7 @@ bool ANBpH::isWarmedUp(bool debug) {
 }
 
 uint32_t ANBpH::getStartMeasurementWindow() {
-    if (_powerPin >= 0 && _retryAttemptsMade == 0) {
+    if (_powerPin >= 0 && _currentRetries == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT;
         } else {
@@ -503,7 +503,7 @@ uint32_t ANBpH::getStartMeasurementWindow() {
 // If a pin was provided for power, we assume it's on-demand powered and use
 // the maximum wait time for the first measurement as our maximum wait.
 uint32_t ANBpH::getEndMeasurementWindow() {
-    if (_powerPin >= 0 && _retryAttemptsMade == 0) {
+    if (_powerPin >= 0 && _currentRetries == 0) {
         if (_salinityMode == ANBSalinityMode::HIGH_SALINITY) {
             return ANB_PH_1ST_VALUE_HIGH_SALT_MAX;
         } else {
@@ -539,7 +539,7 @@ bool ANBpH::isMeasurementComplete(bool debug) {
     // After the first measurement, the sensor will always report that a
     // measurement is ready, but a new value will not be available for at
     // least 10.5 (high salinity) or 14 (low salinity) seconds.
-    if (_retryAttemptsMade > 0) {
+    if (_currentRetries > 0) {
         if (elapsed_since_meas_start > _measurementTime_ms) {
             if (debug) {
                 MS_DBG(F("It's been"), elapsed_since_meas_start,

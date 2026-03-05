@@ -19,7 +19,7 @@ AOSongDHT::AOSongDHT(int8_t powerPin, int8_t dataPin, const uint8_t type,
              dataPin, measurementsToAverage, DHT_INC_CALC_VARIABLES),
       dht_internal(dataPin, type),
       _dhtType(type) {
-    setAllowedMeasurementRetries(DHT_DEFAULT_MEASUREMENT_RETRIES);
+    setMaxRetries(DHT_DEFAULT_MEASUREMENT_RETRIES);
 }
 
 

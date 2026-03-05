@@ -174,7 +174,7 @@ This is *not* breaking because only AVR and SAMD processors were supported anywa
 
 - **Added support for retrying measurements for all sensors**.
   - Each sensor now supports a number of possible retry attempts for when the sensor returns a bad or no value.
-The number of retry attempts can be set using the `setAllowedMeasurementRetries(uint8_t)` function.
+The number of retry attempts can be set using the `setMaxRetries(uint8_t)` function.
   - The number of retries is independent of the number of measurements to average.
 A retry is performed when a sensor doesn't report a value or reports an error value.
 If multiple retries are needed, only the result of the final (successful) retry is stored.

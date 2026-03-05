@@ -384,15 +384,11 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
 #if defined(MS_VARIABLEARRAY_DEBUG) || defined(MS_VARIABLEARRAY_DEBUG_DEEP)
             String sName    = sensorList[i]->getSensorNameAndLocation();
             String cycCount = String(i) + '.' +
-                String(sensorList[i]->getNumberCompleteMeasurementsAttempts() +
-                       1) +
-                '.' + String(sensorList[i]->getNumberRetryAttemptsMade());
+                String(sensorList[i]->getCompletedMeasurements() + 1) + '.' +
+                String(sensorList[i]->getCurrentRetries());
 #endif
             // Skip sensors that have already completed all their measurements
-            if (sensorList[i]->getNumberCompleteMeasurementsAttempts() >=
-                nReq) {
-                continue;
-            }
+            if (sensorList[i]->getCompletedMeasurements() >= nReq) { continue; }
 
             // If attempts were made to wake the sensor, but they failed OR if
             // we're not waking the sensor but it is not already awake or the
@@ -412,7 +408,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                 // skipped in further loops. NOTE: These are protected members
                 // of the Sensor class; we can only access them because the
                 // VariableArray class is a friend of the Sensor class.
-                sensorList[i]->_measurementAttemptsCompleted =
+                sensorList[i]->_completedMeasurements =
                     sensorList[i]->_measurementsToAverage;
             }
 
@@ -493,8 +489,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
             }
 
             // If all the measurements are now complete
-            if (sensorList[i]->getNumberCompleteMeasurementsAttempts() >=
-                nReq) {
+            if (sensorList[i]->getCompletedMeasurements() >= nReq) {
                 if (sleep) {
                     MS_DBG(i, F("--->> Finished all measurements from"), sName,
                            F(", putting it to sleep. ..."));
@@ -537,8 +532,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                                       sensorList[k]->getSecondaryPowerPin())))
                             // Check if sensor k still needs measurements
                             &&
-                            (sensorList[k]
-                                 ->getNumberCompleteMeasurementsAttempts() <
+                            (sensorList[k]->getCompletedMeasurements() <
                              sensorList[k]->getNumberMeasurementsToAverage())) {
                             // If sensors i and k share a primary power pin or a
                             // secondary power pin and sensor k still needs
@@ -577,8 +571,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                                    sensorList[i]->getSecondaryPowerPin() ==
                                        sensorList[k]
                                            ->getSecondaryPowerPin()))) &&
-                                (sensorList[k]
-                                     ->getNumberCompleteMeasurementsAttempts() <
+                                (sensorList[k]->getCompletedMeasurements() <
                                  sensorList[k]
                                      ->getNumberMeasurementsToAverage())) {
                                 MS_DBG(
@@ -588,7 +581,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                                     sensorList[k]
                                             ->getNumberMeasurementsToAverage() -
                                         sensorList[k]
-                                            ->getNumberCompleteMeasurementsAttempts(),
+                                            ->getCompletedMeasurements(),
                                     F("measurements."));
                                 MS_DBG(sName, '(', i, ')', F("pins are"),
                                        sensorList[i]->getPowerPin(), F("and"),
@@ -608,11 +601,9 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                 MS_DBG(F("*****---"), nSensorsCompleted,
                        F("sensors now complete ---*****"));
             } else {
-                MS_DEEP_DBG(
-                    i, F("--->>"), sName, F("still needs to take"),
-                    nReq -
-                        sensorList[i]->getNumberCompleteMeasurementsAttempts(),
-                    F("measurements."));
+                MS_DEEP_DBG(i, F("--->>"), sName, F("still needs to take"),
+                            nReq - sensorList[i]->getCompletedMeasurements(),
+                            F("measurements."));
             }
         }
         MS_DEEP_DBG(F("xxxxx---"), _sensorCount - nSensorsCompleted,

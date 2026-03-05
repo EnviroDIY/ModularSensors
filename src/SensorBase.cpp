@@ -87,17 +87,17 @@ void Sensor::setNumberMeasurementsToAverage(uint8_t nReadings) {
 uint8_t Sensor::getNumberMeasurementsToAverage() {
     return _measurementsToAverage;
 }
-uint8_t Sensor::getNumberCompleteMeasurementsAttempts() {
-    return _measurementAttemptsCompleted;
+uint8_t Sensor::getCompletedMeasurements() {
+    return _completedMeasurements;
 }
-uint8_t Sensor::getNumberRetryAttemptsMade() {
-    return _retryAttemptsMade;
+uint8_t Sensor::getCurrentRetries() {
+    return _currentRetries;
 }
-void Sensor::setAllowedMeasurementRetries(uint8_t allowedMeasurementRetries) {
-    _allowedMeasurementRetries = allowedMeasurementRetries;
+void Sensor::setMaxRetries(uint8_t maxRetries) {
+    _maxRetries = maxRetries;
 }
-uint8_t Sensor::getAllowedMeasurementRetries() {
-    return _allowedMeasurementRetries;
+uint8_t Sensor::getMaxRetries() {
+    return _maxRetries;
 }
 
 
@@ -371,8 +371,8 @@ void Sensor::clearValues() {
         numberGoodMeasurementsMade[i] = 0;
     }
     // Reset measurement attempt counters
-    _measurementAttemptsCompleted = 0;
-    _retryAttemptsMade            = 0;
+    _completedMeasurements = 0;
+    _currentRetries        = 0;
 }
 // This clears power-related status bits and resets power timing.
 void Sensor::clearPowerStatus() {
@@ -522,7 +522,7 @@ bool Sensor::update() {
     // bumpMeasurementAttemptCount() only after success or the last retry
     // attempt, so it's safe to check this value to determine if we have the
     // requested number of successful measurements.
-    while (_measurementAttemptsCompleted < _measurementsToAverage) {
+    while (_completedMeasurements < _measurementsToAverage) {
         // start a measurement
         ret_val &= startSingleMeasurement();
         if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
@@ -536,8 +536,9 @@ bool Sensor::update() {
             waitForMeasurementCompletion();
 
             // get the measurement result - this should call
-            // bumpMeasurementAttemptCount() and update the measurement attempt
-            // and retry counts as needed
+            // bumpMeasurementAttemptCount() to update the measurement attempt
+            // and retry counts as needed so we don't call that function
+            // directly here
             ret_val &= addSingleMeasurementResult();
         }
     }
@@ -665,7 +666,7 @@ bool Sensor::isStable(bool debug) {
 
     // If we're taking a repeat measurement, we may have already waited for
     // stabilization after the initial wake, so we can skip this wait.
-    if (_retryAttemptsMade != 0) {
+    if (_currentRetries != 0) {
         if (debug) {
             MS_DBG(getSensorNameAndLocation(),
                    F("is retrying and doesn't need to stabilize again."));
@@ -746,14 +747,14 @@ bool Sensor::bumpMeasurementAttemptCount(bool wasSuccessful) {
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
     // Bump the number of attempted retries
-    _retryAttemptsMade++;
+    _currentRetries++;
 
-    if (wasSuccessful || _retryAttemptsMade > _allowedMeasurementRetries) {
+    if (wasSuccessful || _currentRetries > _maxRetries) {
         // Bump the number of completed measurement attempts - we've succeeded
         // or failed but exceeded retries
-        _measurementAttemptsCompleted++;
+        _completedMeasurements++;
         // Reset the number of retries made for the next measurement attempt
-        _retryAttemptsMade = 0;
+        _currentRetries = 0;
     }
     // Return the input parameter so it's easy to use this in a return statement
     // to pass forward a value

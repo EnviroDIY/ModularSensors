@@ -200,31 +200,31 @@ class Sensor {
      *
      * @return The number of complete measurement attempts.
      */
-    uint8_t getNumberCompleteMeasurementsAttempts();
+    uint8_t getCompletedMeasurements();
     /**
-     * @brief Get the number of retry attempts that have been made for a
-     * measurement
+     * @brief Get the number of retry attempts that have been made for the
+     * current measurement cycle
      *
      * @return The number of retries that have been made for the current
-     * measurement attempt.
+     * measurement cycle.
      *
      * @note What is "successful" vs what qualifies for a retry varies by
      * sensor. For some it may be that if any values were returned, for others
      * that a specific value is in range, etc.
      */
-    uint8_t getNumberRetryAttemptsMade();
+    uint8_t getCurrentRetries();
     /**
-     * @brief Get the number of allowed retries if a measurement fails.
+     * @brief Get the maximum number of retries allowed if a measurement fails.
      *
-     * @return The number of allowed retries.
+     * @return The maximum number of allowed retries.
      */
-    uint8_t getAllowedMeasurementRetries();
+    uint8_t getMaxRetries();
     /**
-     * @brief Set the number of retries if a measurement fails.
+     * @brief Set the maximum number of retries if a measurement fails.
      *
-     * @param allowedMeasurementRetries The number of allowed retries.
+     * @param maxRetries The maximum number of allowed retries.
      */
-    void setAllowedMeasurementRetries(uint8_t allowedMeasurementRetries);
+    void setMaxRetries(uint8_t maxRetries);
 
     // _warmUpTime_ms _stabilizationTime_ms _measurementTime_ms
 
@@ -524,7 +524,7 @@ class Sensor {
      *
      * This clears the values array by setting all values to #MS_INVALID_VALUE,
      * sets all values in numberGoodMeasurementsMade to 0, and resets the
-     * attempt (#_measurementAttemptsCompleted) and retry (#_retryAttemptsMade)
+     * attempt (#_completedMeasurements) and retry (#_currentRetries)
      * counts.
      */
     void clearValues();
@@ -735,19 +735,19 @@ class Sensor {
      */
     uint8_t _measurementsToAverage;
     /**
-     * @brief The number of measurement attempts completed in the current update
+     * @brief The number of measurement cycles completed in the current update
      * cycle (reset by clearValues()).
      */
-    uint8_t _measurementAttemptsCompleted = 0;
+    uint8_t _completedMeasurements = 0;
     /**
-     * @brief The number of retries that have been attempted so far for a single
-     * measurement.
+     * @brief The number of retries that have been attempted so far for the
+     * current measurement cycle.
      */
-    uint8_t _retryAttemptsMade = 0;
+    uint8_t _currentRetries = 0;
     /**
-     * @brief The number of allowed retries if a measurement fails.
+     * @brief The maximum number of retries allowed if a measurement fails.
      */
-    uint8_t _allowedMeasurementRetries = 1;
+    uint8_t _maxRetries = 1;
     /**
      * @brief Array with the number of valid measurement values per variable by
      * the sensor in the current update cycle.
