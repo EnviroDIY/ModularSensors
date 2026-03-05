@@ -536,6 +536,7 @@
     MS_MODEM_CREATE_NULL_SECURE_CLIENTS(specificModem, TinyGSMType)
 #endif
 /**
+ * @def MS_MODEM_DELETE_CLIENT
  * @brief Creates a deleteClient function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
@@ -543,40 +544,76 @@
  *
  * @return The text of deleteClient function specific to a single modem
  * subclass.
+ *
+ * @warning CRITICAL: This function MUST only be called with Client* pointers
+ * that were created by the corresponding createClient() function. Passing a
+ * Client* created by createSecureClient() will cause undefined behavior.
+ * Always match create/delete pairs:
+ * - createClient() -> deleteClient()
+ * - createSecureClient() -> deleteSecureClient()
+ *
+ * @note Since RTTI is not available, runtime type checking cannot be performed.
+ * The caller is responsible for ensuring the correct delete function is used.
  */
 #define MS_MODEM_DELETE_CLIENT(specificModem, TinyGSMType)                  \
     void specificModem::deleteClient(Client* client) {                      \
         if (client != nullptr) {                                            \
+            MS_DBG(F("deleteClient: Deleting client of type "),             \
+                   F("GsmClient" #TinyGSMType));                            \
+            /* WARNING: This static_cast is safe ONLY if the client was */  \
+            /* created by createClient(). Mismatched create/delete calls */ \
+            /* will cause undefined behavior. */                            \
             TinyGsm##TinyGSMType::GsmClient##TinyGSMType* cast_pointer =    \
                 static_cast<TinyGsm##TinyGSMType::GsmClient##TinyGSMType*>( \
                     client);                                                \
             delete cast_pointer;                                            \
+        } else {                                                            \
+            MS_DBG(F("deleteClient: Attempted to delete nullptr client"));  \
         }                                                                   \
     }
 /**
  * @def MS_MODEM_DELETE_SECURE_CLIENT
- * @brief Creates a deleteClient function for a specific modem subclass.
+ * @brief Creates a deleteSecureClient function for a specific modem subclass.
  *
  * @param specificModem The modem subclass
  * @param TinyGSMType The type used for the TinyGSM modem
  *
  * @return The text of deleteSecureClient function specific to a single modem
  * subclass.
+ *
+ * @warning CRITICAL: This function MUST only be called with Client* pointers
+ * that were created by the corresponding createSecureClient() function. Passing
+ * a Client* created by createClient() will cause undefined behavior. Always
+ * match create/delete pairs:
+ * - createClient() -> deleteClient()
+ * - createSecureClient() -> deleteSecureClient()
+ *
+ * @note Since RTTI is not available, runtime type checking cannot be performed.
+ * The caller is responsible for ensuring the correct delete function is used.
  */
 #if defined(TINY_GSM_MODEM_HAS_SSL)
 #define MS_MODEM_DELETE_SECURE_CLIENT(specificModem, TinyGSMType)              \
     void specificModem::deleteSecureClient(Client* client) {                   \
         if (client != nullptr) {                                               \
+            MS_DBG(F("deleteSecureClient: Deleting client of type "),          \
+                   F("GsmClientSecure" #TinyGSMType));                         \
+            /* WARNING: This static_cast is safe ONLY if the client was */     \
+            /* created by createSecureClient(). Mismatched create/delete */    \
+            /* calls will cause undefined behavior. */                         \
             TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType* cast_pointer = \
                 static_cast<                                                   \
                     TinyGsm##TinyGSMType::GsmClientSecure##TinyGSMType*>(      \
                     client);                                                   \
             delete cast_pointer;                                               \
+        } else {                                                               \
+            MS_DBG(F("deleteSecureClient: Attempted to delete nullptr"));      \
         }                                                                      \
     }
 #else
-#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem, TinyGSMType) \
-    void specificModem::deleteSecureClient(Client*) {}
+#define MS_MODEM_DELETE_SECURE_CLIENT(specificModem, TinyGSMType)  \
+    void specificModem::deleteSecureClient(Client*) {              \
+        MS_DBG(F("deleteSecureClient: SSL not supported, no-op")); \
+    }
 #endif
 
 /**
