@@ -646,10 +646,15 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
     return success;
 }
 
+// Backward compatibility wrapper
+void VariableArray::printSensorData(Stream* stream) {
+    printVariableData(stream);
+}
+
 
 // This function prints out the results for any connected sensors to a stream
 //  Calculated Variable results will be included
-void VariableArray::printSensorData(Stream* stream) {
+void VariableArray::printVariableData(Stream* stream) {
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (i > 0) {
             // Check if we need to add a line break between different sensors

@@ -1626,9 +1626,9 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
 #if !defined(MS_SILENT)
-        _internalArray->printSensorData(&MS_OUTPUT);
+        _internalArray->printVariableData(&MS_OUTPUT);
 #if defined(MS_2ND_OUTPUT)
-        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+        _internalArray->printVariableData(&MS_2ND_OUTPUT);
 #endif
 #endif
         PRINTOUT(F("-----------------------"));
@@ -1851,9 +1851,9 @@ void Logger::logData(bool sleepBeforeReturning) {
 // Print out the sensor data
 #if !defined(MS_SILENT)
         PRINTOUT(" ");
-        _internalArray->printSensorData(&MS_OUTPUT);
+        _internalArray->printVariableData(&MS_OUTPUT);
 #if defined(MS_2ND_OUTPUT)
-        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+        _internalArray->printVariableData(&MS_2ND_OUTPUT);
 #endif
         PRINTOUT(" ");
 #endif
@@ -1923,9 +1923,9 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 // Print out the sensor data
 #if !defined(MS_SILENT)
         PRINTOUT(" ");
-        _internalArray->printSensorData(&MS_OUTPUT);
+        _internalArray->printVariableData(&MS_OUTPUT);
 #if defined(MS_2ND_OUTPUT)
-        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+        _internalArray->printVariableData(&MS_2ND_OUTPUT);
 #endif
         PRINTOUT(" ");
 #endif

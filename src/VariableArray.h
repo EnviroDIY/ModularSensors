@@ -268,14 +268,25 @@ class VariableArray {
                         bool sleep = true, bool powerDown = true);
 
     /**
-     * @brief Print out the results for all connected sensors to a stream
+     * @brief Print out the results for all variables in the variable array to a
+     * stream
      *
-     * This prints current sensor values along with meta-data to a stream
-     * (either hardware or software serial).  By default, it will print to the
-     * first Serial port.  Note that the input is a pointer to a stream instance
+     * This prints current variable values - both those from sensors and
+     * calculated variables - along with meta-data to a stream (either hardware
+     * or software serial).  By default, it will print to the first Serial port.
+     * Note that the input is a pointer to a stream instance
      * - to use a hardware serial instance you must use an ampersand before the
      * serial name (ie, &Serial1).
      *
+     * @param stream An Arduino Stream instance
+     */
+    void printVariableData(Stream* stream = &Serial);
+
+    /**
+     * @brief Print out the results for all variables in the variable array to a
+     * stream
+     *
+     * @deprecated{0,39,0} Use printVariableData() instead.
      * @param stream An Arduino Stream instance
      */
     void printSensorData(Stream* stream = &Serial);
