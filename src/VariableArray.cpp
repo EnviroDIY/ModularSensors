@@ -183,13 +183,9 @@ bool VariableArray::setupSensors() {
 // sensor.
 void VariableArray::sensorsPowerUp() {
     MS_DBG(F("Powering up sensors..."));
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
-            MS_DBG(F("    Powering up"),
-                   arrayOfVars[i]->getParentSensorNameAndLocation());
-
-            arrayOfVars[i]->parentSensor->powerUp();
-        }
+    for (uint8_t i = 0; i < _sensorCount; i++) {
+        MS_DBG(F("    Powering up"), _sensorList[i]->getSensorNameAndLocation());
+        _sensorList[i]->powerUp();
     }
 }
 
@@ -212,13 +208,10 @@ bool VariableArray::sensorsWake() {
 
     // Check for any sensors that are awake outside of being sent a "wake"
     // command
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)  // Skip non-unique sensors
-            && getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
-                1  // already attempted to wake
-        ) {
+    for (uint8_t i = 0; i < _sensorCount; i++) {
+        if (_sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1) {
             MS_DBG(F("    Wake up of"),
-                   arrayOfVars[i]->getParentSensorNameAndLocation(),
+                   _sensorList[i]->getSensorNameAndLocation(),
                    F("has already been attempted."));
             nSensorsAwake++;
         }
@@ -229,20 +222,15 @@ bool VariableArray::sensorsWake() {
     // up and increment the counter marking that's been done.
     // We keep looping until they've all been done.
     while (nSensorsAwake < _sensorCount) {
-        for (uint8_t i = 0; i < _variableCount; i++) {
-            if (isLastVarFromSensor(i)  // Skip non-unique sensors
-                && getSensorStatusBit(i, Sensor::WAKE_ATTEMPTED) ==
-                    0  // If no attempts yet made to wake the sensor up
-                && arrayOfVars[i]->parentSensor->isWarmedUp(
-                       deepDebugTiming)  // and if it is already warmed up
-            ) {
-                MS_DBG(F("    Wake up of"),
-                       arrayOfVars[i]->getParentSensorNameAndLocation(),
+        for (uint8_t i = 0; i < _sensorCount; i++) {
+            if (_sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 0 &&
+                _sensorList[i]->isWarmedUp(deepDebugTiming)) {
+                MS_DBG(F("    Wake up of"), _sensorList[i]->getSensorNameAndLocation(),
                        F("..."));
 
                 // Make a single attempt to wake the sensor after it is
                 // warmed up
-                bool sensorSuccess = arrayOfVars[i]->parentSensor->wake();
+                bool sensorSuccess = _sensorList[i]->wake();
                 success &= sensorSuccess;
                 // We increment up the number of sensors awake/active,
                 // even if the wake up command failed!
@@ -269,19 +257,16 @@ bool VariableArray::sensorsWake() {
 bool VariableArray::sensorsSleep() {
     MS_DBG(F("Putting sensors to sleep..."));
     bool success = true;
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
-            MS_DBG(F("    "), arrayOfVars[i]->getParentSensorNameAndLocation(),
-                   F("..."));
+    for (uint8_t i = 0; i < _sensorCount; i++) {
+        MS_DBG(F("    "), _sensorList[i]->getSensorNameAndLocation(), F("..."));
 
-            bool sensorSuccess = arrayOfVars[i]->parentSensor->sleep();
-            success &= sensorSuccess;
+        bool sensorSuccess = _sensorList[i]->sleep();
+        success &= sensorSuccess;
 
-            if (sensorSuccess) {
-                MS_DBG(F("        ... successfully put to sleep."));
-            } else {
-                MS_DBG(F("        ... failed to sleep!"));
-            }
+        if (sensorSuccess) {
+            MS_DBG(F("        ... successfully put to sleep."));
+        } else {
+            MS_DBG(F("        ... failed to sleep!"));
         }
     }
     return success;
@@ -295,13 +280,9 @@ bool VariableArray::sensorsSleep() {
 // sensor.
 void VariableArray::sensorsPowerDown() {
     MS_DBG(F("Powering down sensors..."));
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)) {  // Skip non-unique sensors
-            MS_DBG(F("    Powering down"),
-                   arrayOfVars[i]->getParentSensorNameAndLocation());
-
-            arrayOfVars[i]->parentSensor->powerDown();
-        }
+    for (uint8_t i = 0; i < _sensorCount; i++) {
+        MS_DBG(F("    Powering down"), _sensorList[i]->getSensorNameAndLocation());
+        _sensorList[i]->powerDown();
     }
 }
 
