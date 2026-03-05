@@ -295,9 +295,9 @@ int16_t MonitorMyWatershedPublisher::publishData(Client* outClient,
 
 int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
     // Create a buffer for the portions of the request and response
-    char     tempBuffer[37] = "";
-    uint16_t did_respond    = 0;
-    int16_t  responseCode   = 0;
+    char    tempBuffer[37] = "";
+    int16_t did_respond    = 0;
+    int16_t responseCode   = 0;
 
     // Early return if no records to send
     if (_logBuffer.getNumRecords() == 0) {
@@ -411,7 +411,7 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
             memcpy(responseCode_char, tempBuffer + 9, 3);
             // Null terminate the string
             responseCode_char[3] = '\0';
-            responseCode = atoi(responseCode_char);
+            responseCode         = atoi(responseCode_char);
             PRINTOUT(F("\n-- Response Code --"));
             PRINTOUT(responseCode);
         } else {
