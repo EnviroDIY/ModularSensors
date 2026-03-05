@@ -32,21 +32,20 @@ VariableArray::VariableArray() : VariableArray(0, nullptr) {}
 
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
                           const char* uuids[]) {
-    _variableCount = variableCount;
-    arrayOfVars    = variableList;
-
-    populateSensorList();
+    begin(variableCount, variableList);
     matchUUIDs(uuids);
     checkVariableUUIDs();
 }
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
-
-    populateSensorList();
-    checkVariableUUIDs();
+    begin();
 }
 void VariableArray::begin() {
+    if (_variableCount == 0 || arrayOfVars == nullptr) {
+        MS_DBG(F("No variable array in the VariableArray object!"));
+        return;
+    }
     populateSensorList();
     checkVariableUUIDs();
 }
@@ -138,14 +137,10 @@ bool VariableArray::setupSensors() {
     // Check for any sensors that have been set up outside of this (ie, the
     // modem)
     uint8_t nSensorsSetup = 0;
-    for (uint8_t i = 0; i < _variableCount; i++) {
-        if (isLastVarFromSensor(i)  // Skip non-unique sensors
-            && getSensorStatusBit(i, Sensor::SETUP_SUCCESSFUL) ==
-                1  // already set up
-        ) {
-            MS_DBG(F("   "), arrayOfVars[i]->getParentSensorNameAndLocation(),
+    for (uint8_t i = 0; i < _sensorCount; i++) {
+        if (_sensorList[i]->getStatusBit(Sensor::SETUP_SUCCESSFUL) == 1) {
+            MS_DBG(F("   "), _sensorList[i]->getSensorNameAndLocation(),
                    F("was already set up!"));
-
             nSensorsSetup++;
         }
     }
@@ -155,17 +150,12 @@ bool VariableArray::setupSensors() {
     // up and increment the counter marking that's been done.
     // We keep looping until they've all been done.
     while (nSensorsSetup < _sensorCount) {
-        for (uint8_t i = 0; i < _variableCount; i++) {
-            if (isLastVarFromSensor(i)  // Skip non-unique sensors
-                && getSensorStatusBit(i, Sensor::SETUP_SUCCESSFUL) ==
-                    0  // only set up if it has not yet been set up
-            ) {
+        for (uint8_t i = 0; i < _sensorCount; i++) {
+            if (_sensorList[i]->getStatusBit(Sensor::SETUP_SUCCESSFUL) == 0) {
                 MS_DBG(F("    Set up of"),
-                       arrayOfVars[i]->getParentSensorNameAndLocation(),
-                       F("..."));
+                       _sensorList[i]->getSensorNameAndLocation(), F("..."));
 
-                bool sensorSuccess =
-                    arrayOfVars[i]->parentSensor->setup();  // set it up
+                bool sensorSuccess = _sensorList[i]->setup();  // set it up
                 success &= sensorSuccess;
                 nSensorsSetup++;
 
@@ -192,7 +182,8 @@ bool VariableArray::setupSensors() {
 void VariableArray::sensorsPowerUp() {
     MS_DBG(F("Powering up sensors..."));
     for (uint8_t i = 0; i < _sensorCount; i++) {
-        MS_DBG(F("    Powering up"), _sensorList[i]->getSensorNameAndLocation());
+        MS_DBG(F("    Powering up"),
+               _sensorList[i]->getSensorNameAndLocation());
         _sensorList[i]->powerUp();
     }
 }
@@ -233,8 +224,8 @@ bool VariableArray::sensorsWake() {
         for (uint8_t i = 0; i < _sensorCount; i++) {
             if (_sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 0 &&
                 _sensorList[i]->isWarmedUp(deepDebugTiming)) {
-                MS_DBG(F("    Wake up of"), _sensorList[i]->getSensorNameAndLocation(),
-                       F("..."));
+                MS_DBG(F("    Wake up of"),
+                       _sensorList[i]->getSensorNameAndLocation(), F("..."));
 
                 // Make a single attempt to wake the sensor after it is
                 // warmed up
@@ -289,7 +280,8 @@ bool VariableArray::sensorsSleep() {
 void VariableArray::sensorsPowerDown() {
     MS_DBG(F("Powering down sensors..."));
     for (uint8_t i = 0; i < _sensorCount; i++) {
-        MS_DBG(F("    Powering down"), _sensorList[i]->getSensorNameAndLocation());
+        MS_DBG(F("    Powering down"),
+               _sensorList[i]->getSensorNameAndLocation());
         _sensorList[i]->powerDown();
     }
 }
