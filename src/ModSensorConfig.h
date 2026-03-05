@@ -81,12 +81,16 @@
  */
 #define MS_INVALID_VALUE -9999
 #endif
+
 #ifndef MAX_NUMBER_VARS
 /**
  * @brief The largest number of variables from a single sensor.
  *
  * Every sensor will create a buffer of this length for holding variable values.
  * Decrease this value to save a memory.
+ *
+ * @note This is the maximum number of variables that can be tied to any one
+ * sensor, not the maximum number of variables in a variable array.
  */
 #define MAX_NUMBER_VARS 21
 // GroPoint Profile GPLP-8 has 8 Moisture and 13 Temperature values
@@ -95,6 +99,28 @@
 // number of variables from any sensor. Anything more is a waste of memory.
 static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
               "MAX_NUMBER_VARS must be between 1 and 21");
+
+#ifndef MAX_NUMBER_SENSORS
+/**
+ * @brief The largest number of sensors in a single variable array.
+ *
+ * @note This iS **not** the same as the maximum number of variables in a
+ * variable array. One sensor may return many variables but only counts as one
+ * sensor.
+ *
+ * Decrease this value to save memory if you know you'll use fewer sensors.
+ * Increase if you need to support more sensors in a single array.
+ */
+#define MAX_NUMBER_SENSORS 20
+#endif
+// Static assert to ensure the maximum number of sensors is reasonable
+static_assert(MAX_NUMBER_SENSORS > 0 && MAX_NUMBER_SENSORS <= 50,
+              "MAX_NUMBER_SENSORS must be between 1 and 50");
+//==============================================================
+
+
+//==============================================================
+// User button functionality
 //==============================================================
 #ifndef MS_LOGGERBASE_BUTTON_BENCH_TEST
 /**
@@ -265,6 +291,7 @@ static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
               "MS_DEFAULT_ADS1X15_ADDRESS should be 0x48, 0x49, 0x4A, or 0x4B "
               "for ADS1X15");
 //==============================================================
+
 
 //==============================================================
 // SDI-12 Configuration
