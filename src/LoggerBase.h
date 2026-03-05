@@ -1243,11 +1243,21 @@ class Logger {
     virtual void printFileHeader(Stream* stream);
 
     /**
-     * @brief Print a comma separated list of values of sensor data -
-     * including the time in the logging timezone -  out over an Arduino stream
+     * @brief Print a comma separated list of the values of the variables in the
+     * underling variable array - along with the logged time in the logger's
+     * timezone -  out over an Arduino stream
      *
      * @param stream An Arduino stream instance - expected to be an SdFat file -
      * but could also be the "main" Serial port for debugging.
+     */
+    void printVariableValuesCSV(Stream* stream);
+
+    /**
+     * @brief Print a comma separated list of values of variable data -
+     * including the time in the logging timezone -  out over an Arduino stream
+     *
+     * @deprecated{0,39,0} Use printVariableValuesCSV() instead.
+     * @param stream An Arduino stream instance
      */
     void printSensorDataCSV(Stream* stream);
 

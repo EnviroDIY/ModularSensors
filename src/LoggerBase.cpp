@@ -1305,7 +1305,7 @@ void Logger::printFileHeader(Stream* stream) {
 
 // This prints a comma separated list of values of sensor data - including the
 // time -  out over an Arduino stream
-void Logger::printSensorDataCSV(Stream* stream) {
+void Logger::printVariableValuesCSV(Stream* stream) {
     String csvString = "";
     String iso8601   = formatDateTime_ISO8601(Logger::markedLocalUnixTime);
     iso8601.replace("T", " ");
@@ -1317,6 +1317,11 @@ void Logger::printSensorDataCSV(Stream* stream) {
         if (i + 1 != getArrayVarCount()) { stream->print(','); }
     }
     stream->println();
+}
+
+// Backward compatibility wrapper
+void Logger::printSensorDataCSV(Stream* stream) {
+    printVariableValuesCSV(stream);
 }
 
 // Protected helper function - This checks if the SD card is available and ready
@@ -1538,13 +1543,13 @@ bool Logger::logToSD() {
     }
 
     // Write the data
-    printSensorDataCSV(&logFile);
+    printVariableValuesCSV(&logFile);
 // Echo the line to the serial port
 #if !defined(MS_SILENT)
     PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
-    printSensorDataCSV(&MS_OUTPUT);
+    printVariableValuesCSV(&MS_OUTPUT);
 #if defined(MS_2ND_OUTPUT)
-    printSensorDataCSV(&MS_2ND_OUTPUT);
+    printVariableValuesCSV(&MS_2ND_OUTPUT);
 #endif
     PRINTOUT('\n');
 #endif
