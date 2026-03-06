@@ -146,31 +146,21 @@ bool ANBpH::setup() {
     int16_t originalInterval =
         _loggingIntervalMinutes;  // Store original for debug messages
 #endif
-    if (_powerPin >= 0) {  // Cycled power
-        if (_loggingIntervalMinutes == 0) {
-            programmedInterval      = 10;
-            _loggingIntervalMinutes = 10;  // Update the stored value
-            MS_DBG(F("Requested interval of"), originalInterval,
-                   F("minutes is invalid when power is cycled; using"),
-                   programmedInterval, F("minutes."));
-        } else if (_loggingIntervalMinutes < 10) {
-            programmedInterval      = 10;
-            _loggingIntervalMinutes = 10;  // Update the stored value
-            MS_DBG(F("Requested interval of"), originalInterval,
-                   F("minutes is too short; using"), programmedInterval,
-                   F("minutes."));
-        } else if (_loggingIntervalMinutes > 240) {
-            programmedInterval      = 240;
-            _loggingIntervalMinutes = 240;  // Update the stored value
-            MS_DBG(F("Requested interval of"), originalInterval,
-                   F("minutes is too long; using"), programmedInterval,
-                   F("minutes."));
-        }
-    } else {  // Always-powered (powerPin == -1)
-        if (_loggingIntervalMinutes == 0) {
-            programmedInterval = 0;  // Allow 0 for always-on mode
-            // No need to change _loggingIntervalMinutes
-        } else if (_loggingIntervalMinutes < 10) {
+    // Handle special case: interval == 0 when power is cycled
+    if (_powerPin >= 0 && _loggingIntervalMinutes == 0) {
+        programmedInterval      = 10;
+        _loggingIntervalMinutes = 10;  // Update the stored value
+        MS_DBG(F("Requested interval of"), originalInterval,
+               F("minutes is invalid when power is cycled; using"),
+               programmedInterval, F("minutes."));
+    } else if (_powerPin < 0 && _loggingIntervalMinutes == 0) {
+        programmedInterval = 0;  // Allow 0 for always-on mode
+        // No need to change _loggingIntervalMinutes
+    } else {
+        // Shared validation for <10 and >240 limits
+        programmedInterval =
+            _loggingIntervalMinutes;  // Start with original value
+        if (_loggingIntervalMinutes < 10) {
             programmedInterval      = 10;
             _loggingIntervalMinutes = 10;  // Update the stored value
             MS_DBG(F("Requested interval of"), originalInterval,
