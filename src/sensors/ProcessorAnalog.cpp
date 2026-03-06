@@ -53,15 +53,14 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
     analogRead(analogChannel);  // priming reading
     // The return value from analogRead() is IN BITS NOT IN VOLTS!!
     analogRead(analogChannel);  // another priming reading
-    int   rawAdc    = analogRead(analogChannel);
-    float rawAnalog = static_cast<float>(rawAdc);
-    MS_DBG(F("Raw analog pin reading in bits:"), rawAnalog);
+    int rawAdc = analogRead(analogChannel);
+    MS_DBG(F("Raw analog pin reading in bits:"), rawAdc);
 
     // convert bits to volts
     // Use (PROCESSOR_ADC_MAX + 1) as divisor for correct 2^n scaling
     resultValue =
         (_supplyVoltage / (static_cast<float>(PROCESSOR_ADC_MAX) + 1.0f)) *
-        _voltageMultiplier * rawAnalog;
+        _voltageMultiplier * static_cast<float>(rawAdc);
     MS_DBG(F("Voltage:"), resultValue);
 
     // NOTE: We don't actually have any criteria for if the reading was any

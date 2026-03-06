@@ -35,10 +35,9 @@ bool MeterTeros11::getResults(bool verify_crc) {
         raw = MS_INVALID_VALUE;
     }
     if (raw != MS_INVALID_VALUE) {
-        ea = ((2.887e-9 * (raw * raw * raw)) - (2.08e-5 * (raw * raw)) +
-              (5.276e-2 * raw) - 43.39) *
-            ((2.887e-9 * (raw * raw * raw)) - (2.08e-5 * (raw * raw)) +
-             (5.276e-2 * raw) - 43.39);
+        double cubic = (2.887e-9 * raw * raw * raw) - (2.08e-5 * raw * raw) +
+            (5.276e-2 * raw) - 43.39;
+        ea = cubic * cubic;
         MS_DBG(F("Calculated Ea:"), ea);
     }
 

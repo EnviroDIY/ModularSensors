@@ -624,7 +624,7 @@ class loggerClock {
      */
     static epochStart getCoreEpochStart() {
         return loggerClock::_core_epoch;
-    };
+    }
     /**
      * @brief Get the timezone offset for the processor/Arduino core in seconds
      * from UTC
@@ -634,7 +634,7 @@ class loggerClock {
      */
     static int32_t getCoreTimeZone() {
         return loggerClock::_core_tz;
-    };
+    }
     /**
      * @brief Get the epoch start for the RTC as an epochStart object
      *
@@ -642,7 +642,7 @@ class loggerClock {
      */
     static epochStart getRTCEpochStart() {
         return _rtcEpoch;
-    };
+    }
 
  protected:
 

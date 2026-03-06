@@ -143,10 +143,14 @@ bool AtlasParent::addSingleMeasurementResult() {
     bool success = false;
 
     // call the circuit and request 40 bytes (this may be more than we need)
-    _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40, 1);
+    int bytesReceived = _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40,
+                                          1);
+    if (bytesReceived == 0) {
+        MS_DBG(getSensorNameAndLocation(), F("I2C read failed - no response"));
+        return finalizeMeasurementAttempt(false);
+    }
     // the first byte is the response code, we read this separately.
     int code = _i2c->read();
-
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     // Parse the response code
     switch (code) {

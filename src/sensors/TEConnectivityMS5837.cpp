@@ -66,7 +66,7 @@ String TEConnectivityMS5837::getSensorName() {
     switch (modelEnum) {
         case MS5837Model::MS5837_02BA: modelStr += F("02BA"); break;
         case MS5837Model::MS5837_30BA: modelStr += F("30BA"); break;
-        case MS5837Model::MS5803_01BA: modelStr += F("01BA"); break;
+        case MS5837Model::MS5803_01BA: return F("TEConnectivityMS5803_01BA");
         default: modelStr += F("Unknown"); break;
     }
     return modelStr;

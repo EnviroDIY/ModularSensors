@@ -297,7 +297,6 @@
  * {{ @ref InSituRDO_Temp::InSituRDO_Temp }}
  */
 /**@{*/
-/// @brief
 /**
  * @brief Decimal places in string representation; temperature should have 2 -
  * resolution is 0.01°C.

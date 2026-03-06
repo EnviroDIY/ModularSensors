@@ -41,6 +41,7 @@ AnalogElecConductivity::~AnalogElecConductivity() {
 
 String AnalogElecConductivity::getSensorLocation() {
     String sensorLocation;
+    sensorLocation.reserve(48);  // Approximate expected size
     if (_analogVoltageReader != nullptr) {
         sensorLocation = _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {

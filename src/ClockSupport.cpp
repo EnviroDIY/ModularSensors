@@ -649,6 +649,14 @@ int32_t loggerClock::getProcessorTimeZone() {
     timeParts.tm_yday  = 0;   /* day of year, will be calculated */
     timeParts.tm_isdst = 0;   /* daylight saving time flag */
     time_t timeTimeT   = mktime(&timeParts);
+
+    // Check for mktime failure
+    if (timeTimeT == (time_t)-1) {
+        MS_DBG(F("mktime failed, defaulting timezone offset to 0"));
+        loggerClock::_core_tz = 0;
+        return 0;
+    }
+
     // make a epoch time from the converted time
     // NOTE: Re-run getProcessorEpochStart() instead of calling _core_epoch in
     // case the functions are called out of order and _core_epoch hasn't been
@@ -661,8 +669,8 @@ int32_t loggerClock::getProcessorTimeZone() {
     // function.
     // Handle both signed and unsigned time_t properly
     // Check if time_t is signed by testing if (time_t)-1 < (time_t)0
-    int32_t    tz_offset;
-    const bool is_time_t_signed = ((time_t)-1 < (time_t)0);
+    int32_t        tz_offset;
+    constexpr bool is_time_t_signed = ((time_t)-1 < (time_t)0);
 
     if (is_time_t_signed) {
         // For signed time_t, negative values are represented normally

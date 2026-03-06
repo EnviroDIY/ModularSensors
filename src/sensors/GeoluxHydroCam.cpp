@@ -140,7 +140,7 @@ bool GeoluxHydroCam::sleep() {
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
     return Sensor::sleep();
-};
+}
 
 bool GeoluxHydroCam::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and

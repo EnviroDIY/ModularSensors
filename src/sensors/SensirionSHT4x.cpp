@@ -63,6 +63,9 @@ bool SensirionSHT4x::setup() {
         ntries++;
     }
 
+    // NOTE: The setPrecision and setHeater functions set internal variables in
+    // the Adafruit library; they don't require sensor communication.
+
     // Set sensor for high precision
     sht4x_internal.setPrecision(SHT4X_HIGH_PRECISION);
 

@@ -420,6 +420,16 @@ class BoschBMP3xx : public Sensor {
      * @param i2cAddressHex The I2C address of the BMP3xx; must be either 0x76
      * or 0x77.  The default value is 0x76.
      *
+     * @note **BEHAVIORAL CHANGE**: In previous versions of this library, the
+     * default oversampling settings were `OVERSAMPLING_X16` for pressure and
+     * `OVERSAMPLING_X2` for temperature, which provided higher resolution but
+     * consumed more power. The defaults have been changed to
+     * `OVERSAMPLING_SKIP` for both parameters to optimize for lowest power
+     * consumption as recommended in the datasheet. To retain the previous
+     * higher-resolution behavior, explicitly pass `OVERSAMPLING_X16` for
+     * pressure and `OVERSAMPLING_X2` for temperature when constructing the
+     * sensor object.
+     *
      * @note For the BoschBMP3xx we do _**NOT**_ provide a
      * `measurementsToAverage` option.  The sensor already provides on-board
      * averaging by way of oversampling and the IIR filter, so there is no

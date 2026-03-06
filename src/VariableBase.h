@@ -426,7 +426,7 @@ class Variable {
         // resolution We want at least one significant digit beyond the
         // resolution
         float log10Resolution = log10f(resolution);
-        int   decimalPlaces   = static_cast<int>(-log10Resolution) + 1;
+        int   decimalPlaces   = static_cast<int>(ceilf(-log10Resolution)) + 1;
 
         // Clamp to reasonable bounds (0-6 decimal places)
         if (decimalPlaces < 0) decimalPlaces = 0;

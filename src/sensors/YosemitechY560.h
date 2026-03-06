@@ -250,8 +250,8 @@ class YosemitechY560_NH4_N : public Variable {
                                   const char*     uuid = "",
                                   const char* varCode = Y560_NH4_N_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(Y560_NH4_N_VAR_NUM),
-                   (const uint8_t)Y560_NH4_N_RESOLUTION, Y560_NH4_N_VAR_NAME,
-                   Y560_NH4_N_UNIT_NAME, varCode, uuid) {}
+                   static_cast<uint8_t>(Y560_NH4_N_RESOLUTION),
+                   Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY560_NH4_N object.
      *
@@ -260,8 +260,9 @@ class YosemitechY560_NH4_N : public Variable {
      */
     YosemitechY560_NH4_N()
         : Variable(static_cast<uint8_t>(Y560_NH4_N_VAR_NUM),
-                   (const uint8_t)Y560_NH4_N_RESOLUTION, Y560_NH4_N_VAR_NAME,
-                   Y560_NH4_N_UNIT_NAME, Y560_NH4_N_DEFAULT_CODE) {}
+                   static_cast<uint8_t>(Y560_NH4_N_RESOLUTION),
+                   Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME,
+                   Y560_NH4_N_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY560_NH4_N object - no action needed.
      */

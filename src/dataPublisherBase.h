@@ -47,13 +47,15 @@
 
 // HTTP response parsing constants
 /**
- * @brief Length of the HTTP version prefix "HTTP/1.1 " used when parsing HTTP response codes
+ * @brief Length of the HTTP version prefix "HTTP/1.1 " used when parsing HTTP
+ * response codes
  */
 #define HTTP_VERSION_PREFIX_LEN 9
 
 // Data publisher defaults
 /**
- * @brief Default number of initial transmissions to send immediately after each data point
+ * @brief Default number of initial transmissions to send immediately after each
+ * data point
  */
 #define DEFAULT_INITIAL_TRANSMISSIONS 5
 
@@ -98,8 +100,9 @@ class dataPublisher {
      * This allows faster in-field validation of initial data. Not respected by
      * all publishers.
      */
-    explicit dataPublisher(Logger& baseLogger, int sendEveryX = 1,
-                           uint8_t initialTransmissions = 5);
+    explicit dataPublisher(
+        Logger& baseLogger, int sendEveryX = 1,
+        uint8_t initialTransmissions = DEFAULT_INITIAL_TRANSMISSIONS);
     /**
      * @brief Construct a new data publisher object.
      *
@@ -120,7 +123,7 @@ class dataPublisher {
      * all publishers.
      */
     dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
-                  uint8_t initialTransmissions = 5);
+                  uint8_t initialTransmissions = DEFAULT_INITIAL_TRANSMISSIONS);
     /**
      * @brief Destroy the data publisher object - no action is taken.
      */

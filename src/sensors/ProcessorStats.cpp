@@ -79,7 +79,11 @@ ProcessorStats::ProcessorStats(const char* boardName, const char* version,
 String ProcessorStats::getSensorLocation() {
     String result;
     result.reserve(50);  // Reserve for board name + " " + version
-    result = String(_boardName) + " " + String(_version);
+    result = String(_boardName);
+    if (_version != nullptr) {
+        result += " ";
+        result += _version;
+    }
     return result;
 }
 

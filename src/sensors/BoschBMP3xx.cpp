@@ -110,11 +110,11 @@ bool BoschBMP3xx::setup() {
     // ADC NOTE:  The ADC will return repeated values if the ADC's ODR (output
     // data rate) is set faster than the actual measurement time, given
     // oversampling.
-    float _timeStandby_ms = 5.0f * (1U << static_cast<int>(_standbyEnum));
+    float timeStandby_ms = 5.0f * (1U << static_cast<int>(_standbyEnum));
     // warn if an impossible sampling rate is selected
-    if ((_timeStandby_ms < max_measurementTime_us / 1000) &&
+    if ((timeStandby_ms < max_measurementTime_us / 1000) &&
         _mode == NORMAL_MODE) {
-        MS_DBG(F("The selected standby time of"), _timeStandby_ms,
+        MS_DBG(F("The selected standby time of"), timeStandby_ms,
                F("between ADC samples is less than the expected max of"),
                _measurementTime_ms,
                F("ms needed for temperature and pressure oversampling."));
@@ -126,10 +126,10 @@ bool BoschBMP3xx::setup() {
 #if defined(MS_DEBUGGING_STD)
             _timeStandby_ms = 5.0f * (1U << static_cast<int>(_standbyEnum));
 #endif
-            MS_DBG(_standbyEnum, _timeStandby_ms,
+            MS_DBG(_standbyEnum, timeStandby_ms,
                    static_cast<int>(max_measurementTime_us / 1000));
         }
-        MS_DBG(F("A standby time of"), _timeStandby_ms,
+        MS_DBG(F("A standby time of"), timeStandby_ms,
                F("ms between reading will be used."));
     }
 
@@ -137,7 +137,7 @@ bool BoschBMP3xx::setup() {
     // the value of the enum is the power of the number of samples
     if (_filterCoeffEnum != IIR_FILTER_OFF && _mode == NORMAL_MODE) {
         MS_DBG(F("BMP388/390's IIR filter will only be fully initialized"),
-               (1U << static_cast<int>(_filterCoeffEnum)) * _timeStandby_ms,
+               (1U << static_cast<int>(_filterCoeffEnum)) * timeStandby_ms,
                F("ms after power on"));
     }
     if (_filterCoeffEnum != IIR_FILTER_OFF && _mode == FORCED_MODE) {

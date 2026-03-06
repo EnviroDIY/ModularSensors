@@ -203,6 +203,7 @@ bool GroPointParent::addSingleMeasurementResult() {
         default: {
             // Get Values
             MS_DBG(F("Other GroPoint models not yet implemented."));
+            break;
         }
     }
 

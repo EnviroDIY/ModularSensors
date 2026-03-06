@@ -34,6 +34,30 @@
  * board version.  Where the battery multiplier is not available, it is set to
  * -1. Where it's variable, it must be fixed in the ProcessorStats module or
  * constructor.
+ *
+ * @def BUILT_IN_ALS_POWER_PIN
+ * @brief The digital pin controlling power to the built-in ambient light sensor
+ * (ALS) on EnviroDIY boards.
+ * @note Set to -1 when the ALS is always powered or when no built-in ALS is
+ * available on the board.
+ *
+ * @def BUILT_IN_ALS_DATA_PIN
+ * @brief The analog pin connected to the built-in ambient light sensor (ALS)
+ * on EnviroDIY boards.
+ * @note The data pin varies by board model and version. Set to -1 when no
+ * built-in ALS is available on the board.
+ *
+ * @def BUILT_IN_ALS_SUPPLY_VOLTAGE
+ * @brief The supply voltage for the built-in ambient light sensor (ALS) on
+ * EnviroDIY boards, in volts.
+ * @note Typically matches the board's operating voltage. Set to -1 when no
+ * built-in ALS is available on the board.
+ *
+ * @def BUILT_IN_ALS_LOADING_RESISTANCE
+ * @brief The loading resistance for the built-in ambient light sensor (ALS)
+ * on EnviroDIY boards, in kΩ.
+ * @note The loading resistance affects light measurement calculations. Set to
+ * -1 when no built-in ALS is available on the board.
  */
 
 // EnviroDIY boards

@@ -350,7 +350,7 @@
  */
 /**@{*/
 /// @brief Decimal places in string representation; raw electrical conductivity
-/// should have 2.
+/// should have 3.
 #define ANB_PH_EC_RESOLUTION 3
 /// @brief Sensor variable number; conductivity is stored in sensorValues[4].
 #define ANB_PH_EC_VAR_NUM 4
