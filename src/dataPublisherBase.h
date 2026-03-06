@@ -54,10 +54,10 @@
 
 // Data publisher defaults
 /**
- * @brief Default number of initial transmissions to send immediately after each
+ * @brief Default number of startup transmissions to send immediately after each
  * data point
  */
-#define DEFAULT_INITIAL_TRANSMISSIONS 5
+#define DEFAULT_STARTUP_TRANSMISSIONS 5
 
 /**
  * @brief The dataPublisher class is a virtual class used by other publishers to
@@ -94,15 +94,15 @@ class dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
-     * @param initialTransmissions Number of transmissions to send immediately
+     * @param startupTransmissions Number of transmissions to send immediately
      * after each data point is logged, before beginning to cache data and only
      * transmit every sendEveryX times the logger records data (default: 5).
-     * This allows faster in-field validation of initial data. Not respected by
+     * This allows faster in-field validation of startup data. Not respected by
      * all publishers.
      */
     explicit dataPublisher(
         Logger& baseLogger, int sendEveryX = 1,
-        uint8_t initialTransmissions = DEFAULT_INITIAL_TRANSMISSIONS);
+        uint8_t startupTransmissions = DEFAULT_STARTUP_TRANSMISSIONS);
     /**
      * @brief Construct a new data publisher object.
      *
@@ -116,14 +116,14 @@ class dataPublisher {
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
-     * @param initialTransmissions Number of transmissions to send immediately
+     * @param startupTransmissions Number of transmissions to send immediately
      * after each data point is logged, before beginning to cache data and only
      * transmit every sendEveryX times the logger records data (default: 5).
-     * This allows faster in-field validation of initial data. Not respected by
+     * This allows faster in-field validation of startup data. Not respected by
      * all publishers.
      */
     dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
-                  uint8_t initialTransmissions = DEFAULT_INITIAL_TRANSMISSIONS);
+                  uint8_t startupTransmissions = DEFAULT_STARTUP_TRANSMISSIONS);
     /**
      * @brief Destroy the data publisher object - no action is taken.
      */
@@ -151,15 +151,15 @@ class dataPublisher {
     void setSendInterval(int sendEveryX);
 
     /**
-     * @brief Get the number of initial transmissions remaining
+     * @brief Get the number of startup transmissions
      *
      * @return The number of transmissions that will be sent at one minute
      * intervals for faster in-field validation
      */
-    uint8_t getInitialTransmissions() const;
+    uint8_t getStartupTransmissions() const;
 
     /**
-     * @brief Set the number of initial transmissions to send immediately after
+     * @brief Set the number of startup transmissions to send immediately after
      * logging
      *
      * This controls how many of the first data points are transmitted
@@ -167,10 +167,10 @@ class dataPublisher {
      * transmit every sendEveryX times the logger records data. This allows
      * faster in-field validation of initial data.
      *
-     * @param count Number of initial transmissions (must be 1-255, will be
+     * @param count Number of startup transmissions (must be 1-255, will be
      * clamped to this range)
      */
-    void setInitialTransmissions(uint8_t count);
+    void setStartupTransmissions(uint8_t count);
 
     /**
      * @brief Attach the publisher to a logger.
@@ -432,16 +432,16 @@ class dataPublisher {
     int _sendEveryX = 1;
 
     /**
-     * @brief The number of transmissions remaining to send immediately after
+     * @brief The number of startup transmissions to send immediately after
      * logging
      *
      * We send each of the first several data points immediately after they are
      * logged, before beginning to cache data and only transmit every sendEveryX
      * times the logger records data. This value is user-settable via
-     * constructor parameter or setInitialTransmissions() and allows faster
+     * constructor parameter or setStartupTransmissions() and allows faster
      * in-field validation.
      */
-    uint8_t _initialTransmissionsRemaining = 5;
+    uint8_t _startupTransmissions = DEFAULT_STARTUP_TRANSMISSIONS;
 
     // Basic chunks of HTTP
     /**

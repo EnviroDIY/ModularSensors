@@ -24,19 +24,19 @@ const char* dataPublisher::hostHeader = "\r\nHost: ";
 
 // Primary constructor
 dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
-                             int sendEveryX, uint8_t initialTransmissions)
+                             int sendEveryX, uint8_t startupTransmissions)
     : _baseLogger(&baseLogger),
       _inClient(inClient),
       _sendEveryX(sendEveryX),
-      _initialTransmissionsRemaining(
-          initialTransmissions < 1 ? 1 : initialTransmissions) {
+      _startupTransmissions(startupTransmissions < 1 ? 1
+                                                      : startupTransmissions) {
     _baseModem =
         _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 // Constructors
 dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX,
-                             uint8_t initialTransmissions)
-    : dataPublisher(baseLogger, nullptr, sendEveryX, initialTransmissions) {}
+                             uint8_t startupTransmissions)
+    : dataPublisher(baseLogger, nullptr, sendEveryX, startupTransmissions) {}
 // Default constructor with explicit initialization to ensure all members are
 // initialized
 dataPublisher::dataPublisher()
@@ -44,7 +44,7 @@ dataPublisher::dataPublisher()
       _baseModem(nullptr),
       _inClient(nullptr),
       _sendEveryX(1),
-      _initialTransmissionsRemaining(DEFAULT_INITIAL_TRANSMISSIONS) {}
+      _startupTransmissions(DEFAULT_STARTUP_TRANSMISSIONS) {}
 
 
 // Sets the client
@@ -73,23 +73,22 @@ void dataPublisher::setSendInterval(int sendEveryX) {
 }
 
 
-// Get the number of initial transmissions remaining
-uint8_t dataPublisher::getInitialTransmissions() const {
-    return _initialTransmissionsRemaining;
+// Get the number of startup transmissions
+uint8_t dataPublisher::getStartupTransmissions() const {
+    return _startupTransmissions;
 }
 
 
-// Set the number of initial transmissions to send immediately after logging
-void dataPublisher::setInitialTransmissions(uint8_t count) {
+// Set the number of startup transmissions to send immediately after logging
+void dataPublisher::setStartupTransmissions(uint8_t count) {
     // Ensure minimum of 1 transmission
     if (count < 1) {
-        MS_DBG(F("Initial transmissions count too low, setting to 1"));
-        _initialTransmissionsRemaining = 1;
+        MS_DBG(F("Startup transmissions count too low, setting to 1"));
+        _startupTransmissions = 1;
     } else {
-        _initialTransmissionsRemaining = count;
+        _startupTransmissions = count;
     }
-    MS_DBG(F("Initial transmissions remaining set to:"),
-           _initialTransmissionsRemaining);
+    MS_DBG(F("Startup transmissions set to:"), _startupTransmissions);
 }
 
 

@@ -195,9 +195,9 @@ void Logger::setLoggingInterval(int16_t loggingIntervalMinutes) {
 }
 
 
-// Sets the number of initial short intervals
-void Logger::setInitialShortIntervals(int16_t initialShortIntervals) {
-    _remainingShortIntervals = initialShortIntervals;
+// Sets the number of startup measurements
+void Logger::setStartupMeasurements(int16_t startupMeasurements) {
+    _startupMeasurements = startupMeasurements;
 }
 
 
@@ -671,7 +671,7 @@ bool Logger::checkInterval() {
     bool     retval;
     uint32_t checkTime = static_cast<uint32_t>(getNowLocalEpoch());
     int16_t  interval  = _loggingIntervalMinutes;
-    if (_remainingShortIntervals > 0) {
+    if (_startupMeasurements > 0) {
         // log the first few samples at an interval of 1 minute so that
         // operation can be quickly verified in the field
         interval = 1;
@@ -703,15 +703,15 @@ bool Logger::checkInterval() {
                static_cast<uint32_t>(Logger::markedLocalUnixTime));
         MS_DBG(F("Time to log!"));
 #if MS_LOGGERBASE_BUTTON_BENCH_TEST == 0
-        if ((_remainingShortIntervals > 0) && (!testing)) {
+        if ((_startupMeasurements > 0) && (!testing)) {
 #else
-        if ((_remainingShortIntervals > 0)) {
+        if ((_startupMeasurements > 0)) {
 #endif
-            MS_DBG(F("Within initial 1-minute intervals; "),
-                   _remainingShortIntervals, F("left."));
+            MS_DBG(F("Within initial 1-minute measurements; "),
+                   _startupMeasurements, F("left."));
             // once we've marked the time, we need to decrement the remaining
-            // short intervals by one. (IFF not in "log now" testing mode.)
-            _remainingShortIntervals -= 1;
+            // startup measurements by one. (IFF not in "log now" testing mode.)
+            _startupMeasurements -= 1;
         }
         retval = true;
     } else {
@@ -725,9 +725,9 @@ bool Logger::checkInterval() {
 // This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval() {
     int16_t interval = _loggingIntervalMinutes;
-    // If we're within the range of our initial short intervals, we're logging,
+    // If we're within the range of our startup measurements, we're logging,
     // then set the interval to 1.
-    if (_remainingShortIntervals > 0) { interval = 1; }
+    if (_startupMeasurements > 0) { interval = 1; }
 
     bool retval;
     MS_DBG(
@@ -739,11 +739,11 @@ bool Logger::checkMarkedInterval() {
     if (Logger::markedLocalUnixTime != 0 &&
         (Logger::markedLocalUnixTime % (interval * 60) == 0)) {
         MS_DBG(F("Time to log!"));
-        // De-increment the number of short intervals after marking
-        if (_remainingShortIntervals > 0) {
-            MS_DBG(F("Within initial 1-minute intervals. There are "),
-                   _remainingShortIntervals, F("left."));
-            _remainingShortIntervals -= 1;
+        // De-increment the number of startup measurements after marking
+        if (_startupMeasurements > 0) {
+            MS_DBG(F("Within startup measurements. There are "),
+                   _startupMeasurements, F("left."));
+            _startupMeasurements -= 1;
         }
         retval = true;
     } else {

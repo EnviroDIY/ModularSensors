@@ -223,36 +223,35 @@ class Logger {
     }
 
     /**
-     * @brief Set the number of initial datapoints to log (and publish) at
-     * 1-minute intervals before beginning logging on the regular logging
-     * interval.
+     * @brief Set the number of startup measurements to take at 1-minute
+     * intervals before beginning logging on the regular logging interval.
      *
-     * @param initialShortIntervals The number of 1-minute intervals. This
-     * number of transmissions will be performed with an interval of 1 minute
-     * regardless of the programmed interval. Useful for fast field
-     * verification.
+     * Whether the data is published or not depends on the settings of the data
+     * publishers.
+     *
+     * @param startupMeasurements The number of measurements to take at
+     * 1-minute intervals regardless of the programmed interval. Useful for
+     * fast field verification.
      */
-    void setInitialShortIntervals(int16_t initialShortIntervals);
+    void setStartupMeasurements(int16_t startupMeasurements);
     /**
-     * @brief Get the number of 1-minute intervals at the start before logging
-     * on the regular logging interval
+     * @brief Get the remaining number of startup measurements
      *
-     * @return The number of 1-minute intervals at the start before logging
-     * on the regular logging interval
+     * @return The remaining number of startup measurements
      */
-    int16_t getInitialShortIntervals() {
-        return _remainingShortIntervals;
+    int16_t getStartupMeasurements() {
+        return _startupMeasurements;
     }
     // Backwards-compatibility shims
-    /// @copydoc setInitialShortIntervals
-    /// @m_deprecated_since{0,38,0} use setInitialShortIntervals
-    void setinitialShortIntervals(int16_t initialShortIntervals) {
-        setInitialShortIntervals(initialShortIntervals);
+    /// @copydoc setStartupMeasurements
+    /// @m_deprecated_since{0,38,0} use setStartupMeasurements
+    void setStartupMeasurements(int16_t initialShortIntervals) {
+        setStartupMeasurements(initialShortIntervals);
     }
-    /// @copydoc getInitialShortIntervals
-    /// @m_deprecated_since{0,38,0} use getInitialShortIntervals
+    /// @copydoc getStartupMeasurements
+    /// @m_deprecated_since{0,38,0} use getStartupMeasurements
     int16_t getinitialShortIntervals() {
-        return getInitialShortIntervals();
+        return getStartupMeasurements();
     }
 
     /**
@@ -474,10 +473,10 @@ class Logger {
      */
     int16_t _loggingIntervalMinutes = 5;
     /**
-     * @brief The initial number of samples to log at an interval of 1 minute
+     * @brief The number of startup measurements to log at 1-minute intervals
      * for fast field verification
      */
-    int16_t _remainingShortIntervals = 5;
+    int16_t _startupMeasurements = 5;
     /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.

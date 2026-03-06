@@ -130,8 +130,7 @@ There is a shell file and typedef to maintain backwards compatibility.
 
 #### All Publishers
 
-- Changed capitalization of `setInitialShortIntervals(#)` function
-  - Previously the 'i' of initial was not capitalized.
+- Renamed `setinitialShortIntervals(#)` to `setStartupMeasurements(#)`.
   - The old `setinitialShortIntervals` remains available via compatibility shim in LoggerBase.h, so existing code is unaffected.
 
 #### Loggers and Variable Arrays
@@ -203,6 +202,10 @@ This affects the following classes:
   - EverlightALSPT19
   - TurnerCyclops
   - TurnerTurbidityPlus
+
+#### Features for Publishers
+
+- Added setters/getters for the number of startup transmissions.
 
 #### Library-Wide
 

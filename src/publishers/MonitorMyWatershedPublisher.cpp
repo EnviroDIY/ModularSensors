@@ -35,9 +35,9 @@ const char* MonitorMyWatershedPublisher::timestampTag = "\",\"timestamp\":";
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
     const char* samplingFeatureUUID, int sendEveryX,
-    uint8_t initialTransmissionsRemaining)
+    uint8_t startupTransmissions)
     : dataPublisher(baseLogger, inClient, sendEveryX,
-                    initialTransmissionsRemaining) {
+                    startupTransmissions) {
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
@@ -51,32 +51,32 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, const char* registrationToken,
     const char* samplingFeatureUUID, int sendEveryX,
-    uint8_t initialTransmissionsRemaining)
+    uint8_t startupTransmissions)
     : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
                                   registrationToken, samplingFeatureUUID,
-                                  sendEveryX, initialTransmissionsRemaining) {}
+                                  sendEveryX, startupTransmissions) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
-    int sendEveryX, uint8_t initialTransmissionsRemaining)
+    int sendEveryX, uint8_t startupTransmissions)
     : MonitorMyWatershedPublisher(baseLogger, inClient, registrationToken,
                                   nullptr, sendEveryX,
-                                  initialTransmissionsRemaining) {}
+                                  startupTransmissions) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, int sendEveryX,
-    uint8_t initialTransmissionsRemaining)
+    uint8_t startupTransmissions)
     : MonitorMyWatershedPublisher(baseLogger, inClient, nullptr, nullptr,
-                                  sendEveryX, initialTransmissionsRemaining) {}
+                                  sendEveryX, startupTransmissions) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, const char* registrationToken, int sendEveryX,
-    uint8_t initialTransmissionsRemaining)
+    uint8_t startupTransmissions)
     : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
                                   registrationToken, nullptr, sendEveryX,
-                                  initialTransmissionsRemaining) {}
+                                  startupTransmissions) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
-    Logger& baseLogger, int sendEveryX, uint8_t initialTransmissionsRemaining)
+    Logger& baseLogger, int sendEveryX, uint8_t startupTransmissions)
     : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
                                   nullptr, nullptr, sendEveryX,
-                                  initialTransmissionsRemaining) {}
+                                  startupTransmissions) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher() : dataPublisher() {
     // NOTE: _logBuffer is not initialized here because _baseLogger is null
     // Must call begin(Logger&, ...) before use to properly initialize
@@ -237,7 +237,7 @@ bool MonitorMyWatershedPublisher::connectionNeeded() {
 
     // the initial log transmissions have not completed (we send every one of
     // the first five data points immediately for field validation)
-    bool initialTransmission = _initialTransmissionsRemaining > 0;
+    bool initialTransmission = _startupTransmissions > 0;
 
     return atSendInterval || initialTransmission;
 }
@@ -283,8 +283,8 @@ int16_t MonitorMyWatershedPublisher::publishData(Client* outClient,
         }
     }
 
-    if (record >= 0 && _initialTransmissionsRemaining > 0) {
-        _initialTransmissionsRemaining -= 1;
+    if (record >= 0 && _startupTransmissions > 0) {
+        _startupTransmissions -= 1;
     }
 
     // do the data buffer flushing if we previously planned to
