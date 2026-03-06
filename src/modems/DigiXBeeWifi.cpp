@@ -215,7 +215,7 @@ bool DigiXBeeWifi::extraModemSetup() {
          * thus brighter LED) indicates better signal quality. NOTE: Only
          * the `DIO10/PWM0` pin (6 on the bee socket) can be used for this
          * function. */
-        bool changedP0 = gsmModem.changeSettingIfNeeded(GF("D5"), 1);
+        bool changedP0 = gsmModem.changeSettingIfNeeded(GF("P0"), 1);
         changesMade |= changedP0;
         if (changedP0) {
             MS_DBG(F("DIO10/PWM0 changed to"), 1);
@@ -503,7 +503,7 @@ bool DigiXBeeWifi::updateModemMetadata() {
         MS_DBG(F("CURRENT Modem battery (mV):"), volt_mV);
         if (volt_mV != 9999) {
             loggerModem::_priorBatteryVoltage =
-                static_cast<float>(volt_mV / 1000);
+                static_cast<float>(volt_mV / 1000.0f);
         } else {
             loggerModem::_priorBatteryVoltage =
                 static_cast<float>(MS_INVALID_VALUE);
