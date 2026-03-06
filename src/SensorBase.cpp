@@ -608,18 +608,8 @@ bool Sensor::checkPowerOn(bool debug) {
         setStatusBits(POWER_ATTEMPTED, POWER_SUCCESSFUL);
         return true;
     }
-    bool pp1_off = false;
-    bool pp2_off = false;
-    if (_powerPin >= 0) {
-        auto powerBitNumber = static_cast<int8_t>(__builtin_ctz(digitalPinToBitMask(_powerPin)));
-        pp1_off = bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
-                          powerBitNumber) == LOW;
-    }
-    if (_powerPin2 >= 0) {
-        auto powerBitNumber2 = static_cast<int8_t>(__builtin_ctz(digitalPinToBitMask(_powerPin2)));
-        pp2_off = bitRead(*portInputRegister(digitalPinToPort(_powerPin2)),
-                          powerBitNumber2) == LOW;
-    }
+    bool pp1_off = isPinLow(_powerPin);
+    bool pp2_off = isPinLow(_powerPin2);
 
     if (pp1_off || pp2_off) {
         if (debug) { MS_DBG(F("was off.")); }
@@ -792,4 +782,16 @@ bool Sensor::finalizeMeasurementAttempt(bool wasSuccessful) {
     // Return the input parameter so it's easy to use this in a return statement
     // to pass forward a value
     return wasSuccessful;
+}
+
+
+// Helper function to check if a pin is physically LOW
+bool Sensor::isPinLow(int8_t pin) {
+    if (pin < 0) {
+        return false;  // Unconfigured pins are treated as not LOW
+    }
+    auto powerBitNumber =
+        static_cast<int8_t>(__builtin_ctz(digitalPinToBitMask(pin)));
+    return bitRead(*portInputRegister(digitalPinToPort(pin)), powerBitNumber) ==
+        LOW;
 }

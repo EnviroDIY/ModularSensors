@@ -864,6 +864,19 @@ class Sensor {
      * @return The input parameter for easy chaining in return statements
      */
     bool finalizeMeasurementAttempt(bool wasSuccessful);
+
+ private:
+    /**
+     * @brief Helper function to check if a pin is physically LOW
+     *
+     * Reads the current physical state of a pin using direct port access.
+     * Returns true if the pin is configured and physically LOW, false if
+     * the pin is unconfigured (< 0) or HIGH.
+     *
+     * @param pin The pin number to check
+     * @return True if pin is configured and physically LOW, false otherwise
+     */
+    bool isPinLow(int8_t pin);
 };
 
 #endif  // SRC_SENSORBASE_H_
