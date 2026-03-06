@@ -1287,10 +1287,13 @@ void Logger::printFileHeader(Stream* stream) {
     // Next comes the ODM2 unit name
     STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
-    // We'll only add UUIDs if we see a UUID for the first variable
-    if (getVarUUIDAtI(0) != nullptr && strlen(getVarUUIDAtI(0)) > 1) {
-        STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
-    }
+    /// @todo Currrently the file header will always have a UUID row, but it
+    /// will be blank if the user doesn't set any UUIDs.  Versions 0.37.0 and
+    /// prior only printed the row if the **first** UUID existed.  It might be
+    /// better to only print the UUID row if at least one variable has a UUID
+    /// even if that single variable with a UUID isn't the first one.
+    STREAM_CSV_ROW(F("Result UUID:"),
+                   getVarUUIDAtI(i) != nullptr ? getVarUUIDAtI(i) : "")
 
     // We'll finish up with the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
