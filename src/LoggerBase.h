@@ -243,7 +243,8 @@ class Logger {
         return _startupMeasurements;
     }
     // Backwards-compatibility shims
-    /// @copydoc setStartupMeasurements
+    /// @brief Deprecated alias for setStartupMeasurements
+    /// @param initialShortIntervals The number of startup measurements
     /// @m_deprecated_since{0,38,0} use setStartupMeasurements
     void setinitialShortIntervals(int16_t initialShortIntervals) {
         setStartupMeasurements(initialShortIntervals);

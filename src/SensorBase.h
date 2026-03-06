@@ -616,6 +616,8 @@ class Sensor {
      * for more discussion.
      *
      * @param stream An Arduino Stream instance
+     * @param printStatusBits True to include the sensor status bits in the
+     * printout, false to only print values and metadata.
      */
     virtual void printData(Stream* stream          = &Serial,
                            bool    printStatusBits = false);
