@@ -215,7 +215,7 @@ class AOSongAM2315 : public Sensor {
     /**
      * @brief Destroy the AOSongAM2315 object
      */
-    ~AOSongAM2315() override;
+    ~AOSongAM2315() override = default;
 
     // Delete copy constructor and copy assignment operator to prevent shallow
     // copies
@@ -253,10 +253,6 @@ class AOSongAM2315 : public Sensor {
      * @brief An internal reference to the hardware Wire instance.
      */
     TwoWire* _i2c;
-    /**
-     * @brief Internal reference to the Adafruit sensor class
-     */
-    Adafruit_AM2315* am2315ptr;
 };
 
 

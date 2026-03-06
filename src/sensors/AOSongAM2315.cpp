@@ -18,17 +18,10 @@ AOSongAM2315::AOSongAM2315(TwoWire* theI2C, int8_t powerPin,
     : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES, AM2315_WARM_UP_TIME_MS,
              AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage),
-      _i2c(theI2C != nullptr ? theI2C : &Wire) {
-    am2315ptr = new Adafruit_AM2315(_i2c);
-}
+      _i2c(theI2C != nullptr ? theI2C : &Wire) {}
 // Delegating constructor
 AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
     : AOSongAM2315(&Wire, powerPin, measurementsToAverage) {}
-
-// Destructor
-AOSongAM2315::~AOSongAM2315() {
-    delete am2315ptr;
-}
 
 
 String AOSongAM2315::getSensorLocation() {
@@ -62,7 +55,8 @@ bool AOSongAM2315::addSingleMeasurementResult() {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    success = am2315ptr->readTemperatureAndHumidity(&temp_val, &humid_val);
+    Adafruit_AM2315 am2315(_i2c);
+    success = am2315.readTemperatureAndHumidity(&temp_val, &humid_val);
 
 
     success &= !isnan(temp_val) && temp_val != MS_INVALID_VALUE &&
