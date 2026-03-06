@@ -12,7 +12,8 @@
 #include "LoggerBase.h"
 
 // Constants
-constexpr time_t SECONDS_IN_DAY = 86400L;  // 86400 (60*60*24)seconds in a day
+// 86400 (60*60*24) seconds in a day
+#define SECONDS_IN_DAY 86400L
 
 
 epochTime::epochTime(time_t timestamp, epochStart epoch) {
