@@ -252,7 +252,7 @@ class EverlightALSPT19 : public Sensor {
      * @param dataPin The processor ADC port pin to read the voltage from the EC
      * probe.  Not all processor pins can be used as analog pins.  Those usable
      * as analog pins generally are numbered with an "A" in front of the number
-     * - ie, A1.
+     * - i.e., A1.
      * @param alsSupplyVoltage The power supply voltage (in volts) of the
      * ALS-PT19. This does not have to be the same as the board operating
      * voltage or the supply voltage of the AnalogVoltageBase reader.

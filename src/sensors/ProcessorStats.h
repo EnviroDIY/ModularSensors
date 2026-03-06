@@ -26,8 +26,8 @@
  * The processor can return the number of "samples" it has taken, the amount of
  * RAM it has available and, for some boards, the battery voltage (EnviroDIY
  * Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers).  The
- * version of the board is required as input (ie, for a EnviroDIY Mayfly: "v0.3"
- * or "v0.4" or "v0.5").  Use a blank value (ie, "") for un-versioned boards.
+ * version of the board is required as input (i.e., for a EnviroDIY Mayfly: "v0.3"
+ * or "v0.4" or "v0.5").  Use a blank value (i.e., "") for un-versioned boards.
  * Please note that while you cannot opt to average more than one sample, it really
  * makes no sense to do so for the processor.  These values are only intended to be
  * used as diagnostics.

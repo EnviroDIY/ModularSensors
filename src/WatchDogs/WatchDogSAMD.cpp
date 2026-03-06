@@ -224,7 +224,7 @@ void extendedWatchDogSAMD::configureClockGenerator() {
     // better.
     // NOTE: The generic clock generator must be enabled by performing a single
     // 32-bit write to the Generic Clock Generator Control register (GENCTRL) -
-    // ie, do this all in one step.
+    // i.e., do this all in one step.
     // NOTE: Per the manual 15.8.4, the run in standby setting
     // (GCLK_GENCTRL_RUNSTDBY) for the generic clock generator control only
     // applies if the generic clock generator has been configured to be output

@@ -124,7 +124,7 @@ This was probably a hold-over from incorrect implementation and calling of the c
 
 #### Individual Publishers
 
-- *Renamed* The EnviroDIYPublisher has been renamed the MonitorMyWatershedPublisher.
+- *Renamed* the EnviroDIYPublisher to MonitorMyWatershedPublisher.
 This reflects changes to the website from years ago.
 There is a shell file and typedef to maintain backwards compatibility.
 
@@ -143,7 +143,7 @@ Also added optional arguments to the `completeUpdate()` function to allow users 
 Use `completeUpdate(false, false, false, false)` instead.
     - Previously the `updateAllSensors()` function asked all sensors to update their values, skipping all power, wake, and sleep steps while the `completeUpdate()` function duplicated that functionality and added the power, wake, and sleep.
 The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
-To achieve the same functionality as the old `updateAllSensors()` function (ie, only updating values), set all the arguments to false.
+To achieve the same functionality as the old `updateAllSensors()` function (i.e., only updating values), set all the arguments to false.
 
 #### Library-Wide
 
@@ -236,14 +236,14 @@ This affects the following classes:
 ## [0.37.0]
 
 > [!note]
-> This release has changes to nearly every file in the entire library (ie, hundreds of files).
+> This release has changes to nearly every file in the entire library (i.e., hundreds of files).
 > Many of the changes are spelling and typo fixes found by implementing CSpell code spell checking.
 > All header files were also modified to include the new library configuration headers.
 
 ### Changed
 
 - **BREAKING** Converted the watch-dog classes into static classes with all static function and a **deleted constructor**.
-  - Any code that attempted to interact with the watchdog (ie, with a "complex loop") must now call the extendedWatchDog class directly, ie: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
+  - Any code that attempted to interact with the watchdog (i.e., with a "complex loop") must now call the extendedWatchDog class directly, i.e.: `extendedWatchDog::resetWatchDog();` rather than `dataLogger.watchDogTimer.resetWatchDog();`
 - **BREAKING** Renamed `markedLocalEpochTime` to `markedLocalUnixTime` to clarify the start of the epoch that we're marking down.
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
 - **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2025 and 2035.
@@ -252,7 +252,7 @@ These defines can be set in the ModSensorConfig.h file.
 - **Potentially BREAKING:** For calculated variables, the calculation function will only be called if `getValue(true)` or `getValueString(true)` is called - that is, the boolean for 'update value' must explicitly be set to true to rerun the calculation function.
   - Previously, the calculation function was re-run every time `getValue()` or `getValueString()` was called, regardless of the update value parameter.
 For calculations that were based on the results of other variables that didn't change, this was fine.
-But, for calculations based on new raw readings (ie, calling `analogRead()`) a new value would be returned each time the function was called.
+But, for calculations based on new raw readings (i.e., calling `analogRead()`) a new value would be returned each time the function was called.
 I realized this was a problem for analog values I tried to read that reported correctly in the first round, but were saved as junk in the csv and publishers because a new analog reading was being attempted when the thing I was attempting to read was now powered down.
   - The variable array update functions have been modified accordingly.
   - Verify you have the functionality you expect if you use calculated variables.
@@ -869,7 +869,7 @@ Modem Restructuring
 ### Changed
 
 - Restructured modem so that it no longer operates as a sensor.
-  Variables tied to the modem are now effectively calculated variables and all values from the modem will be offset by 1 sending cycle (ie, the signal strength posted will always be the strength from the prior send, not the current one).
+  Variables tied to the modem are now effectively calculated variables and all values from the modem will be offset by 1 sending cycle (i.e., the signal strength posted will always be the strength from the prior send, not the current one).
 
 ***
 
@@ -1037,7 +1037,7 @@ Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
   - RTD (temperature
 - Created empty constructors for the logger, publisher, variable array, and variable classes and all of their subclasses.  For all classes created a corresponding "begin" function to set internal class object values.
   - See note for more details: <https://github.com/EnviroDIY/ModularSensors/commit/b1a619ed74bc790743bce35b3a4e78a2d2237b22>
-  - The order of input arguments for all variable objects has changed.  For variable subclasses (ie, variables from sensors), there is no change to the user.  ****For calculated variable objects, all code must be updated!**** Please check the structure in the examples!  Older code will compile without error but the variable metadata fields will be incorrectly populated.
+  - The order of input arguments for all variable objects has changed.  For variable subclasses (i.e., variables from sensors), there is no change to the user.  ****For calculated variable objects, all code must be updated!**** Please check the structure in the examples!  Older code will compile without error but the variable metadata fields will be incorrectly populated.
 - Very preliminary support for SD cards with switchable power
 
 ### Removed
@@ -1051,7 +1051,7 @@ Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
 
 ### Known Issues
 
-- Running some I2C sensors on switched power will cause unrecoverable hangs at the first call to any other I2C peripheral (ie, the DS3231 RTC) after sensor power is turned off.  This is a hardware problem and is un-fixable within this library.
+- Running some I2C sensors on switched power will cause unrecoverable hangs at the first call to any other I2C peripheral (i.e., the DS3231 RTC) after sensor power is turned off.  This is a hardware problem and is un-fixable within this library.
 - The sensor class and all of its subclasses still require input arguments in the constructor.
 
 ***

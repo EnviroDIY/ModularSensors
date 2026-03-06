@@ -306,10 +306,12 @@ class MaxBotixSonar : public Sensor {
     Stream* _stream;
 
     /**
-     * @brief Helper function to dump any available characters from the stream buffer
+     * @brief Helper function to dump any available characters from the stream
+     * buffer
      *
-     * Reads and discards all available characters from the stream to clear the buffer.
-     * Optionally prints debugging output showing the discarded characters.
+     * Reads and discards all available characters from the stream to clear the
+     * buffer. Optionally prints debugging output showing the discarded
+     * characters.
      */
     void dumpBuffer();
 };

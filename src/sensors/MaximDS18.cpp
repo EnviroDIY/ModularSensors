@@ -56,7 +56,7 @@ String MaximDS18::makeAddressString(DeviceAddress owAddr) {
 }
 
 
-// This gets the place the sensor is installed ON THE MAYFLY (ie, pin number)
+// This gets the place the sensor is installed ON THE MAYFLY (i.e., pin number)
 String MaximDS18::getSensorLocation() {
     return makeAddressString(_OneWireAddress);
 }

@@ -339,7 +339,7 @@
     }
 
 #else
-//^^ from #if defined(TINY_GSM_MODEM_HAS_GPRS) (ie, this is wifi)
+//^^ from #if defined(TINY_GSM_MODEM_HAS_GPRS) (i.e., this is wifi)
 
 #define MS_MODEM_IS_INTERNET_AVAILABLE(specificModem) \
     bool specificModem::isInternetAvailable() {       \

@@ -256,7 +256,7 @@ class ProcessorAnalog : public Sensor {
      * @param dataPin The processor ADC pin used to read the target voltage. Not
      * all processor pins can be used as analog pins.  Those usable as analog
      * pins generally are numbered with an "A" in front of the number
-     * - ie, A1.
+     * - i.e., A1.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.

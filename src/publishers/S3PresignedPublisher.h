@@ -193,7 +193,7 @@ class S3PresignedPublisher : public dataPublisher {
      * @brief Set the S3 host name
      *
      * This is "s3.<your-region>.amazonaws.com" by default.
-     * If you need to use a host in a specific region (ie, anything but
+     * If you need to use a host in a specific region (i.e., anything but
      * US-East-1) you should set your own host. The host in that case should be:
      * "s3.<your-region>.amazonaws.com"
      *
@@ -277,9 +277,9 @@ class S3PresignedPublisher : public dataPublisher {
      * Certificate Authority - G2).
      *
      * This is exactly the same CA certificate as you would use for an MQTT
-     * connection to AWS IoT (ie, the AWS IoT Publisher). For supported modules
-     * you can use the AWS_IOT_SetCertificates sketch in the extras folder to
-     * upload your certificate.
+     * connection to AWS IoT (i.e., the AWS IoT Publisher). For supported
+     * modules you can use the AWS_IOT_SetCertificates sketch in the extras
+     * folder to upload your certificate.
      *
      * @param caCertName The name of your certificate authority certificate
      * file.

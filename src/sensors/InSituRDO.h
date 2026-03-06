@@ -70,7 +70,7 @@
  * 1.  Disable caching:
  *   - By default, the RDO PRO-X "caches" readings for 5000ms (5s) and will
  * not take a new measurement until the 5s cache expires.  If you want to take
- * measurements at faster than 5s intervals (ie, to average multiple
+ * measurements at faster than 5s intervals (i.e., to average multiple
  * measurements), I strongly recommend setting the cache value to 0ms using the
  * Win-Situ software.  The cache value can be changed in the "Diagnostics" menu
  * found on the "Device Setup" tab of Win-Situ.

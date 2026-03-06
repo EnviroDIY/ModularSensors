@@ -69,7 +69,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
                                 const char* registrationToken,
                                 const char* samplingFeatureUUID,
-                                int         sendEveryX            = 1,
+                                int         sendEveryX           = 1,
                                 uint8_t     startupTransmissions = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
@@ -89,7 +89,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
     MonitorMyWatershedPublisher(Logger&     baseLogger,
                                 const char* registrationToken,
                                 const char* samplingFeatureUUID,
-                                int         sendEveryX            = 1,
+                                int         sendEveryX           = 1,
                                 uint8_t     startupTransmissions = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
@@ -109,7 +109,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      */
     MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
                                 const char* registrationToken,
-                                int         sendEveryX            = 1,
+                                int         sendEveryX           = 1,
                                 uint8_t     startupTransmissions = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
@@ -126,7 +126,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * (default: 5). This allows faster in-field validation of startup data.
      */
     MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
-                                int     sendEveryX            = 1,
+                                int     sendEveryX           = 1,
                                 uint8_t startupTransmissions = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
@@ -143,7 +143,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      */
     MonitorMyWatershedPublisher(Logger&     baseLogger,
                                 const char* registrationToken,
-                                int         sendEveryX            = 1,
+                                int         sendEveryX           = 1,
                                 uint8_t     startupTransmissions = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object
@@ -160,9 +160,8 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * data and only transmit every sendEveryX times the logger records data
      * (default: 5). This allows faster in-field validation of startup data.
      */
-    explicit MonitorMyWatershedPublisher(
-        Logger& baseLogger, int sendEveryX = 1,
-        uint8_t startupTransmissions = 5);
+    explicit MonitorMyWatershedPublisher(Logger& baseLogger, int sendEveryX = 1,
+                                         uint8_t startupTransmissions = 5);
     /**
      * @brief Construct a new Monitor My Watershed Publisher object with only
      * default values for all parameters.

@@ -181,7 +181,7 @@ bool ANBpH::setup() {
         intervalSet = _anb_sensor.setIntervalTime(programmedInterval);
     } else {
         // Set sampling interval to continuous if the sensor will be
-        // continuously powered (ie, a power style of ALWAYS_POWERED).
+        // continuously powered (i.e., a power style of ALWAYS_POWERED).
         MS_DBG(F("Set sensor sampling interval to 0 (continuous)..."));
         intervalSet = _anb_sensor.setIntervalTime(0);
     }

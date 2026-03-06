@@ -83,7 +83,7 @@ bool SodaqUBeeR410M::modemWakeFxn() {
         // before ending pulse
         if (_statusPin >= 0) {
             uint32_t startTimer = millis();
-            // 0.15-3.2s pulse for wake on SARA R4/N4 (ie, max is 3.2s)
+            // 0.15-3.2s pulse for wake on SARA R4/N4 (i.e., max is 3.2s)
             // Wait no more than 3.2s
             while (digitalRead(_statusPin) != static_cast<int>(_statusLevel) &&
                    millis() - startTimer < 3200L) {}

@@ -35,7 +35,8 @@ setupGitFilters.bat
 ```
 
 **Manual Setup:**
-If you prefer to configure the filters manually, run these Git commands from the repository root:
+
+If you prefer to configure the filters manually, run these Git commands from the repository root (requires PowerShell):
 
 ```bash
 git config --local filter.smudgePasswords.clean "powershell -ExecutionPolicy Bypass -File filters/cleanPasswords.ps1"
@@ -57,7 +58,7 @@ Use PlatformIO in VSCode instead.
 Open the folder you've cloned this repo into with VSCode.
 Have PlatformIO create a new project for you, but instead of allowing it to create a new folder, select the folder you've already cloned this repo into.
 
-Create a new source program to work with in a new directory (ie, a tests directory).
+Create a new source program to work with in a new directory (i.e., a tests directory).
 This is the directory you should reference in the `src_dir` line of your platformio.ini.
 _Also add this directory to your .gitignore file_ so you can test and play with your code without publishing personal passwords or other messiness to the web.
 I recommend you start with the menu a la carte example for development since it already contains all features and is tested for proper compilation with continuous integration tools.

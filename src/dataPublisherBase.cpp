@@ -29,7 +29,7 @@ dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
       _inClient(inClient),
       _sendEveryX(sendEveryX),
       _startupTransmissions(startupTransmissions < 1 ? 1
-                                                      : startupTransmissions) {
+                                                     : startupTransmissions) {
     _baseModem =
         _baseLogger->registerDataPublisher(this);  // register self with logger
 }

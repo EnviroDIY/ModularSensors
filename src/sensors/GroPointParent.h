@@ -35,7 +35,7 @@
  * They communicate via [Modbus RTU](https://en.wikipedia.org/wiki/Modbus) over [RS-485](https://en.wikipedia.org/wiki/RS-485).
  * To interface with them, you will need an RS485-to-TTL adapter.
  *
- * The sensor constructor requires as input: the sensor modbus address, a stream instance for data (ie, ```Serial```), and one or two power pins.
+ * The sensor constructor requires as input: the sensor modbus address, a stream instance for data (i.e., ```Serial```), and one or two power pins.
  * The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
  * (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
  * Please see the section "[Notes on Arduino Streams and Software Serial](@ref page_arduino_streams)"

@@ -215,7 +215,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      * Certificate Authority - G2).
      *
      * This is exactly the same CA certificate as you would use to upload to S3
-     * (ie, the S3 Presigned Publisher). For supported modules you can use the
+     * (i.e., the S3 Presigned Publisher). For supported modules you can use the
      * AWS_IOT_SetCertificates sketch in the extras folder to upload your
      * certificate.
      *
@@ -282,7 +282,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      *
      * If not specified, the topic "{LoggerID}/metadata" will be used for the
      * main logger metadata. For each variable, the variable number will be
-     * appended to the topic (ie, "{LoggerID}/metadata/variable01").
+     * appended to the topic (i.e., "{LoggerID}/metadata/variable01").
      *
      * Make sure you have IAM policies set up to allow your device to publish to
      * the specified topics!

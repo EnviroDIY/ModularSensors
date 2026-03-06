@@ -215,7 +215,7 @@ RTCZero loggerClock::zero_sleep_rtc;
 
 
 // Sets the static offset from UTC that the RTC is programmed in
-// I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC (ie, offset = 0)
+// I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC (i.e., offset = 0)
 // You can either set the RTC offset directly or set the offset between the
 // RTC and the logger
 void loggerClock::setRTCOffset(int8_t offsetHours) {
@@ -285,7 +285,7 @@ String loggerClock::formatDateTime_ISO8601(time_t     epochSeconds,
 String loggerClock::formatDateTime_ISO8601(epochTime in_time,
                                            int8_t    epochSecondsUTCOffset) {
     // Use the conversion function to get a temporary variable for the epoch
-    // time in the epoch used by the processor core (ie, used by gmtime).
+    // time in the epoch used by the processor core (i.e., used by gmtime).
     time_t t = epochTime::convert_epoch(in_time, loggerClock::_core_epoch);
     MS_DEEP_DBG(F("Input time converted to processor epoch:"), t, '(',
                 epochTime::printEpochName(loggerClock::_core_epoch), ')');
@@ -335,7 +335,7 @@ void loggerClock::formatDateTime(char* buffer, const char* fmt,
 void loggerClock::formatDateTime(char* buffer, const char* fmt,
                                  epochTime in_time) {
     // Use the conversion function to get a temporary variable for the epoch
-    // time in the epoch used by the processor core (ie, used by gmtime).
+    // time in the epoch used by the processor core (i.e., used by gmtime).
     time_t t = epochTime::convert_epoch(in_time, loggerClock::_core_epoch);
     MS_DEEP_DBG(F("Input time converted to processor epoch:"), t, '(',
                 epochTime::printEpochName(loggerClock::_core_epoch), ')');
@@ -444,7 +444,7 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
     resetClockInterruptStatus();
 
     // Use the conversion function to get a temporary variable for the epoch
-    // time in the epoch used by the processor core (ie, used by gmtime).
+    // time in the epoch used by the processor core (i.e., used by gmtime).
     time_t t = epochTime::convert_epoch(in_time, _rtcEpoch) -
         static_cast<time_t>(utcOffset * 3600);
     MS_DBG(F("Setting the next alarm on the"), MS_CLOCK_NAME, F("to"),
@@ -458,7 +458,7 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
 
 #if defined(MS_USE_RV8803)
     // NOTE: The RV-8803 hardware does **NOT** support alarms at finer frequency
-    // than minutes! The alarm will fire when the minute turns (ie, at
+    // than minutes! The alarm will fire when the minute turns (i.e., at
     // hh:mm:00). To set an alarm at a specific second interval, you would have
     // to use a periodic countdown timer interrupt and start the interrupt timer
     // carefully on the second you want to match.
@@ -478,7 +478,7 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
     rtc.enableHardwareInterrupt(ALARM_INTERRUPT);
 
 #elif defined(MS_USE_DS3231)
-    // MATCH_HOURS = match hours *and* minutes, seconds, ie 1x per day at set
+    // MATCH_HOURS = match hours *and* minutes, seconds, i.e., 1x per day at set
     // hh:mm:ss
     rtc.enableInterrupts(MATCH_HOURS, 0, tmp->tm_hour, tmp->tm_min,
                          tmp->tm_sec);  // interrupt at (h,m,s)

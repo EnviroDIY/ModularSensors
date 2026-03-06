@@ -112,7 +112,7 @@ enableInterrupt(rx_pin, neoSSerial1ISR, CHANGE);
 ## Neutered SoftwareSerial<!--! {#streams_softwareserial} -->
 
 [The EnviroDIY modified version of SoftwareSerial](https://github.com/EnviroDIY/SoftwaterSerial_ExternalInts) removes direct interrupt control from the SoftwareSerial library, making it dependent on another interrupt library, but able to be compiled with ModularSensors.
-This is, _by far_, the _least_ stable serial port option and should only be used on sensors that are not very picky about the quality of the serial stream or that only require one-way communication (ie, only posting data rather than needing to receive commands).
+This is, _by far_, the _least_ stable serial port option and should only be used on sensors that are not very picky about the quality of the serial stream or that only require one-way communication (i.e., only posting data rather than needing to receive commands).
 
 To use the EnviroDIY modified version of SoftwareSerial:
 

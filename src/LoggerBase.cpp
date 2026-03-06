@@ -684,7 +684,7 @@ bool Logger::checkInterval() {
 
 #if MS_LOGGERBASE_BUTTON_BENCH_TEST == 0
     // If the person has set the button pin **NOT** to be used for "bench
-    // testing" (ie, immediate rapid logging) then we instead read this button
+    // testing" (i.e., immediate rapid logging) then we instead read this button
     // testing flag to mean "log now." To make that happen, we mark the time
     // here and return true if the flag is set.
     bool testing = Logger::startTesting;
@@ -1027,7 +1027,7 @@ void Logger::systemSleep() {
     sleep_bod_disable();
 #endif
 
-    // disable all power-reduction modules (ie, the processor module clocks)
+    // disable all power-reduction modules (i.e., the processor module clocks)
     // NOTE:  This only shuts down the various clocks on the processor via
     // the power reduction register!  It does NOT actually disable the
     // modules themselves or set the pins to any particular state!  This
@@ -1128,7 +1128,7 @@ void Logger::systemSleep() {
     // to the processor registers
     noInterrupts();
 
-    // Re-enable all power modules (ie, the processor module clocks)
+    // Re-enable all power modules (i.e., the processor module clocks)
     // NOTE:  This only re-enables the various clocks on the processor!
     // The modules may need to be re-initialized after the clocks re-start.
     power_all_enable();

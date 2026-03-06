@@ -258,7 +258,7 @@ bool VariableArray::setupSensors() {
     // Now run all the set-up functions
     MS_DBG(F("Running sensor setup functions."));
 
-    // Check for any sensors that have been set up outside of this (ie, the
+    // Check for any sensors that have been set up outside of this (i.e., the
     // modem)
     uint8_t nSensorsSetup = 0;
     for (uint8_t i = 0; i < _sensorCount; i++) {
@@ -472,7 +472,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
     // the sensor wasn't powered, it will have cleared the wake bits. If we
     // clear the wake bits here before checking them, then we won't be able to
     // tell if the sensor was already awake before this function was called.  If
-    // this function is called with wake=false (ie, expecting the sensors to
+    // this function is called with wake=false (i.e., expecting the sensors to
     // have been awoken elsewhere), then we need to be able to check if the wake
     // was successful before attempting readings, so we need to keep the wake
     // bits intact.

@@ -36,8 +36,7 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
     const char* samplingFeatureUUID, int sendEveryX,
     uint8_t startupTransmissions)
-    : dataPublisher(baseLogger, inClient, sendEveryX,
-                    startupTransmissions) {
+    : dataPublisher(baseLogger, inClient, sendEveryX, startupTransmissions) {
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
@@ -59,8 +58,7 @@ MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, const char* registrationToken,
     int sendEveryX, uint8_t startupTransmissions)
     : MonitorMyWatershedPublisher(baseLogger, inClient, registrationToken,
-                                  nullptr, sendEveryX,
-                                  startupTransmissions) {}
+                                  nullptr, sendEveryX, startupTransmissions) {}
 MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
     Logger& baseLogger, Client* inClient, int sendEveryX,
     uint8_t startupTransmissions)

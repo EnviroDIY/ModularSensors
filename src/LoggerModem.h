@@ -933,7 +933,7 @@ class loggerModem {
      *
      * @note It's possible that the status pin is on, but the modem is actually
      * mid-shutdown.  In that case, we'll mistakenly skip re-waking it.  This
-     * only applies to modules with a pulse wake (ie, non-zero wake time).  For
+     * only applies to modules with a pulse wake (i.e., non-zero wake time). For
      * all modules that do pulse on, where possible I've selected a pulse time
      * that is sufficient to wake but not quite long enough to put it to sleep
      * and am using AT commands to sleep.  This *should* keep everything lined

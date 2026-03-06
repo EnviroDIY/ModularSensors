@@ -161,7 +161,7 @@ class Sensor {
      * @return The pin on the mcu controlling secondary power
      *
      * This is for a second power needed to communicate with a sensor. Generally
-     * to an adapter or converter needed to talk to the sensor - ie, an RS232
+     * to an adapter or converter needed to talk to the sensor - i.e., an RS232
      * adapter, an RS485 adapter, or an IO multiplexer.
      */
     virtual int8_t getSecondaryPowerPin();
@@ -169,7 +169,7 @@ class Sensor {
      * @brief Set the pin number controlling secondary sensor power.
      *
      * This is for a second power needed to communicate with a sensor. Generally
-     * to an adapter or converter needed to talk to the sensor - ie, an RS232
+     * to an adapter or converter needed to talk to the sensor - i.e., an RS232
      * adapter, an RS485 adapter, or an IO multiplexer.
      *
      * @param pin The pin on the mcu controlling secondary power
@@ -363,7 +363,7 @@ class Sensor {
     }
 
     /**
-     * @brief Clear a specific status bit (ie, set it to 0).
+     * @brief Clear a specific status bit (i.e., set it to 0).
      *
      * @param bitToClear The status bit to clear.
      */
@@ -567,16 +567,16 @@ class Sensor {
      */
     void clearMeasurementStatus();
     /**
-     * @brief Verify that a measurement is OK (ie, not #MS_INVALID_VALUE) before
-     * adding it to the result array
+     * @brief Verify that a measurement is OK (i.e., not #MS_INVALID_VALUE)
+     * before adding it to the result array
      *
      * @param resultNumber The position of the result within the result array.
      * @param resultValue The value of the result.
      */
     void verifyAndAddMeasurementResult(uint8_t resultNumber, float resultValue);
     /**
-     * @brief Verify that a measurement is OK (ie, not #MS_INVALID_VALUE) before
-     * adding it to the result array
+     * @brief Verify that a measurement is OK (i.e., not #MS_INVALID_VALUE)
+     * before adding it to the result array
      *
      * @param resultNumber The position of the result within the result array.
      * @param resultValue The value of the result.
@@ -718,7 +718,7 @@ class Sensor {
      * @brief Digital pin number on the mcu controlling secondary power
      *
      * This is for a second power needed to communicate with a sensor. Generally
-     * to an adapter or converter needed to talk to the sensor - ie, an RS232
+     * to an adapter or converter needed to talk to the sensor - i.e., an RS232
      * adapter, an RS485 adapter, or an IO multiplexer.
      *
      * @note SIGNED int, to allow negative numbers for unused pins
@@ -778,7 +778,7 @@ class Sensor {
      * the sensor in the current update cycle.
      *
      * @note The number of good measurements may vary between variables if
-     * some values are more likely to be invalid than others - ie, a pH sensor
+     * some values are more likely to be invalid than others - i.e., a pH sensor
      * may also measure temperature and report a valid temperature when the pH
      * is junk.
      */
@@ -804,7 +804,7 @@ class Sensor {
      */
     uint32_t _stabilizationTime_ms;
     /**
-     * @brief The processor elapsed time when the sensor was activated - ie,
+     * @brief The processor elapsed time when the sensor was activated - i.e.,
      * when the wake() function was run.
      *
      * The #_millisSensorActivated value is *usually* set in the wake()
@@ -819,7 +819,7 @@ class Sensor {
      */
     uint32_t _measurementTime_ms;
     /**
-     * @brief The processor elapsed time when a measurement was started - ie,
+     * @brief The processor elapsed time when a measurement was started - i.e.,
      * when the startSingleMeasurement() function was run.
      *
      * The #_millisMeasurementRequested value is set in the
@@ -828,8 +828,8 @@ class Sensor {
      */
     uint32_t _millisMeasurementRequested = 0;
     /**
-     * @brief The processor elapsed time when a measurement was completed - ie,
-     * when the addSingleMeasurementResult() function was run.
+     * @brief The processor elapsed time when a measurement was completed -
+     * i.e., when the addSingleMeasurementResult() function was run.
      *
      * The #_millisMeasurementCompleted value is set in the
      * addSingleMeasurementResult() function.

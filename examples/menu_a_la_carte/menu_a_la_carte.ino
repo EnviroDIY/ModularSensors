@@ -36,7 +36,7 @@
 // The modem and a number of sensors communicate over UART/TTL - often called
 // "serial". "Hardware" serial ports (automatically controlled by the MCU) are
 // generally the most accurate and should be configured and used for as many
-// peripherals as possible.  In some cases (ie, modbus communication) many
+// peripherals as possible.  In some cases (i.e., modbus communication) many
 // sensors can share the same serial port.
 
 // For AVR boards
@@ -331,11 +331,11 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 const int32_t serialBaud    = 115200;  // Baud rate for debugging
 const int8_t  greenLED      = 8;       // Pin for the green LED
 const int8_t  redLED        = 9;       // Pin for the red LED
-const int8_t  buttonPin     = 21;     // Pin for debugging mode (ie, button pin)
+const int8_t  buttonPin     = 21;  // Pin for debugging mode (i.e., button pin)
 uint8_t       buttonPinMode = INPUT;  // mode for debugging pin
 // NOTE: On the Mayfly (and Stonefly), pin 21 is tied to a button that pulls the
 // pin HIGH when pressed and an external pull-down that keeps the pin LOW when
-// the button is not pressed. We want the pin mode to be INPUT - ie, floating
+// the button is not pressed. We want the pin mode to be INPUT - i.e., floating
 // internally and pulled down externally until the button is pressed.  AVR
 // processors like the 1284P on the Mayfly do not have internal pull-down
 // resistors - they do not have an INPUT_PULLDOWN mode like SAMD processors.
@@ -344,7 +344,7 @@ uint8_t      wakePinMode = INPUT_PULLUP;  // mode for wake pin
 // Mayfly 0.x, 1.x D31 = A7
 // NOTE: On the Mayfly, pin D31=A7 is tied directly to the RTC INT/SQW pin
 // on the onboard DS3231 RTC.  The interrupt from the DS3231 will pull the pin
-// DOWN, so we want the pin mode to be INPUT_PULLUP - ie, pulled up until the
+// DOWN, so we want the pin mode to be INPUT_PULLUP - i.e., pulled up until the
 // RTC pulls it down.
 // Set the wake pin to -1 if you do not want the main processor to sleep.
 // In a SAMD system where you are using the built-in RTC, set the wakePin to 1.
@@ -358,17 +358,17 @@ const int8_t relayPowerPin = A3;  // MCU pin controlling an optional power relay
 const int32_t serialBaud    = 921600;  // Baud rate for debugging
 const int8_t  greenLED      = 8;       // Pin for the green LED
 const int8_t  redLED        = 9;       // Pin for the red LED
-const int8_t  buttonPin     = 21;  // Pin for debugging mode (ie, button pin)
+const int8_t  buttonPin     = 21;  // Pin for debugging mode (i.e., button pin)
 uint8_t       buttonPinMode = INPUT_PULLDOWN;  // mode for debugging pin
 // NOTE: On the Stonefly (and Mayfly), 21 is tied to a button that pulls the pin
 // HIGH when pressed and an external pull-down that keeps the pin LOW when the
-// button is not pressed. We want the pin mode to be INPUT_PULLDOWN - ie, pulled
-// down both internally and externally until the button is pressed.
+// button is not pressed. We want the pin mode to be INPUT_PULLDOWN - i.e.,
+// pulled down both internally and externally until the button is pressed.
 const int8_t wakePin     = 38;  // MCU interrupt/alarm pin to wake from sleep
 uint8_t      wakePinMode = INPUT_PULLUP;  // mode for wake pin
 // NOTE: On the Stonefly, pin D38 is tied directly to the RTC INT/SQW pin
 // on the onboard RV-8803 RTC.  The interrupt from the RV-8803 will pull the pin
-// DOWN, so we want the pin mode to be INPUT_PULLUP - ie, pulled up until the
+// DOWN, so we want the pin mode to be INPUT_PULLUP - i.e., pulled up until the
 // RTC pulls it down.
 const int8_t sdCardPwrPin = -1;  // MCU SD card power pin
 // const int8_t sdCardPwrPin   = 32;  // MCU SD card power pin
@@ -385,7 +385,7 @@ const int8_t greenLED = PIN_LED2;  // Pin for the green LED
 const int8_t greenLED = -1;  // Pin for the green LED
 #endif
 const int8_t redLED        = LED_BUILTIN;  // Pin for the red LED
-const int8_t buttonPin     = -1;  // Pin for debugging mode (ie, button pin)
+const int8_t buttonPin     = -1;  // Pin for debugging mode (i.e., button pin)
 uint8_t      buttonPinMode = INPUT_PULLUP;  // mode for debugging pin
 const int8_t wakePin       = -1;  // MCU interrupt/alarm pin to wake from sleep
 uint8_t      wakePinMode   = INPUT_PULLUP;  // mode for wake pin
@@ -1324,7 +1324,7 @@ Variable* atlasGrav = new AtlasScientificEC_SpecificGravity(
 // (that is, the specific conductance).  For this example, we will use the
 // temperature measured by the Atlas RTD above this.  You could use the
 // temperature returned by any other water temperature sensor if desired.
-// **DO NOT** use your logger board temperature (ie, from the DS3231) to
+// **DO NOT** use your logger board temperature (i.e., from the DS3231) to
 // calculate specific conductance!
 float calculateAtlasSpCond() {
     float spCond = MS_INVALID_VALUE;  // Always safest to start with a bad value
@@ -1626,7 +1626,7 @@ const uint8_t alsNReadings  = 10;
 EverlightALSPT19 alsPt19(alsPower, alsData, alsSupply, alsResistance,
                          alsNReadings);
 
-// For a board with ALS parameters set in KnownProcessors.h (ie, an EnviroDIY
+// For a board with ALS parameters set in KnownProcessors.h (i.e., an EnviroDIY
 // Mayfly or Stonefly), you can simply do:
 // EverlightALSPT19 alsPt19_mf(alsNReadings);
 
@@ -2481,8 +2481,8 @@ TurnerTurbidityPlus turbidityPlus_c(ttPlusPower, ttPlusWiper, ttPlusChannel1,
 #include <sensors/AnalogElecConductivity.h>
 #include <sensors/ProcessorAnalog.h>
 
-const int8_t  analogECPower = A4;     // Power pin (-1 if continuously powered)
-const int8_t  analogECData  = A0;     // Data pin (must be an analog pin, ie A#)
+const int8_t  analogECPower = A4;  // Power pin (-1 if continuously powered)
+const int8_t  analogECData  = A0;  // Data pin (must be an analog pin, i.e., A#)
 const uint8_t analogECNReadings = 1;  // The number of readings to average
 
 // Create an Analog Electrical Conductivity sensor object
@@ -2497,7 +2497,7 @@ Variable* analogEc_cond = new AnalogElecConductivity_EC(
 // temperature measured by the Maxim DS18 saved as ds18Temp several sections
 // above this.  You could use the temperature returned by any other water
 // temperature sensor if desired.  **DO NOT** use your logger board temperature
-// (ie, from the DS3231) to calculate specific conductance!
+// (i.e., from the DS3231) to calculate specific conductance!
 float calculateAnalogSpCond() {
     float spCond = MS_INVALID_VALUE;  // Always safest to start with a bad value
     float waterTemp       = ds18Temp->getValue();

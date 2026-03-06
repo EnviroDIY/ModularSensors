@@ -60,8 +60,7 @@ ___
 
 ### Publishing to Monitor My Watershed<!--! {#examples_mmw} -->
 
-The logging to Monitor My Watershed example uses a Digi XBee in transparent mode to publish data live from a BME280 and Maxim DS18 to Monitor My Watershed.
-
+The logging to Monitor My Watershed example uses a Digi XBee in transparent mode to publish data live from a BME280 and Maxim DS18.
 - [Instructions for the logging to Monitor My Watershed example](https://envirodiy.github.io/ModularSensors/example_mmw.html)
 - [The logging to Monitor My Watershed example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_MMW)
 

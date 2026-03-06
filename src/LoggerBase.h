@@ -1443,7 +1443,7 @@ class Logger {
      * to the internet.  It then powers up all sensors tied to variable in the
      * internal variable array.  The logger then updates readings from all
      * sensors 25 times with a 5 second wait in between.  All results are output
-     * to the "main" output - ie Serial - and NOT to the SD card.  After 25
+     * to the "main" output - i.e., Serial - and NOT to the SD card.  After 25
      * measurements, the sensors are put to sleep, the modem is disconnected
      * from the internet, and the logger goes back to sleep.
      *

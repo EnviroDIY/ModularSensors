@@ -371,8 +371,8 @@ class loggerClock {
      * @brief Set the static offset in hours from UTC that the RTC is programmed
      * in.
      *
-     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC(ie, offset =
-     * 0)
+     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC(i.e., offset
+     * = 0)
      *
      * @param offsetHours The offset of the real-time clock (RTC) from UTC in
      * hours
@@ -390,8 +390,8 @@ class loggerClock {
      * the RTC.
      *
      * @param utcOffset The offset from UTC to return the epoch time in.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * @param epoch The type of epoch to use (i.e., the standard for the start
+     * of the epoch).
      *
      * @return The number of seconds from the start of the given epoch.
      */
@@ -488,8 +488,8 @@ class loggerClock {
      *
      * @param ts The number of seconds since the start of the given epoch.
      * @param utcOffset The offset of the epoch time from UTC.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * @param epoch The type of epoch to use (i.e., the standard for the start
+     * of the epoch).
      *
      * @return True if the input timestamp passes sanity checks **and**
      * the clock is now at or within tolerance (±5 seconds) of the target time.
@@ -541,8 +541,8 @@ class loggerClock {
      * @param ts The timestamp to check (in seconds since the start of the given
      * epoch).
      * @param utcOffset The offset of the epoch time from UTC in hours.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * @param epoch The type of epoch to use (i.e., the standard for the start
+     * of the epoch).
      * @return True if the given time passes sanity range checking.
      */
     static bool isEpochTimeSane(time_t ts, int8_t utcOffset, epochStart epoch);
@@ -565,8 +565,8 @@ class loggerClock {
      * @param ts The timestamp for the next interrupt - in seconds from the
      * start of the input epoch.
      * @param utcOffset The offset of the epoch time from UTC in hours.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * @param epoch The type of epoch to use (i.e., the standard for the start
+     * of the epoch).
      */
     static void setNextRTCInterrupt(time_t ts, int8_t utcOffset,
                                     epochStart epoch);

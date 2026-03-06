@@ -87,7 +87,7 @@
  * This will _fry_ any board like the Mayfly that uses 3.3V logic.
  * You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
  *
- * The sensor constructor requires as input: the sensor modbus address, a stream instance for data (ie, ```Serial```), and one or two power pins.
+ * The sensor constructor requires as input: the sensor modbus address, a stream instance for data (i.e., ```Serial```), and one or two power pins.
  * The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
  * (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
  * For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.

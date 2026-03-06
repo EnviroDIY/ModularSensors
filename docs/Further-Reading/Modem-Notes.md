@@ -165,7 +165,7 @@ You should set the argument `useCTSforStatus` to `false` in the bee constructor
 
 <sup>7</sup> I _strongly_ recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin 18 of the XBee socket to A3.
 This will enable you to use A4 as the reset pin and A3 as the sleep request pin.
-With those connections made, the Dragino BG96 becomes the _**only**_ LTE module that can be run using only the 500mA regulator on the Mayfly (ie, without a separate battery connection for the modem).
+With those connections made, the Dragino BG96 becomes the _**only**_ LTE module that can be run using only the 500mA regulator on the Mayfly (i.e., without a separate battery connection for the modem).
 
 <sup>8</sup> This module is no longer produced or sold.
 

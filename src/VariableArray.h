@@ -162,7 +162,7 @@ class VariableArray {
     /**
      * @brief Get the number of calculated variables
      *
-     * @return The number of calculated (ie, not measured by a
+     * @return The number of calculated (i.e., not measured by a
      * sensor) variables
      */
     uint8_t getCalculatedVariableCount();
@@ -278,7 +278,7 @@ class VariableArray {
      *
      * By default, it will print to the first Serial port. Note that the input
      * is a pointer to a stream instance - to use a hardware serial instance you
-     * must use an ampersand before the serial name (ie, &Serial1).
+     * must use an ampersand before the serial name (i.e., &Serial1).
      *
      * @param stream An Arduino Stream instance
      */
@@ -309,7 +309,7 @@ class VariableArray {
      * will return.
      *
      * This is used for formating output where the format is slightly different
-     * for the last value. (ie, no comma after the last value)
+     * for the last value. (i.e., no comma after the last value)
      *
      * @param arrayIndex The index of the variable in the sensor variable array
      * @return True if the variable is the last in the array.

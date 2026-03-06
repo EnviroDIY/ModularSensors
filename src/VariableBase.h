@@ -123,7 +123,7 @@ class Variable {
      * @param uuid A universally unique identifier for the variable.
      *
      * @warning The `calcFxn` absolutely must return a float value.  If it
-     * returns a value of any other type (ie, some type of integer), your
+     * returns a value of any other type (i.e., some type of integer), your
      * program will compile but immediately hang.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
@@ -142,7 +142,7 @@ class Variable {
      * text helping to identify the variable in files.
      *
      * @warning The `calcFxn` absolutely must return a float value.  If it
-     * returns a value of any other type (ie, some type of integer), your
+     * returns a value of any other type (i.e., some type of integer), your
      * program will compile but immediately hang.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
@@ -207,7 +207,7 @@ class Variable {
      * @return A pointer to the variable object
      *
      * @warning The `calcFxn` absolutely must return a float value.  If it
-     * returns a value of any other type (ie, some type of integer), your
+     * returns a value of any other type (i.e., some type of integer), your
      * program will compile but immediately hang.
      */
     Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
@@ -229,7 +229,7 @@ class Variable {
      * @return A pointer to the variable object
      *
      * @warning The `calcFxn` absolutely must return a float value.  If it
-     * returns a value of any other type (ie, some type of integer), your
+     * returns a value of any other type (i.e., some type of integer), your
      * program will compile but immediately hang.
      */
     Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
@@ -440,7 +440,7 @@ class Variable {
      * @brief The current data value
      *
      * When we create the variable, we also want to initialize it with a current
-     * value of #MS_INVALID_VALUE (ie, a bad result).
+     * value of #MS_INVALID_VALUE (i.e., a bad result).
      */
     float _currentValue = MS_INVALID_VALUE;
 

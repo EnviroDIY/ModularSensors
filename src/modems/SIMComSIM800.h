@@ -28,7 +28,7 @@
  * SIM800.
  * The one exception is the Sodaq GPRSBee **R6 and higher**, which has its own
  * [constructor](@ref modem_gprsbee).
- * The earlier Sodaq GPRSBee's (ie, R4) do use this version.
+ * The earlier Sodaq GPRSBee's (i.e., R4) do use this version.
  *
  * The SIM800 consumes up to 2A of power while connecting to the network.
  * That is 4x what a typical USB or Arduino board can supply, so expect to give

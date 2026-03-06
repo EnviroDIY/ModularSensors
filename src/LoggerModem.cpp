@@ -186,7 +186,7 @@ bool loggerModem::modemSleep() {
     // process of turning on and thus status pin isn't valid yet.  In that case,
     // we wouldn't yet know it's coming on and so we'd mistakenly assume it's
     // already off and not turn it back off. This only applies to modules with a
-    // pulse wake (ie, non-zero wake time). For all modules that do pulse on,
+    // pulse wake (i.e., non-zero wake time). For all modules that do pulse on,
     // where possible I've selected a pulse time that is sufficient to wake but
     // not quite long enough to put it to sleep and am using AT commands to
     // sleep.  This *should* keep everything lined up.

@@ -306,7 +306,7 @@ class AnalogElecConductivity : public Sensor {
      * @param dataPin The processor ADC port pin to read the voltage from the EC
      * probe.  Not all processor pins can be used as analog pins.  Those usable
      * as analog pins generally are numbered with an "A" in front of the number
-     * - ie, A1.
+     * - i.e., A1.
      * @param Rseries_ohms The resistance of the resistor series (R) in the
      * line; optional with default value of
      * #ANALOGELECCONDUCTIVITY_RSERIES_OHMS (499).

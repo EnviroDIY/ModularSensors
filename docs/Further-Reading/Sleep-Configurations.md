@@ -89,13 +89,13 @@ The 5 sleep modes are:
 
 After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), AVR boards finish their bedtime routine with these steps:
 
-- Disable the onboard USB if it exists (ie, for a Leonardo)
+- Disable the onboard USB if it exists (i.e., for a Leonardo)
   - Freeze the USB clock, turn off the USB PLL, and then disable the USB.
 - Set the sleep mode to SLEEP_MODE_PWR_DOWN.
 - Temporarily disables interrupts, so no mistakes are made when writing to the processor registers.
 - Disable the processor ADC, (This must be disabled before the board will power down.)
 - Turn off the brown-out detector, if possible.
-- Disable all power-reduction modules (ie, the processor module clocks).
+- Disable all power-reduction modules (i.e., the processor module clocks).
   - NOTE:  This only shuts down the various clocks on the processor via the power reduction register!
 It does NOT actually disable the modules themselves or set the pins to any particular state!
 This means that the I2C/Serial/Timer/etc pins will still be active and powered unless they are turned off prior to calling this function.
@@ -109,7 +109,7 @@ This means that the I2C/Serial/Timer/etc pins will still be active and powered u
 *Before* completing the [steps on wake for all boards](#steps-on-wake-for-all-boards), AVR boards start their wake routine with these steps:
 
 - Temporarily disables interrupts, so no mistakes are made when writing to the processor registers.
-- Re-enable all power modules (ie, the processor module clocks)
+- Re-enable all power modules (i.e., the processor module clocks)
   - NOTE:  This only re-enables the various clocks on the processor!
 The modules may need to be re-initialized after the clocks re-start.
 - Clear the SE (sleep enable) bit.
@@ -236,7 +236,7 @@ See [The SAMD clock file](@ref samd51_clock_other_libraries) for a list of which
 
 After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), SAMD51 boards finish their bedtime routine with these steps:
 
-- Detach any USB devices (ie, the built-in USB drivers for communication with a PC)
+- Detach any USB devices (i.e., the built-in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
 - Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
 - Configure GCLK7 to be disconnected from an oscillator source.
@@ -285,7 +285,7 @@ The pin configurations for the SAMD21 are identical to those described above for
 
 After completing the [steps for putting all boards to sleep](#steps-for-putting-all-boards-to-sleep), SAMD21 boards finish their bedtime routine with these steps:
 
-- Detach any USB devices (ie, the built-in USB drivers for communication with a PC)
+- Detach any USB devices (i.e., the built-in USB drivers for communication with a PC)
   - This is skipped if the TinyUSB library is called for some reason.
 - Force all pins except the RTC wake and button pins to go to minimum power draw levels (tri-state)
 - Wait for all serial ports to finish transmitting
