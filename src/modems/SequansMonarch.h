@@ -237,12 +237,12 @@ class SequansMonarch : public loggerModem {
                                const char* CAcertName     = nullptr,
                                const char* clientCertName = nullptr,
                                const char* clientKeyName  = nullptr) override;
-    Client*
-    createSecureClient(const char* pskIdent, const char* psKey,
-                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client*
-    createSecureClient(const char* pskTableName,
-                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+    Client* createSecureClient(
+        const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    Client* createSecureClient(
+        const char* pskTableName,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
     uint32_t getNISTTime() override;
 

@@ -69,9 +69,8 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
     return true;
 }
 
-String
-ProcessorAnalogBase::getAnalogLocation(int8_t analogChannel,
-                                       int8_t /*analogReferenceChannel*/) {
+String ProcessorAnalogBase::getAnalogLocation(
+    int8_t analogChannel, int8_t /*analogReferenceChannel*/) {
     String sensorLocation;
     sensorLocation += F("ProcessorAnalog_Pin");
     sensorLocation += String(analogChannel);

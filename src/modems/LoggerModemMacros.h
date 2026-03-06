@@ -705,7 +705,7 @@
         /* We subtract whatever the processor thinks is 'local' */           \
         /* to get back to UTC.*/                                             \
         return static_cast<uint32_t>(timeTimeT) -                            \
-               loggerClock::getCoreTimeZone();                               \
+            loggerClock::getCoreTimeZone();                                  \
     }
 #else
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                   \

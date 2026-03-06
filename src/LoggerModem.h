@@ -606,9 +606,9 @@ class loggerModem {
      *
      * @return A new secure client object
      */
-    virtual Client*
-    createSecureClient(const char* pskIdent, const char* psKey,
-                       SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    virtual Client* createSecureClient(
+        const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
     /**
      * @brief Create a new secure client object using the default socket number
      *
@@ -618,9 +618,9 @@ class loggerModem {
      *
      * @return A new secure client object
      */
-    virtual Client*
-    createSecureClient(const char* pskTableName,
-                       SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
+    virtual Client* createSecureClient(
+        const char* pskTableName,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
     /**
      * @brief Attempts to delete a created TinyGsmClient object. We need to do
      * this to close memory leaks from the create client because we can't delete

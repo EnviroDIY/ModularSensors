@@ -33,8 +33,8 @@ char   oldAddress = '!';  // invalid address as placeholder
 
 // this checks for activity at a particular address
 // expects a char, '0'-'9', 'a'-'z', or 'A'-'Z'
-boolean
-checkActive(byte i) {  // this checks for activity at a particular address
+boolean checkActive(
+    byte i) {  // this checks for activity at a particular address
     Serial.print("Checking address ");
     Serial.print(static_cast<char>(i));
     Serial.print("...");
