@@ -85,6 +85,11 @@
  * - [MaxTemp Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HR-MaxTemp-Datasheet.pdf)
  * - [Wiring Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-MaxSonar-MB7954-Datasheet-ConnectWire.pdf)
  *
+ * @section sensor_maxbotix_flags Build flags
+ * - ```-D MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES=25```
+ *      - Changes the default number of measurement retries when a measurement
+ * fails. The default value is 25. This sensor fails frequently.
+ *
  * @section sensor_maxbotix_ctor Sensor Constructor
  * {{ @ref MaxBotixSonar::MaxBotixSonar }}
  *
@@ -124,6 +129,34 @@
 /**@{*/
 
 /**
+ * @anchor sensor_maxbotix_config
+ * @name Sensor Configuration
+ * Build-time configuration for the MaxBotix HRXL MaxSonar
+ */
+/**@{*/
+#if !defined(MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES) || defined(DOXYGEN)
+/**
+ * @brief Default number of measurement retries for MaxBotix sensors
+ *
+ * The default number of times to retry a measurement when it fails. The
+ * MaxBotix sensors can sometimes return invalid readings (0 or values above
+ * the maximum range), especially in challenging environmental conditions.
+ * Higher values provide better reliability but may increase total measurement
+ * time on sensor failures. This can be set at runtime for individual sensors
+ * and the default can be overridden at compile time with `-D
+ * MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES=value`
+ */
+#define MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES 25
+#endif
+
+// Static assert to validate measurement retries is reasonable
+static_assert(MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES >= 0 &&
+                  MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES <= 50,
+              "MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES must be between 0 and 50 "
+              "(reasonable measurement retry range)");
+/**@}*/
+
+/**
  * @anchor sensor_maxbotix_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by Maxbotix sonar
@@ -147,7 +180,9 @@
 /// up (0ms stabilization).
 #define HRXL_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; the HRXL takes 166ms to complete a
-/// measurement.
+/// measurement.  It outputs results at least every 166ms.
+/// @note Because this sensor allows up to 25 retries if a measurement fails,
+/// the actual time to get a measurement may be much longer than 166ms.
 #define HRXL_MEASUREMENT_TIME_MS 250
 /**@}*/
 
@@ -161,7 +196,7 @@
  * {{ @ref MaxBotixSonar_Range::MaxBotixSonar_Range }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; range should have 0 -
+/// @brief Decimal places in string representation; range should have 0 -
 /// resolution is 1mm (except for models which have range 10mm).
 #define HRXL_RESOLUTION 0
 /// @brief Sensor variable number; range is stored in sensorValues[0].
@@ -220,12 +255,9 @@ class MaxBotixSonar : public Sensor {
     /**
      * @brief Destroy the MaxBotix Sonar object
      */
-    ~MaxBotixSonar();
+    ~MaxBotixSonar() override = default;
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -237,7 +269,7 @@ class MaxBotixSonar : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
     /**
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
      * sensor in the proper state to begin a measurement.
@@ -252,14 +284,12 @@ class MaxBotixSonar : public Sensor {
      *
      * @return True if the wake function completed successfully.
      */
-    bool wake(void) override;
+    bool wake() override;
     // override to empty and flush the stream
-    bool sleep(void) override;
+    bool sleep() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
  private:
     int16_t _maxRange;    ///< The maximum range of the Maxbotix sonar
@@ -274,6 +304,16 @@ class MaxBotixSonar : public Sensor {
      * Maxbotix sensor.
      */
     Stream* _stream;
+
+    /**
+     * @brief Helper function to dump any available characters from the stream
+     * buffer
+     *
+     * Reads and discards all available characters from the stream to clear the
+     * buffer. Optionally prints debugging output showing the discarded
+     * characters.
+     */
+    void dumpBuffer();
 };
 
 
@@ -301,8 +341,9 @@ class MaxBotixSonar_Range : public Variable {
     explicit MaxBotixSonar_Range(MaxBotixSonar* parentSense,
                                  const char*    uuid    = "",
                                  const char*    varCode = HRXL_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
-                   HRXL_VAR_NAME, HRXL_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(HRXL_VAR_NUM),
+                   static_cast<uint8_t>(HRXL_RESOLUTION), HRXL_VAR_NAME,
+                   HRXL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new MaxBotixSonar_Range object.
      *
@@ -310,12 +351,13 @@ class MaxBotixSonar_Range : public Variable {
      * used.
      */
     MaxBotixSonar_Range()
-        : Variable((uint8_t)HRXL_VAR_NUM, (uint8_t)HRXL_RESOLUTION,
-                   HRXL_VAR_NAME, HRXL_UNIT_NAME, HRXL_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(HRXL_VAR_NUM),
+                   static_cast<uint8_t>(HRXL_RESOLUTION), HRXL_VAR_NAME,
+                   HRXL_UNIT_NAME, HRXL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MaxBotixSonar_Range object - no action needed.
      */
-    ~MaxBotixSonar_Range() {}
+    ~MaxBotixSonar_Range() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXBOTIXSONAR_H_

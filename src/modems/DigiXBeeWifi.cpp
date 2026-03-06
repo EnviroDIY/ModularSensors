@@ -32,9 +32,6 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
       _maintainAssociation(maintainAssociation) {
 }
 
-// Destructor
-DigiXBeeWifi::~DigiXBeeWifi() {}
-
 MS_IS_MODEM_AWAKE(DigiXBeeWifi);
 MS_MODEM_WAKE(DigiXBeeWifi);
 
@@ -87,16 +84,16 @@ bool DigiXBeeWifi::connectInternet(uint32_t maxConnectionTime) {
 }
 MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeWifi);
 
-MS_MODEM_CREATE_CLIENT(DigiXBeeWifi);
-MS_MODEM_DELETE_CLIENT(DigiXBeeWifi);
-MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeWifi);
-MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeWifi);
+MS_MODEM_CREATE_CLIENT(DigiXBeeWifi, XBee);
+MS_MODEM_DELETE_CLIENT(DigiXBeeWifi, XBee);
+MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeWifi, XBee);
+MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeWifi, XBee);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeWifi);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeWifi);
 
-bool DigiXBeeWifi::extraModemSetup(void) {
+bool DigiXBeeWifi::extraModemSetup() {
     bool success = true;
     /** First run the TinyGSM init() function for the XBee. */
     MS_DBG(F("Initializing the XBee..."));
@@ -218,7 +215,7 @@ bool DigiXBeeWifi::extraModemSetup(void) {
          * thus brighter LED) indicates better signal quality. NOTE: Only
          * the `DIO10/PWM0` pin (6 on the bee socket) can be used for this
          * function. */
-        bool changedP0 = gsmModem.changeSettingIfNeeded(GF("D5"), 1);
+        bool changedP0 = gsmModem.changeSettingIfNeeded(GF("P0"), 1);
         changesMade |= changedP0;
         if (changedP0) {
             MS_DBG(F("DIO10/PWM0 changed to"), 1);
@@ -349,12 +346,13 @@ bool DigiXBeeWifi::extraModemSetup(void) {
 }
 
 
-void DigiXBeeWifi::disconnectInternet(void) {
+void DigiXBeeWifi::disconnectInternet() {
     // Ensure Wifi XBee IP socket torn down by forcing connection to
     // localhost IP For A XBee S6B bug, then force restart.
-    TinyGsmClient gsmClient(gsmModem);  // need to create again to force close
-    String        oldRemoteIp = gsmClient.remoteIP();
-    IPAddress     newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
+    TinyGsmXBee::GsmClientXBee gsmClient(
+        gsmModem);  // need to create again to force close
+    String    oldRemoteIp = gsmClient.remoteIP();
+    IPAddress newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
     gsmClient.connect(newHostIp, 80);
     MS_DBG(gsmModem.getBeeName(), oldRemoteIp, F("disconnectInternet set to"),
            gsmClient.remoteIP());
@@ -364,7 +362,7 @@ void DigiXBeeWifi::disconnectInternet(void) {
 
 
 // Get the time from NIST via TIME protocol (rfc868)
-uint32_t DigiXBeeWifi::getNISTTime(void) {
+uint32_t DigiXBeeWifi::getNISTTime() {
     // bail if not connected to the internet
     if (!isInternetAvailable()) {
         MS_DBG(F("No internet connection, cannot connect to NIST."));
@@ -401,7 +399,7 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
-        TinyGsmClient gsmClient(gsmModem);
+        TinyGsmXBee::GsmClientXBee gsmClient(gsmModem);
         connectionMade = gsmClient.connect(nistIPs[i], TIME_PROTOCOL_PORT);
         // Need to send something before connection is made
         gsmClient.println('!');
@@ -419,7 +417,12 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
                 byte response[NIST_RESPONSE_BYTES] = {0};
                 gsmClient.read(response, NIST_RESPONSE_BYTES);
                 gsmClient.stop();
-                return parseNISTBytes(response);
+                uint32_t nistParsed = parseNISTBytes(response);
+                if (nistParsed != 0) {
+                    return nistParsed;
+                } else {
+                    MS_DBG(F("NIST response was invalid!"));
+                }
             } else {
                 MS_DBG(F("NIST Time server did not respond!"));
                 gsmClient.stop();
@@ -432,16 +435,16 @@ uint32_t DigiXBeeWifi::getNISTTime(void) {
 }
 
 
-bool DigiXBeeWifi::updateModemMetadata(void) {
+bool DigiXBeeWifi::updateModemMetadata() {
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI           = -9999;
-    loggerModem::_priorSignalPercent  = -9999;
-    loggerModem::_priorBatteryState   = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp      = -9999;
+    loggerModem::_priorRSSI           = MS_INVALID_VALUE;
+    loggerModem::_priorSignalPercent  = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryState   = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryPercent = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryVoltage = MS_INVALID_VALUE;
+    loggerModem::_priorModemTemp      = MS_INVALID_VALUE;
 
     MS_DBG(F("Modem polling settings:"), String(_pollModemMetaData, BIN));
 
@@ -468,14 +471,14 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
 
         // Try up to 5 times to get a signal quality
         int8_t  num_trys_remaining = 5;
-        int16_t rssi               = -9999;
+        int16_t rssi               = MS_INVALID_VALUE;
         do {
             rssi = gsmModem.getSignalQuality();
             MS_DBG(F("Raw signal quality ("), num_trys_remaining, F("):"),
                    rssi);
-            if (rssi != 0 && rssi != -9999) break;
+            if (rssi != 0 && rssi != MS_INVALID_VALUE) break;
             num_trys_remaining--;
-        } while ((rssi == 0 || rssi == -9999) && num_trys_remaining);
+        } while ((rssi == 0 || rssi == MS_INVALID_VALUE) && num_trys_remaining);
 
 
         // Convert signal quality to a percent
@@ -486,7 +489,7 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
         loggerModem::_priorRSSI = rssi;
         MS_DBG(F("CURRENT RSSI:"), rssi);
 
-        success &= ((rssi != -9999) && (rssi != 0));
+        success &= ((rssi != MS_INVALID_VALUE) && (rssi != 0));
     } else {
         MS_DBG(F("Polling for both RSSI and signal strength is disabled"));
     }
@@ -500,9 +503,10 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
         MS_DBG(F("CURRENT Modem battery (mV):"), volt_mV);
         if (volt_mV != 9999) {
             loggerModem::_priorBatteryVoltage =
-                static_cast<float>(volt_mV / 1000);
+                static_cast<float>(volt_mV / 1000.0f);
         } else {
-            loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
+            loggerModem::_priorBatteryVoltage =
+                static_cast<float>(MS_INVALID_VALUE);
         }
 
         success &= ((volt_mV != 9999) && (volt_mV != 0));
@@ -513,17 +517,14 @@ bool DigiXBeeWifi::updateModemMetadata(void) {
     if ((_pollModemMetaData & MODEM_TEMPERATURE_ENABLE_BITMASK) ==
         MODEM_TEMPERATURE_ENABLE_BITMASK) {
         MS_DBG(F("Getting chip temperature:"));
-        float chip_temp = -9999;
-        chip_temp       = getModemChipTemperature();
+        float chip_temp              = getModemChipTemperature();
+        loggerModem::_priorModemTemp = chip_temp;
         MS_DBG(F("CURRENT Modem temperature(C):"),
                loggerModem::_priorModemTemp);
-        if (chip_temp != -9999.f) {
-            loggerModem::_priorModemTemp = chip_temp;
-        } else {
-            loggerModem::_priorModemTemp = static_cast<float>(-9999);
-        }
 
-        success &= ((chip_temp != -9999.f) && (chip_temp != 0));
+        // TinyGSM returns -9999 when it fails to get a temperature reading, so
+        // check for that as well as the invalid value
+        success &= ((chip_temp != MS_INVALID_VALUE) && (chip_temp != -9999));
     } else {
         MS_DBG(F("Polling for modem chip temperature is disabled"));
     }

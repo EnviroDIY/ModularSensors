@@ -30,10 +30,8 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
       _apn(apn) {
 }
 
-// Destructor
-SIMComSIM7080::~SIMComSIM7080() {}
 
-bool SIMComSIM7080::extraModemSetup(void) {
+bool SIMComSIM7080::extraModemSetup() {
     bool success = gsmModem.init();
     _modemName   = gsmModem.getModemName();
 
@@ -71,12 +69,12 @@ MS_MODEM_CONNECT_INTERNET(SIMComSIM7080);
 MS_MODEM_DISCONNECT_INTERNET(SIMComSIM7080);
 MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM7080);
 
-MS_MODEM_CREATE_CLIENT(SIMComSIM7080);
-MS_MODEM_DELETE_CLIENT(SIMComSIM7080);
-MS_MODEM_CREATE_SECURE_CLIENT(SIMComSIM7080);
-MS_MODEM_DELETE_SECURE_CLIENT(SIMComSIM7080);
+MS_MODEM_CREATE_CLIENT(SIMComSIM7080, Sim7080);
+MS_MODEM_DELETE_CLIENT(SIMComSIM7080, Sim7080);
+MS_MODEM_CREATE_SECURE_CLIENT(SIMComSIM7080, Sim7080);
+MS_MODEM_DELETE_SECURE_CLIENT(SIMComSIM7080, Sim7080);
 
-MS_MODEM_GET_NIST_TIME(SIMComSIM7080);
+MS_MODEM_GET_NIST_TIME(SIMComSIM7080, Sim7080);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SIMComSIM7080);
 MS_MODEM_GET_MODEM_BATTERY_DATA(SIMComSIM7080);
@@ -84,7 +82,7 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SIMComSIM7080);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool SIMComSIM7080::modemWakeFxn(void) {
+bool SIMComSIM7080::modemWakeFxn() {
     // Must power on and then pulse on
     if (_modemSleepRqPin >= 0) {
         MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"),
@@ -110,7 +108,7 @@ bool SIMComSIM7080::modemWakeFxn(void) {
 }
 
 
-bool SIMComSIM7080::modemSleepFxn(void) {
+bool SIMComSIM7080::modemSleepFxn() {
     if (_modemSleepRqPin >= 0) {
         // Must have access to `PWRKEY` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using

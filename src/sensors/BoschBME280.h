@@ -66,11 +66,10 @@
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BME280-Datasheet.pdf)
  *
  * @section sensor_bme280_flags Build flags
- * - ```-D SEALEVELPRESSURE_HPA```
+ * - ```-D MS_SEA_LEVEL_PRESSURE_HPA```
  *      - use to adjust the sea level pressure used to calculate altitude from measured barometric pressure
  *      - if not defined, 1013.25 is used
- *      - The same sea level pressure flag is used for both the BMP3xx and the BME280.
- * Whatever you select will be used for both sensors.
+ *      - The same sea level pressure flag is used for BME280, BMP3xx, and MS5837 sensors.
  *
  * @section sensor_bme280_ctor Sensor Constructors
  * {{ @ref BoschBME280::BoschBME280(int8_t, uint8_t, uint8_t) }}
@@ -126,19 +125,6 @@
 /**@}*/
 
 /**
- * @anchor sensor_bme280_config
- * @name Configuration Defines
- * Defines to set the calibration of the calculated base pressure used to
- * calculate altitude by the BME280.
- */
-/**@{*/
-#if !defined(SEALEVELPRESSURE_HPA) || defined(DOXYGEN)
-/// The atmospheric pressure at sea level
-#define SEALEVELPRESSURE_HPA (1013.25)
-#endif
-/**@}*/
-
-/**
  * @anchor sensor_bme280_timing
  * @name Sensor Timing
  * The sensor timing for a Bosch BME280
@@ -175,7 +161,7 @@
  * {{ @ref BoschBME280_Temp::BoschBME280_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define BME280_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -200,7 +186,7 @@
  * {{ @ref BoschBME280_Humidity::BoschBME280_Humidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; humidity should have 3-
+/// @brief Decimal places in string representation; humidity should have 3-
 /// resolution is 0.008 % RH (16 bit).
 #define BME280_HUMIDITY_RESOLUTION 3
 /// @brief Sensor variable number; humidity is stored in sensorValues[1].
@@ -228,7 +214,7 @@
  * {{ @ref BoschBME280_Pressure::BoschBME280_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; barometric pressure should
+/// @brief Decimal places in string representation; barometric pressure should
 /// have 2.
 #define BME280_PRESSURE_RESOLUTION 2
 /// @brief Sensor variable number; pressure is stored in sensorValues[2].
@@ -253,15 +239,17 @@
  * {{ @ref BoschBME280_Altitude::BoschBME280_Altitude }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; altitude should have 0 -
+/// @brief Decimal places in string representation; altitude should have 0 -
 /// resolution is 1m.
 #define BME280_ALTITUDE_RESOLUTION 0
 /// @brief Sensor variable number; altitude is stored in sensorValues[3].
 #define BME280_ALTITUDE_VAR_NUM 3
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "heightAboveSeaFloor"
-#define BME280_ALTITUDE_VAR_NAME "heightAboveSeaFloor"
+/// "altitude"
+/// @remark In library versions 0.37.0 and earlier, this variable was
+/// incorrectly named "heightAboveSeaFloor"
+#define BME280_ALTITUDE_VAR_NAME "altitude"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
 #define BME280_ALTITUDE_UNIT_NAME "meter"
@@ -318,12 +306,9 @@ class BoschBME280 : public Sensor {
     /**
      * @brief Destroy the Bosch BME280 object
      */
-    ~BoschBME280();
+    ~BoschBME280() override = default;
 
-    /**
-     * @copydoc Sensor::wake()
-     */
-    bool wake(void) override;
+    bool wake() override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
@@ -334,21 +319,16 @@ class BoschBME280 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    bool setup() override;
 
-    // bool startSingleMeasurement(void) override;  // for forced mode
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    String getSensorLocation() override;
+
+    // bool startSingleMeasurement() override;  // for forced mode
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
-     * @brief Internal reference the the Adafruit BME object
+     * @brief Internal reference to the Adafruit BME object
      */
     Adafruit_BME280 bme_internal;
     /**
@@ -385,22 +365,24 @@ class BoschBME280_Temp : public Variable {
      */
     explicit BoschBME280_Temp(BoschBME280* parentSense, const char* uuid = "",
                               const char* varCode = BME280_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BME280_TEMP_VAR_NUM,
-                   (uint8_t)BME280_TEMP_RESOLUTION, BME280_TEMP_VAR_NAME,
-                   BME280_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(BME280_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(BME280_TEMP_RESOLUTION),
+                   BME280_TEMP_VAR_NAME, BME280_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new BoschBME280_Temp object.
      *
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Temp()
-        : Variable((uint8_t)BME280_TEMP_VAR_NUM,
-                   (uint8_t)BME280_TEMP_RESOLUTION, BME280_TEMP_VAR_NAME,
-                   BME280_TEMP_UNIT_NAME, BME280_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(BME280_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(BME280_TEMP_RESOLUTION),
+                   BME280_TEMP_VAR_NAME, BME280_TEMP_UNIT_NAME,
+                   BME280_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBME280_Temp object - no action needed.
      */
-    ~BoschBME280_Temp() {}
+    ~BoschBME280_Temp() override = default;
 };
 
 
@@ -428,8 +410,8 @@ class BoschBME280_Humidity : public Variable {
     explicit BoschBME280_Humidity(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BME280_HUMIDITY_VAR_NUM,
-                   (uint8_t)BME280_HUMIDITY_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(BME280_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(BME280_HUMIDITY_RESOLUTION),
                    BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -438,14 +420,14 @@ class BoschBME280_Humidity : public Variable {
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Humidity()
-        : Variable((uint8_t)BME280_HUMIDITY_VAR_NUM,
-                   (uint8_t)BME280_HUMIDITY_RESOLUTION,
+        : Variable(static_cast<uint8_t>(BME280_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(BME280_HUMIDITY_RESOLUTION),
                    BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME,
                    BME280_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBME280_Humidity object - no action needed.
      */
-    ~BoschBME280_Humidity() {}
+    ~BoschBME280_Humidity() override = default;
 };
 
 
@@ -473,8 +455,8 @@ class BoschBME280_Pressure : public Variable {
     explicit BoschBME280_Pressure(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BME280_PRESSURE_VAR_NUM,
-                   (uint8_t)BME280_PRESSURE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(BME280_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(BME280_PRESSURE_RESOLUTION),
                    BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -483,10 +465,14 @@ class BoschBME280_Pressure : public Variable {
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Pressure()
-        : Variable((uint8_t)BME280_PRESSURE_VAR_NUM,
-                   (uint8_t)BME280_PRESSURE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(BME280_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(BME280_PRESSURE_RESOLUTION),
                    BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME,
                    BME280_PRESSURE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the BoschBME280_Pressure object - no action needed.
+     */
+    ~BoschBME280_Pressure() override = default;
 };
 
 
@@ -514,8 +500,8 @@ class BoschBME280_Altitude : public Variable {
     explicit BoschBME280_Altitude(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BME280_ALTITUDE_VAR_NUM,
-                   (uint8_t)BME280_ALTITUDE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(BME280_ALTITUDE_VAR_NUM),
+                   static_cast<uint8_t>(BME280_ALTITUDE_RESOLUTION),
                    BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -524,12 +510,14 @@ class BoschBME280_Altitude : public Variable {
      * @note This must be tied with a parent BoschBME280 before it can be used.
      */
     BoschBME280_Altitude()
-        : Variable((uint8_t)BME280_ALTITUDE_VAR_NUM,
-                   (uint8_t)BME280_ALTITUDE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(BME280_ALTITUDE_VAR_NUM),
+                   static_cast<uint8_t>(BME280_ALTITUDE_RESOLUTION),
                    BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME,
                    BME280_ALTITUDE_DEFAULT_CODE) {}
+    /**
+     * @brief Destroy the BoschBME280_Altitude object - no action needed.
+     */
+    ~BoschBME280_Altitude() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBME280_H_
-
-// cSpell:ignore SEALEVELPRESSURE_HPA

@@ -24,29 +24,28 @@ AtlasParent::AtlasParent(TwoWire* theI2C, int8_t powerPin,
              stabilizationTime_ms, measurementTime_ms, powerPin, -1,
              measurementsToAverage, incCalcValues),
       _i2cAddressHex(i2cAddressHex),
-      _i2c(theI2C) {}
+      _i2c(theI2C != nullptr ? theI2C : &Wire) {}
+// Delegating constructor
 AtlasParent::AtlasParent(int8_t powerPin, uint8_t i2cAddressHex,
                          uint8_t measurementsToAverage, const char* sensorName,
                          const uint8_t totalReturnedValues,
                          uint32_t warmUpTime_ms, uint32_t stabilizationTime_ms,
                          uint32_t measurementTime_ms, uint8_t incCalcValues)
-    : Sensor(sensorName, totalReturnedValues, warmUpTime_ms,
-             stabilizationTime_ms, measurementTime_ms, powerPin, -1,
-             measurementsToAverage, incCalcValues),
-      _i2cAddressHex(i2cAddressHex),
-      _i2c(&Wire) {}
-// Destructors
-AtlasParent::~AtlasParent() {}
+    : AtlasParent(&Wire, powerPin, i2cAddressHex, measurementsToAverage,
+                  sensorName, totalReturnedValues, warmUpTime_ms,
+                  stabilizationTime_ms, measurementTime_ms, incCalcValues) {}
 
 
-String AtlasParent::getSensorLocation(void) {
-    String address = F("I2C_0x");
+String AtlasParent::getSensorLocation() {
+    String address;
+    address.reserve(10);  // Reserve for "I2C_0x" + 2 hex chars
+    address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool AtlasParent::setup(void) {
+bool AtlasParent::setup() {
     _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -62,7 +61,7 @@ bool AtlasParent::setup(void) {
 
 // The function to put the sensor to sleep
 // The Atlas sensors must be told to sleep
-bool AtlasParent::sleep(void) {
+bool AtlasParent::sleep() {
     if (!checkPowerOn()) { return true; }
     if (_millisSensorActivated == 0) {
         MS_DBG(getSensorNameAndLocation(), F("was not measuring!"));
@@ -100,7 +99,7 @@ bool AtlasParent::sleep(void) {
 // To start a measurement we write the command "R" to the sensor
 // NOTE:  documentation says to use a capital "R" but the examples provided
 // by Atlas use a lower case "r".
-bool AtlasParent::startSingleMeasurement(void) {
+bool AtlasParent::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -135,64 +134,67 @@ bool AtlasParent::startSingleMeasurement(void) {
 }
 
 
-bool AtlasParent::addSingleMeasurementResult(void) {
+bool AtlasParent::addSingleMeasurementResult() {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return finalizeMeasurementAttempt(false);
+    }
+
     bool success = false;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        // call the circuit and request 40 bytes (this may be more than we need)
-        _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40, 1);
-        // the first byte is the response code, we read this separately.
-        int code = _i2c->read();
+    // call the circuit and request 40 bytes (this may be more than we need)
+    int bytesReceived = _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40,
+                                          1);
+    if (bytesReceived == 0) {
+        MS_DBG(getSensorNameAndLocation(), F("I2C read failed - no response"));
+        return finalizeMeasurementAttempt(false);
+    }
+    // the first byte is the response code, we read this separately.
+    int code = _i2c->read();
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+    // Parse the response code
+    switch (code) {
+        case 1:  // the command was successful.
+            MS_DBG(F("  Measurement successful"));
+            success = true;
+            break;
 
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-        // Parse the response code
-        switch (code) {
-            case 1:  // the command was successful.
-                MS_DBG(F("  Measurement successful"));
-                success = true;
-                break;
+        case 2:  // the command has failed.
+            MS_DBG(F("  Measurement Failed"));
+            break;
 
-            case 2:  // the command has failed.
-                MS_DBG(F("  Measurement Failed"));
-                break;
+        case 254:  // the command has not yet been finished calculating.
+            MS_DBG(F("  Measurement Pending"));
+            break;
 
-            case 254:  // the command has not yet been finished calculating.
-                MS_DBG(F("  Measurement Pending"));
-                break;
+        case 255:  // there is no further data to send.
+            MS_DBG(F("  No Data"));
+            break;
 
-            case 255:  // there is no further data to send.
-                MS_DBG(F("  No Data"));
-                break;
-
-            default: break;
-        }
-        // If the response code is successful, parse the remaining results
-        if (success) {
-            for (uint8_t i = 0; i < _numReturnedValues; i++) {
-                float result = _i2c->parseFloat();
-                if (isnan(result)) { result = -9999; }
-                if (result < -1020) { result = -9999; }
-                MS_DBG(F("  Result #"), i, ':', result);
-                verifyAndAddMeasurementResult(i, result);
-            }
-        }
-    } else {
-        // If there's no measurement, need to make sure we send over all
-        // of the "failed" result values
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        default: MS_DBG(F("  Unexpected response code:"), code); break;
+    }
+    // If the response code is successful, parse the remaining results
+    if (success) {
         for (uint8_t i = 0; i < _numReturnedValues; i++) {
-            verifyAndAddMeasurementResult(i, static_cast<float>(-9999));
+            if (_i2c->available() == 0) {
+                MS_DBG(F("  Incomplete response; aborting parse"));
+                success = false;
+                break;
+            }
+            float result = _i2c->parseFloat();
+            if (isnan(result) || result < -1020) {
+                result  = MS_INVALID_VALUE;
+                success = false;
+                MS_DBG(F("  Invalid response for result #"), i);
+                // Don't break - subsequent values may be ok
+            }
+            MS_DBG(F("  Result #"), i, ':', result);
+            verifyAndAddMeasurementResult(i, result);
         }
     }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    return success;
+    // Return success value when finished
+    return finalizeMeasurementAttempt(success);
 }
 
 

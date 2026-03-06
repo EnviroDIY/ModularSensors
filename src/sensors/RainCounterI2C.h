@@ -143,7 +143,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; rain depth should have 2.
+ * @brief Decimal places in string representation; rain depth should have 2.
  *
  * Resolution is typically either 0.01" or 0.2mm of rainfall, depending on
  * if bucket is calibrated to English or metric units.
@@ -172,7 +172,7 @@
  * {{ @ref RainCounterI2C_Tips::RainCounterI2C_Tips }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the number of tips should
+/// @brief Decimal places in string representation; the number of tips should
 /// have 0 - resolution is 1 tip.
 #define BUCKET_TIPS_RESOLUTION 0
 /// @brief Sensor variable number; the number of tips is stored in
@@ -236,7 +236,7 @@ class RainCounterI2C : public Sensor {
     RainCounterI2C(int8_t dataPin, int8_t clockPin,
                    uint8_t i2cAddressHex = 0x08, float rainPerTip = 0.2);
 #endif
-#if !defined(MS_RAIN_SOFTWAREWIRE) | defined DOXYGEN
+#if !defined(MS_RAIN_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
      * @brief Construct a new Rain Counter I2C object using a secondary
      * *hardware* I2C instance.
@@ -271,7 +271,7 @@ class RainCounterI2C : public Sensor {
      * @brief Destroy the Rain Counter I2C object.  Also destroy the software
      * I2C instance if one was created.
      */
-    ~RainCounterI2C();
+    ~RainCounterI2C() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -282,16 +282,11 @@ class RainCounterI2C : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    String getSensorLocation() override;
+
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -346,9 +341,10 @@ class RainCounterI2C_Tips : public Variable {
     explicit RainCounterI2C_Tips(RainCounterI2C* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode = BUCKET_TIPS_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BUCKET_TIPS_VAR_NUM,
-                   (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
-                   BUCKET_TIPS_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(BUCKET_TIPS_VAR_NUM),
+                   static_cast<uint8_t>(BUCKET_TIPS_RESOLUTION),
+                   BUCKET_TIPS_VAR_NAME, BUCKET_TIPS_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new RainCounterI2C_Tips object.
      *
@@ -356,13 +352,14 @@ class RainCounterI2C_Tips : public Variable {
      * used.
      */
     RainCounterI2C_Tips()
-        : Variable((uint8_t)BUCKET_TIPS_VAR_NUM,
-                   (uint8_t)BUCKET_TIPS_RESOLUTION, BUCKET_TIPS_VAR_NAME,
-                   BUCKET_TIPS_UNIT_NAME, BUCKET_TIPS_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(BUCKET_TIPS_VAR_NUM),
+                   static_cast<uint8_t>(BUCKET_TIPS_RESOLUTION),
+                   BUCKET_TIPS_VAR_NAME, BUCKET_TIPS_UNIT_NAME,
+                   BUCKET_TIPS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the RainCounterI2C_Tips object - no action needed.
      */
-    ~RainCounterI2C_Tips() {}
+    ~RainCounterI2C_Tips() override = default;
 };
 
 /**
@@ -388,9 +385,10 @@ class RainCounterI2C_Depth : public Variable {
     explicit RainCounterI2C_Depth(
         RainCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = BUCKET_RAIN_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BUCKET_RAIN_VAR_NUM,
-                   (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
-                   BUCKET_RAIN_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(BUCKET_RAIN_VAR_NUM),
+                   static_cast<uint8_t>(BUCKET_RAIN_RESOLUTION),
+                   BUCKET_RAIN_VAR_NAME, BUCKET_RAIN_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new RainCounterI2C_Depth object.
      *
@@ -398,13 +396,14 @@ class RainCounterI2C_Depth : public Variable {
      * used.
      */
     RainCounterI2C_Depth()
-        : Variable((uint8_t)BUCKET_RAIN_VAR_NUM,
-                   (uint8_t)BUCKET_RAIN_RESOLUTION, BUCKET_RAIN_VAR_NAME,
-                   BUCKET_RAIN_UNIT_NAME, BUCKET_RAIN_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(BUCKET_RAIN_VAR_NUM),
+                   static_cast<uint8_t>(BUCKET_RAIN_RESOLUTION),
+                   BUCKET_RAIN_VAR_NAME, BUCKET_RAIN_UNIT_NAME,
+                   BUCKET_RAIN_DEFAULT_CODE) {}
     /**
      * @brief Destroy the RainCounterI2C_Depth object - no action needed.
      */
-    ~RainCounterI2C_Depth() {}
+    ~RainCounterI2C_Depth() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_RAINCOUNTERI2C_H_

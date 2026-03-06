@@ -127,7 +127,7 @@
  * {{ @ref MaximDS3231_Temp::MaximDS3231_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is -0.25°C (10 bit).
 #define DS3231_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -166,12 +166,9 @@ class MaximDS3231 : public Sensor {
     /**
      * @brief Destroy the Maxim DS3231 object
      */
-    ~MaximDS3231();
+    ~MaximDS3231() override = default;
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -184,7 +181,7 @@ class MaximDS3231 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
@@ -197,11 +194,8 @@ class MaximDS3231 : public Sensor {
      * @return True if the start measurement function completed
      * successfully. successfully.
      */
-    bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 };
 
 
@@ -227,22 +221,24 @@ class MaximDS3231_Temp : public Variable {
      */
     explicit MaximDS3231_Temp(MaximDS3231* parentSense, const char* uuid = "",
                               const char* varCode = DS3231_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DS3231_TEMP_VAR_NUM,
-                   (uint8_t)DS3231_TEMP_RESOLUTION, DS3231_TEMP_VAR_NAME,
-                   DS3231_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(DS3231_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(DS3231_TEMP_RESOLUTION),
+                   DS3231_TEMP_VAR_NAME, DS3231_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new MaximDS3231_Temp object.
      *
      * @note This must be tied with a parent MaximDS3231 before it can be used.
      */
     MaximDS3231_Temp()
-        : Variable((uint8_t)DS3231_TEMP_VAR_NUM,
-                   (uint8_t)DS3231_TEMP_RESOLUTION, DS3231_TEMP_VAR_NAME,
-                   DS3231_TEMP_UNIT_NAME, DS3231_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(DS3231_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(DS3231_TEMP_RESOLUTION),
+                   DS3231_TEMP_VAR_NAME, DS3231_TEMP_UNIT_NAME,
+                   DS3231_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MaximDS3231_Temp object - no action needed.
      */
-    ~MaximDS3231_Temp() {}
+    ~MaximDS3231_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXIMDS3231_H_

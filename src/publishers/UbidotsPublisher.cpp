@@ -32,35 +32,33 @@ const char* UbidotsPublisher::payload = "{";
 
 
 // Constructors
-UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
+// Primary constructor with all authentication parameters and client
 UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                                   int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
+                                   const char* authenticationToken,
+                                   const char* deviceID)
+    : dataPublisher(baseLogger, inClient) {
+    if (authenticationToken && authenticationToken[0] != '\0') {
+        setToken(authenticationToken);
+    }
+    if (deviceID && deviceID[0] != '\0') {
+        _baseLogger->setSamplingFeatureUUID(deviceID);
+    }
+}
+
+// Delegating constructors
 UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
                                    const char* authenticationToken,
-                                   const char* deviceID, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setToken(authenticationToken);
-    _baseLogger->setSamplingFeatureUUID(deviceID);
-    MS_DBG(F("dataPublisher object created"));
-}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                                   const char* authenticationToken,
-                                   const char* deviceID, int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setToken(authenticationToken);
-    _baseLogger->setSamplingFeatureUUID(deviceID);
-    MS_DBG(F("dataPublisher object created"));
-}
-// Destructor
-UbidotsPublisher::~UbidotsPublisher() {}
+                                   const char* deviceID)
+    : UbidotsPublisher(baseLogger, nullptr, authenticationToken, deviceID) {}
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient)
+    : UbidotsPublisher(baseLogger, inClient, nullptr, nullptr) {}
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger)
+    : UbidotsPublisher(baseLogger, nullptr, nullptr, nullptr) {}
+UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
 
 
 void UbidotsPublisher::setToken(const char* authenticationToken) {
     _authenticationToken = authenticationToken;
-    MS_DBG(F("Registration token set!"));
 }
 
 
@@ -93,24 +91,30 @@ uint16_t UbidotsPublisher::calculateJsonSize() {
 void UbidotsPublisher::begin(Logger& baseLogger, Client* inClient,
                              const char* authenticationToken,
                              const char* deviceID) {
-    setToken(authenticationToken);
+    if (authenticationToken && authenticationToken[0] != '\0') {
+        setToken(authenticationToken);
+    }
     dataPublisher::begin(baseLogger, inClient);
-    _baseLogger->setSamplingFeatureUUID(deviceID);
+    if (deviceID && deviceID[0] != '\0') {
+        _baseLogger->setSamplingFeatureUUID(deviceID);
+    }
 }
 void UbidotsPublisher::begin(Logger&     baseLogger,
                              const char* authenticationToken,
                              const char* deviceID) {
-    setToken(authenticationToken);
+    if (authenticationToken && authenticationToken[0] != '\0') {
+        setToken(authenticationToken);
+    }
     dataPublisher::begin(baseLogger);
-    _baseLogger->setSamplingFeatureUUID(deviceID);
+    if (deviceID && deviceID[0] != '\0') {
+        _baseLogger->setSamplingFeatureUUID(deviceID);
+    }
 }
 
 
-// This utilizes an attached modem to make a TCP connection to the
-// EnviroDIY/ODM2DataSharingPortal and then streams out a post request
-// over that connection.
-// The return is the http status code of the response.
-// int16_t EnviroDIYPublisher::postDataEnviroDIY(void)
+// This utilizes an attached modem to make a TCP connection to Ubidots and then
+// streams out a post request over that connection. The return is the http
+// status code of the response.
 int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[12] = "";
@@ -119,8 +123,13 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
         strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
         PRINTOUT(F("A sampling feature UUID must be set before publishing data "
-                   "to Monitor My Watershed!."));
-        return 0;
+                   "to Ubidots!"));
+        return -1;  // Configuration error
+    }
+    if (_authenticationToken == nullptr || _authenticationToken[0] == '\0') {
+        PRINTOUT(F("An authentication token must be set before publishing data "
+                   "to Ubidots!"));
+        return -1;  // Configuration error
     }
 
     MS_DBG(F("Outgoing JSON size:"), calculateJsonSize());
@@ -188,7 +197,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond > 0) {
             char responseCode_char[4];
-            memcpy(responseCode_char, tempBuffer + 9, 3);
+            memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string
             memset(responseCode_char + 3, '\0', 1);
             responseCode = atoi(responseCode_char);

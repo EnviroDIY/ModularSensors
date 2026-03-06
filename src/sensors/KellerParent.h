@@ -51,7 +51,7 @@
  * protocols are not supported by this library.
  *
  * The sensor constructors require as input: the sensor modbus address,  a
- * stream instance for data (ie, ```Serial```), and one or two power pins.  The
+ * stream instance for data (i.e., ```Serial```), and one or two power pins.  The
  * Arduino pin controlling the receive and data enable on your RS485-to-TTL
  * adapter and the number of readings to average are optional.  (Use -1 for the
  * second power pin and -1 for the enable pin if these don't apply and you want
@@ -231,12 +231,9 @@ class KellerParent : public Sensor {
     /**
      * @brief Destroy the Keller Parent object - no action taken
      */
-    virtual ~KellerParent();
+    ~KellerParent() override = default;
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -249,19 +246,12 @@ class KellerParent : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
     // override to empty and flush the stream
-    bool sleep(void) override;
+    bool sleep() override;
 
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
-
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -287,10 +277,6 @@ class KellerParent : public Sensor {
      * pin.
      */
     int8_t _RS485EnablePin;
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_

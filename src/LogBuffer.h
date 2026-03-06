@@ -54,7 +54,7 @@ class LogBuffer {
     /**
      * @brief Destroys the buffer.
      */
-    virtual ~LogBuffer();
+    virtual ~LogBuffer() = default;
 
     /**
      * @brief Sets the number of variables the buffer will store in each record.
@@ -69,26 +69,26 @@ class LogBuffer {
      *
      * @return The variable count.
      */
-    uint8_t getNumVariables(void);
+    uint8_t getNumVariables();
 
     /**
      * @brief Clears all records from the log.
      */
-    void clear(void);
+    void clear();
 
     /**
      * @brief Gets the number of records currently in the log.
      *
      * @return The number of records.
      */
-    int getNumRecords(void);
+    int getNumRecords();
 
     /**
      * @brief Computes the percentage full of the buffer.
      *
      * @return The current percent full.
      */
-    uint8_t getPercentFull(void);
+    uint8_t getPercentFull();
 
     /**
      * @brief Adds a new record with the given timestamp.

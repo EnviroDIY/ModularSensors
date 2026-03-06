@@ -172,7 +172,7 @@
  * {{ @ref GeoluxHydroCam_ImageSize::GeoluxHydroCam_ImageSize }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; image size should have 0 -
+/// @brief Decimal places in string representation; image size should have 0 -
 /// resolution is 1 byte.
 #define HYDROCAM_SIZE_RESOLUTION 0
 /// @brief Sensor variable number; image size is stored in sensorValues[0].
@@ -198,7 +198,7 @@
  * {{ @ref GeoluxHydroCam_ByteError::GeoluxHydroCam_ByteError }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; byte error should have
+/// @brief Decimal places in string representation; byte error should have
 /// 0 - resolution is 1 byte.
 #define HYDROCAM_ERROR_RESOLUTION 0
 /// @brief Sensor variable number; byte error is stored in sensorValues[1].
@@ -268,20 +268,22 @@ class GeoluxHydroCam : public Sensor {
      * because the autofocus takes about 30s. Default false.
      */
     GeoluxHydroCam(Stream* stream, int8_t powerPin, Logger& baseLogger,
-                   int8_t powerPin2, const char* imageResolution = "1600x1200",
+                   int8_t      powerPin2       = -1,
+                   const char* imageResolution = "1600x1200",
                    const char* filePrefix      = nullptr,
                    bool        alwaysAutoFocus = false);
     /**
      * @copydoc GeoluxHydroCam::GeoluxHydroCam
      */
     GeoluxHydroCam(Stream& stream, int8_t powerPin, Logger& baseLogger,
-                   int8_t powerPin2, const char* imageResolution = "1600x1200",
+                   int8_t      powerPin2       = -1,
+                   const char* imageResolution = "1600x1200",
                    const char* filePrefix      = nullptr,
                    bool        alwaysAutoFocus = false);
     /**
      * @brief Destroy the Geolux HydroCam object
      */
-    ~GeoluxHydroCam();
+    ~GeoluxHydroCam() override = default;
 
     /**
      * @brief Extra unique function to retrieve the name of the last saved image
@@ -290,10 +292,7 @@ class GeoluxHydroCam : public Sensor {
      */
     String getLastSavedImageName();
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -307,7 +306,7 @@ class GeoluxHydroCam : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
     /**
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
      * sensor in the proper state to begin a measurement.
@@ -321,23 +320,11 @@ class GeoluxHydroCam : public Sensor {
      *
      * @return True if the wake function completed successfully.
      */
-    bool wake(void) override;
-    bool sleep(void) override;
+    bool wake() override;
+    bool sleep() override;
 
-
-    /**
-     * @copydoc Sensor::startSingleMeasurement()
-     */
-    bool startSingleMeasurement(void) override;
-
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
-
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
     /**
      * @copydoc Sensor::isWarmedUp(bool debug)
@@ -374,10 +361,6 @@ class GeoluxHydroCam : public Sensor {
     bool isMeasurementComplete(bool debug = false) override;
 
  private:
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
     const char*
         _imageResolution;  ///< The image resolution from the Geolux HydroCam
     const char*
@@ -460,9 +443,10 @@ class GeoluxHydroCam_ImageSize : public Variable {
     explicit GeoluxHydroCam_ImageSize(
         GeoluxHydroCam* parentSense, const char* uuid = "",
         const char* varCode = HYDROCAM_SIZE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HYDROCAM_SIZE_VAR_NUM,
-                   (uint8_t)HYDROCAM_SIZE_RESOLUTION, HYDROCAM_SIZE_VAR_NAME,
-                   HYDROCAM_SIZE_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(HYDROCAM_SIZE_VAR_NUM),
+                   static_cast<uint8_t>(HYDROCAM_SIZE_RESOLUTION),
+                   HYDROCAM_SIZE_VAR_NAME, HYDROCAM_SIZE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new GeoluxHydroCam_ImageSize object.
      *
@@ -470,13 +454,14 @@ class GeoluxHydroCam_ImageSize : public Variable {
      * used.
      */
     GeoluxHydroCam_ImageSize()
-        : Variable((uint8_t)HYDROCAM_SIZE_VAR_NUM,
-                   (uint8_t)HYDROCAM_SIZE_RESOLUTION, HYDROCAM_SIZE_VAR_NAME,
-                   HYDROCAM_SIZE_UNIT_NAME, HYDROCAM_SIZE_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(HYDROCAM_SIZE_VAR_NUM),
+                   static_cast<uint8_t>(HYDROCAM_SIZE_RESOLUTION),
+                   HYDROCAM_SIZE_VAR_NAME, HYDROCAM_SIZE_UNIT_NAME,
+                   HYDROCAM_SIZE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GeoluxHydroCam_ImageSize object - no action needed.
      */
-    ~GeoluxHydroCam_ImageSize() {}
+    ~GeoluxHydroCam_ImageSize() override = default;
 };
 
 
@@ -504,9 +489,10 @@ class GeoluxHydroCam_ByteError : public Variable {
     explicit GeoluxHydroCam_ByteError(
         GeoluxHydroCam* parentSense, const char* uuid = "",
         const char* varCode = HYDROCAM_ERROR_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HYDROCAM_ERROR_VAR_NUM,
-                   (uint8_t)HYDROCAM_ERROR_RESOLUTION, HYDROCAM_ERROR_VAR_NAME,
-                   HYDROCAM_ERROR_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(HYDROCAM_ERROR_VAR_NUM),
+                   static_cast<uint8_t>(HYDROCAM_ERROR_RESOLUTION),
+                   HYDROCAM_ERROR_VAR_NAME, HYDROCAM_ERROR_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new GeoluxHydroCam_ByteError object.
      *
@@ -514,14 +500,15 @@ class GeoluxHydroCam_ByteError : public Variable {
      * used.
      */
     GeoluxHydroCam_ByteError()
-        : Variable((uint8_t)HYDROCAM_ERROR_VAR_NUM,
-                   (uint8_t)HYDROCAM_ERROR_RESOLUTION, HYDROCAM_ERROR_VAR_NAME,
-                   HYDROCAM_ERROR_UNIT_NAME, HYDROCAM_ERROR_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(HYDROCAM_ERROR_VAR_NUM),
+                   static_cast<uint8_t>(HYDROCAM_ERROR_RESOLUTION),
+                   HYDROCAM_ERROR_VAR_NAME, HYDROCAM_ERROR_UNIT_NAME,
+                   HYDROCAM_ERROR_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GeoluxHydroCam_ByteError object - no action
      * needed.
      */
-    ~GeoluxHydroCam_ByteError() {}
+    ~GeoluxHydroCam_ByteError() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_GEOLUXHYDROCAM_H_

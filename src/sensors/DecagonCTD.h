@@ -110,7 +110,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; conductivity should have 1.
+ * @brief Decimal places in string representation; conductivity should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
@@ -141,7 +141,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; temperature should have 2.
+ * @brief Decimal places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging  - resolution is 0.1°C
@@ -172,7 +172,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; depth should have 1.
+ * @brief Decimal places in string representation; depth should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 2 mm
@@ -256,7 +256,7 @@ class DecagonCTD : public SDI12Sensors {
     /**
      * @brief Destroy the Decagon CTD object
      */
-    ~DecagonCTD() {}
+    ~DecagonCTD() override = default;
 };
 
 
@@ -282,8 +282,8 @@ class DecagonCTD_Cond : public Variable {
      */
     explicit DecagonCTD_Cond(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = CTD_COND_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CTD_COND_VAR_NUM,
-                   (uint8_t)CTD_COND_RESOLUTION, CTD_COND_VAR_NAME,
+        : Variable(parentSense, static_cast<uint8_t>(CTD_COND_VAR_NUM),
+                   static_cast<uint8_t>(CTD_COND_RESOLUTION), CTD_COND_VAR_NAME,
                    CTD_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new DecagonCTD_Cond object.
@@ -291,13 +291,13 @@ class DecagonCTD_Cond : public Variable {
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Cond()
-        : Variable((uint8_t)CTD_COND_VAR_NUM, (uint8_t)CTD_COND_RESOLUTION,
-                   CTD_COND_VAR_NAME, CTD_COND_UNIT_NAME,
-                   CTD_COND_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(CTD_COND_VAR_NUM),
+                   static_cast<uint8_t>(CTD_COND_RESOLUTION), CTD_COND_VAR_NAME,
+                   CTD_COND_UNIT_NAME, CTD_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Cond object - no action needed.
      */
-    ~DecagonCTD_Cond() {}
+    ~DecagonCTD_Cond() override = default;
 };
 
 
@@ -323,8 +323,8 @@ class DecagonCTD_Temp : public Variable {
      */
     explicit DecagonCTD_Temp(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = CTD_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CTD_TEMP_VAR_NUM,
-                   (uint8_t)CTD_TEMP_RESOLUTION, CTD_TEMP_VAR_NAME,
+        : Variable(parentSense, static_cast<uint8_t>(CTD_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(CTD_TEMP_RESOLUTION), CTD_TEMP_VAR_NAME,
                    CTD_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new DecagonCTD_Temp object.
@@ -332,13 +332,13 @@ class DecagonCTD_Temp : public Variable {
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Temp()
-        : Variable((uint8_t)CTD_TEMP_VAR_NUM, (uint8_t)CTD_TEMP_RESOLUTION,
-                   CTD_TEMP_VAR_NAME, CTD_TEMP_UNIT_NAME,
-                   CTD_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(CTD_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(CTD_TEMP_RESOLUTION), CTD_TEMP_VAR_NAME,
+                   CTD_TEMP_UNIT_NAME, CTD_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Temp object - no action needed.
      */
-    ~DecagonCTD_Temp() {}
+    ~DecagonCTD_Temp() override = default;
 };
 
 
@@ -364,22 +364,23 @@ class DecagonCTD_Depth : public Variable {
      */
     explicit DecagonCTD_Depth(DecagonCTD* parentSense, const char* uuid = "",
                               const char* varCode = CTD_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CTD_DEPTH_VAR_NUM,
-                   (uint8_t)CTD_DEPTH_RESOLUTION, CTD_DEPTH_VAR_NAME,
-                   CTD_DEPTH_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CTD_DEPTH_VAR_NUM),
+                   static_cast<uint8_t>(CTD_DEPTH_RESOLUTION),
+                   CTD_DEPTH_VAR_NAME, CTD_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new DecagonCTD_Depth object.
      *
      * @note This must be tied with a parent DecagonCTD before it can be used.
      */
     DecagonCTD_Depth()
-        : Variable((uint8_t)CTD_DEPTH_VAR_NUM, (uint8_t)CTD_DEPTH_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CTD_DEPTH_VAR_NUM),
+                   static_cast<uint8_t>(CTD_DEPTH_RESOLUTION),
                    CTD_DEPTH_VAR_NAME, CTD_DEPTH_UNIT_NAME,
                    CTD_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Depth object - no action needed.
      */
-    ~DecagonCTD_Depth() {}
+    ~DecagonCTD_Depth() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_decagon_ctd_H_

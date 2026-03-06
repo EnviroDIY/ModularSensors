@@ -158,14 +158,14 @@ enum class epochStart : time_t {
         EPOCH_NIST_TO_UNIX,  ///< Use a Unix epoch, starting Jan 1, 1970.
                              ///< This is the default for this library
     y2k_epoch = EPOCH_NIST_TO_UNIX +
-        EPOCH_UNIX_TO_Y2K,  ///< Use an epoch starting Jan 1, 2000, as some
-                            ///< RTC's and Arduinos do (946684800s ahead of
-                            ///< UNIX epoch)
+        EPOCH_UNIX_TO_Y2K,  ///< Use an epoch starting Jan 1, 2000, as
+                            ///< some RTC's and Arduinos do (946684800s
+                            ///< ahead of UNIX epoch)
     gps_epoch = EPOCH_NIST_TO_UNIX +
         EPOCH_UNIX_TO_GPS,  ///< Use the GPS epoch starting Jan 5, 1980
                             ///< (was 315964800s ahead of UNIX epoch at
-                            ///< founding, has drifted farther apart due to
-                            ///< leap seconds)
+                            ///< founding, has drifted farther apart due
+                            ///< to leap seconds)
     nist_epoch = 0  ///< Use the epoch starting Jan 1, 1900 as returned by
                     ///< the NIST Network Time Protocol (RFC-1305 and later
                     ///< versions) and Time Protocol (RFC-868) (2208988800
@@ -330,6 +330,15 @@ class epochTime {
  * deleted constructor.
  *
  * @todo Support half/quarter hour time zones
+ *
+ * Dealing with time is **hard**! This library only supports the bare minimum of
+ * what I think is necessary to get the logger's clock working and to convert
+ * between different epoch types. It does not support time zones (other than a
+ * static offset from UTC), daylight savings time, or any of the other
+ * complications of time.
+ *
+ * If you thought handling time was simple, read this:
+ * https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca
  */
 class loggerClock {
  public:
@@ -362,8 +371,8 @@ class loggerClock {
      * @brief Set the static offset in hours from UTC that the RTC is programmed
      * in.
      *
-     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC(ie, offset =
-     * 0)
+     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC(i.e., offset
+     * = 0)
      *
      * @param offsetHours The offset of the real-time clock (RTC) from UTC in
      * hours
@@ -374,15 +383,15 @@ class loggerClock {
      *
      * @return The offset of the real-time clock (RTC) from UTC in hours
      */
-    static int8_t getRTCOffset(void);
+    static int8_t getRTCOffset();
 
     /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
      * the RTC.
      *
      * @param utcOffset The offset from UTC to return the epoch time in.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * @param epoch The type of epoch to use (i.e., the standard for the start
+     * of the epoch).
      *
      * @return The number of seconds from the start of the given epoch.
      */
@@ -479,13 +488,18 @@ class loggerClock {
      *
      * @param ts The number of seconds since the start of the given epoch.
      * @param utcOffset The offset of the epoch time from UTC.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * @param epoch The type of epoch to use (i.e., the standard for the start
+     * of the epoch).
      *
      * @return True if the input timestamp passes sanity checks **and**
-     * the clock has been successfully set.
+     * the clock is now at or within tolerance (±5 seconds) of the target time.
+     * This includes both cases where the clock was successfully set and where
+     * the clock was already within tolerance and did not need adjustment.
      *
      * @note There is no timezone correction in this function
+     * @note Changed behavior: Previously returned true only when clock was
+     * actually written. Now returns true when clock is at/within tolerance,
+     * regardless of whether it was written.
      */
     static bool setRTClock(time_t ts, int8_t utcOffset, epochStart epoch);
     /**
@@ -496,9 +510,14 @@ class loggerClock {
      * @param utcOffset The offset of the epoch time from UTC.
      *
      * @return True if the input timestamp passes sanity checks **and**
-     * the clock has been successfully set.
+     * the clock is now at or within tolerance (±5 seconds) of the target time.
+     * This includes both cases where the clock was successfully set and where
+     * the clock was already within tolerance and did not need adjustment.
      *
      * @note There is no timezone correction in this function
+     * @note Changed behavior: Previously returned true only when clock was
+     * actually written. Now returns true when clock is at/within tolerance,
+     * regardless of whether it was written.
      */
     static bool setRTClock(epochTime in_time, int8_t utcOffset);
 
@@ -511,7 +530,7 @@ class loggerClock {
      * @return True if the current time on the RTC passes sanity range
      * checking
      */
-    static bool isRTCSane(void);
+    static bool isRTCSane();
     /**
      * @brief Check that a given epoch time (seconds since 1970) is within a
      * "sane" range.
@@ -522,8 +541,8 @@ class loggerClock {
      * @param ts The timestamp to check (in seconds since the start of the given
      * epoch).
      * @param utcOffset The offset of the epoch time from UTC in hours.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * @param epoch The type of epoch to use (i.e., the standard for the start
+     * of the epoch).
      * @return True if the given time passes sanity range checking.
      */
     static bool isEpochTimeSane(time_t ts, int8_t utcOffset, epochStart epoch);
@@ -546,8 +565,8 @@ class loggerClock {
      * @param ts The timestamp for the next interrupt - in seconds from the
      * start of the input epoch.
      * @param utcOffset The offset of the epoch time from UTC in hours.
-     * @param epoch The type of epoch to use (ie, the standard for the start of
-     * the epoch).
+     * @param epoch The type of epoch to use (i.e., the standard for the start
+     * of the epoch).
      */
     static void setNextRTCInterrupt(time_t ts, int8_t utcOffset,
                                     epochStart epoch);
@@ -587,7 +606,7 @@ class loggerClock {
      * For some clocks, we need to reset the clock's interrupt flag so the next
      * interrupt will fire.
      */
-    static void rtcISR(void);
+    static void rtcISR();
 
     /**
      * @brief Start up the real-time clock.
@@ -605,7 +624,17 @@ class loggerClock {
      */
     static epochStart getCoreEpochStart() {
         return loggerClock::_core_epoch;
-    };
+    }
+    /**
+     * @brief Get the timezone offset for the processor/Arduino core in seconds
+     * from UTC
+     *
+     * @return The timezone offset for the processor/Arduino core in seconds
+     * from UTC
+     */
+    static int32_t getCoreTimeZone() {
+        return loggerClock::_core_tz;
+    }
     /**
      * @brief Get the epoch start for the RTC as an epochStart object
      *
@@ -613,12 +642,13 @@ class loggerClock {
      */
     static epochStart getRTCEpochStart() {
         return _rtcEpoch;
-    };
+    }
 
  protected:
 
     /**
-     * @brief Figure out where the epoch starts for the processor.
+     * @brief Figure out what epoch start is defined for the Arduino core used
+     * by the processor.
      *
      * The real time clock libraries mostly document this, but the cores for the
      * various Arduino processors don't. The time.h file is not much more than a
@@ -629,10 +659,23 @@ class loggerClock {
     static epochStart getProcessorEpochStart();
 
     /**
-     * @brief The start of the epoch for the processor's internal time.h
+     * @brief Figure out the timezone offset defined for the Arduino core used
+     * by the processor.
+     *
+     * @return The timezone offset in seconds from UTC
+     */
+    static int32_t getProcessorTimeZone();
+
+    /**
+     * @brief The start of the epoch for the processor core's internal time.h
      * library.
      */
     static epochStart _core_epoch;
+
+    /**
+     * @brief The timezone used by the processor core's internal time.h library.
+     */
+    static int32_t _core_tz;
 
     /**
      * @brief The static offset data of the real time clock from UTC in hours

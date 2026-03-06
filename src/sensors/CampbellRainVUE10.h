@@ -122,7 +122,7 @@
  * {{ @ref CampbellRainVUE10_Precipitation::CampbellRainVUE10_Precipitation }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; depth should have 2
+/// @brief Decimal places in string representation; depth should have 2
 /// (resolution is 0.01 inches).
 #define RAINVUE10_PRECIPITATION_RESOLUTION 2
 /// @brief Sensor variable number; precipitation is stored in sensorValues[0]
@@ -148,7 +148,7 @@
  * {{ @ref CampbellRainVUE10_Tips::CampbellRainVUE10_Tips }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the number of tips should
+/// @brief Decimal places in string representation; the number of tips should
 /// have 0 - resolution is 1 tip.
 #define RAINVUE10_TIPS_RESOLUTION 0
 /// @brief Sensor variable number; tips is stored in sensorValues[1].
@@ -183,7 +183,7 @@
  * {{ @ref CampbellRainVUE10_RainRateAve::CampbellRainVUE10_RainRateAve }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the rainfall intensity
+/// @brief Decimal places in string representation; the rainfall intensity
 /// has 2.
 #define RAINVUE10_RAINRATEAVE_RESOLUTION 2
 /// @brief Sensor variable number; average intensity is stored in
@@ -210,7 +210,7 @@
  * {{ @ref CampbellRainVUE10_RainRateMax::CampbellRainVUE10_RainRateMax }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the rainfall intensity
+/// @brief Decimal places in string representation; the rainfall intensity
 /// has 2.
 #define RAINVUE10_RAINRATEMAX_RESOLUTION 2
 /// @brief Sensor variable number; average intensity is stored in
@@ -294,7 +294,7 @@ class CampbellRainVUE10 : public SDI12Sensors {
     /**
      * @brief Destroy the Campbell RainVUE10 object
      */
-    ~CampbellRainVUE10() {}
+    ~CampbellRainVUE10() override = default;
 };
 
 
@@ -322,8 +322,9 @@ class CampbellRainVUE10_Precipitation : public Variable {
     explicit CampbellRainVUE10_Precipitation(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_PRECIPITATION_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)RAINVUE10_PRECIPITATION_VAR_NUM,
-                   (uint8_t)RAINVUE10_PRECIPITATION_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(RAINVUE10_PRECIPITATION_VAR_NUM),
+                   static_cast<uint8_t>(RAINVUE10_PRECIPITATION_RESOLUTION),
                    RAINVUE10_PRECIPITATION_VAR_NAME,
                    RAINVUE10_PRECIPITATION_UNIT_NAME, varCode, uuid) {}
     /**
@@ -333,8 +334,8 @@ class CampbellRainVUE10_Precipitation : public Variable {
      * used.
      */
     CampbellRainVUE10_Precipitation()
-        : Variable((uint8_t)RAINVUE10_PRECIPITATION_VAR_NUM,
-                   (uint8_t)RAINVUE10_PRECIPITATION_RESOLUTION,
+        : Variable(static_cast<uint8_t>(RAINVUE10_PRECIPITATION_VAR_NUM),
+                   static_cast<uint8_t>(RAINVUE10_PRECIPITATION_RESOLUTION),
                    RAINVUE10_PRECIPITATION_VAR_NAME,
                    RAINVUE10_PRECIPITATION_UNIT_NAME,
                    RAINVUE10_PRECIPITATION_DEFAULT_CODE) {}
@@ -342,7 +343,7 @@ class CampbellRainVUE10_Precipitation : public Variable {
      * @brief Destroy the CampbellRainVUE10_Precipitation object - no action
      * needed.
      */
-    ~CampbellRainVUE10_Precipitation() {}
+    ~CampbellRainVUE10_Precipitation() override = default;
 };
 
 
@@ -370,9 +371,10 @@ class CampbellRainVUE10_Tips : public Variable {
     explicit CampbellRainVUE10_Tips(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_TIPS_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)RAINVUE10_TIPS_VAR_NUM,
-                   (uint8_t)RAINVUE10_TIPS_RESOLUTION, RAINVUE10_TIPS_VAR_NAME,
-                   RAINVUE10_TIPS_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(RAINVUE10_TIPS_VAR_NUM),
+                   static_cast<uint8_t>(RAINVUE10_TIPS_RESOLUTION),
+                   RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new CampbellRainVUE10_Tips object.
      *
@@ -380,13 +382,14 @@ class CampbellRainVUE10_Tips : public Variable {
      * used.
      */
     CampbellRainVUE10_Tips()
-        : Variable((uint8_t)RAINVUE10_TIPS_VAR_NUM,
-                   (uint8_t)RAINVUE10_TIPS_RESOLUTION, RAINVUE10_TIPS_VAR_NAME,
-                   RAINVUE10_TIPS_UNIT_NAME, RAINVUE10_TIPS_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(RAINVUE10_TIPS_VAR_NUM),
+                   static_cast<uint8_t>(RAINVUE10_TIPS_RESOLUTION),
+                   RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME,
+                   RAINVUE10_TIPS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the CampbellRainVUE10_Tips object - no action needed.
      */
-    ~CampbellRainVUE10_Tips() {}
+    ~CampbellRainVUE10_Tips() override = default;
 };
 
 
@@ -414,8 +417,9 @@ class CampbellRainVUE10_RainRateAve : public Variable {
     explicit CampbellRainVUE10_RainRateAve(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_RAINRATEAVE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)RAINVUE10_RAINRATEAVE_VAR_NUM,
-                   (uint8_t)RAINVUE10_RAINRATEAVE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_VAR_NUM),
+                   static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_RESOLUTION),
                    RAINVUE10_RAINRATEAVE_VAR_NAME,
                    RAINVUE10_RAINRATEAVE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -425,8 +429,8 @@ class CampbellRainVUE10_RainRateAve : public Variable {
      * used.
      */
     CampbellRainVUE10_RainRateAve()
-        : Variable((uint8_t)RAINVUE10_RAINRATEAVE_VAR_NUM,
-                   (uint8_t)RAINVUE10_RAINRATEAVE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_VAR_NUM),
+                   static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_RESOLUTION),
                    RAINVUE10_RAINRATEAVE_VAR_NAME,
                    RAINVUE10_RAINRATEAVE_UNIT_NAME,
                    RAINVUE10_RAINRATEAVE_DEFAULT_CODE) {}
@@ -434,7 +438,7 @@ class CampbellRainVUE10_RainRateAve : public Variable {
      * @brief Destroy the CampbellRainVUE10_RainRateAve object - no action
      * needed.
      */
-    ~CampbellRainVUE10_RainRateAve() {}
+    ~CampbellRainVUE10_RainRateAve() override = default;
 };
 
 /* clang-format off */
@@ -463,8 +467,9 @@ class CampbellRainVUE10_RainRateMax : public Variable {
     explicit CampbellRainVUE10_RainRateMax(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_RAINRATEMAX_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)RAINVUE10_RAINRATEMAX_VAR_NUM,
-                   (uint8_t)RAINVUE10_RAINRATEMAX_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_VAR_NUM),
+                   static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_RESOLUTION),
                    RAINVUE10_RAINRATEMAX_VAR_NAME,
                    RAINVUE10_RAINRATEMAX_UNIT_NAME, varCode, uuid) {}
     /**
@@ -474,8 +479,8 @@ class CampbellRainVUE10_RainRateMax : public Variable {
      * used.
      */
     CampbellRainVUE10_RainRateMax()
-        : Variable((uint8_t)RAINVUE10_RAINRATEMAX_VAR_NUM,
-                   (uint8_t)RAINVUE10_RAINRATEMAX_RESOLUTION,
+        : Variable(static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_VAR_NUM),
+                   static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_RESOLUTION),
                    RAINVUE10_RAINRATEMAX_VAR_NAME,
                    RAINVUE10_RAINRATEMAX_UNIT_NAME,
                    RAINVUE10_RAINRATEMAX_DEFAULT_CODE) {}
@@ -483,7 +488,7 @@ class CampbellRainVUE10_RainRateMax : public Variable {
      * @brief Destroy the CampbellRainVUE10_RainRateMax object - no action
      * needed.
      */
-    ~CampbellRainVUE10_RainRateMax() {}
+    ~CampbellRainVUE10_RainRateMax() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLRAINVUE10_H_

@@ -119,7 +119,7 @@
  * {{ @ref CampbellClariVUE10_Turbidity::CampbellClariVUE10_Turbidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 1
+/// @brief Decimal places in string representation; turbidity should have 1
 /// (resolution is 0.2 FNU).
 #define CLARIVUE10_TURBIDITY_RESOLUTION 1
 /// @brief Sensor variable number; turbidity is stored in sensorValues[0]
@@ -146,7 +146,7 @@
  * {{ @ref CampbellClariVUE10_Temp::CampbellClariVUE10_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define CLARIVUE10_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[5].
@@ -172,7 +172,7 @@
  * {{ @ref CampbellClariVUE10_ErrorCode::CampbellClariVUE10_ErrorCode }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the error code has 0.
+/// @brief Decimal places in string representation; the error code has 0.
 #define CLARIVUE10_ERRORCODE_RESOLUTION 0
 /// @brief Sensor variable number; error code is stored in sensorValues[2]
 #define CLARIVUE10_ERRORCODE_VAR_NUM 6
@@ -255,7 +255,7 @@ class CampbellClariVUE10 : public SDI12Sensors {
     /**
      * @brief Destroy the Campbell ClariVUE10 object
      */
-    ~CampbellClariVUE10() {}
+    ~CampbellClariVUE10() override = default;
 };
 
 
@@ -283,8 +283,9 @@ class CampbellClariVUE10_Turbidity : public Variable {
     explicit CampbellClariVUE10_Turbidity(
         CampbellClariVUE10* parentSense, const char* uuid = "",
         const char* varCode = CLARIVUE10_TURBIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CLARIVUE10_TURBIDITY_VAR_NUM,
-                   (uint8_t)CLARIVUE10_TURBIDITY_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(CLARIVUE10_TURBIDITY_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_TURBIDITY_RESOLUTION),
                    CLARIVUE10_TURBIDITY_VAR_NAME,
                    CLARIVUE10_TURBIDITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -294,8 +295,8 @@ class CampbellClariVUE10_Turbidity : public Variable {
      * used.
      */
     CampbellClariVUE10_Turbidity()
-        : Variable((uint8_t)CLARIVUE10_TURBIDITY_VAR_NUM,
-                   (uint8_t)CLARIVUE10_TURBIDITY_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CLARIVUE10_TURBIDITY_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_TURBIDITY_RESOLUTION),
                    CLARIVUE10_TURBIDITY_VAR_NAME,
                    CLARIVUE10_TURBIDITY_UNIT_NAME,
                    CLARIVUE10_TURBIDITY_DEFAULT_CODE) {}
@@ -303,7 +304,7 @@ class CampbellClariVUE10_Turbidity : public Variable {
      * @brief Destroy the CampbellClariVUE10_Turbidity object - no action
      * needed.
      */
-    ~CampbellClariVUE10_Turbidity() {}
+    ~CampbellClariVUE10_Turbidity() override = default;
 };
 
 
@@ -331,8 +332,8 @@ class CampbellClariVUE10_Temp : public Variable {
     explicit CampbellClariVUE10_Temp(
         CampbellClariVUE10* parentSense, const char* uuid = "",
         const char* varCode = CLARIVUE10_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CLARIVUE10_TEMP_VAR_NUM,
-                   (uint8_t)CLARIVUE10_TEMP_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(CLARIVUE10_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_TEMP_RESOLUTION),
                    CLARIVUE10_TEMP_VAR_NAME, CLARIVUE10_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -342,14 +343,14 @@ class CampbellClariVUE10_Temp : public Variable {
      * used.
      */
     CampbellClariVUE10_Temp()
-        : Variable((uint8_t)CLARIVUE10_TEMP_VAR_NUM,
-                   (uint8_t)CLARIVUE10_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CLARIVUE10_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_TEMP_RESOLUTION),
                    CLARIVUE10_TEMP_VAR_NAME, CLARIVUE10_TEMP_UNIT_NAME,
                    CLARIVUE10_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the CampbellClariVUE10_Temp object - no action needed.
      */
-    ~CampbellClariVUE10_Temp() {}
+    ~CampbellClariVUE10_Temp() override = default;
 };
 
 
@@ -377,8 +378,9 @@ class CampbellClariVUE10_ErrorCode : public Variable {
     explicit CampbellClariVUE10_ErrorCode(
         CampbellClariVUE10* parentSense, const char* uuid = "",
         const char* varCode = CLARIVUE10_ERRORCODE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CLARIVUE10_ERRORCODE_VAR_NUM,
-                   (uint8_t)CLARIVUE10_ERRORCODE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(CLARIVUE10_ERRORCODE_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_ERRORCODE_RESOLUTION),
                    CLARIVUE10_ERRORCODE_VAR_NAME,
                    CLARIVUE10_ERRORCODE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -388,8 +390,8 @@ class CampbellClariVUE10_ErrorCode : public Variable {
      * used.
      */
     CampbellClariVUE10_ErrorCode()
-        : Variable((uint8_t)CLARIVUE10_ERRORCODE_VAR_NUM,
-                   (uint8_t)CLARIVUE10_ERRORCODE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CLARIVUE10_ERRORCODE_VAR_NUM),
+                   static_cast<uint8_t>(CLARIVUE10_ERRORCODE_RESOLUTION),
                    CLARIVUE10_ERRORCODE_VAR_NAME,
                    CLARIVUE10_ERRORCODE_UNIT_NAME,
                    CLARIVUE10_ERRORCODE_DEFAULT_CODE) {}
@@ -397,7 +399,7 @@ class CampbellClariVUE10_ErrorCode : public Variable {
      * @brief Destroy the CampbellClariVUE10_ErrorCode object - no action
      * needed.
      */
-    ~CampbellClariVUE10_ErrorCode() {}
+    ~CampbellClariVUE10_ErrorCode() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLCLARIVUE10_H_

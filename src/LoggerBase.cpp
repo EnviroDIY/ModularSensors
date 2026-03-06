@@ -178,8 +178,6 @@ Logger::Logger() {
     // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
 }
-// Destructor
-Logger::~Logger() {}
 
 
 // ===================================================================== //
@@ -197,9 +195,9 @@ void Logger::setLoggingInterval(int16_t loggingIntervalMinutes) {
 }
 
 
-// Sets the number of initial short intervals
-void Logger::setinitialShortIntervals(int16_t initialShortIntervals) {
-    _remainingShortIntervals = initialShortIntervals;
+// Sets the number of startup measurements
+void Logger::setStartupMeasurements(int16_t startupMeasurements) {
+    _startupMeasurements = startupMeasurements;
 }
 
 
@@ -518,7 +516,7 @@ loggerModem* Logger::registerDataPublisher(dataPublisher* publisher) {
     return _logModem;
 }
 
-bool Logger::checkRemotesConnectionNeeded(void) {
+bool Logger::checkRemotesConnectionNeeded() {
     MS_DBG(F("Asking publishers if they need a connection."));
 
     bool needed = false;
@@ -543,7 +541,7 @@ void Logger::publishDataToRemotes(bool forceFlush) {
         }
     }
 }
-void Logger::sendDataToRemotes(void) {
+void Logger::sendDataToRemotes() {
     publishDataToRemotes();
 }
 void Logger::publishMetadataToRemotes() {
@@ -579,7 +577,7 @@ void Logger::setLoggerTimeZone(int8_t timeZone) {
     }
 #endif
 }
-int8_t Logger::getLoggerTimeZone(void) {
+int8_t Logger::getLoggerTimeZone() {
     return Logger::_loggerUTCOffset;
 }
 // Sets the static timezone that the RTC is programmed in
@@ -589,7 +587,7 @@ int8_t Logger::getLoggerTimeZone(void) {
 void Logger::setRTCTimeZone(int8_t timeZone) {
     loggerClock::setRTCOffset(timeZone);
 }
-int8_t Logger::getRTCTimeZone(void) {
+int8_t Logger::getRTCTimeZone() {
     return loggerClock::getRTCOffset();
 }
 
@@ -615,7 +613,7 @@ void Logger::setTZOffset(int8_t offset) {
                  F("hours behind the logging timezone"));
     }
 }
-int8_t Logger::getTZOffset(void) {
+int8_t Logger::getTZOffset() {
     return Logger::_loggerRTCOffset;
 }
 time_t Logger::getNowLocalEpoch() {
@@ -647,19 +645,19 @@ void Logger::formatDateTime(char* buffer, const char* fmt,
                                 Logger::_loggerEpoch);
 }
 // This checks that the logger time is within a "sane" range
-bool Logger::isRTCSane(void) {
+bool Logger::isRTCSane() {
     return loggerClock::isRTCSane();
 }
 
 
 // This sets static variables for the date/time - this is needed so that all
-// data outputs (SD, EnviroDIY, serial printing, etc) print the same time
+// data outputs (SD, publishers, serial printing, etc) print the same time
 // for updating the sensors - even though the routines to update the sensors
 // and to output the data may take several seconds.
 // It is not currently possible to output the instantaneous time an individual
 // sensor was updated, just a single marked time.  By custom, this should be
 // called before updating the sensors, not after.
-void Logger::markTime(void) {
+void Logger::markTime() {
     MS_DEEP_DBG(F("Marking time..."));
     Logger::markedUTCUnixTime   = getNowUTCEpoch();
     Logger::markedLocalUnixTime = markedUTCUnixTime +
@@ -669,11 +667,11 @@ void Logger::markTime(void) {
 
 // This checks to see if the CURRENT time is an even interval of the logging
 // rate
-bool Logger::checkInterval(void) {
+bool Logger::checkInterval() {
     bool     retval;
     uint32_t checkTime = static_cast<uint32_t>(getNowLocalEpoch());
     int16_t  interval  = _loggingIntervalMinutes;
-    if (_remainingShortIntervals > 0) {
+    if (_startupMeasurements > 0) {
         // log the first few samples at an interval of 1 minute so that
         // operation can be quickly verified in the field
         interval = 1;
@@ -686,7 +684,7 @@ bool Logger::checkInterval(void) {
 
 #if MS_LOGGERBASE_BUTTON_BENCH_TEST == 0
     // If the person has set the button pin **NOT** to be used for "bench
-    // testing" (ie, immediate rapid logging) then we instead read this button
+    // testing" (i.e., immediate rapid logging) then we instead read this button
     // testing flag to mean "log now." To make that happen, we mark the time
     // here and return true if the flag is set.
     bool testing = Logger::startTesting;
@@ -705,15 +703,15 @@ bool Logger::checkInterval(void) {
                static_cast<uint32_t>(Logger::markedLocalUnixTime));
         MS_DBG(F("Time to log!"));
 #if MS_LOGGERBASE_BUTTON_BENCH_TEST == 0
-        if ((_remainingShortIntervals > 0) && (!testing)) {
+        if ((_startupMeasurements > 0) && (!testing)) {
 #else
-        if ((_remainingShortIntervals > 0)) {
+        if ((_startupMeasurements > 0)) {
 #endif
-            MS_DBG(F("Within initial 1-minute intervals; "),
-                   _remainingShortIntervals, F("left."));
+            MS_DBG(F("Within initial 1-minute measurements; "),
+                   _startupMeasurements, F("left."));
             // once we've marked the time, we need to decrement the remaining
-            // short intervals by one. (IFF not in "log now" testing mode.)
-            _remainingShortIntervals -= 1;
+            // startup measurements by one. (IFF not in "log now" testing mode.)
+            _startupMeasurements -= 1;
         }
         retval = true;
     } else {
@@ -725,11 +723,11 @@ bool Logger::checkInterval(void) {
 
 
 // This checks to see if the MARKED time is an even interval of the logging rate
-bool Logger::checkMarkedInterval(void) {
+bool Logger::checkMarkedInterval() {
     int16_t interval = _loggingIntervalMinutes;
-    // If we're within the range of our initial short intervals, we're logging,
+    // If we're within the range of our startup measurements, we're logging,
     // then set the interval to 1.
-    if (_remainingShortIntervals > 0) { interval = 1; }
+    if (_startupMeasurements > 0) { interval = 1; }
 
     bool retval;
     MS_DBG(
@@ -741,11 +739,11 @@ bool Logger::checkMarkedInterval(void) {
     if (Logger::markedLocalUnixTime != 0 &&
         (Logger::markedLocalUnixTime % (interval * 60) == 0)) {
         MS_DBG(F("Time to log!"));
-        // De-increment the number of short intervals after marking
-        if (_remainingShortIntervals > 0) {
-            MS_DBG(F("Within initial 1-minute intervals. There are "),
-                   _remainingShortIntervals, F("left."));
-            _remainingShortIntervals -= 1;
+        // De-increment the number of startup measurements after marking
+        if (_startupMeasurements > 0) {
+            MS_DBG(F("Within startup measurements. There are "),
+                   _startupMeasurements, F("left."));
+            _startupMeasurements -= 1;
         }
         retval = true;
     } else {
@@ -764,14 +762,14 @@ bool Logger::checkMarkedInterval(void) {
 // In this case, we're doing nothing, we just want the processor to wake
 // This must be a static function (which means it can only call other static
 // functions.)
-void Logger::wakeISR(void) {
+void Logger::wakeISR() {
     MS_DEEP_DBG(F("\nInterrupt on wake pin!"));
 }
 
 
 // Puts the system to sleep to conserve battery life.
 // This DOES NOT sleep or wake the sensors!!
-void Logger::systemSleep(void) {
+void Logger::systemSleep() {
     MS_DBG(F("\n\nEntering system sleep function.  ZZzzz..."));
 
 #if !defined(MS_USE_RTC_ZERO)
@@ -819,10 +817,6 @@ void Logger::systemSleep(void) {
     pinMode(SCL, OUTPUT);
     digitalWrite(SCL, LOW);
 #endif
-
-    // Disable the watch-dog timer
-    MS_DEEP_DBG(F("Disabling the watchdog"));
-    extendedWatchDog::disableWatchDog();
 
 #if defined(ARDUINO_ARCH_SAMD)
 
@@ -978,6 +972,12 @@ void Logger::systemSleep(void) {
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 #endif
 
+    // Disable the watch-dog timer - the very last thing before sleeping just in
+    // case anything else goes wrong in between.
+    // NOTE: Because this is last, we can't print a message after disabling the
+    // watch-dog.
+    extendedWatchDog::disableWatchDog();
+
     __DSB();  // Data sync barrier - to ensure outgoing memory accesses
               // complete
     __WFI();  // wait for interrupt
@@ -1027,7 +1027,7 @@ void Logger::systemSleep(void) {
     sleep_bod_disable();
 #endif
 
-    // disable all power-reduction modules (ie, the processor module clocks)
+    // disable all power-reduction modules (i.e., the processor module clocks)
     // NOTE:  This only shuts down the various clocks on the processor via
     // the power reduction register!  It does NOT actually disable the
     // modules themselves or set the pins to any particular state!  This
@@ -1059,6 +1059,12 @@ void Logger::systemSleep(void) {
     MS_2ND_OUTPUT.flush();
 #endif
 
+    // Disable the watch-dog timer - the very last thing before sleeping just in
+    // case anything else goes wrong in between.
+    // NOTE: Because this is last, we can't print a message after disabling the
+    // watch-dog.
+    extendedWatchDog::disableWatchDog();
+
     // Actually put the processor into sleep mode.
     // This must happen after the SE bit is set.
     sleep_cpu();
@@ -1070,10 +1076,13 @@ void Logger::systemSleep(void) {
     // ---------------------------------------------------------------------
     // -- The portion below this happens on wake up, after any wake ISR's --
 
+    // Re-enable the watch-dog timer right away!
+    extendedWatchDog::enableWatchDog();
+
 #if defined(ENVIRODIY_STONEFLY_M4)
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN,
-                 HIGH);  // turn off the built-in LED if using a Stonefly M4
+                 HIGH);  // turn on the built-in LED if using a Stonefly M4
 #endif
 
 #if defined(ARDUINO_ARCH_SAMD)
@@ -1102,6 +1111,14 @@ void Logger::systemSleep(void) {
     // ^^ Restarts the bus, including re-attaching the NVIC interrupts
     USBDevice.attach();
     // ^^ USB->DEVICE.CTRLB.bit.DETACH = 0; enables USB interrupts
+#if (defined(MS_LOGGERBASE_DEBUG_DEEP) || defined(MS_LOGGERBASE_DEBUG)) && \
+    defined(SERIAL_PORT_USBVIRTUAL)
+    // if debugging is enabled, wait for the USB port to connect
+    uint32_t startSerialWait = millis();
+    SERIAL_PORT_USBVIRTUAL.begin(0);  // baud rate is ignored on USB
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() - startSerialWait < 250));
+    MS_DEEP_DBG(F("USBDevice reattached"));
+#endif
 #endif  // USE_TINYUSB
 #endif  // ARDUINO_ARCH_SAMD
 
@@ -1111,7 +1128,7 @@ void Logger::systemSleep(void) {
     // to the processor registers
     noInterrupts();
 
-    // Re-enable all power modules (ie, the processor module clocks)
+    // Re-enable all power modules (i.e., the processor module clocks)
     // NOTE:  This only re-enables the various clocks on the processor!
     // The modules may need to be re-initialized after the clocks re-start.
     power_all_enable();
@@ -1126,10 +1143,6 @@ void Logger::systemSleep(void) {
     interrupts();
 
 #endif
-
-    // Re-enable the watch-dog timer
-    MS_DEEP_DBG(F("Re-enabling the watchdog"));
-    extendedWatchDog::enableWatchDog();
 
     // Re-start the I2C interface
     MS_DEEP_DBG(F("Restarting I2C"));
@@ -1226,7 +1239,7 @@ String Logger::generateFileName(bool include_time, const char* extension,
 // This generates a file name from the logger id and the current date
 // This will be used if the setFileName function is not called before the
 // begin() function is called.
-void Logger::generateAutoFileName(void) {
+void Logger::generateAutoFileName() {
     // Generate the file name from logger ID and date
     auto fileName = generateFileName(false, ".csv");
     setFileName(fileName);
@@ -1260,8 +1273,8 @@ void Logger::printFileHeader(Stream* stream) {
     stream->print(F("Data Logger File: "));
     stream->println(_fileName);
 
-    // Adding the sampling feature UUID (only applies to EnviroDIY logger)
-    if (strlen(_samplingFeatureUUID) > 1) {
+    // Adding the sampling feature UUID
+    if (_samplingFeatureUUID != nullptr && strlen(_samplingFeatureUUID) > 1) {
         stream->print(F("Sampling Feature UUID: "));
         stream->print(_samplingFeatureUUID);
         stream->println(',');
@@ -1274,12 +1287,15 @@ void Logger::printFileHeader(Stream* stream) {
     // Next comes the ODM2 unit name
     STREAM_CSV_ROW(F("Result Unit:"), getVarUnitAtI(i))
     // Next comes the variable UUIDs
-    // We'll only add UUID's if we see a UUID for the first variable
-    if (getVarUUIDAtI(0) != nullptr && strlen(getVarUUIDAtI(0)) > 1) {
-        STREAM_CSV_ROW(F("Result UUID:"), getVarUUIDAtI(i))
-    }
+    /// @todo Currrently the file header will always have a UUID row, but it
+    /// will be blank if the user doesn't set any UUIDs.  Versions 0.37.0 and
+    /// prior only printed the row if the **first** UUID existed.  It might be
+    /// better to only print the UUID row if at least one variable has a UUID
+    /// even if that single variable with a UUID isn't the first one.
+    STREAM_CSV_ROW(F("Result UUID:"),
+                   getVarUUIDAtI(i) != nullptr ? getVarUUIDAtI(i) : "")
 
-    // We'll finish up the the custom variable codes
+    // We'll finish up with the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
     if (_loggerUTCOffset > 0) {
         dtRowHeader += '+' + _loggerUTCOffset;
@@ -1292,7 +1308,7 @@ void Logger::printFileHeader(Stream* stream) {
 
 // This prints a comma separated list of values of sensor data - including the
 // time -  out over an Arduino stream
-void Logger::printSensorDataCSV(Stream* stream) {
+void Logger::printVariableValuesCSV(Stream* stream) {
     String csvString = "";
     String iso8601   = formatDateTime_ISO8601(Logger::markedLocalUnixTime);
     iso8601.replace("T", " ");
@@ -1306,8 +1322,13 @@ void Logger::printSensorDataCSV(Stream* stream) {
     stream->println();
 }
 
+// Backward compatibility wrapper
+void Logger::printSensorDataCSV(Stream* stream) {
+    printVariableValuesCSV(stream);
+}
+
 // Protected helper function - This checks if the SD card is available and ready
-bool Logger::initializeSDCard(void) {
+bool Logger::initializeSDCard() {
     // If we don't know the slave select of the sd card, we can't use it
     if (_SDCardSSPin < 0) {
         PRINTOUT(F("Slave/Chip select pin for SD card has not been set."));
@@ -1450,7 +1471,7 @@ bool Logger::openFile(String& filename, bool createFile,
 // These functions create a file on the SD card with the given filename and
 // set the proper timestamps to the file.
 // The filename may either be the one set by
-// setFileName(String)/setFileName(void) or can be specified in the function. If
+// setFileName(String)/setFileName() or can be specified in the function. If
 // specified, it will also write a header to the file based on the sensors in
 // the group. This can be used to force a logger to create a file with a
 // secondary file name.
@@ -1475,7 +1496,7 @@ bool Logger::createLogFile(bool writeDefaultHeader) {
 // These functions write a file on the SD card with the given filename and
 // set the proper timestamps to the file.
 // The filename may either be the one set by
-// setFileName(String)/setFileName(void) or can be specified in the function. If
+// setFileName(String)/setFileName() or can be specified in the function. If
 // the file does not already exist, the file will be created. This can be used
 // to force a logger to write to a file with a secondary file name.
 bool Logger::logToSD(String& filename, String& rec) {
@@ -1508,7 +1529,7 @@ bool Logger::logToSD(String& rec) {
 }
 // NOTE:  This is structured differently than the version with a string input
 // record.  This is to avoid the creation/passing of very long strings.
-bool Logger::logToSD(void) {
+bool Logger::logToSD() {
     // Get a new file name if the name is blank
     if (_fileName == "") generateAutoFileName();
 
@@ -1525,13 +1546,13 @@ bool Logger::logToSD(void) {
     }
 
     // Write the data
-    printSensorDataCSV(&logFile);
+    printVariableValuesCSV(&logFile);
 // Echo the line to the serial port
 #if !defined(MS_SILENT)
     PRINTOUT(F("\n \\/---- Line Saved to SD Card ----\\/"));
-    printSensorDataCSV(&MS_OUTPUT);
+    printVariableValuesCSV(&MS_OUTPUT);
 #if defined(MS_2ND_OUTPUT)
-    printSensorDataCSV(&MS_2ND_OUTPUT);
+    printVariableValuesCSV(&MS_2ND_OUTPUT);
 #endif
     PRINTOUT('\n');
 #endif
@@ -1604,18 +1625,18 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
 
         extendedWatchDog::resetWatchDog();
         // Update the values from all attached sensors
-        // NOTE:  NOT using complete update because we want the sensors to be
-        // left on between iterations in testing mode.
-        _internalArray->updateAllSensors();
+        // NOTE:  Use completeUpdate with all flags false so sensors stay
+        // powered and awake between iterations in testing mode.
+        _internalArray->completeUpdate(false, false, false, false);
         // Print out the current logger time
         PRINTOUT(F("Current logger time is"),
                  formatDateTime_ISO8601(getNowLocalEpoch()));
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
 #if !defined(MS_SILENT)
-        _internalArray->printSensorData(&MS_OUTPUT);
+        _internalArray->printVariableData(&MS_OUTPUT);
 #if defined(MS_2ND_OUTPUT)
-        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+        _internalArray->printVariableData(&MS_2ND_OUTPUT);
 #endif
 #endif
         PRINTOUT(F("-----------------------"));
@@ -1838,9 +1859,9 @@ void Logger::logData(bool sleepBeforeReturning) {
 // Print out the sensor data
 #if !defined(MS_SILENT)
         PRINTOUT(" ");
-        _internalArray->printSensorData(&MS_OUTPUT);
+        _internalArray->printVariableData(&MS_OUTPUT);
 #if defined(MS_2ND_OUTPUT)
-        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+        _internalArray->printVariableData(&MS_2ND_OUTPUT);
 #endif
         PRINTOUT(" ");
 #endif
@@ -1910,9 +1931,9 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
 // Print out the sensor data
 #if !defined(MS_SILENT)
         PRINTOUT(" ");
-        _internalArray->printSensorData(&MS_OUTPUT);
+        _internalArray->printVariableData(&MS_OUTPUT);
 #if defined(MS_2ND_OUTPUT)
-        _internalArray->printSensorData(&MS_2ND_OUTPUT);
+        _internalArray->printVariableData(&MS_2ND_OUTPUT);
 #endif
         PRINTOUT(" ");
 #endif

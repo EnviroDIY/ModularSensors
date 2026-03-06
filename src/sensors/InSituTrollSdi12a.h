@@ -124,7 +124,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; conductivity should have 1.
+ * @brief Decimal places in string representation; conductivity should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
@@ -155,7 +155,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; temperature should have 2.
+ * @brief Decimal places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging  - resolution is 0.1°C
@@ -186,7 +186,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; depth should have 1.
+ * @brief Decimal places in string representation; depth should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 2 mm
@@ -270,7 +270,7 @@ class InSituTrollSdi12a : public SDI12Sensors {
     /**
      * @brief Destroy the ITROLL object
      */
-    ~InSituTrollSdi12a() {}
+    ~InSituTrollSdi12a() override = default;
 };
 
 
@@ -297,8 +297,8 @@ class InSituTrollSdi12a_Pressure : public Variable {
     InSituTrollSdi12a_Pressure(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = ITROLLA_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ITROLLA_PRESSURE_VAR_NUM,
-                   (uint8_t)ITROLLA_PRESSURE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(ITROLLA_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(ITROLLA_PRESSURE_RESOLUTION),
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -308,14 +308,14 @@ class InSituTrollSdi12a_Pressure : public Variable {
      * used.
      */
     InSituTrollSdi12a_Pressure()
-        : Variable((uint8_t)ITROLLA_PRESSURE_VAR_NUM,
-                   (uint8_t)ITROLLA_PRESSURE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ITROLLA_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(ITROLLA_PRESSURE_RESOLUTION),
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    ITROLLA_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituTrollSdi12a_Pressure object - no action needed.
      */
-    ~InSituTrollSdi12a_Pressure() {}
+    ~InSituTrollSdi12a_Pressure() override = default;
 };
 
 
@@ -341,9 +341,10 @@ class InSituTrollSdi12a_Temp : public Variable {
      */
     InSituTrollSdi12a_Temp(Sensor* parentSense, const char* uuid = "",
                            const char* varCode = ITROLLA_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ITROLLA_TEMP_VAR_NUM,
-                   (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
-                   ITROLLA_TEMP_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ITROLLA_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ITROLLA_TEMP_RESOLUTION),
+                   ITROLLA_TEMP_TEMP_VAR_NAME, ITROLLA_TEMP_TEMP_UNIT_NAME,
+                   varCode, uuid) {}
 
     /**
      * @brief Construct a new InSituTrollSdi12a_Temp object.
@@ -352,13 +353,14 @@ class InSituTrollSdi12a_Temp : public Variable {
      * used.
      */
     InSituTrollSdi12a_Temp()
-        : Variable((uint8_t)ITROLLA_TEMP_VAR_NUM,
-                   (uint8_t)ITROLLA_TEMP_RESOLUTION, ITROLLA_TEMP_TEMP_VAR_NAME,
-                   ITROLLA_TEMP_TEMP_UNIT_NAME, ITROLLA_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ITROLLA_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ITROLLA_TEMP_RESOLUTION),
+                   ITROLLA_TEMP_TEMP_VAR_NAME, ITROLLA_TEMP_TEMP_UNIT_NAME,
+                   ITROLLA_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituTrollSdi12a_Temp object - no action needed.
      */
-    ~InSituTrollSdi12a_Temp() {}
+    ~InSituTrollSdi12a_Temp() override = default;
 };
 
 
@@ -384,9 +386,10 @@ class InSituTrollSdi12a_Depth : public Variable {
      */
     InSituTrollSdi12a_Depth(Sensor* parentSense, const char* uuid = "",
                             const char* varCode = ITROLLA_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ITROLLA_DEPTH_VAR_NUM,
-                   (uint8_t)ITROLLA_DEPTH_RESOLUTION, ITROLLA_DEPTH_VAR_NAME,
-                   ITROLLA_DEPTH_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ITROLLA_DEPTH_VAR_NUM),
+                   static_cast<uint8_t>(ITROLLA_DEPTH_RESOLUTION),
+                   ITROLLA_DEPTH_VAR_NAME, ITROLLA_DEPTH_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new InSituTrollSdi12a_Depth object.
      *
@@ -394,13 +397,14 @@ class InSituTrollSdi12a_Depth : public Variable {
      * used.
      */
     InSituTrollSdi12a_Depth()
-        : Variable((uint8_t)ITROLLA_DEPTH_VAR_NUM,
-                   (uint8_t)ITROLLA_DEPTH_RESOLUTION, ITROLLA_DEPTH_VAR_NAME,
-                   ITROLLA_DEPTH_UNIT_NAME, ITROLLA_DEPTH_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ITROLLA_DEPTH_VAR_NUM),
+                   static_cast<uint8_t>(ITROLLA_DEPTH_RESOLUTION),
+                   ITROLLA_DEPTH_VAR_NAME, ITROLLA_DEPTH_UNIT_NAME,
+                   ITROLLA_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituTrollSdi12a_Depth object - no action needed.
      */
-    ~InSituTrollSdi12a_Depth() {}
+    ~InSituTrollSdi12a_Depth() override = default;
 };
 /**@}*/
 

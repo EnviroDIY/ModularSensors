@@ -18,25 +18,21 @@ FreescaleMPL115A2::FreescaleMPL115A2(TwoWire* theI2C, int8_t powerPin,
                                      uint8_t measurementsToAverage)
     : Sensor("FreescaleMPL115A2", MPL115A2_NUM_VARIABLES,
              MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS,
-             MPL115A2_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage),
-      _i2c(theI2C) {}
-FreescaleMPL115A2::FreescaleMPL115A2(int8_t  powerPin,
-                                     uint8_t measurementsToAverage)
-    : Sensor("FreescaleMPL115A2", MPL115A2_NUM_VARIABLES,
-             MPL115A2_WARM_UP_TIME_MS, MPL115A2_STABILIZATION_TIME_MS,
              MPL115A2_MEASUREMENT_TIME_MS, powerPin, -1, measurementsToAverage,
              MPL115A2_INC_CALC_VARIABLES),
-      _i2c(&Wire) {}
-// Destructor
-FreescaleMPL115A2::~FreescaleMPL115A2() {}
+      _i2c(theI2C != nullptr ? theI2C : &Wire) {}
+// Delegating constructor
+FreescaleMPL115A2::FreescaleMPL115A2(int8_t  powerPin,
+                                     uint8_t measurementsToAverage)
+    : FreescaleMPL115A2(&Wire, powerPin, measurementsToAverage) {}
 
 
-String FreescaleMPL115A2::getSensorLocation(void) {
+String FreescaleMPL115A2::getSensorLocation() {
     return F("I2C_0x60");
 }
 
 
-bool FreescaleMPL115A2::setup(void) {
+bool FreescaleMPL115A2::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -59,41 +55,33 @@ bool FreescaleMPL115A2::setup(void) {
 }
 
 
-bool FreescaleMPL115A2::addSingleMeasurementResult(void) {
-    // Initialize float variables
-    float temp  = -9999;
-    float press = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        // Read values
-        mpl115a2_internal.getPT(&press, &temp);
-
-        if (isnan(temp)) temp = -9999;
-        if (isnan(press)) press = -9999;
-
-        if (press > 115.0 || temp < -40.0) {
-            temp  = -9999;
-            press = -9999;
-        }
-
-        MS_DBG(F("  Temperature:"), temp);
-        MS_DBG(F("  Pressure:"), press);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+bool FreescaleMPL115A2::addSingleMeasurementResult() {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return finalizeMeasurementAttempt(false);
     }
 
-    verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);
+    bool  success = false;
+    float temp    = MS_INVALID_VALUE;
+    float press   = MS_INVALID_VALUE;
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // no way of knowing if successful, just return true
-    return true;
+    // Read values
+    mpl115a2_internal.getPT(&press, &temp);
+
+    MS_DBG(F("  Temperature:"), temp);
+    MS_DBG(F("  Pressure:"), press);
+
+    if (!isnan(temp) && !isnan(press) && press >= 50.0 && press <= 115.0 &&
+        temp >= -20.0 && temp <= 85.0) {
+        verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
+        verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);
+        success = true;
+    } else {
+        MS_DBG(F("  Values outside expected range or invalid"));
+    }
+
+    // Return success value when finished
+    return finalizeMeasurementAttempt(success);
 }

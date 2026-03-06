@@ -28,7 +28,7 @@
  * SIM800.
  * The one exception is the Sodaq GPRSBee **R6 and higher**, which has its own
  * [constructor](@ref modem_gprsbee).
- * The earlier Sodaq GPRSBee's (ie, R4) do use this version.
+ * The earlier Sodaq GPRSBee's (i.e., R4) do use this version.
  *
  * The SIM800 consumes up to 2A of power while connecting to the network.
  * That is 4x what a typical USB or Arduino board can supply, so expect to give
@@ -78,7 +78,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientSIM800.h"
 #include "LoggerModem.h"
 
 #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
@@ -190,34 +190,35 @@ class SIMComSIM800 : public loggerModem {
     /**
      * @brief Destroy the SIMComSIM800 object - no action taken
      */
-    ~SIMComSIM800();
+    ~SIMComSIM800() override = default;
 
-    bool modemWake(void) override;
+    bool modemWake() override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    void disconnectInternet() override;
 
-    virtual Client* createClient() override;
-    virtual void    deleteClient(Client* client);
-    virtual Client* createSecureClient() override;
-    virtual void    deleteSecureClient(Client* client);
-    virtual Client* createSecureClient(
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) override;
-    virtual Client*
-    createSecureClient(const char* pskIdent, const char* psKey,
-                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    virtual Client*
-    createSecureClient(const char* pskTableName,
-                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+    Client* createClient() override;
+    void    deleteClient(Client* client) override;
+    Client* createSecureClient() override;
+    void    deleteSecureClient(Client* client) override;
+    Client* createSecureClient(SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) override;
+    Client* createSecureClient(
+        const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    Client* createSecureClient(
+        const char* pskTableName,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
-    uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime() override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
     bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                int16_t& milliVolts) override;
-    float getModemChipTemperature(void) override;
+    float getModemChipTemperature() override;
 
 #ifdef MS_SIMCOMSIM800_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -226,14 +227,14 @@ class SIMComSIM800 : public loggerModem {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmSim800 gsmModem;
 
  protected:
-    bool isInternetAvailable(void) override;
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
-    bool isModemAwake(void) override;
+    bool isInternetAvailable() override;
+    bool modemSleepFxn() override;
+    bool modemWakeFxn() override;
+    bool extraModemSetup() override;
+    bool isModemAwake() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

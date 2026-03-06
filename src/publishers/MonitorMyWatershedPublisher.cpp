@@ -1,146 +1,139 @@
 /**
- * @file EnviroDIYPublisher.cpp
+ * @file MonitorMyWatershedPublisher.cpp
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  * @author Thomas Watson <twatson52@icloud.com>
  *
- * @brief Implements the EnviroDIYPublisher class.
+ * @brief Implements the MonitorMyWatershedPublisher class.
  */
 
-#include "EnviroDIYPublisher.h"
+#include "MonitorMyWatershedPublisher.h"
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for Monitor My Watershed
 // ============================================================================
 
 // Constant values for post requests
 // I want to refer to these more than once while ensuring there is only one copy
 // in memory
-const char* EnviroDIYPublisher::tokenHeader         = "\r\nTOKEN: ";
-const char* EnviroDIYPublisher::contentLengthHeader = "\r\nContent-Length: ";
-const char* EnviroDIYPublisher::contentTypeHeader =
+const char* MonitorMyWatershedPublisher::tokenHeader = "\r\nTOKEN: ";
+const char* MonitorMyWatershedPublisher::contentLengthHeader =
+    "\r\nContent-Length: ";
+const char* MonitorMyWatershedPublisher::contentTypeHeader =
     "\r\nContent-Type: application/json\r\n\r\n";
 
-const char* EnviroDIYPublisher::samplingFeatureTag = "{\"sampling_feature\":\"";
-const char* EnviroDIYPublisher::timestampTag       = "\",\"timestamp\":";
+const char* MonitorMyWatershedPublisher::samplingFeatureTag =
+    "{\"sampling_feature\":\"";
+const char* MonitorMyWatershedPublisher::timestampTag = "\",\"timestamp\":";
 
 
 // Constructors
-EnviroDIYPublisher::EnviroDIYPublisher() : dataPublisher() {
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
+// Primary constructor with all parameters
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, Client* inClient, const char* registrationToken,
+    const char* samplingFeatureUUID, int sendEveryX,
+    uint8_t startupTransmissions)
+    : dataPublisher(baseLogger, inClient, sendEveryX, startupTransmissions) {
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
     setPort(80);
+    if (registrationToken) setToken(registrationToken);
+    if (samplingFeatureUUID)
+        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                                       int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+
+// Delegating constructors
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, const char* registrationToken,
+    const char* samplingFeatureUUID, int sendEveryX,
+    uint8_t startupTransmissions)
+    : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
+                                  registrationToken, samplingFeatureUUID,
+                                  sendEveryX, startupTransmissions) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, Client* inClient, const char* registrationToken,
+    int sendEveryX, uint8_t startupTransmissions)
+    : MonitorMyWatershedPublisher(baseLogger, inClient, registrationToken,
+                                  nullptr, sendEveryX, startupTransmissions) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, Client* inClient, int sendEveryX,
+    uint8_t startupTransmissions)
+    : MonitorMyWatershedPublisher(baseLogger, inClient, nullptr, nullptr,
+                                  sendEveryX, startupTransmissions) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, const char* registrationToken, int sendEveryX,
+    uint8_t startupTransmissions)
+    : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
+                                  registrationToken, nullptr, sendEveryX,
+                                  startupTransmissions) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher(
+    Logger& baseLogger, int sendEveryX, uint8_t startupTransmissions)
+    : MonitorMyWatershedPublisher(baseLogger, static_cast<Client*>(nullptr),
+                                  nullptr, nullptr, sendEveryX,
+                                  startupTransmissions) {}
+MonitorMyWatershedPublisher::MonitorMyWatershedPublisher() : dataPublisher() {
+    // NOTE: _logBuffer is not initialized here because _baseLogger is null
+    // Must call begin(Logger&, ...) before use to properly initialize
+    // _logBuffer
     setHost("monitormywatershed.org");
     setPath("/api/data-stream/");
     setPort(80);
 }
-EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
-                                       const char* registrationToken,
-                                       const char* samplingFeatureUUID,
-                                       int         sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setToken(registrationToken);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger&     baseLogger,
-                                       const char* registrationToken,
-                                       int         sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setToken(registrationToken);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                                       const char* registrationToken,
-                                       const char* samplingFeatureUUID,
-                                       int         sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setToken(registrationToken);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
-EnviroDIYPublisher::EnviroDIYPublisher(Logger& baseLogger, Client* inClient,
-                                       const char* registrationToken,
-                                       int         sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setToken(registrationToken);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-    setHost("monitormywatershed.org");
-    setPath("/api/data-stream/");
-    setPort(80);
-}
-// Destructor
-EnviroDIYPublisher::~EnviroDIYPublisher() {}
-
 
 // Returns the data destination
-String EnviroDIYPublisher::getHost(void) {
-    return String(enviroDIYHost);
+String MonitorMyWatershedPublisher::getHost() {
+    return String(monitorMWHost);
+}
+
+// Sets the data destination host
+void MonitorMyWatershedPublisher::setHost(const char* host) {
+    monitorMWHost = host;
 }
 
 // Returns the data destination
-void EnviroDIYPublisher::setHost(const char* host) {
-    enviroDIYHost = host;
+String MonitorMyWatershedPublisher::getPath() {
+    return String(monitorMWPath);
+}
+
+// Sets the data destination path/endpoint
+void MonitorMyWatershedPublisher::setPath(const char* endpoint) {
+    monitorMWPath = endpoint;
 }
 
 // Returns the data destination
-String EnviroDIYPublisher::getPath(void) {
-    return String(enviroDIYPath);
+int MonitorMyWatershedPublisher::getPort() {
+    return monitorMWPort;
 }
 
-// Returns the data destination
-void EnviroDIYPublisher::setPath(const char* endpoint) {
-    enviroDIYPath = endpoint;
-}
-
-// Returns the data destination
-int EnviroDIYPublisher::getPort(void) {
-    return enviroDIYPort;
-}
-
-// Returns the data destination
-void EnviroDIYPublisher::setPort(int port) {
-    enviroDIYPort = port;
+// Sets the data destination port
+void MonitorMyWatershedPublisher::setPort(int port) {
+    monitorMWPort = port;
 }
 
 
-void EnviroDIYPublisher::setToken(const char* registrationToken) {
+void MonitorMyWatershedPublisher::setToken(const char* registrationToken) {
     _registrationToken = registrationToken;
 }
 
 
 // Calculates how long the JSON will be
-uint16_t EnviroDIYPublisher::calculateJsonSize() {
+uint16_t MonitorMyWatershedPublisher::calculateJsonSize() {
     uint8_t variables = _logBuffer.getNumVariables();
     int     records   = _logBuffer.getNumRecords();
     MS_DBG(F("Number of records in log buffer:"), records);
     MS_DBG(F("Number of variables in log buffer:"), variables);
     MS_DBG(F("Number of variables in base logger:"),
            _baseLogger->getArrayVarCount());
+
+    // Guard against underflow when records == 0
+    if (records == 0) {
+        MS_DBG(F("No records to send, returning minimal JSON size"));
+        return 50;  // Minimal size for empty JSON structure
+    }
 
     uint16_t jsonLength = strlen(samplingFeatureTag);
     jsonLength += 36;  // sampling feature UUID
@@ -181,41 +174,40 @@ uint16_t EnviroDIYPublisher::calculateJsonSize() {
 
 
 // A way to set members in the begin to use with a bare constructor
-void EnviroDIYPublisher::begin(Logger& baseLogger, Client* inClient,
-                               const char* registrationToken,
-                               const char* samplingFeatureUUID) {
+void MonitorMyWatershedPublisher::begin(Logger& baseLogger, Client* inClient,
+                                        const char* registrationToken,
+                                        const char* samplingFeatureUUID) {
     setToken(registrationToken);
     dataPublisher::begin(baseLogger, inClient);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    if (samplingFeatureUUID != nullptr) {
+        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    }
     _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
 }
-void EnviroDIYPublisher::begin(Logger&     baseLogger,
-                               const char* registrationToken,
-                               const char* samplingFeatureUUID) {
-    setToken(registrationToken);
-    dataPublisher::begin(baseLogger);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+void MonitorMyWatershedPublisher::begin(Logger&     baseLogger,
+                                        const char* registrationToken,
+                                        const char* samplingFeatureUUID) {
+    begin(baseLogger, static_cast<Client*>(nullptr), registrationToken,
+          samplingFeatureUUID);
 }
-void EnviroDIYPublisher::begin(Logger&     baseLogger,
-                               const char* registrationToken) {
-    setToken(registrationToken);
-    dataPublisher::begin(baseLogger);
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
+void MonitorMyWatershedPublisher::begin(Logger&     baseLogger,
+                                        const char* registrationToken) {
+    begin(baseLogger, static_cast<Client*>(nullptr), registrationToken,
+          nullptr);
 }
 
-bool EnviroDIYPublisher::connectionNeeded(void) {
+bool MonitorMyWatershedPublisher::connectionNeeded() {
     // compute the send interval, reducing it as the buffer gets more full so we
     // have less of a chance of losing data
     int     interval = _sendEveryX;
     uint8_t percent  = _logBuffer.getPercentFull();
     MS_DBG(F("Buffer is"), percent, F("percent full"));
-    if (percent >= 50) {
-        interval /= 2;
-    } else if (percent >= 75) {
-        interval /= 4;
-    } else if (percent >= 90) {
+    if (percent >= 90) {
         interval = 1;
+    } else if (percent >= 75) {
+        interval = max(1, interval / 4);
+    } else if (percent >= 50) {
+        interval = max(1, interval / 2);
     }
 
     // the programmed interval is about to be reached by the next record, or it
@@ -243,16 +235,16 @@ bool EnviroDIYPublisher::connectionNeeded(void) {
 
     // the initial log transmissions have not completed (we send every one of
     // the first five data points immediately for field validation)
-    bool initialTransmission = _initialTransmissionsRemaining > 0;
+    bool initialTransmission = _startupTransmissions > 0;
 
     return atSendInterval || initialTransmission;
 }
 
-// This utilizes an attached modem to make a TCP connection to the
-// EnviroDIY/ODM2DataSharingPortal and then streams out a post request over that
-// connection.
-// The return is the http status code of the response.
-int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
+// This utilizes an attached modem to make a TCP connection to Monitor My
+// Watershed and then streams out a post request over that connection. The
+// return is the http status code of the response.
+int16_t MonitorMyWatershedPublisher::publishData(Client* outClient,
+                                                 bool    forceFlush) {
     // work around for strange construction order: make sure the number of
     // variables listed in the log buffer matches the number of variables in the
     // logger
@@ -261,8 +253,11 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
                  "variables in logger:"),
                _logBuffer.getNumVariables(), F("vs"),
                _baseLogger->getArrayVarCount());
-        MS_DBG(F("Setting number of variables in log buffer to match number of "
-                 "variables in logger. This will erase the buffer."));
+        PRINTOUT(
+            F("Setting number of variables in log buffer to match number of "
+              "variables in logger."));
+        PRINTOUT(F("THIS WILL ERASE THE BUFFER AND DELETE"),
+                 _logBuffer.getNumRecords(), F("UNSENT RECORDS!"));
         _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     }
 
@@ -286,8 +281,8 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
         }
     }
 
-    if (_initialTransmissionsRemaining > 0) {
-        _initialTransmissionsRemaining -= 1;
+    if (record >= 0 && _startupTransmissions > 0) {
+        _startupTransmissions -= 1;
     }
 
     // do the data buffer flushing if we previously planned to
@@ -301,33 +296,51 @@ int16_t EnviroDIYPublisher::publishData(Client* outClient, bool forceFlush) {
     }
 }
 
-int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
+int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
     // Create a buffer for the portions of the request and response
-    char     tempBuffer[37] = "";
-    uint16_t did_respond    = 0;
-    int16_t  responseCode   = 0;
+    char    tempBuffer[37] = "";
+    int16_t did_respond    = 0;
+    int16_t responseCode   = 0;
+
+    // Early return if no records to send
+    if (_logBuffer.getNumRecords() == 0) {
+        MS_DBG(F("No records to send, returning without action"));
+        return -1;
+    }
     if (_baseLogger->getSamplingFeatureUUID() == nullptr ||
         strlen(_baseLogger->getSamplingFeatureUUID()) == 0) {
         PRINTOUT(F("A sampling feature UUID must be set before publishing data "
                    "to Monitor My Watershed!."));
-        return 0;
+        return -2;
+    }
+    if (_registrationToken == nullptr || strlen(_registrationToken) == 0) {
+        PRINTOUT(F("A registration token must be set before publishing data "
+                   "to Monitor My Watershed!."));
+        return -3;
     }
 
-    // Open a TCP/IP connection to the EnviroDIY Data Portal (WebSDL)
+    // Check for valid client before attempting connection
+    if (outClient == nullptr) {
+        PRINTOUT(F("No client available for publishing data to Monitor My "
+                   "Watershed!"));
+        return -4;
+    }
+
+    // Open a TCP/IP connection to Monitor My Watershed
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
-    if (outClient->connect(enviroDIYHost, enviroDIYPort)) {
+    if (outClient->connect(monitorMWHost, monitorMWPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
         txBufferInit(outClient);
 
         // copy the initial post header into the tx buffer
         txBufferAppend(postHeader);
-        txBufferAppend(enviroDIYPath);
+        txBufferAppend(monitorMWPath);
         txBufferAppend(HTTPtag);
 
         // add the rest of the HTTP POST headers to the outgoing buffer
         txBufferAppend(hostHeader);
-        txBufferAppend(enviroDIYHost);
+        txBufferAppend(monitorMWHost);
         txBufferAppend(tokenHeader);
         txBufferAppend(_registrationToken);
 
@@ -398,10 +411,10 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond > 0) {
             char responseCode_char[4];
-            memcpy(responseCode_char, tempBuffer + 9, 3);
+            memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string
-            memset(responseCode_char + 3, '\0', 1);
-            responseCode = atoi(responseCode_char);
+            responseCode_char[3] = '\0';
+            responseCode         = atoi(responseCode_char);
             PRINTOUT(F("\n-- Response Code --"));
             PRINTOUT(responseCode);
         } else {
@@ -426,8 +439,8 @@ int16_t EnviroDIYPublisher::flushDataBuffer(Client* outClient) {
         outClient->stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
-        PRINTOUT(F("\n -- Unable to Establish Connection to EnviroDIY Data "
-                   "Portal --"));
+        PRINTOUT(F(
+            "\n -- Unable to Establish Connection to Monitor My Watershed --"));
     }
 
     if (responseCode == 201) {

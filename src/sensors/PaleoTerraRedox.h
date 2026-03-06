@@ -15,6 +15,9 @@
  * This depends on Testato's
  * [SoftwareWire](https://github.com/Testato/SoftwareWire) library if software
  * I2C is needed.
+ *
+ * @note These sensors are no longer being produced, but this code is being
+ * maintained for users who have them in their monitoring kits.
  */
 /* clang-format off */
 /**
@@ -127,6 +130,8 @@
 /// @brief Sensor::_measurementTime_ms; the PaleoTerra redox sensor takes 67ms
 /// to complete a measurement.
 #define PTR_MEASUREMENT_TIME_MS 67
+/// @brief The time to wait after starting a conversion before data is ready.
+#define PTR_CONVERSION_WAIT_TIME_MS 300
 /**@}*/
 
 /**
@@ -138,7 +143,7 @@
  * {{ @ref PaleoTerraRedox_Voltage::PaleoTerraRedox_Voltage }}
  */
 /**@{*/
-/** @brief Decimals places in string representation; voltage should have 2.
+/** @brief Decimal places in string representation; voltage should have 2.
  *
  * Resolution is 1mV and 1 extra digit is added to increase the number of
  * significant figures to allow for averaging of multiple measurements.
@@ -213,7 +218,7 @@ class PaleoTerraRedox : public Sensor {
                     uint8_t i2cAddressHex         = MCP3421_ADR,
                     uint8_t measurementsToAverage = 1);
 #endif
-#if !defined(MS_PALEOTERRA_SOFTWAREWIRE) | defined DOXYGEN
+#if !defined(MS_PALEOTERRA_SOFTWAREWIRE) || defined(DOXYGEN)
     /**
      * @brief Construct a new PaleoTerra Redox object using a secondary
      * *hardware* I2C instance.
@@ -252,7 +257,7 @@ class PaleoTerraRedox : public Sensor {
      * @brief Destroy the PaleoTerra Redox object.  Also destroy the software
      * I2C instance if one was created.
      */
-    ~PaleoTerraRedox();
+    ~PaleoTerraRedox() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -263,16 +268,11 @@ class PaleoTerraRedox : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    String getSensorLocation() override;
+
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -321,9 +321,10 @@ class PaleoTerraRedox_Voltage : public Variable {
     explicit PaleoTerraRedox_Voltage(
         Sensor* parentSense, const char* uuid = "",
         const char* varCode = PTR_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)PTR_VOLTAGE_VAR_NUM,
-                   (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
-                   PTR_VOLTAGE_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(PTR_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(PTR_VOLTAGE_RESOLUTION),
+                   PTR_VOLTAGE_VAR_NAME, PTR_VOLTAGE_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new PaleoTerraRedox_Voltage object.
      *
@@ -331,13 +332,14 @@ class PaleoTerraRedox_Voltage : public Variable {
      * used.
      */
     PaleoTerraRedox_Voltage()
-        : Variable((uint8_t)PTR_VOLTAGE_VAR_NUM,
-                   (uint8_t)PTR_VOLTAGE_RESOLUTION, PTR_VOLTAGE_VAR_NAME,
-                   PTR_VOLTAGE_UNIT_NAME, PTR_VOLTAGE_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(PTR_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(PTR_VOLTAGE_RESOLUTION),
+                   PTR_VOLTAGE_VAR_NAME, PTR_VOLTAGE_UNIT_NAME,
+                   PTR_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the PaleoTerraRedox_Voltage object - no action needed.
      */
-    ~PaleoTerraRedox_Voltage() {}
+    ~PaleoTerraRedox_Voltage() override = default;
 };
 
 /**

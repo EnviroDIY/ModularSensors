@@ -106,7 +106,7 @@
  * @brief The loggerModem subclass for the [Sodaq 2GBee](@ref modem_gprsbee)
  * revisions 6 and higher based on the SIMCOM SIM800H.
  *
- * @note The Sodaq GPRSBee doesn't expose the SIM800's reset pin..
+ * @note The Sodaq GPRSBee doesn't expose the SIM800's reset pin.
  *
  * @note The power pin of the SIM800 is wired to the XBee's `DTR` pin, the
  * `PWR_KEY` itself is not exposed - it is tied inversely to the power in to the
@@ -162,7 +162,7 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     /**
      * @brief Destroy the Sodaq 2GBee R6 object - no action taken
      */
-    ~Sodaq2GBeeR6();
+    ~Sodaq2GBeeR6() override = default;
 
     /**
      * @brief Sets the pin to use to control voltage reference on the GPRSBee.
@@ -173,9 +173,9 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     void setVRefPin(int8_t vRefPin);
 
  protected:
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
+    bool modemSleepFxn() override;
+    bool modemWakeFxn() override;
+    bool extraModemSetup() override;
 
  private:
     /**

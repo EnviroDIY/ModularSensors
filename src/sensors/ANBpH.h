@@ -58,6 +58,11 @@
  * the time the logger woke or other sensors took measurements by the time it
  * takes the pH sensor to warm up and take a reading.
  *
+ * @section sensor_anb_ph_config_flags Build flags
+ * - `-D ANB_PH_DEFAULT_MEASUREMENT_RETRIES=##`
+ *      - used to set the default number of measurement retries for ANB pH
+ * sensors when communication errors occur
+ *
  * @section sensor_anb_ph_ctor Sensor Constructor
  * {{ @ref ANBpH::ANBpH }}
  *
@@ -102,6 +107,28 @@
 /**@{*/
 
 /**
+ * @anchor sensor_anb_ph_config
+ * @name Configuration Defines
+ * Define for the ANB pH measurement retry behavior.
+ */
+/**@{*/
+#if !defined(ANB_PH_DEFAULT_MEASUREMENT_RETRIES) || defined(DOXYGEN)
+/**
+ * @brief The default number of measurement retries for ANB pH sensors when
+ * communication errors occur.
+ *
+ * ANB pH sensors use Modbus communication which can be susceptible to
+ * communication errors, especially in harsh environmental conditions. This
+ * define sets the default number of retries when a measurement fails.
+ *
+ * @note The default value of 5 retries provides good reliability while
+ * preventing excessive delays in case of persistent communication issues.
+ */
+#define ANB_PH_DEFAULT_MEASUREMENT_RETRIES 5
+#endif
+/**@}*/
+
+/**
  * @brief The minimum spacing between requesting responses from the sensor.
  *
  * This is used to prevent flooding the sensor with requests.
@@ -144,56 +171,41 @@
  * This is the time for communication to begin.
  */
 #define ANB_PH_WARM_UP_TIME_MS 5400L
-/// @brief The maximum time to wait for a modbus response.
+/// @brief The maximum time to wait for a non-error modbus response.
 #define ANB_PH_WARM_UP_TIME_MAX 10000L
 
 /// @brief Sensor::_stabilizationTime_ms; the ANB pH sensor does not need to
-/// stabilize, but we use this time as the check for ready time.
-#define ANB_PH_STABILIZATION_TIME_MS 50
-/// @brief The maximum time to wait for ready to measure.
-#define ANB_PH_STABILIZATION_TIME_MAX 5000L
+/// stabilize - the stabilization and referencing time is included in the time
+/// before the first value.
+#define ANB_PH_STABILIZATION_TIME_MS 0L
 
-/// @brief The minimum time before a failure response is returned on the 2nd or
-/// subsequent value when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_2ND_IMMERSION_ERROR 4000L
-/// @brief The minimum time before a failure response is returned on the 2nd or
-/// subsequent value when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_2ND_IMMERSION_ERROR_MAX 12000L
-/// @brief The minimum time for the 2nd or subsequent values in high
-/// salinity (documented new output time of 10.5s)
-#define ANB_PH_2ND_VALUE_HIGH_SALT 5000L
-/// @brief The maximum time for the 2nd or subsequent values in high
-/// salinity.
-#define ANB_PH_2ND_VALUE_HIGH_SALT_MAX 15000L
-/// @brief The minimum time for the 2nd or subsequent values in low
-/// salinity (documented new output time of 14s).
-#define ANB_PH_2ND_VALUE_LOW_SALT 6000L
-/// @brief The maximum time for the 2nd or subsequent values in low
-/// salinity (documented new output time of 14s).
-#define ANB_PH_2ND_VALUE_LOW_SALT_MAX 18000L
-
-/// @brief The minimum time before a failure response is returned on the first
-/// measurement when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_1ST_IMMERSION_ERROR 6000L
-/// @brief The maximum time before a failure response is returned on the first
-/// measurement when the immersion sensor is not immersed.  This is a guess
-/// based on testing.
-#define ANB_PH_1ST_IMMERSION_ERROR_MAX 12000L
-/// @brief The minimum time for the first value in high salinity (documented min
-/// time of 129s - 9s).
-#define ANB_PH_1ST_VALUE_HIGH_SALT 120000L
+/// @brief The minimum time for the first value in high salinity (check 5
+/// seconds before the documented min time of 129s).
+/// @note If the immersion sensor is enabled and the sensor is not immersed, a
+/// failure response may be returned sooner
+#define ANB_PH_1ST_VALUE_HIGH_SALT 124000L
 /// @brief The maximum time for the first value in high salinity (documented max
 /// time of 238s for a long interval delay + 10s).
 #define ANB_PH_1ST_VALUE_HIGH_SALT_MAX 248000L
 /// @brief The minimum time for the first value in low salinity (documented min
-/// time is 184s, but I got responses at 160s).
-#define ANB_PH_1ST_VALUE_LOW_SALT 155000L
+/// time is 184s, but I got responses at 160s so we check 1s before that).
+/// @note If the immersion sensor is enabled and the sensor is not immersed, a
+/// failure response may be returned sooner
+#define ANB_PH_1ST_VALUE_LOW_SALT 159000L
 /// @brief The maximum time for the first value in low salinity (documented max
 /// time of 255s for a long interval delay + 10s).
 #define ANB_PH_1ST_VALUE_LOW_SALT_MAX 265000L
+
+/// @brief The minimum time for the 2nd or subsequent values in high
+/// salinity (documented new output time of 10.5s, add 100ms buffer).
+/// @warning After the first reading, the sensor will *always* say the sensor is
+/// ready!  But there will not be a **new** value available before this time.
+#define ANB_PH_2ND_VALUE_HIGH_SALT 10600L
+/// @brief The minimum time for the 2nd or subsequent values in low
+/// salinity (documented new output time of 14s, add 100ms buffer).
+/// @warning After the first reading, the sensor will *always* say the sensor is
+/// ready!  But there will not be a **new** value available before this time.
+#define ANB_PH_2ND_VALUE_LOW_SALT 14100L
 /**@}*/
 
 /**
@@ -209,8 +221,8 @@
  * {{ @ref ANBpH_pH::ANBpH_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; soil moisture should have 1
-/// - resolution is 0.01.
+/// @brief Decimal places in string representation; pH should have 2 -
+/// resolution is 0.01.
 #define ANB_PH_PH_RESOLUTION 2
 /// @brief Sensor variable number; pH is stored in sensorValues[0].
 #define ANB_PH_PH_VAR_NUM 0
@@ -233,7 +245,7 @@
  * {{ @ref ANBpH_Temp::ANBpH_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define ANB_PH_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -266,7 +278,7 @@
  * {{ @ref ANBpH_Salinity::ANBpH_Salinity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; salinity should have 2.
+/// @brief Decimal places in string representation; salinity should have 2.
 #define ANB_PH_SALINITY_RESOLUTION 2
 /// @brief Sensor variable number; salinity is stored in sensorValues[2].
 #define ANB_PH_SALINITY_VAR_NUM 2
@@ -300,7 +312,7 @@
  * {{ @ref ANBpH_SpCond::ANBpH_SpCond }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; specific conductance
+/// @brief Decimal places in string representation; specific conductance
 /// should have 2.
 #define ANB_PH_SPCOND_RESOLUTION 2
 /// @brief Sensor variable number; specific conductance is stored in
@@ -337,8 +349,8 @@
  * {{ @ref ANBpH_EC::ANBpH_EC }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; raw electrical conductivity
-/// should have 2.
+/// @brief Decimal places in string representation; raw electrical conductivity
+/// should have 3.
 #define ANB_PH_EC_RESOLUTION 3
 /// @brief Sensor variable number; conductivity is stored in sensorValues[4].
 #define ANB_PH_EC_VAR_NUM 4
@@ -381,9 +393,9 @@
  */
 /**@{*/
 // clang-format on
-/// @brief Decimals places in string representation; the health code has 0.
+/// @brief Decimal places in string representation; the health code has 0.
 #define ANB_PH_HEALTH_CODE_RESOLUTION 0
-/// @brief Sensor variable number; health code is stored in sensorValues[4]
+/// @brief Sensor variable number; health code is stored in sensorValues[5]
 #define ANB_PH_HEALTH_CODE_VAR_NUM 5
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -417,9 +429,9 @@
  */
 /**@{*/
 // clang-format on
-/// @brief Decimals places in string representation; the diagnostic code has 0.
+/// @brief Decimal places in string representation; the diagnostic code has 0.
 #define ANB_PH_DIAGNOSTIC_CODE_RESOLUTION 0
-/// @brief Sensor variable number; diagnostic code is stored in sensorValues[4]
+/// @brief Sensor variable number; diagnostic code is stored in sensorValues[6]
 #define ANB_PH_DIAGNOSTIC_CODE_VAR_NUM 6
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -454,9 +466,9 @@
  */
 /**@{*/
 // clang-format on
-/// @brief Decimals places in string representation; the error code has 0.
+/// @brief Decimal places in string representation; the error code has 0.
 #define ANB_PH_STATUS_CODE_RESOLUTION 0
-/// @brief Sensor variable number; error code is stored in sensorValues[4]
+/// @brief Sensor variable number; error code is stored in sensorValues[7]
 #define ANB_PH_STATUS_CODE_VAR_NUM 7
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -474,6 +486,9 @@
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the [ANB pH sensors](@ref sensor_anb_ph)
+ *
+ * @note For the ANB pH sensor, the sensor::_measurementTime_ms is the time of the 2nd or subsequent reading.
+ * The time for the first reading after power on is variable and much longer.
  */
 /* clang-format on */
 class ANBpH : public Sensor {
@@ -487,6 +502,11 @@ class ANBpH : public Sensor {
      * can be used.
      * @param powerPin The pin on the mcu controlling power to the ANB pH
      * sensor. Use -1 if it is continuously powered.
+     * @param loggingIntervalMinutes The logging interval in minutes.  Even when
+     * the sensor is being powered off between readings, it needs to be told how
+     * often it will be powered on.  This is not used if the sensor power is not
+     * being controlled by the mcu.  Must be between 10 and 240 minutes when
+     * power is cycled; use 0 only for always‑powered mode.
      * @param powerPin2 The pin on the mcu controlling power to the RS485
      * adapter, if it is different from that used to power the sensor.  Use -1
      * or omit if not applicable.
@@ -497,21 +517,30 @@ class ANBpH : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     *
+     * @warning This library does _**NOT**_ verify that the logging interval set
+     * for this sensor matches the logging interval of the logger.  The actual
+     * power on/off and measurement times will be based on the logging interval
+     * of the logger, so if these are not the same, the timing of the
+     * measurements may be very different than expected.  I do not understand
+     * why the sensor needs to know the logging interval when it is powered off,
+     * but it does. I suspect it uses this to balance power across the various
+     * sensing elements to maximize the life of the sensor.
      */
-    ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin, int8_t powerPin2,
+    ANBpH(byte modbusAddress, Stream* stream, int8_t powerPin,
+          int16_t loggingIntervalMinutes, int8_t powerPin2 = -1,
           int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
-    /// @copydoc ANBpH::ANBpH(byte, Stream*, int8_t, int8_t, int8_t, uint8_t)
-    ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin, int8_t powerPin2,
+    /// @copydoc ANBpH::ANBpH(byte, Stream*, int8_t, int16_t, int8_t, int8_t,
+    /// uint8_t)
+    ANBpH(byte modbusAddress, Stream& stream, int8_t powerPin,
+          int16_t loggingIntervalMinutes, int8_t powerPin2 = -1,
           int8_t enablePin = -1, uint8_t measurementsToAverage = 1);
     /**
      * @brief Destroy the ANB pH object - no action taken
      */
-    virtual ~ANBpH();
+    ~ANBpH() override = default;
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -524,38 +553,34 @@ class ANBpH : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    bool wake(void) override;
-    bool sleep(void) override;
-    bool startSingleMeasurement(void) override;
-    bool addSingleMeasurementResult(void) override;
+    bool setup() override;
+    /**
+     * @brief Confirms that the sensor is giving a valid status code in response
+     * to modbus commands, re-sets the RTC, and starts measurements.
+     *
+     * Unlike base Sensor::wake(), this starts measurements (scanning).  ANB pH
+     * sensors have a built-in stabilization and referencing time before they
+     * report the first value so when we start scanning, we're starting the wait
+     * for stabilization and then must wait the (very long) "first measurement"
+     * time before requesting the first result.
+     *
+     * @return True if the sensor started scanning.
+     */
+    bool wake() override;
+    bool sleep() override;
 
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
+    bool addSingleMeasurementResult() override;
 
     /**
      * @copydoc Sensor::isWarmedUp(bool debug)
      *
      * For the ANB pH sensor, this waits for both the power-on warm up and for a
-     * valid response from the sensor to a Modbus command.
-     *
-     * @note The timing here is probably not very variable.
-     */
-    bool isWarmedUp(bool debug = false) override;
-
-    /**
-     * @brief Check whether or not enough time has passed between the sensor
-     * responding to any modbus command to giving a valid status code - which
-     * indicates that it's ready to take a measurement.
-     *
-     * @param debug True to output the result to the debugging Serial
-     * @return True indicates that enough time has passed that the sensor is
+     * valid status code response from the sensor - which indicates that it's
      * ready to take a measurement.
      *
      * @note The timing here is probably not very variable.
      */
-    bool isStable(bool debug = false) override;
+    bool isWarmedUp(bool debug = false) override;
 
     /**
      * @brief Check whether or not the pH sensor has completed a measurement.
@@ -613,14 +638,16 @@ class ANBpH : public Sensor {
      */
     Stream* _stream;
     /**
+     * @brief The logging interval in minutes.  Even when the sensor is being
+     * powered off between readings, it needs to be told how often it will be
+     * powered on.
+     */
+    int16_t _loggingIntervalMinutes;
+    /**
      * @brief Private reference to the RS-485 adapter's flow direction control
      * pin.
      */
     int8_t _RS485EnablePin;
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
     /**
      * @brief Private reference to the salinity mode for the ANB pH sensor.
      * @remark The salinity mode is set to low salinity by default.
@@ -656,35 +683,19 @@ class ANBpH : public Sensor {
                        uint32_t startTime = 0);
 
     /**
-     * @brief Get the start of the estimated time window before an immersion
-     * error is returned based on power cycling and the immersion sensor
-     * enablement.     *
-     * @return The start of the estimated time window before an immersion error
-     * is returned.
-     */
-    uint32_t getStartImmersionErrorWindow(void);
-    /**
-     * @brief Get the end of the estimated time window before an immersion
-     * error is returned based on power cycling and the immersion sensor
-     * enablement.
-     * @return The end of the estimated time window before an immersion error
-     * is returned.
-     */
-    uint32_t getEndImmersionErrorWindow(void);
-    /**
      * @brief Get the start of the estimated time window for a measurement to
      * complete based on the sensor's current configuration.
      * @return The start of the estimated time window for a measurement to
      * complete.
      */
-    uint32_t getStartMeasurementWindow(void);
+    uint32_t getStartMeasurementWindow();
     /**
      * @brief Get the end of the estimated time window for a measurement to
      * complete based on the sensor's current configuration.
      * @return The end of the estimated time window for a measurement to
      * complete.
      */
-    uint32_t getEndMeasurementWindow(void);
+    uint32_t getEndMeasurementWindow();
     /**
      * @brief Set the sensor's real time clock (RTC) to the current time.
      *
@@ -696,7 +707,7 @@ class ANBpH : public Sensor {
      *
      * @return True if the RTC was successfully set, false if not.
      */
-    bool setSensorRTC(void);
+    bool setSensorRTC();
 };
 
 
@@ -719,9 +730,9 @@ class ANBpH_pH : public Variable {
      */
     explicit ANBpH_pH(ANBpH* parentSense, const char* uuid = "",
                       const char* varCode = ANB_PH_PH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ANB_PH_PH_VAR_NUM,
-                   (uint8_t)ANB_PH_PH_RESOLUTION, ANB_PH_PH_VAR_NAME,
-                   ANB_PH_PH_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_PH_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_PH_RESOLUTION),
+                   ANB_PH_PH_VAR_NAME, ANB_PH_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new ANBpH_pH object.
      *
@@ -729,13 +740,14 @@ class ANBpH_pH : public Variable {
      * used.
      */
     ANBpH_pH()
-        : Variable((uint8_t)ANB_PH_PH_VAR_NUM, (uint8_t)ANB_PH_PH_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ANB_PH_PH_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_PH_RESOLUTION),
                    ANB_PH_PH_VAR_NAME, ANB_PH_PH_UNIT_NAME,
                    ANB_PH_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_pH object - no action needed.
      */
-    ~ANBpH_pH() {}
+    ~ANBpH_pH() override = default;
 };
 
 /* clang-format off */
@@ -758,9 +770,10 @@ class ANBpH_Temp : public Variable {
      */
     explicit ANBpH_Temp(ANBpH* parentSense, const char* uuid = "",
                         const char* varCode = ANB_PH_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ANB_PH_TEMP_VAR_NUM,
-                   (uint8_t)ANB_PH_TEMP_RESOLUTION, ANB_PH_TEMP_VAR_NAME,
-                   ANB_PH_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_TEMP_RESOLUTION),
+                   ANB_PH_TEMP_VAR_NAME, ANB_PH_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new ANBpH_Temp object.
      *
@@ -768,13 +781,14 @@ class ANBpH_Temp : public Variable {
      * used.
      */
     ANBpH_Temp()
-        : Variable((uint8_t)ANB_PH_TEMP_VAR_NUM,
-                   (uint8_t)ANB_PH_TEMP_RESOLUTION, ANB_PH_TEMP_VAR_NAME,
-                   ANB_PH_TEMP_UNIT_NAME, ANB_PH_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ANB_PH_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_TEMP_RESOLUTION),
+                   ANB_PH_TEMP_VAR_NAME, ANB_PH_TEMP_UNIT_NAME,
+                   ANB_PH_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_Temp object - no action needed.
      */
-    ~ANBpH_Temp() {}
+    ~ANBpH_Temp() override = default;
 };
 
 /* clang-format off */
@@ -797,8 +811,8 @@ class ANBpH_Salinity : public Variable {
      */
     explicit ANBpH_Salinity(ANBpH* parentSense, const char* uuid = "",
                             const char* varCode = ANB_PH_SALINITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ANB_PH_SALINITY_VAR_NUM,
-                   (uint8_t)ANB_PH_SALINITY_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_SALINITY_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_SALINITY_RESOLUTION),
                    ANB_PH_SALINITY_VAR_NAME, ANB_PH_SALINITY_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -808,15 +822,15 @@ class ANBpH_Salinity : public Variable {
      * used.
      */
     ANBpH_Salinity()
-        : Variable((uint8_t)ANB_PH_SALINITY_VAR_NUM,
-                   (uint8_t)ANB_PH_SALINITY_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ANB_PH_SALINITY_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_SALINITY_RESOLUTION),
                    ANB_PH_SALINITY_VAR_NAME, ANB_PH_SALINITY_UNIT_NAME,
                    ANB_PH_SALINITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_Salinity() object - no action
      * needed.
      */
-    ~ANBpH_Salinity() {}
+    ~ANBpH_Salinity() override = default;
 };
 
 
@@ -840,22 +854,24 @@ class ANBpH_SpCond : public Variable {
      */
     explicit ANBpH_SpCond(ANBpH* parentSense, const char* uuid = "",
                           const char* varCode = ANB_PH_SPCOND_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ANB_PH_SPCOND_VAR_NUM,
-                   (uint8_t)ANB_PH_SPCOND_RESOLUTION, ANB_PH_SPCOND_VAR_NAME,
-                   ANB_PH_SPCOND_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_SPCOND_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_SPCOND_RESOLUTION),
+                   ANB_PH_SPCOND_VAR_NAME, ANB_PH_SPCOND_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new ANBpH_SpCond object.
      *
      * @note This must be tied with a parent ANBpH object before it can be used.
      */
     ANBpH_SpCond()
-        : Variable((uint8_t)ANB_PH_SPCOND_VAR_NUM,
-                   (uint8_t)ANB_PH_SPCOND_RESOLUTION, ANB_PH_SPCOND_VAR_NAME,
-                   ANB_PH_SPCOND_UNIT_NAME, ANB_PH_SPCOND_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ANB_PH_SPCOND_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_SPCOND_RESOLUTION),
+                   ANB_PH_SPCOND_VAR_NAME, ANB_PH_SPCOND_UNIT_NAME,
+                   ANB_PH_SPCOND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_SpCond object - no action needed.
      */
-    ~ANBpH_SpCond() {}
+    ~ANBpH_SpCond() override = default;
 };
 
 /* clang-format off */
@@ -878,9 +894,9 @@ class ANBpH_EC : public Variable {
      */
     explicit ANBpH_EC(ANBpH* parentSense, const char* uuid = "",
                       const char* varCode = ANB_PH_EC_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ANB_PH_EC_VAR_NUM,
-                   (uint8_t)ANB_PH_EC_RESOLUTION, ANB_PH_EC_VAR_NAME,
-                   ANB_PH_EC_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_EC_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_EC_RESOLUTION),
+                   ANB_PH_EC_VAR_NAME, ANB_PH_EC_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new ANBpH_EC object.
      *
@@ -888,13 +904,14 @@ class ANBpH_EC : public Variable {
      * used.
      */
     ANBpH_EC()
-        : Variable((uint8_t)ANB_PH_EC_VAR_NUM, (uint8_t)ANB_PH_EC_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ANB_PH_EC_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_EC_RESOLUTION),
                    ANB_PH_EC_VAR_NAME, ANB_PH_EC_UNIT_NAME,
                    ANB_PH_EC_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_EC object - no action needed.
      */
-    ~ANBpH_EC() {}
+    ~ANBpH_EC() override = default;
 };
 
 
@@ -920,8 +937,9 @@ class ANBpH_HealthCode : public Variable {
     explicit ANBpH_HealthCode(
         ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_HEALTH_CODE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ANB_PH_HEALTH_CODE_VAR_NUM,
-                   (uint8_t)ANB_PH_HEALTH_CODE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(ANB_PH_HEALTH_CODE_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_HEALTH_CODE_RESOLUTION),
                    ANB_PH_HEALTH_CODE_VAR_NAME, ANB_PH_HEALTH_CODE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -931,15 +949,15 @@ class ANBpH_HealthCode : public Variable {
      * used.
      */
     ANBpH_HealthCode()
-        : Variable((uint8_t)ANB_PH_HEALTH_CODE_VAR_NUM,
-                   (uint8_t)ANB_PH_HEALTH_CODE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ANB_PH_HEALTH_CODE_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_HEALTH_CODE_RESOLUTION),
                    ANB_PH_HEALTH_CODE_VAR_NAME, ANB_PH_HEALTH_CODE_UNIT_NAME,
                    ANB_PH_HEALTH_CODE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_HealthCode object - no action
      * needed.
      */
-    ~ANBpH_HealthCode() {}
+    ~ANBpH_HealthCode() override = default;
 };
 
 
@@ -965,8 +983,9 @@ class ANBpH_DiagnosticCode : public Variable {
     explicit ANBpH_DiagnosticCode(
         ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_DIAGNOSTIC_CODE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ANB_PH_DIAGNOSTIC_CODE_VAR_NUM,
-                   (uint8_t)ANB_PH_DIAGNOSTIC_CODE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(ANB_PH_DIAGNOSTIC_CODE_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_DIAGNOSTIC_CODE_RESOLUTION),
                    ANB_PH_DIAGNOSTIC_CODE_VAR_NAME,
                    ANB_PH_DIAGNOSTIC_CODE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -976,8 +995,8 @@ class ANBpH_DiagnosticCode : public Variable {
      * used.
      */
     ANBpH_DiagnosticCode()
-        : Variable((uint8_t)ANB_PH_DIAGNOSTIC_CODE_VAR_NUM,
-                   (uint8_t)ANB_PH_DIAGNOSTIC_CODE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ANB_PH_DIAGNOSTIC_CODE_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_DIAGNOSTIC_CODE_RESOLUTION),
                    ANB_PH_DIAGNOSTIC_CODE_VAR_NAME,
                    ANB_PH_DIAGNOSTIC_CODE_UNIT_NAME,
                    ANB_PH_DIAGNOSTIC_CODE_DEFAULT_CODE) {}
@@ -985,7 +1004,7 @@ class ANBpH_DiagnosticCode : public Variable {
      * @brief Destroy the ANBpH_DiagnosticCode object - no action
      * needed.
      */
-    ~ANBpH_DiagnosticCode() {}
+    ~ANBpH_DiagnosticCode() override = default;
 };
 
 
@@ -1011,8 +1030,9 @@ class ANBpH_StatusCode : public Variable {
     explicit ANBpH_StatusCode(
         ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_STATUS_CODE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ANB_PH_STATUS_CODE_VAR_NUM,
-                   (uint8_t)ANB_PH_STATUS_CODE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(ANB_PH_STATUS_CODE_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_STATUS_CODE_RESOLUTION),
                    ANB_PH_STATUS_CODE_VAR_NAME, ANB_PH_STATUS_CODE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -1022,15 +1042,15 @@ class ANBpH_StatusCode : public Variable {
      * used.
      */
     ANBpH_StatusCode()
-        : Variable((uint8_t)ANB_PH_STATUS_CODE_VAR_NUM,
-                   (uint8_t)ANB_PH_STATUS_CODE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ANB_PH_STATUS_CODE_VAR_NUM),
+                   static_cast<uint8_t>(ANB_PH_STATUS_CODE_RESOLUTION),
                    ANB_PH_STATUS_CODE_VAR_NAME, ANB_PH_STATUS_CODE_UNIT_NAME,
                    ANB_PH_STATUS_CODE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_StatusCode object - no action
      * needed.
      */
-    ~ANBpH_StatusCode() {}
+    ~ANBpH_StatusCode() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ANB_SENSORS_PH_H_

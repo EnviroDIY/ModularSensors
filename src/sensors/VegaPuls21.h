@@ -113,7 +113,7 @@
  * {{ @ref VegaPuls21_Stage::VegaPuls21_Stage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; stage in meters should have
+/// @brief Decimal places in string representation; stage in meters should have
 /// 3 - resolution is 1mm.
 #define VEGAPULS21_STAGE_RESOLUTION 3
 /// @brief Sensor variable number; stage is stored in sensorValues[0].
@@ -139,7 +139,7 @@
  * {{ @ref VegaPuls21_Distance::VegaPuls21_Distance }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; distance in meters should
+/// @brief Decimal places in string representation; distance in meters should
 /// have 3 - resolution is 1mm.
 #define VEGAPULS21_DISTANCE_RESOLUTION 3
 /// @brief Sensor variable number; stage is stored in sensorValues[1].
@@ -164,7 +164,7 @@
  * {{ @ref VegaPuls21_Temp::VegaPuls21_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define VEGAPULS21_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[2].
@@ -189,7 +189,7 @@
  * {{ @ref VegaPuls21_Reliability::VegaPuls21_Reliability }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; reliability should have 1
+/// @brief Decimal places in string representation; reliability should have 1
 /// (resolution is 0.1 dB).
 #define VEGAPULS21_RELIABILITY_RESOLUTION 1
 /// @brief Sensor variable number; reliability is stored in sensorValues[3]
@@ -215,7 +215,7 @@
  * {{ @ref VegaPuls21_ErrorCode::VegaPuls21_ErrorCode }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; the error code has 0.
+/// @brief Decimal places in string representation; the error code has 0.
 #define VEGAPULS21_ERRORCODE_RESOLUTION 0
 /// @brief Sensor variable number; error code is stored in sensorValues[4]
 #define VEGAPULS21_ERRORCODE_VAR_NUM 4
@@ -298,7 +298,7 @@ class VegaPuls21 : public SDI12Sensors {
     /**
      * @brief Destroy the VEGAPULS C 21 object
      */
-    ~VegaPuls21() {}
+    ~VegaPuls21() override = default;
 };
 
 
@@ -326,8 +326,8 @@ class VegaPuls21_Stage : public Variable {
     explicit VegaPuls21_Stage(
         VegaPuls21* parentSense, const char* uuid = "",
         const char* varCode = VEGAPULS21_STAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)VEGAPULS21_STAGE_VAR_NUM,
-                   (uint8_t)VEGAPULS21_STAGE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(VEGAPULS21_STAGE_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_STAGE_RESOLUTION),
                    VEGAPULS21_STAGE_VAR_NAME, VEGAPULS21_STAGE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -337,14 +337,14 @@ class VegaPuls21_Stage : public Variable {
      * used.
      */
     VegaPuls21_Stage()
-        : Variable((uint8_t)VEGAPULS21_STAGE_VAR_NUM,
-                   (uint8_t)VEGAPULS21_STAGE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(VEGAPULS21_STAGE_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_STAGE_RESOLUTION),
                    VEGAPULS21_STAGE_VAR_NAME, VEGAPULS21_STAGE_UNIT_NAME,
                    VEGAPULS21_STAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the VegaPuls21_Stage object - no action needed.
      */
-    ~VegaPuls21_Stage() {}
+    ~VegaPuls21_Stage() override = default;
 };
 
 
@@ -372,8 +372,9 @@ class VegaPuls21_Distance : public Variable {
     explicit VegaPuls21_Distance(
         VegaPuls21* parentSense, const char* uuid = "",
         const char* varCode = VEGAPULS21_DISTANCE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)VEGAPULS21_DISTANCE_VAR_NUM,
-                   (uint8_t)VEGAPULS21_DISTANCE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(VEGAPULS21_DISTANCE_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_DISTANCE_RESOLUTION),
                    VEGAPULS21_DISTANCE_VAR_NAME, VEGAPULS21_DISTANCE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -383,14 +384,14 @@ class VegaPuls21_Distance : public Variable {
      * used.
      */
     VegaPuls21_Distance()
-        : Variable((uint8_t)VEGAPULS21_DISTANCE_VAR_NUM,
-                   (uint8_t)VEGAPULS21_DISTANCE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(VEGAPULS21_DISTANCE_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_DISTANCE_RESOLUTION),
                    VEGAPULS21_DISTANCE_VAR_NAME, VEGAPULS21_DISTANCE_UNIT_NAME,
                    VEGAPULS21_DISTANCE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the VegaPuls21_Distance object - no action needed.
      */
-    ~VegaPuls21_Distance() {}
+    ~VegaPuls21_Distance() override = default;
 };
 
 
@@ -417,8 +418,8 @@ class VegaPuls21_Temp : public Variable {
      */
     explicit VegaPuls21_Temp(VegaPuls21* parentSense, const char* uuid = "",
                              const char* varCode = VEGAPULS21_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)VEGAPULS21_TEMP_VAR_NUM,
-                   (uint8_t)VEGAPULS21_TEMP_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(VEGAPULS21_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_TEMP_RESOLUTION),
                    VEGAPULS21_TEMP_VAR_NAME, VEGAPULS21_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -428,14 +429,14 @@ class VegaPuls21_Temp : public Variable {
      * used.
      */
     VegaPuls21_Temp()
-        : Variable((uint8_t)VEGAPULS21_TEMP_VAR_NUM,
-                   (uint8_t)VEGAPULS21_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(VEGAPULS21_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_TEMP_RESOLUTION),
                    VEGAPULS21_TEMP_VAR_NAME, VEGAPULS21_TEMP_UNIT_NAME,
                    VEGAPULS21_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the VegaPuls21_Temp object - no action needed.
      */
-    ~VegaPuls21_Temp() {}
+    ~VegaPuls21_Temp() override = default;
 };
 
 
@@ -463,8 +464,9 @@ class VegaPuls21_Reliability : public Variable {
     explicit VegaPuls21_Reliability(
         VegaPuls21* parentSense, const char* uuid = "",
         const char* varCode = VEGAPULS21_RELIABILITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)VEGAPULS21_RELIABILITY_VAR_NUM,
-                   (uint8_t)VEGAPULS21_RELIABILITY_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(VEGAPULS21_RELIABILITY_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_RELIABILITY_RESOLUTION),
                    VEGAPULS21_RELIABILITY_VAR_NAME,
                    VEGAPULS21_RELIABILITY_UNIT_NAME, varCode, uuid) {}
     /**
@@ -474,8 +476,8 @@ class VegaPuls21_Reliability : public Variable {
      * used.
      */
     VegaPuls21_Reliability()
-        : Variable((uint8_t)VEGAPULS21_RELIABILITY_VAR_NUM,
-                   (uint8_t)VEGAPULS21_RELIABILITY_RESOLUTION,
+        : Variable(static_cast<uint8_t>(VEGAPULS21_RELIABILITY_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_RELIABILITY_RESOLUTION),
                    VEGAPULS21_RELIABILITY_VAR_NAME,
                    VEGAPULS21_RELIABILITY_UNIT_NAME,
                    VEGAPULS21_RELIABILITY_DEFAULT_CODE) {}
@@ -483,7 +485,7 @@ class VegaPuls21_Reliability : public Variable {
      * @brief Destroy the VegaPuls21_Reliability object - no action
      * needed.
      */
-    ~VegaPuls21_Reliability() {}
+    ~VegaPuls21_Reliability() override = default;
 };
 
 
@@ -511,8 +513,9 @@ class VegaPuls21_ErrorCode : public Variable {
     explicit VegaPuls21_ErrorCode(
         VegaPuls21* parentSense, const char* uuid = "",
         const char* varCode = VEGAPULS21_ERRORCODE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)VEGAPULS21_ERRORCODE_VAR_NUM,
-                   (uint8_t)VEGAPULS21_ERRORCODE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(VEGAPULS21_ERRORCODE_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_ERRORCODE_RESOLUTION),
                    VEGAPULS21_ERRORCODE_VAR_NAME,
                    VEGAPULS21_ERRORCODE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -522,8 +525,8 @@ class VegaPuls21_ErrorCode : public Variable {
      * used.
      */
     VegaPuls21_ErrorCode()
-        : Variable((uint8_t)VEGAPULS21_ERRORCODE_VAR_NUM,
-                   (uint8_t)VEGAPULS21_ERRORCODE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(VEGAPULS21_ERRORCODE_VAR_NUM),
+                   static_cast<uint8_t>(VEGAPULS21_ERRORCODE_RESOLUTION),
                    VEGAPULS21_ERRORCODE_VAR_NAME,
                    VEGAPULS21_ERRORCODE_UNIT_NAME,
                    VEGAPULS21_ERRORCODE_DEFAULT_CODE) {}
@@ -531,7 +534,7 @@ class VegaPuls21_ErrorCode : public Variable {
      * @brief Destroy the VegaPuls21_ErrorCode object - no action
      * needed.
      */
-    ~VegaPuls21_ErrorCode() {}
+    ~VegaPuls21_ErrorCode() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_VEGAPULS21_H_

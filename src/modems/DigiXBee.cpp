@@ -21,36 +21,28 @@ DigiXBee::DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
                   XBEE_DISCONNECT_TIME_MS, XBEE_WAKE_DELAY_MS,
                   XBEE_AT_RESPONSE_TIME_MS) {}
 
-// Destructor
-DigiXBee::~DigiXBee() {}
-
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
 // After enabling pin sleep, the sleep request pin is held `LOW` to keep the
 // XBee on. Enable pin sleep in the setup function or using XCTU prior to
 // connecting the XBee
-bool DigiXBee::modemWakeFxn(void) {
+bool DigiXBee::modemWakeFxn() {
     if (_modemSleepRqPin >= 0) {
-        // Don't go to sleep if there's not a wake pin!
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                _wakeLevel ? F("HIGH") : F("LOW"), F("to wake"), _modemName);
         digitalWrite(_modemSleepRqPin, _wakeLevel);
-        return true;
-    } else {
-        return true;
     }
+    return true;
 }
 
 
-bool DigiXBee::modemSleepFxn(void) {
+bool DigiXBee::modemSleepFxn() {
     if (_modemSleepRqPin >= 0) {
         MS_DBG(F("Setting pin"), _modemSleepRqPin,
                !_wakeLevel ? F("HIGH") : F("LOW"), F("to put"), _modemName,
                F("to sleep"));
         digitalWrite(_modemSleepRqPin, !_wakeLevel);
-        return true;
-    } else {
-        return true;
     }
+    return true;
 }

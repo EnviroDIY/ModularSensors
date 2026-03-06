@@ -70,7 +70,7 @@
  * 1.  Disable caching:
  *   - By default, the RDO PRO-X "caches" readings for 5000ms (5s) and will
  * not take a new measurement until the 5s cache expires.  If you want to take
- * measurements at faster than 5s intervals (ie, to average multiple
+ * measurements at faster than 5s intervals (i.e., to average multiple
  * measurements), I strongly recommend setting the cache value to 0ms using the
  * Win-Situ software.  The cache value can be changed in the "Diagnostics" menu
  * found on the "Device Setup" tab of Win-Situ.
@@ -225,7 +225,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; dissolved oxygen
+ * @brief Decimal places in string representation; dissolved oxygen
  * concentration should have 2 - resolution is 0.01 mg/L.
  *
  * Contrary to the spec sheet, the actual resolution returned by the sensor in
@@ -264,7 +264,7 @@
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; dissolved oxygen percent
+ * @brief Decimal places in string representation; dissolved oxygen percent
  * saturation should have 1.
  *
  * The actual resolution returned by the sensor in SDI-12 mode is 0.00001 %.
@@ -297,9 +297,8 @@
  * {{ @ref InSituRDO_Temp::InSituRDO_Temp }}
  */
 /**@{*/
-/// @brief
 /**
- * @brief Decimals places in string representation; temperature should have 2 -
+ * @brief Decimal places in string representation; temperature should have 2 -
  * resolution is 0.01°C.
  *
  * The spec sheet lists 2 decimal resolution, but the returned value has 5.
@@ -332,7 +331,7 @@
  * {{ @ref InSituRDO_Pressure::InSituRDO_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 3
+/// @brief Decimal places in string representation; pressure should have 2
 #define INSITU_RDO_PRESSURE_RESOLUTION 2
 /// @brief Variable number; temperature is stored in sensorValues[3].
 #define INSITU_RDO_PRESSURE_VAR_NUM 3
@@ -413,7 +412,7 @@ class InSituRDO : public SDI12Sensors {
     /**
      * @brief Destroy the In-Situ RDO object
      */
-    ~InSituRDO() {}
+    ~InSituRDO() override = default;
 };
 
 
@@ -441,8 +440,8 @@ class InSituRDO_DOmgL : public Variable {
     explicit InSituRDO_DOmgL(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(INSITU_RDO_DOMGL_VAR_NUM),
+                   static_cast<uint8_t>(INSITU_RDO_DOMGL_RESOLUTION),
                    INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -452,14 +451,14 @@ class InSituRDO_DOmgL : public Variable {
      * used.
      */
     InSituRDO_DOmgL()
-        : Variable((uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
+        : Variable(static_cast<uint8_t>(INSITU_RDO_DOMGL_VAR_NUM),
+                   static_cast<uint8_t>(INSITU_RDO_DOMGL_RESOLUTION),
                    INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
                    INSITU_RDO_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_DOmgL object - no action needed.
      */
-    ~InSituRDO_DOmgL() {}
+    ~InSituRDO_DOmgL() override = default;
 };
 
 
@@ -487,8 +486,8 @@ class InSituRDO_DOpct : public Variable {
     explicit InSituRDO_DOpct(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOPCT_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(INSITU_RDO_DOPCT_VAR_NUM),
+                   static_cast<uint8_t>(INSITU_RDO_DOPCT_RESOLUTION),
                    INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -498,14 +497,14 @@ class InSituRDO_DOpct : public Variable {
      * used.
      */
     InSituRDO_DOpct()
-        : Variable((uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOPCT_RESOLUTION,
+        : Variable(static_cast<uint8_t>(INSITU_RDO_DOPCT_VAR_NUM),
+                   static_cast<uint8_t>(INSITU_RDO_DOPCT_RESOLUTION),
                    INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
                    INSITU_RDO_DOPCT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_DOpct object - no action needed.
      */
-    ~InSituRDO_DOpct() {}
+    ~InSituRDO_DOpct() override = default;
 };
 
 
@@ -532,8 +531,8 @@ class InSituRDO_Temp : public Variable {
      */
     explicit InSituRDO_Temp(InSituRDO* parentSense, const char* uuid = "",
                             const char* varCode = INSITU_RDO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INSITU_RDO_TEMP_VAR_NUM,
-                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(INSITU_RDO_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(INSITU_RDO_TEMP_RESOLUTION),
                    INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -543,14 +542,14 @@ class InSituRDO_Temp : public Variable {
      * used.
      */
     InSituRDO_Temp()
-        : Variable((uint8_t)INSITU_RDO_TEMP_VAR_NUM,
-                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(INSITU_RDO_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(INSITU_RDO_TEMP_RESOLUTION),
                    INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME,
                    INSITU_RDO_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_Temp object - no action needed.
      */
-    ~InSituRDO_Temp() {}
+    ~InSituRDO_Temp() override = default;
 };
 
 
@@ -578,8 +577,9 @@ class InSituRDO_Pressure : public Variable {
     explicit InSituRDO_Pressure(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
-                   (uint8_t)INSITU_RDO_PRESSURE_RESOLUTION,
+        : Variable(parentSense,
+                   static_cast<uint8_t>(INSITU_RDO_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(INSITU_RDO_PRESSURE_RESOLUTION),
                    INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -589,14 +589,14 @@ class InSituRDO_Pressure : public Variable {
      * used.
      */
     InSituRDO_Pressure()
-        : Variable((uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
-                   (uint8_t)INSITU_RDO_PRESSURE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(INSITU_RDO_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(INSITU_RDO_PRESSURE_RESOLUTION),
                    INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
                    INSITU_RDO_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_Pressure object - no action needed.
      */
-    ~InSituRDO_Pressure() {}
+    ~InSituRDO_Pressure() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_INSITURDO_H_

@@ -15,61 +15,58 @@
 //  The class and functions for interfacing with a specific variable.
 // ============================================================================
 
-// The constructor for a measured variable - that is, one whose values are
-// updated by a sensor.
+// Primary constructors
+// The constructor for a measured variable with UUID - that is, one whose values
+// are updated by a sensor.
 Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
                    uint8_t decimalResolution, const char* varName,
                    const char* varUnit, const char* varCode, const char* uuid)
-    : _sensorVarNum(sensorVarNum) {
-    setVarUUID(uuid);
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
+    : parentSensor(nullptr),
+      isCalculated(false),
+      _currentValue(MS_INVALID_VALUE),
+      _calcFxn(nullptr),
+      _sensorVarNum(sensorVarNum) {
+    if (uuid) setVarUUID(uuid);
+    if (varCode) setVarCode(varCode);
+    if (varUnit) setVarUnit(varUnit);
+    if (varName) setVarName(varName);
     setResolution(decimalResolution);
-
-    attachSensor(parentSense);
-}
-Variable::Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
-                   const char* varName, const char* varUnit,
-                   const char* varCode)
-    : _sensorVarNum(sensorVarNum) {
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
-    setResolution(decimalResolution);
+    if (parentSense) attachSensor(parentSense);
 }
 
-
-// The constructor for a calculated variable  - that is, one whose value is
-// calculated by the calcFxn which returns a float.
+// The constructor for a calculated variable with UUID - that is, one whose
+// value is calculated by the calcFxn which returns a float.
 Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode, const char* uuid)
-    : isCalculated(true) {
-    setVarUUID(uuid);
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
+    : parentSensor(nullptr),
+      isCalculated(false),
+      _currentValue(MS_INVALID_VALUE),
+      _calcFxn(nullptr),
+      _sensorVarNum(0) {
+    if (uuid) setVarUUID(uuid);
+    if (varCode) setVarCode(varCode);
+    if (varUnit) setVarUnit(varUnit);
+    if (varName) setVarName(varName);
     setResolution(decimalResolution);
-
-    setCalculation(calcFxn);
+    if (calcFxn) setCalculation(calcFxn);
 }
+
+// Delegating constructors
+Variable::Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
+                   const char* varName, const char* varUnit,
+                   const char* varCode)
+    : Variable(nullptr, sensorVarNum, decimalResolution, varName, varUnit,
+               varCode, nullptr) {}
 Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode)
-    : isCalculated(true) {
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
-    setResolution(decimalResolution);
-
-    setCalculation(calcFxn);
+    : Variable(calcFxn, decimalResolution, varName, varUnit, varCode, nullptr) {
 }
-
-// constructor with no arguments
-Variable::Variable() : isCalculated(true) {}
-// Destructor
-Variable::~Variable() {}
+// Default constructor with no arguments - delegates to ensure all members are
+// initialized
+Variable::Variable()
+    : Variable(nullptr, 0, 0, nullptr, nullptr, nullptr, nullptr) {}
 
 
 // This does all of the setup that can't happen in the constructors
@@ -131,7 +128,7 @@ void Variable::onSensorUpdate(Sensor* parentSense) {
 
 // This is a helper - it returns the name of the parent sensor, if applicable
 // This is needed for dealing with variables in arrays
-String Variable::getParentSensorName(void) {
+String Variable::getParentSensorName() {
     if (isCalculated) {
         return "Calculated";
     } else if (parentSensor == nullptr) {
@@ -145,7 +142,7 @@ String Variable::getParentSensorName(void) {
 
 // This is a helper - it returns the name and location of the parent sensor, if
 // applicable This is needed for dealing with variables in arrays
-String Variable::getParentSensorNameAndLocation(void) {
+String Variable::getParentSensorNameAndLocation() {
     if (isCalculated) {
         return "Calculated";
     } else if (parentSensor == nullptr) {
@@ -159,12 +156,13 @@ String Variable::getParentSensorNameAndLocation(void) {
 
 // This ties a calculated variable to its calculation function
 void Variable::setCalculation(float (*calcFxn)()) {
-    if (isCalculated) { _calcFxn = calcFxn; }
+    _calcFxn     = calcFxn;
+    isCalculated = (calcFxn != nullptr);
 }
 
 
 // This gets/sets the variable's resolution for value strings
-uint8_t Variable::getResolution(void) {
+uint8_t Variable::getResolution() {
     return _decimalResolution;
 }
 void Variable::setResolution(uint8_t decimalResolution) {
@@ -173,7 +171,7 @@ void Variable::setResolution(uint8_t decimalResolution) {
 
 // This gets/sets the variable's name using
 // http://vocabulary.odm2.org/variablename/
-String Variable::getVarName(void) {
+String Variable::getVarName() {
     return _varName;
 }
 void Variable::setVarName(const char* varName) {
@@ -181,7 +179,7 @@ void Variable::setVarName(const char* varName) {
 }
 
 // This gets/sets the variable's unit using http://vocabulary.odm2.org/units/
-String Variable::getVarUnit(void) {
+String Variable::getVarUnit() {
     return _varUnit;
 }
 void Variable::setVarUnit(const char* varUnit) {
@@ -189,7 +187,7 @@ void Variable::setVarUnit(const char* varUnit) {
 }
 
 // This returns a customized code for the variable
-String Variable::getVarCode(void) {
+String Variable::getVarCode() {
     return _varCode;
 }
 // This sets the variable code to a new custom value
@@ -198,12 +196,12 @@ void Variable::setVarCode(const char* varCode) {
 }
 
 // This returns the variable UUID as a String, if one has been assigned
-String Variable::getVarUUIDString(void) {
+String Variable::getVarUUIDString() {
     return String(_uuid);
 }
 // This returns the variable UUID as a pointer to a const char array, if one has
 // been assigned
-const char* Variable::getVarUUID(void) {
+const char* Variable::getVarUUID() {
     return _uuid;
 }
 // This sets the UUID
@@ -211,7 +209,7 @@ void Variable::setVarUUID(const char* uuid) {
     _uuid = uuid;
 }
 // This checks that the UUID is properly formatted
-bool Variable::checkUUIDFormat(void) {
+bool Variable::checkUUIDFormat() {
     // If no UUID, move on
     if (_uuid == nullptr || strlen(_uuid) == 0) { return true; }
 
@@ -252,13 +250,27 @@ float Variable::getValue(bool updateValue) {
         // NOTE: Only run the calculation function if update value is called,
         // otherwise return the last value. If we run the calculation function
         // every time we call getValue() or getValueString(), we will get
-        // different values each time - ie, the data on the CSV and each
+        // different values each time - i.e., the data on the CSV and each
         // publisher will report a different value. That is **NOT** the desired
         // behavior.  Thus, we stash the value.
-        if (updateValue) _currentValue = _calcFxn();
+        if (updateValue && _calcFxn != nullptr) {
+            _currentValue = _calcFxn();
+        } else if (updateValue && _calcFxn == nullptr) {
+            // If no calculation function is set, return error value
+            _currentValue = MS_INVALID_VALUE;
+            MS_DBG(F("ERROR! Calculated variable"), getVarCode(),
+                   F("has no calculation function!"));
+        }
         return _currentValue;
     } else {
-        if (updateValue) parentSensor->update();
+        if (updateValue && parentSensor != nullptr) {
+            parentSensor->update();
+        } else if (updateValue && parentSensor == nullptr) {
+            // If no parent sensor is set, return error value
+            _currentValue = MS_INVALID_VALUE;
+            MS_DBG(F("ERROR! Variable"), getVarCode(),
+                   F("has no parent sensor!"));
+        }
         return _currentValue;
     }
 }

@@ -9,8 +9,6 @@
  * TurnerCyclops_Turbidity and TurnerCyclops_Voltage.
  *
  * These are used for the Turner Scientific Cyclops-7F.
- *
- * This depends on the Adafruit ADS1X15 v2.x library
  */
 /* clang-format off */
 /**
@@ -101,9 +99,28 @@
  * possible.  All gain settings and voltage dividers should be in place for
  * the calibration.
  *
+ * The units to use for the calibration point depend on the parameter being measured,
+ * as listed in the table below.
+ *
+ * | ID  | Variable                     | Units                               |
+ * | --- | ---------------------------- | ----------------------------------- |
+ * | U   | TurnerCyclops_CDOM           | parts per billion (ppb)             |
+ * | C   | TurnerCyclops_Chlorophyll    | micrograms per Liter (µg/L)         |
+ * | D   | TurnerCyclops_RedChlorophyll | micrograms per Liter (µg/L)         |
+ * | F   | TurnerCyclops_Fluorescein    | parts per billion (ppb)             |
+ * | O   | TurnerCyclops_CrudeOil       | parts per billion (ppb)             |
+ * | G   | TurnerCyclops_BTEX           | parts per million (ppm)             |
+ * | B   | TurnerCyclops_Brighteners    | parts per billion (ppb)             |
+ * | P   | TurnerCyclops_Phycocyanin    | parts per billion (ppb)             |
+ * | E   | TurnerCyclops_Phycoerythrin  | parts per billion (ppb)             |
+ * | A   | TurnerCyclops_PTSA           | parts per billion (ppb)             |
+ * | R   | TurnerCyclops_Rhodamine      | parts per billion (ppb)             |
+ * | L   | TurnerCyclops_Tryptophan     | parts per billion (ppb)             |
+ * | T   | TurnerCyclops_Turbidity      | nephelometric turbidity units (NTU) |
+ *
  * Before applying any calibration, the analog output from the Cyclops-7F
  * must be converted into a high resolution digital signal.  See the
- * [ADS1115 page](@ref analog_group) for details on the conversion.
+ * [analog group](@ref analog_group) for details on supported ADC backends.
  *
  * @section sensor_cyclops_datasheet Sensor Datasheet
  * - [Main Information Page](https://www.turnerdesigns.com/cyclops-7f-submersible-fluorometer)
@@ -111,8 +128,8 @@
  * - [Manual](http://docs.turnerdesigns.com/t2/doc/manuals/998-2100.pdf)
  *
  * @section sensor_cyclops_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
+ * - `-D CYCLOPS_CALIBRATION_EPSILON=x.xf`
+ *     - Sets the tolerance for validating the calibration values
  *
  * @section sensor_cyclops_ctor Sensor Constructor
  * {{ @ref TurnerCyclops::TurnerCyclops }}
@@ -149,9 +166,35 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
+// Forward declaration
+class AnalogVoltageBase;
+
 // Sensor Specific Defines
 /** @ingroup sensor_cyclops */
 /**@{*/
+
+/**
+ * @anchor sensor_cyclops_config
+ * @name Configuration Parameters
+ * Configuration parameters for the Turner Cyclops-7F sensor
+ */
+/**@{*/
+#if !defined(CYCLOPS_CALIBRATION_EPSILON) || defined(DOXYGEN)
+/**
+ * @brief Minimum voltage difference threshold for calibration validation
+ *
+ * This epsilon value is used to validate that the calibration standard voltage
+ * and blank voltage are sufficiently different to provide a meaningful
+ * calibration. If the absolute difference between these voltages is less than
+ * this threshold, the calibration is considered invalid.
+ *
+ * @note This should be tuned to match the expected precision of the sensor
+ * and ADC system. A value of 1e-4f (0.0001V or 0.1mV) is appropriate for
+ * most high-precision ADC configurations.
+ */
+#define CYCLOPS_CALIBRATION_EPSILON 1e-4f
+#endif
+/**@}*/
 
 /**
  * @anchor sensor_cyclops_var_counts
@@ -173,16 +216,6 @@
 /// @brief Sensor::_incCalcValues; the raw voltage is reported, the other
 /// parameter is calculated using the input calibration equation.
 #define CYCLOPS_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
- * @anchor sensor_cyclops_config
- * @name Configuration Defines
- * Defines to help configure the address of the ADD used by the Cyclops
- */
-/**@{*/
-/// @brief The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
 /**@}*/
 
 /**
@@ -222,10 +255,10 @@
 /// Variable number; the primary variable is stored in sensorValues[0].
 #define CYCLOPS_VAR_NUM 0
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; 1.
+/// @brief Decimal places in string representation; 1.
 #define CYCLOPS_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; 5.
+/// @brief Decimal places in string representation; 5.
 #define CYCLOPS_RESOLUTION 5
 #endif
 /**@}*/
@@ -259,12 +292,12 @@
 #define CYCLOPS_VOLTAGE_DEFAULT_CODE "CyclopsVoltage"
 
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; voltage should have 1.
+/// @brief Decimal places in string representation; voltage should have 1.
 ///  - Resolution:
 ///     - 16-bit ADC (ADS1115): 0.125 mV
 #define CYCLOPS_VOLTAGE_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; voltage should have 4.
+/// @brief Decimal places in string representation; voltage should have 4.
 ///  - Resolution:
 ///     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): 2 mV
 #define CYCLOPS_VOLTAGE_RESOLUTION 4
@@ -281,80 +314,76 @@
 /* clang-format on */
 class TurnerCyclops : public Sensor {
  public:
-    // The constructor - need the power pin, the ADS1X15 data channel, and the
-    // calibration info
-    /* clang-format off */
     /**
      * @brief Construct a new Turner Cyclops object - need the power pin, the
-     * ADS1X15 data channel, and the calibration info.
+     * analog data channel, and the calibration info.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core.  Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
+     * By default, this constructor will internally create a default
+     * AnalogVoltageBase implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageBase object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the Cyclops-7F
      * Use -1 if it is continuously powered.
-     * - The ADS1x15 requires an input voltage of 2.0-5.5V, but this library
-     * assumes the ADS is powered with 3.3V.
      * - The Cyclops-7F itself requires a 3-15V power supply, which can be
      * turned off between measurements.
-     * @param adsChannel The analog data channel _on the TI ADS1115_ that the
-     * Cyclops is connected to (0-3).
+     * @param analogChannel The analog data channel or processor pin for voltage
+     * measurements.  The significance of the channel number depends on the
+     * specific AnalogVoltageBase implementation used for voltage readings. For
+     * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
+     * the sensor is connected to.  Negative or invalid channel numbers are not
+     * clamped and will cause the reading to fail and emit a warning.
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration.  The concentration units should be the same as the
      * final measuring units.
-     * | ID  | Variable                     | Units                               |
-     * | --- | ---------------------------- | ----------------------------------- |
-     * | C   | TurnerCyclops_Chlorophyll    | micrograms per Liter (µg/L)         |
-     * | R   | TurnerCyclops_Rhodamine      | parts per billion (ppb)             |
-     * | F   | TurnerCyclops_Fluorescein    | parts per billion (ppb)             |
-     * | P   | TurnerCyclops_Phycocyanin    | parts per billion (ppb)             |
-     * | E   | TurnerCyclops_Phycoerythrin  | parts per billion (ppb)             |
-     * | U   | TurnerCyclops_CDOM           | parts per billion (ppb)             |
-     * | O   | TurnerCyclops_CrudeOil       | parts per billion (ppb)             |
-     * | B   | TurnerCyclops_Brighteners    | parts per billion (ppb)             |
-     * | T   | TurnerCyclops_Turbidity      | nephelometric turbidity units (NTU) |
-     * | A   | TurnerCyclops_PTSA           | parts per billion (ppb)             |
-     * | G   | TurnerCyclops_BTEX           | parts per million (ppm)             |
-     * | L   | TurnerCyclops_Tryptophan     | parts per billion (ppb)             |
-     * | D   | TurnerCyclops_RedChlorophyll | micrograms per Liter (µg/L)         |
      * @param volt_std The voltage (in volts) measured for the conc_std.  This
      * voltage should be the final voltage *after* accounting for any voltage
      * dividers or gain settings.
      * @param volt_blank The voltage (in volts) measured for a blank.  This
      * voltage should be the final voltage *after* accounting for any voltage
      * dividers or gain settings.
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
+     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
+     *
+     * @warning In library versions 0.37.0 and earlier, a different constructor
+     * was used that the I2C address of the ADS1x15 was an optional input
+     * parameter which came *before* the optional input parameter for the number
+     * of measurements to average.  The input parameter for the I2C address has
+     * been *removed* and the input for the number of measurements to average
+     * has been moved up in the order!  Please update your code to prevent a
+     * compiler error or a silent reading error.
      */
-    /* clang-format on */
-    TurnerCyclops(int8_t powerPin, uint8_t adsChannel, float conc_std,
+    TurnerCyclops(int8_t powerPin, int8_t analogChannel, float conc_std,
                   float volt_std, float volt_blank,
-                  uint8_t i2cAddress            = ADS1115_ADDRESS,
-                  uint8_t measurementsToAverage = 1);
+                  uint8_t            measurementsToAverage = 1,
+                  AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Turner Cyclops object
      */
-    ~TurnerCyclops();
+    ~TurnerCyclops() override;
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    TurnerCyclops(const TurnerCyclops&)            = delete;
+    TurnerCyclops& operator=(const TurnerCyclops&) = delete;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    // Delete move constructor and move assignment operator
+    TurnerCyclops(TurnerCyclops&&)            = delete;
+    TurnerCyclops& operator=(TurnerCyclops&&) = delete;
+
+    String getSensorLocation() override;
+
+    bool setup() override;
+
+    bool addSingleMeasurementResult() override;
 
  private:
-    /**
-     * @brief Internal reference to the ADS channel number of the Turner Cyclops
-     */
-    uint8_t _adsChannel;
     /**
      * @brief The concentration of the standard used for a 1-point sensor
      * calibration.  The concentration units should be the same as the final
@@ -373,10 +402,11 @@ class TurnerCyclops : public Sensor {
      * settings.
      */
     float _volt_blank;
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
+    /// @brief Pointer to analog voltage reader
+    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    /// @brief Flag to track if this object owns the analog voltage reader and
+    /// should delete it in the destructor
+    bool _ownsAnalogVoltageReader = false;
 };
 
 
@@ -408,8 +438,8 @@ class TurnerCyclops_Voltage : public Variable {
     explicit TurnerCyclops_Voltage(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CYCLOPS_VOLTAGE_VAR_NUM,
-                   (uint8_t)CYCLOPS_VOLTAGE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_VOLTAGE_RESOLUTION),
                    CYCLOPS_VOLTAGE_VAR_NAME, CYCLOPS_VOLTAGE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -419,14 +449,14 @@ class TurnerCyclops_Voltage : public Variable {
      * used.
      */
     TurnerCyclops_Voltage()
-        : Variable((uint8_t)CYCLOPS_VOLTAGE_VAR_NUM,
-                   (uint8_t)CYCLOPS_VOLTAGE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CYCLOPS_VOLTAGE_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_VOLTAGE_RESOLUTION),
                    CYCLOPS_VOLTAGE_VAR_NAME, CYCLOPS_VOLTAGE_UNIT_NAME,
                    CYCLOPS_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the Turner Cyclops Voltage object - no action needed.
      */
-    ~TurnerCyclops_Voltage() {}
+    ~TurnerCyclops_Voltage() override = default;
 };
 
 
@@ -467,9 +497,10 @@ class TurnerCyclops_Chlorophyll : public Variable {
     explicit TurnerCyclops_Chlorophyll(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = "CyclopsChlorophyll")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "chlorophyllFluorescence",
-                   "microgramPerLiter", varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   "chlorophyllFluorescence", "microgramPerLiter", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Chlorophyll object.
      *
@@ -477,14 +508,15 @@ class TurnerCyclops_Chlorophyll : public Variable {
      * used.
      */
     TurnerCyclops_Chlorophyll()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "chlorophyllFluorescence", "microgramPerLiter",
                    "CyclopsChlorophyll") {}
     /**
      * @brief Destroy the Turner Cyclops Chlorophyll variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Chlorophyll() {}
+    ~TurnerCyclops_Chlorophyll() override = default;
 };
 
 
@@ -524,9 +556,9 @@ class TurnerCyclops_Rhodamine : public Variable {
     explicit TurnerCyclops_Rhodamine(TurnerCyclops* parentSense,
                                      const char*    uuid = "",
                                      const char* varCode = "CyclopsRhodamine")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "RhodamineFluorescence",
-                   "partPerBillion", varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   "RhodamineFluorescence", "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Rhodamine object.
      *
@@ -534,14 +566,15 @@ class TurnerCyclops_Rhodamine : public Variable {
      * used.
      */
     TurnerCyclops_Rhodamine()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "RhodamineFluorescence", "partPerBillion",
                    "CyclopsRhodamine") {}
     /**
      * @brief Destroy the Turner Cyclops Rhodamine variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Rhodamine() {}
+    ~TurnerCyclops_Rhodamine() override = default;
 };
 
 
@@ -581,9 +614,9 @@ class TurnerCyclops_Fluorescein : public Variable {
     explicit TurnerCyclops_Fluorescein(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = "CyclopsFluorescein")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "fluorescein", "partPerBillion",
-                   varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "fluorescein",
+                   "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Fluorescein object.
      *
@@ -591,13 +624,14 @@ class TurnerCyclops_Fluorescein : public Variable {
      * used.
      */
     TurnerCyclops_Fluorescein()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
-                   "fluorescein", "partPerBillion", "CyclopsFluorescein") {}
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "fluorescein",
+                   "partPerBillion", "CyclopsFluorescein") {}
     /**
      * @brief Destroy the Turner Cyclops Fluorescein variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Fluorescein() {}
+    ~TurnerCyclops_Fluorescein() override = default;
 };
 
 
@@ -638,8 +672,8 @@ class TurnerCyclops_Phycocyanin : public Variable {
     explicit TurnerCyclops_Phycocyanin(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = "CyclopsPhycocyanin")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "blue_GreenAlgae_Cyanobacteria_Phycocyanin",
                    "partPerBillion", varCode, uuid) {}
     /**
@@ -649,14 +683,15 @@ class TurnerCyclops_Phycocyanin : public Variable {
      * used.
      */
     TurnerCyclops_Phycocyanin()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "blue_GreenAlgae_Cyanobacteria_Phycocyanin",
                    "partPerBillion", "CyclopsPhycocyanin") {}
     /**
      * @brief Destroy the Turner Cyclops Phycocyanin variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Phycocyanin() {}
+    ~TurnerCyclops_Phycocyanin() override = default;
 };
 
 
@@ -697,8 +732,8 @@ class TurnerCyclops_Phycoerythrin : public Variable {
     explicit TurnerCyclops_Phycoerythrin(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = "CyclopsPhycoerythrin")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "phycoerythrin",
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "phycoerythrin",
                    "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Phycoerythrin object.
@@ -707,13 +742,14 @@ class TurnerCyclops_Phycoerythrin : public Variable {
      * used.
      */
     TurnerCyclops_Phycoerythrin()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
-                   "phycoerythrin", "partPerBillion", "CyclopsPhycoerythrin") {}
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "phycoerythrin",
+                   "partPerBillion", "CyclopsPhycoerythrin") {}
     /**
      * @brief Destroy the Turner Cyclops Phycoerythrin variable object - no
      * action needed.
      */
-    ~TurnerCyclops_Phycoerythrin() {}
+    ~TurnerCyclops_Phycoerythrin() override = default;
 };
 
 
@@ -757,8 +793,8 @@ class TurnerCyclops_CDOM : public Variable {
     explicit TurnerCyclops_CDOM(TurnerCyclops* parentSense,
                                 const char*    uuid    = "",
                                 const char*    varCode = "CyclopsCDOM")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "fluorescenceDissolvedOrganicMatter", "partPerBillion",
                    varCode, uuid) {}
     /**
@@ -768,14 +804,15 @@ class TurnerCyclops_CDOM : public Variable {
      * used.
      */
     TurnerCyclops_CDOM()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "fluorescenceDissolvedOrganicMatter", "partPerBillion",
                    "CyclopsCDOM") {}
     /**
      * @brief Destroy the Turner Cyclops CDOM variable object - no action
      * needed.
      */
-    ~TurnerCyclops_CDOM() {}
+    ~TurnerCyclops_CDOM() override = default;
 };
 
 
@@ -817,9 +854,10 @@ class TurnerCyclops_CrudeOil : public Variable {
     explicit TurnerCyclops_CrudeOil(TurnerCyclops* parentSense,
                                     const char*    uuid    = "",
                                     const char*    varCode = "CyclopsCrudeOil")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "petroleumHydrocarbonTotal",
-                   "partPerBillion", varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   "petroleumHydrocarbonTotal", "partPerBillion", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_CrudeOil object.
      *
@@ -827,14 +865,15 @@ class TurnerCyclops_CrudeOil : public Variable {
      * used.
      */
     TurnerCyclops_CrudeOil()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "petroleumHydrocarbonTotal", "partPerBillion",
                    "CyclopsCrudeOil") {}
     /**
      * @brief Destroy the Turner Cyclops CrudeOil variable object - no action
      * needed.
      */
-    ~TurnerCyclops_CrudeOil() {}
+    ~TurnerCyclops_CrudeOil() override = default;
 };
 
 
@@ -877,9 +916,9 @@ class TurnerCyclops_Brighteners : public Variable {
     explicit TurnerCyclops_Brighteners(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = "CyclopsOpticalBrighteners")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "opticalBrighteners",
-                   "partPerBillion", varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   "opticalBrighteners", "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Brighteners object.
      *
@@ -887,13 +926,14 @@ class TurnerCyclops_Brighteners : public Variable {
      * used.
      */
     TurnerCyclops_Brighteners()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "opticalBrighteners", "partPerBillion",
                    "CyclopsOpticalBrighteners") {}
     /**
      * @brief Destroy the Turner Cyclops Brighteners object - no action needed.
      */
-    ~TurnerCyclops_Brighteners() {}
+    ~TurnerCyclops_Brighteners() override = default;
 };
 
 
@@ -933,8 +973,8 @@ class TurnerCyclops_Turbidity : public Variable {
     explicit TurnerCyclops_Turbidity(TurnerCyclops* parentSense,
                                      const char*    uuid = "",
                                      const char* varCode = "CyclopsTurbidity")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "Turbidity",
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "Turbidity",
                    "nephelometricTurbidityUnit", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Turbidity object.
@@ -943,14 +983,14 @@ class TurnerCyclops_Turbidity : public Variable {
      * used.
      */
     TurnerCyclops_Turbidity()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
-                   "Turbidity", "nephelometricTurbidityUnit",
-                   "CyclopsTurbidity") {}
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "Turbidity",
+                   "nephelometricTurbidityUnit", "CyclopsTurbidity") {}
     /**
      * @brief Destroy the Turner Cyclops Turbidity variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Turbidity() {}
+    ~TurnerCyclops_Turbidity() override = default;
 };
 
 
@@ -991,9 +1031,9 @@ class TurnerCyclops_PTSA : public Variable {
     explicit TurnerCyclops_PTSA(TurnerCyclops* parentSense,
                                 const char*    uuid    = "",
                                 const char*    varCode = "CyclopsPTSA")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "ptsa", "partPerBillion",
-                   varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "ptsa",
+                   "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_PTSA object.
      *
@@ -1001,13 +1041,14 @@ class TurnerCyclops_PTSA : public Variable {
      * used.
      */
     TurnerCyclops_PTSA()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
-                   "ptsa", "partPerBillion", "CyclopsPTSA") {}
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "ptsa",
+                   "partPerBillion", "CyclopsPTSA") {}
     /**
      * @brief Destroy the Turner Cyclops PTSA variable object - no action
      * needed.
      */
-    ~TurnerCyclops_PTSA() {}
+    ~TurnerCyclops_PTSA() override = default;
 };
 
 
@@ -1048,9 +1089,9 @@ class TurnerCyclops_BTEX : public Variable {
     explicit TurnerCyclops_BTEX(TurnerCyclops* parentSense,
                                 const char*    uuid    = "",
                                 const char*    varCode = "CyclopsBTEX")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "btex", "partPerMillion",
-                   varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "btex",
+                   "partPerMillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_BTEX object.
      *
@@ -1058,13 +1099,14 @@ class TurnerCyclops_BTEX : public Variable {
      * used.
      */
     TurnerCyclops_BTEX()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
-                   "btex", "partPerMillion", "CyclopsBTEX") {}
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "btex",
+                   "partPerMillion", "CyclopsBTEX") {}
     /**
      * @brief Destroy the Turner Cyclops BTEX variable object - no action
      * needed.
      */
-    ~TurnerCyclops_BTEX() {}
+    ~TurnerCyclops_BTEX() override = default;
 };
 
 
@@ -1104,9 +1146,9 @@ class TurnerCyclops_Tryptophan : public Variable {
     explicit TurnerCyclops_Tryptophan(TurnerCyclops* parentSense,
                                       const char*    uuid = "",
                                       const char* varCode = "CyclopsTryptophan")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "tryptophan", "partPerBillion",
-                   varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "tryptophan",
+                   "partPerBillion", varCode, uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_Tryptophan object.
      *
@@ -1114,13 +1156,14 @@ class TurnerCyclops_Tryptophan : public Variable {
      * used.
      */
     TurnerCyclops_Tryptophan()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
-                   "tryptophan", "partPerBillion", "CyclopsTryptophan") {}
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "tryptophan",
+                   "partPerBillion", "CyclopsTryptophan") {}
     /**
      * @brief Destroy the Turner Cyclops Tryptophan variable object - no action
      * needed.
      */
-    ~TurnerCyclops_Tryptophan() {}
+    ~TurnerCyclops_Tryptophan() override = default;
 };
 
 
@@ -1161,9 +1204,10 @@ class TurnerCyclops_RedChlorophyll : public Variable {
     explicit TurnerCyclops_RedChlorophyll(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = "CyclopsRedChlorophyll")
-        : Variable(parentSense, (uint8_t)CYCLOPS_VAR_NUM,
-                   (uint8_t)CYCLOPS_RESOLUTION, "chlorophyllFluorescence",
-                   "microgramPerLiter", varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   "chlorophyllFluorescence", "microgramPerLiter", varCode,
+                   uuid) {}
     /**
      * @brief Construct a new TurnerCyclops_RedChlorophyll object.
      *
@@ -1171,14 +1215,15 @@ class TurnerCyclops_RedChlorophyll : public Variable {
      * used.
      */
     TurnerCyclops_RedChlorophyll()
-        : Variable((uint8_t)CYCLOPS_VAR_NUM, (uint8_t)CYCLOPS_RESOLUTION,
+        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "chlorophyllFluorescence", "microgramPerLiter",
                    "CyclopsRedChlorophyll") {}
     /**
      * @brief Destroy the Turner Cyclops Red Chlorophyll variable object - no
      * action needed.
      */
-    ~TurnerCyclops_RedChlorophyll() {}
+    ~TurnerCyclops_RedChlorophyll() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TURNERCYCLOPS_H_

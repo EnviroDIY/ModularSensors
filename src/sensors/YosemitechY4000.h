@@ -109,7 +109,7 @@
  * {{ @ref YosemitechY4000_DOmgL::YosemitechY4000_DOmgL }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen
+/// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y4000_DOMGL_RESOLUTION 2
 /// @brief Sensor variable number; dissolved oxygen concentration is stored in
@@ -137,7 +137,7 @@
  * {{ @ref YosemitechY4000_Turbidity::YosemitechY4000_Turbidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 2 -
+/// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y4000_TURB_RESOLUTION 2
 /// @brief Sensor variable number; turbidity is stored in sensorValues[1].
@@ -164,7 +164,7 @@
  * {{ @ref YosemitechY4000_Cond::YosemitechY4000_Cond }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; conductivity should have 1
+/// @brief Decimal places in string representation; conductivity should have 1
 /// - resolution is 0.1 µS/cm.
 #define Y4000_COND_RESOLUTION 1
 /// @brief Sensor variable number; conductivity is stored in sensorValues[2].
@@ -191,7 +191,7 @@
  * {{ @ref YosemitechY4000_pH::YosemitechY4000_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; ph should have 2 -
+/// @brief Decimal places in string representation; ph should have 2 -
 /// resolution is 0.01 pH units.
 #define Y4000_PH_RESOLUTION 2
 /// @brief Sensor variable number; pH is stored in sensorValues[3].
@@ -217,7 +217,7 @@
  * {{ @ref YosemitechY4000_Temp::YosemitechY4000_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y4000_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[4].
@@ -244,7 +244,7 @@
  * {{ @ref YosemitechY4000_ORP::YosemitechY4000_ORP }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; orp should have 0 -
+/// @brief Decimal places in string representation; orp should have 0 -
 /// resolution is 1 mV.
 #define Y4000_ORP_RESOLUTION 0
 /// @brief Sensor variable number; ORP is stored in sensorValues[5].
@@ -272,7 +272,7 @@
  * {{ @ref YosemitechY4000_Chlorophyll::YosemitechY4000_Chlorophyll }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; chlorophyll concentration
+/// @brief Decimal places in string representation; chlorophyll concentration
 /// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y4000_CHLORO_RESOLUTION 1
 /// @brief Sensor variable number; chlorophyll concentration is stored in
@@ -300,7 +300,7 @@
  * {{ @ref YosemitechY4000_BGA::YosemitechY4000_BGA }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; bga should have 2 -
+/// @brief Decimal places in string representation; bga should have 2 -
 /// resolution is 0.01 µg/L / 0.01 RFU.
 #define Y4000_BGA_RESOLUTION 2
 /// @brief Sensor variable number; BGA is stored in sensorValues[7].
@@ -373,7 +373,7 @@ class YosemitechY4000 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y4000 object
      */
-    ~YosemitechY4000() {}
+    ~YosemitechY4000() override = default;
 };
 
 
@@ -401,9 +401,10 @@ class YosemitechY4000_DOmgL : public Variable {
     explicit YosemitechY4000_DOmgL(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y4000_DOMGL_VAR_NUM,
-                   (uint8_t)Y4000_DOMGL_RESOLUTION, Y4000_DOMGL_VAR_NAME,
-                   Y4000_DOMGL_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y4000_DOMGL_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_DOMGL_RESOLUTION),
+                   Y4000_DOMGL_VAR_NAME, Y4000_DOMGL_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new YosemitechY4000_DOmgL object.
      *
@@ -411,13 +412,14 @@ class YosemitechY4000_DOmgL : public Variable {
      * used.
      */
     YosemitechY4000_DOmgL()
-        : Variable((uint8_t)Y4000_DOMGL_VAR_NUM,
-                   (uint8_t)Y4000_DOMGL_RESOLUTION, Y4000_DOMGL_VAR_NAME,
-                   Y4000_DOMGL_UNIT_NAME, Y4000_DOMGL_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(Y4000_DOMGL_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_DOMGL_RESOLUTION),
+                   Y4000_DOMGL_VAR_NAME, Y4000_DOMGL_UNIT_NAME,
+                   Y4000_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_DOmgL object - no action needed.
      */
-    ~YosemitechY4000_DOmgL() {}
+    ~YosemitechY4000_DOmgL() override = default;
 };
 
 /* clang-format off */
@@ -444,9 +446,9 @@ class YosemitechY4000_Turbidity : public Variable {
     explicit YosemitechY4000_Turbidity(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y4000_TURB_VAR_NUM,
-                   (uint8_t)Y4000_TURB_RESOLUTION, Y4000_TURB_VAR_NAME,
-                   Y4000_TURB_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y4000_TURB_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_TURB_RESOLUTION),
+                   Y4000_TURB_VAR_NAME, Y4000_TURB_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_Turbidity object.
      *
@@ -454,13 +456,14 @@ class YosemitechY4000_Turbidity : public Variable {
      * used.
      */
     YosemitechY4000_Turbidity()
-        : Variable((uint8_t)Y4000_TURB_VAR_NUM, (uint8_t)Y4000_TURB_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y4000_TURB_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_TURB_RESOLUTION),
                    Y4000_TURB_VAR_NAME, Y4000_TURB_UNIT_NAME,
                    Y4000_TURB_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_Turbidity object - no action needed.
      */
-    ~YosemitechY4000_Turbidity() {}
+    ~YosemitechY4000_Turbidity() override = default;
 };
 
 /* clang-format off */
@@ -487,9 +490,9 @@ class YosemitechY4000_Cond : public Variable {
     explicit YosemitechY4000_Cond(YosemitechY4000* parentSense,
                                   const char*      uuid = "",
                                   const char* varCode = Y4000_COND_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y4000_COND_VAR_NUM,
-                   (uint8_t)Y4000_COND_RESOLUTION, Y4000_COND_VAR_NAME,
-                   Y4000_COND_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y4000_COND_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_COND_RESOLUTION),
+                   Y4000_COND_VAR_NAME, Y4000_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_Cond object.
      *
@@ -497,13 +500,14 @@ class YosemitechY4000_Cond : public Variable {
      * used.
      */
     YosemitechY4000_Cond()
-        : Variable((uint8_t)Y4000_COND_VAR_NUM, (uint8_t)Y4000_COND_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y4000_COND_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_COND_RESOLUTION),
                    Y4000_COND_VAR_NAME, Y4000_COND_UNIT_NAME,
                    Y4000_COND_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_Cond object - no action needed.
      */
-    ~YosemitechY4000_Cond() {}
+    ~YosemitechY4000_Cond() override = default;
 };
 
 /* clang-format off */
@@ -530,8 +534,8 @@ class YosemitechY4000_pH : public Variable {
     explicit YosemitechY4000_pH(YosemitechY4000* parentSense,
                                 const char*      uuid = "",
                                 const char* varCode   = Y4000_PH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y4000_PH_VAR_NUM,
-                   (uint8_t)Y4000_PH_RESOLUTION, Y4000_PH_VAR_NAME,
+        : Variable(parentSense, static_cast<uint8_t>(Y4000_PH_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_PH_RESOLUTION), Y4000_PH_VAR_NAME,
                    Y4000_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_pH object.
@@ -540,13 +544,13 @@ class YosemitechY4000_pH : public Variable {
      * used.
      */
     YosemitechY4000_pH()
-        : Variable((uint8_t)Y4000_PH_VAR_NUM, (uint8_t)Y4000_PH_RESOLUTION,
-                   Y4000_PH_VAR_NAME, Y4000_PH_UNIT_NAME,
-                   Y4000_PH_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(Y4000_PH_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_PH_RESOLUTION), Y4000_PH_VAR_NAME,
+                   Y4000_PH_UNIT_NAME, Y4000_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_pH object - no action needed.
      */
-    ~YosemitechY4000_pH() {}
+    ~YosemitechY4000_pH() override = default;
 };
 
 /* clang-format off */
@@ -573,9 +577,9 @@ class YosemitechY4000_Temp : public Variable {
     explicit YosemitechY4000_Temp(YosemitechY4000* parentSense,
                                   const char*      uuid = "",
                                   const char* varCode = Y4000_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y4000_TEMP_VAR_NUM,
-                   (uint8_t)Y4000_TEMP_RESOLUTION, Y4000_TEMP_VAR_NAME,
-                   Y4000_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y4000_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_TEMP_RESOLUTION),
+                   Y4000_TEMP_VAR_NAME, Y4000_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_Temp object.
      *
@@ -583,13 +587,14 @@ class YosemitechY4000_Temp : public Variable {
      * used.
      */
     YosemitechY4000_Temp()
-        : Variable((uint8_t)Y4000_TEMP_VAR_NUM, (uint8_t)Y4000_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y4000_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_TEMP_RESOLUTION),
                    Y4000_TEMP_VAR_NAME, Y4000_TEMP_UNIT_NAME,
                    Y4000_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_Temp object - no action needed.
      */
-    ~YosemitechY4000_Temp() {}
+    ~YosemitechY4000_Temp() override = default;
 };
 
 /* clang-format off */
@@ -616,9 +621,9 @@ class YosemitechY4000_ORP : public Variable {
     explicit YosemitechY4000_ORP(YosemitechY4000* parentSense,
                                  const char*      uuid = "",
                                  const char* varCode   = Y4000_ORP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y4000_ORP_VAR_NUM,
-                   (uint8_t)Y4000_ORP_RESOLUTION, Y4000_ORP_VAR_NAME,
-                   Y4000_ORP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y4000_ORP_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_ORP_RESOLUTION),
+                   Y4000_ORP_VAR_NAME, Y4000_ORP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_ORP object.
      *
@@ -626,13 +631,14 @@ class YosemitechY4000_ORP : public Variable {
      * used.
      */
     YosemitechY4000_ORP()
-        : Variable((uint8_t)Y4000_ORP_VAR_NUM, (uint8_t)Y4000_ORP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y4000_ORP_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_ORP_RESOLUTION),
                    Y4000_ORP_VAR_NAME, Y4000_ORP_UNIT_NAME,
                    Y4000_ORP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_ORP object - no action needed.
      */
-    ~YosemitechY4000_ORP() {}
+    ~YosemitechY4000_ORP() override = default;
 };
 
 /* clang-format off */
@@ -659,9 +665,10 @@ class YosemitechY4000_Chlorophyll : public Variable {
     explicit YosemitechY4000_Chlorophyll(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_CHLORO_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y4000_CHLORO_VAR_NUM,
-                   (uint8_t)Y4000_CHLORO_RESOLUTION, Y4000_CHLORO_VAR_NAME,
-                   Y4000_CHLORO_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y4000_CHLORO_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_CHLORO_RESOLUTION),
+                   Y4000_CHLORO_VAR_NAME, Y4000_CHLORO_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_Chlorophyll object.
      *
@@ -669,14 +676,15 @@ class YosemitechY4000_Chlorophyll : public Variable {
      * used.
      */
     YosemitechY4000_Chlorophyll()
-        : Variable((uint8_t)Y4000_CHLORO_VAR_NUM,
-                   (uint8_t)Y4000_CHLORO_RESOLUTION, Y4000_CHLORO_VAR_NAME,
-                   Y4000_CHLORO_UNIT_NAME, Y4000_CHLORO_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(Y4000_CHLORO_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_CHLORO_RESOLUTION),
+                   Y4000_CHLORO_VAR_NAME, Y4000_CHLORO_UNIT_NAME,
+                   Y4000_CHLORO_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_Chlorophyll() object - no action
      * needed.
      */
-    ~YosemitechY4000_Chlorophyll() {}
+    ~YosemitechY4000_Chlorophyll() override = default;
 };
 
 /* clang-format off */
@@ -703,9 +711,9 @@ class YosemitechY4000_BGA : public Variable {
     explicit YosemitechY4000_BGA(YosemitechY4000* parentSense,
                                  const char*      uuid = "",
                                  const char* varCode   = Y4000_BGA_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y4000_BGA_VAR_NUM,
-                   (uint8_t)Y4000_BGA_RESOLUTION, Y4000_BGA_VAR_NAME,
-                   Y4000_BGA_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y4000_BGA_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_BGA_RESOLUTION),
+                   Y4000_BGA_VAR_NAME, Y4000_BGA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY4000_BGA object.
      *
@@ -713,13 +721,14 @@ class YosemitechY4000_BGA : public Variable {
      * used.
      */
     YosemitechY4000_BGA()
-        : Variable((uint8_t)Y4000_BGA_VAR_NUM, (uint8_t)Y4000_BGA_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y4000_BGA_VAR_NUM),
+                   static_cast<uint8_t>(Y4000_BGA_RESOLUTION),
                    Y4000_BGA_VAR_NAME, Y4000_BGA_UNIT_NAME,
                    Y4000_BGA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_BGA object - no action needed.
      */
-    ~YosemitechY4000_BGA() {}
+    ~YosemitechY4000_BGA() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY4000_H_

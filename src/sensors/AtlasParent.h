@@ -171,17 +171,16 @@ class AtlasParent : public Sensor {
                 uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
 
     /**
-     * @brief Destroy the Atlas Parent object.  Also destroy the software I2C
-     * instance if one was created.
+     * @brief Destroy the Atlas Parent object.
      */
-    virtual ~AtlasParent();
+    ~AtlasParent() override = default;
 
     /**
      * @brief Return the I2C address of the EZO circuit.
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -193,12 +192,12 @@ class AtlasParent : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
     // NOTE:  The sensor should wake as soon as any command is sent.
     // I assume that means we can use the command to take a reading to both
     // wake it and ask for a reading.
-    // bool wake(void) override;
+    // bool wake() override;
 
     /**
      * @brief Puts the sensor to sleep, if necessary.
@@ -208,7 +207,7 @@ class AtlasParent : public Sensor {
      *
      * @return True if the sleep function completed successfully.
      */
-    bool sleep(void) override;
+    bool sleep() override;
 
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
@@ -221,11 +220,8 @@ class AtlasParent : public Sensor {
      * @return True if the start measurement function completed
      * successfully.
      */
-    bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
  protected:
     /**

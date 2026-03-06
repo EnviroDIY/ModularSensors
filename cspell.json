@@ -158,7 +158,7 @@
     "IMEI",
     "IMSI",
     "INSITU",
-    "kilaohms",
+    "kiloohms",
     "LOGGERBASE",
     "LOGGERMODEM",
     "LTEBee",
@@ -173,6 +173,9 @@
     "micromoles",
     "microsiemen",
     "microsiemens",
+    "microvolts",
+    "milliamp",
+    "milliwatt",
     "Modbus",
     "MODSENSORCONFIG",
     "MODSENSORDEBUGGER",
@@ -220,6 +223,7 @@
     "RSSI",
     "RUNSTBY",
     "SAMD",
+    "SARAR4",
     "sdamiano",
     "SDCARD",
     "SDHC",
@@ -252,8 +256,11 @@
     "Testato",
     "ThingSpeak",
     "tiads1x15",
+    "Tillaart",
     "TINYGSM",
     "TINYUSB",
+    "TurbHigh",
+    "TurbLow",
     "u_blox",
     "u-blox",
     "ubee",
@@ -282,5 +289,11 @@
     "µsec"
   ],
   "ignoreWords": [],
-  "ignorePaths": ["platformio.ini", "*doxyfile*", ".vscode"]
+  "ignorePaths": [
+    "platformio.ini",
+    "*doxyfile*",
+    ".vscode",
+    "library.json",
+    "**/lib/**"
+  ]
 }

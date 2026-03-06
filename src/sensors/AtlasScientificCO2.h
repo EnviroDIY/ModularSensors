@@ -74,6 +74,18 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_co2_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas CO2 sensor
+ */
+/**@{*/
+#ifndef ATLAS_CO2_I2C_ADDR
+/// @brief The default I2C address of the Atlas CO2 sensor is 0x69 (105)
+#define ATLAS_CO2_I2C_ADDR 0x69
+#endif
+/**@}*/
+
+/**
  * @anchor sensor_atlas_co2_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas CO2 sensor
@@ -83,16 +95,6 @@
 #define ATLAS_CO2_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_CO2_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_co2_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas CO2 sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas CO2 sensor is 0x69 (105)
-#define ATLAS_CO2_I2C_ADDR 0x69
 /**@}*/
 
 /**
@@ -122,7 +124,7 @@
  * {{ @ref AtlasScientificCO2_CO2::AtlasScientificCO2_CO2 }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; CO2 should have 1 -
+/// @brief Decimal places in string representation; CO2 should have 1 -
 /// resolution is 1 ppm.
 #define ATLAS_CO2_RESOLUTION 1
 /// @brief Sensor variable number; CO2 is stored in sensorValues[0].
@@ -149,7 +151,7 @@
  * {{ @ref AtlasScientificCO2_Temp::AtlasScientificCO2_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; CO2TEMP should have 0 -
+/// @brief Decimal places in string representation; CO2TEMP should have 0 -
 /// resolution is 1°C.
 #define ATLAS_CO2TEMP_RESOLUTION 0
 /// @brief Sensor variable number; CO2TEMP is stored in sensorValues[1].
@@ -228,10 +230,9 @@ class AtlasScientificCO2 : public AtlasParent {
                                 uint8_t measurementsToAverage = 1);
 
     /**
-     * @brief Destroy the Atlas Scientific CO2 object.  Also destroy the
-     * software I2C instance if one was created.
+     * @brief Destroy the Atlas Scientific CO2 object.
      */
-    ~AtlasScientificCO2();
+    ~AtlasScientificCO2() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -243,7 +244,7 @@ class AtlasScientificCO2 : public AtlasParent {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 };
 
 /* clang-format off */
@@ -270,9 +271,9 @@ class AtlasScientificCO2_CO2 : public Variable {
     explicit AtlasScientificCO2_CO2(
         AtlasScientificCO2* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_CO2_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_CO2_VAR_NUM,
-                   (uint8_t)ATLAS_CO2_RESOLUTION, ATLAS_CO2_VAR_NAME,
-                   ATLAS_CO2_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_CO2_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_CO2_RESOLUTION),
+                   ATLAS_CO2_VAR_NAME, ATLAS_CO2_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificCO2_CO2 object.
      *
@@ -280,13 +281,14 @@ class AtlasScientificCO2_CO2 : public Variable {
      * used.
      */
     AtlasScientificCO2_CO2()
-        : Variable((uint8_t)ATLAS_CO2_VAR_NUM, (uint8_t)ATLAS_CO2_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ATLAS_CO2_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_CO2_RESOLUTION),
                    ATLAS_CO2_VAR_NAME, ATLAS_CO2_UNIT_NAME,
                    ATLAS_CO2_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificCO2_CO2 object - no action needed.
      */
-    ~AtlasScientificCO2_CO2() {}
+    ~AtlasScientificCO2_CO2() override = default;
 };
 
 /* clang-format off */
@@ -313,9 +315,10 @@ class AtlasScientificCO2_Temp : public Variable {
     explicit AtlasScientificCO2_Temp(
         AtlasScientificCO2* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_CO2TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_CO2TEMP_VAR_NUM,
-                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
-                   ATLAS_CO2TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_CO2TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_CO2TEMP_RESOLUTION),
+                   ATLAS_CO2TEMP_VAR_NAME, ATLAS_CO2TEMP_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new AtlasScientificCO2_Temp object.
      *
@@ -323,13 +326,14 @@ class AtlasScientificCO2_Temp : public Variable {
      * used.
      */
     AtlasScientificCO2_Temp()
-        : Variable((uint8_t)ATLAS_CO2TEMP_VAR_NUM,
-                   (uint8_t)ATLAS_CO2TEMP_RESOLUTION, ATLAS_CO2TEMP_VAR_NAME,
-                   ATLAS_CO2TEMP_UNIT_NAME, ATLAS_CO2TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ATLAS_CO2TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_CO2TEMP_RESOLUTION),
+                   ATLAS_CO2TEMP_VAR_NAME, ATLAS_CO2TEMP_UNIT_NAME,
+                   ATLAS_CO2TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificCO2_Temp object - no action needed.
      */
-    ~AtlasScientificCO2_Temp() {}
+    ~AtlasScientificCO2_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICCO2_H_

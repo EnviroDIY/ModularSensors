@@ -55,6 +55,19 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_rtd_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas RTD (temperature)
+ * sensor
+ */
+/**@{*/
+#ifndef ATLAS_RTD_I2C_ADDR
+/// @brief The default I2C address of the Atlas RTD sensor is 0x66 (102)
+#define ATLAS_RTD_I2C_ADDR 0x66
+#endif
+/**@}*/
+
+/**
  * @anchor sensor_atlas_rtd_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas RTD (temperature)
@@ -66,17 +79,6 @@
 #define ATLAS_RTD_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_RTD_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_rtd_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas RTD (temperature)
- * sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas RTD sensor is 0x66 (102)
-#define ATLAS_RTD_I2C_ADDR 0x66
 /**@}*/
 
 /**
@@ -117,7 +119,7 @@
  * {{ @ref AtlasScientificRTD_Temp::AtlasScientificRTD_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 3 -
+/// @brief Decimal places in string representation; temperature should have 3 -
 /// resolution is 0.001°C.
 #define ATLAS_RTD_RESOLUTION 3
 /// @brief Sensor variable number; RTD is stored in sensorValues[0].
@@ -205,7 +207,7 @@ class AtlasScientificRTD : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific RTD object
      */
-    ~AtlasScientificRTD() {}
+    ~AtlasScientificRTD() override = default;
 };
 
 /* clang-format off */
@@ -232,9 +234,9 @@ class AtlasScientificRTD_Temp : public Variable {
     explicit AtlasScientificRTD_Temp(
         AtlasScientificRTD* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_RTD_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_RTD_VAR_NUM,
-                   (uint8_t)ATLAS_RTD_RESOLUTION, ATLAS_RTD_VAR_NAME,
-                   ATLAS_RTD_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_RTD_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_RTD_RESOLUTION),
+                   ATLAS_RTD_VAR_NAME, ATLAS_RTD_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AtlasScientificRTD_Temp object.
      *
@@ -242,13 +244,14 @@ class AtlasScientificRTD_Temp : public Variable {
      * used.
      */
     AtlasScientificRTD_Temp()
-        : Variable((uint8_t)ATLAS_RTD_VAR_NUM, (uint8_t)ATLAS_RTD_RESOLUTION,
+        : Variable(static_cast<uint8_t>(ATLAS_RTD_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_RTD_RESOLUTION),
                    ATLAS_RTD_VAR_NAME, ATLAS_RTD_UNIT_NAME,
                    ATLAS_RTD_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificRTD_Temp object - no action needed.
      */
-    ~AtlasScientificRTD_Temp() {}
+    ~AtlasScientificRTD_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICRTD_H_

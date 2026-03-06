@@ -135,30 +135,40 @@ class S3PresignedPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new S3 Publisher object with no members set.
-     */
-    S3PresignedPublisher();
-    /**
      * @brief Construct a new S3 Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
      * @param caCertName The name of your certificate authority certificate
      * file - used to validate the server's certificate when connecting to S3
      * with SSL. @see setCACertName()
      * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param getFileNameFxn A function to call to get a new filename
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
      *
      * @note The inputs to this is the **NAME** of the certificate **file** as
      * it is stored on you modem module, not the actual certificate content.
      */
-    S3PresignedPublisher(Logger& baseLogger, const char* caCertName,
-                         String (*getUrlFxn)(String)    = nullptr,
-                         String (*getFileNameFxn)(void) = nullptr,
-                         int sendEveryX                 = 1);
+    S3PresignedPublisher(Logger& baseLogger, Client* inClient,
+                         const char* caCertName,
+                         String (*getUrlFxn)(String) = nullptr,
+                         String (*getFileNameFxn)()  = nullptr);
     /**
-     * @brief Construct a new S3 Publisher object
+     * @brief Construct a new S3 Publisher object with certificate
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param caCertName The name of the certificate to use for SSL
+     * verification. This is the name of the certificate file as it is stored on
+     * you modem module, not the actual certificate content.
+     * @param getUrlFxn A function to call to get a new pre-signed URL
+     * @param getFileNameFxn A function to call to get a new filename
+     */
+    S3PresignedPublisher(Logger& baseLogger, const char* caCertName,
+                         String (*getUrlFxn)(String) = nullptr,
+                         String (*getFileNameFxn)()  = nullptr);
+    /**
+     * @brief Construct a new S3 Publisher object without certificate
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -166,23 +176,24 @@ class S3PresignedPublisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param getFileNameFxn A function to call to get a new filename
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
     S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                         String (*getUrlFxn)(String)    = nullptr,
-                         String (*getFileNameFxn)(void) = nullptr,
-                         int sendEveryX                 = 1);
+                         String (*getUrlFxn)(String) = nullptr,
+                         String (*getFileNameFxn)()  = nullptr);
+    /**
+     * @brief Construct a new S3 Publisher object with no members set.
+     */
+    S3PresignedPublisher();
     /**
      * @brief Destroy the S3 Publisher object
      */
-    virtual ~S3PresignedPublisher();
+    ~S3PresignedPublisher() override = default;
 
     /**
      * @brief Set the S3 host name
      *
      * This is "s3.<your-region>.amazonaws.com" by default.
-     * If you need to use a host in a specific region (ie, anything but
+     * If you need to use a host in a specific region (i.e., anything but
      * US-East-1) you should set your own host. The host in that case should be:
      * "s3.<your-region>.amazonaws.com"
      *
@@ -204,7 +215,7 @@ class S3PresignedPublisher : public dataPublisher {
     void setPort(int port);
 
     // Returns the data destination
-    String getEndpoint(void) override {
+    String getEndpoint() override {
         return String(s3_parent_host);
     }
 
@@ -252,7 +263,7 @@ class S3PresignedPublisher : public dataPublisher {
      *
      * @param getFileNameFxn A function to call to get a new filename
      */
-    void setFileUpdateFunction(String (*getFileNameFxn)(void));
+    void setFileUpdateFunction(String (*getFileNameFxn)());
 
     /**
      * @brief Set the name of your certificate authority certificate file.
@@ -266,9 +277,9 @@ class S3PresignedPublisher : public dataPublisher {
      * Certificate Authority - G2).
      *
      * This is exactly the same CA certificate as you would use for an MQTT
-     * connection to AWS IoT (ie, the AWS IoT Publisher). For supported modules
-     * you can use the AWS_IOT_SetCertificates sketch in the extras folder to
-     * upload your certificate.
+     * connection to AWS IoT (i.e., the AWS IoT Publisher). For supported
+     * modules you can use the AWS_IOT_SetCertificates sketch in the extras
+     * folder to upload your certificate.
      *
      * @param caCertName The name of your certificate authority certificate
      * file.
@@ -310,8 +321,8 @@ class S3PresignedPublisher : public dataPublisher {
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:
-    virtual Client* createClient() override;
-    virtual void    deleteClient(Client* client) override;
+    Client* createClient() override;
+    void    deleteClient(Client* client) override;
 
     const char* s3_parent_host = "s3.amazonaws.com";  ///< The host name
     int         s3Port         = 443;                 ///< The host port
@@ -341,7 +352,7 @@ class S3PresignedPublisher : public dataPublisher {
      * @note This will be *ignored* if the filename is set. If neither the
      * filename nor the file prefix is set, the logger ID will be used.
      */
-    const char* _filePrefix;
+    const char* _filePrefix = nullptr;
     /**
      * @brief  The extension to add to files, if generating a filename based on
      * the date/time
@@ -349,11 +360,11 @@ class S3PresignedPublisher : public dataPublisher {
      * @note This will be *ignored* if the filename is set. If neither the
      * filename nor the file extension is set, `#S3_DEFAULT_FILE_EXTENSION`.
      */
-    const char* _fileExtension;
+    const char* _fileExtension = nullptr;
     /**
      * @brief Private reference to function used fetch a new file name.
      */
-    String (*_getFileNameFxn)(void);
+    String (*_getFileNameFxn)() = nullptr;
     /**
      * @brief The name of your certificate authority certificate file
      */

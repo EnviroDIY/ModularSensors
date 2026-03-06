@@ -101,7 +101,7 @@
  * {{ @ref GroPointGPLP8_Moist::GroPointGPLP8_Moist }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; soil moisture should have 1
+/// @brief Decimal places in string representation; soil moisture should have 1
 /// - resolution is 0.1 %.
 #define GPLP8_MOIST_RESOLUTION 1
 /// @brief Variable name in
@@ -124,7 +124,7 @@
  * {{ @ref GroPointGPLP8_Temp::GroPointGPLP8_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define GPLP8_TEMP_RESOLUTION 1
 /// @brief Variable name in
@@ -193,7 +193,7 @@ class GroPointGPLP8 : public GroPointParent {
     /**
      * @brief Destroy the GroPoint GPLP8 object
      */
-    ~GroPointGPLP8() {}
+    ~GroPointGPLP8() override = default;
 };
 
 
@@ -226,7 +226,8 @@ class GroPointGPLP8_Moist : public Variable {
                                  const uint8_t  sensorVarNum,
                                  const char*    uuid = "",
                                  const char* varCode = GPLP8_MOIST_DEFAULT_CODE)
-        : Variable(parentSense, sensorVarNum, (uint8_t)GPLP8_MOIST_RESOLUTION,
+        : Variable(parentSense, sensorVarNum,
+                   static_cast<uint8_t>(GPLP8_MOIST_RESOLUTION),
                    GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -241,13 +242,13 @@ class GroPointGPLP8_Moist : public Variable {
      * used.
      */
     GroPointGPLP8_Moist(const uint8_t sensorVarNum)
-        : Variable(sensorVarNum, (uint8_t)GPLP8_MOIST_RESOLUTION,
+        : Variable(sensorVarNum, static_cast<uint8_t>(GPLP8_MOIST_RESOLUTION),
                    GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME,
                    GPLP8_MOIST_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GroPointGPLP8_Moist object - no action needed.
      */
-    ~GroPointGPLP8_Moist() {}
+    ~GroPointGPLP8_Moist() override = default;
 };
 
 /* clang-format off */
@@ -279,7 +280,8 @@ class GroPointGPLP8_Temp : public Variable {
                                 const uint8_t  sensorVarNum,
                                 const char*    uuid = "",
                                 const char* varCode = GPLP8_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, sensorVarNum, (uint8_t)GPLP8_TEMP_RESOLUTION,
+        : Variable(parentSense, sensorVarNum,
+                   static_cast<uint8_t>(GPLP8_TEMP_RESOLUTION),
                    GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new GroPointGPLP8_Temp object.
@@ -293,13 +295,13 @@ class GroPointGPLP8_Temp : public Variable {
      * used.
      */
     GroPointGPLP8_Temp(const uint8_t sensorVarNum)
-        : Variable(sensorVarNum, (uint8_t)GPLP8_TEMP_RESOLUTION,
+        : Variable(sensorVarNum, static_cast<uint8_t>(GPLP8_TEMP_RESOLUTION),
                    GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME,
                    GPLP8_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GroPointGPLP8_Temp object - no action needed.
      */
-    ~GroPointGPLP8_Temp() {}
+    ~GroPointGPLP8_Temp() override = default;
 };
 
 /**@}*/

@@ -83,7 +83,7 @@
  * {{ @ref KellerAcculevel_Pressure::KellerAcculevel_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 5 -
+/// @brief Decimal places in string representation; pressure should have 5 -
 /// resolution is 0.002%.
 #define ACCULEVEL_PRESSURE_RESOLUTION 5
 /// @brief Default variable short code; "kellerAccuPress"
@@ -100,7 +100,7 @@
  * {{ @ref KellerAcculevel_Temp::KellerAcculevel_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define ACCULEVEL_TEMP_RESOLUTION 2
 /// @brief Default variable short code; "kellerAccuTemp"
@@ -117,7 +117,7 @@
  * {{ @ref KellerAcculevel_Height::KellerAcculevel_Height }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; height should have 4 -
+/// @brief Decimal places in string representation; height should have 4 -
 /// resolution is 0.002%.
 #define ACCULEVEL_HEIGHT_RESOLUTION 4
 /// @brief Default variable short code; "kellerAccuHeight"
@@ -179,7 +179,7 @@ class KellerAcculevel : public KellerParent {
     /**
      * @brief Destroy the Keller Acculevel object
      */
-    ~KellerAcculevel() {}
+    ~KellerAcculevel() override = default;
 };
 
 
@@ -207,8 +207,8 @@ class KellerAcculevel_Pressure : public Variable {
     explicit KellerAcculevel_Pressure(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)KELLER_PRESSURE_VAR_NUM,
-                   (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(KELLER_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(ACCULEVEL_PRESSURE_RESOLUTION),
                    KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -218,14 +218,14 @@ class KellerAcculevel_Pressure : public Variable {
      * used.
      */
     KellerAcculevel_Pressure()
-        : Variable((uint8_t)KELLER_PRESSURE_VAR_NUM,
-                   (uint8_t)ACCULEVEL_PRESSURE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(KELLER_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(ACCULEVEL_PRESSURE_RESOLUTION),
                    KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME,
                    ACCULEVEL_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerAcculevel_Pressure object - no action needed.
      */
-    ~KellerAcculevel_Pressure() {}
+    ~KellerAcculevel_Pressure() override = default;
 };
 
 
@@ -253,9 +253,10 @@ class KellerAcculevel_Temp : public Variable {
     explicit KellerAcculevel_Temp(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)KELLER_TEMP_VAR_NUM,
-                   (uint8_t)ACCULEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
-                   KELLER_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(KELLER_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ACCULEVEL_TEMP_RESOLUTION),
+                   KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new KellerAcculevel_Temp object.
      *
@@ -263,13 +264,14 @@ class KellerAcculevel_Temp : public Variable {
      * used.
      */
     KellerAcculevel_Temp()
-        : Variable((uint8_t)KELLER_TEMP_VAR_NUM,
-                   (uint8_t)ACCULEVEL_TEMP_RESOLUTION, KELLER_TEMP_VAR_NAME,
-                   KELLER_TEMP_UNIT_NAME, ACCULEVEL_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(KELLER_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(ACCULEVEL_TEMP_RESOLUTION),
+                   KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME,
+                   ACCULEVEL_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerAcculevel_Temp object - no action needed.
      */
-    ~KellerAcculevel_Temp() {}
+    ~KellerAcculevel_Temp() override = default;
 };
 
 
@@ -297,9 +299,10 @@ class KellerAcculevel_Height : public Variable {
     explicit KellerAcculevel_Height(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_HEIGHT_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)KELLER_HEIGHT_VAR_NUM,
-                   (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
-                   KELLER_HEIGHT_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(KELLER_HEIGHT_VAR_NUM),
+                   static_cast<uint8_t>(ACCULEVEL_HEIGHT_RESOLUTION),
+                   KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new KellerAcculevel_Height object.
      *
@@ -307,13 +310,14 @@ class KellerAcculevel_Height : public Variable {
      * used.
      */
     KellerAcculevel_Height()
-        : Variable((uint8_t)KELLER_HEIGHT_VAR_NUM,
-                   (uint8_t)ACCULEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
-                   KELLER_HEIGHT_UNIT_NAME, ACCULEVEL_HEIGHT_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(KELLER_HEIGHT_VAR_NUM),
+                   static_cast<uint8_t>(ACCULEVEL_HEIGHT_RESOLUTION),
+                   KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME,
+                   ACCULEVEL_HEIGHT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerAcculevel_Height object - no action needed.
      */
-    ~KellerAcculevel_Height() {}
+    ~KellerAcculevel_Height() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_KELLERACCULEVEL_H_

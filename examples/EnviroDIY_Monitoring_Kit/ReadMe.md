@@ -4,8 +4,8 @@ Example sketch to be used with the [EnviroDIY Monitoring Station Kit](https://ww
 
 This example uses the sensors and equipment included with (or recommended for) the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 It includes code for a Mayfly 1.x, a [Meter Hydros 21](https://metergroup.com/products/hydros-21/) and either a [SIM7080G-based EnviroDIY LTEbee](https://www.envirodiy.org/product/envirodiy-lte-bee/) or an [EnviroDIY ESP32 Bee](https://www.envirodiy.org/product/envirodiy-esp32-bee-wifi-bluetooth/) for communication.
-This examples also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
-The results are saved to the SD card and posted to the Monitor My Watershed data portal.
+This example also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
+The results are saved to the SD card and posted to Monitor My Watershed.
 
 > [!NOTE]
 > The Meter Hydros 21 is **not** included in the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/) and must be purchased separately from Meter Group or one of their distributors.
@@ -40,7 +40,7 @@ _______
       - [Set the logger ID](#set-the-logger-id)
       - [Set the logging interval](#set-the-logging-interval)
       - [Set the time zone](#set-the-time-zone)
-    - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+    - [Set the universally unique identifiers (UUIDs) for each variable](#set-the-universally-unique-identifiers-uuids-for-each-variable)
     - [Upload!](#upload)
 
 <!--! @endif -->
@@ -73,12 +73,12 @@ Customize the sketch for the version of the kit that you have: cellular, wifi, o
 
 #### Select the Connection Type<!--! {#example_envirodiy_monitoring_kit_connection_type} -->
 
-In lines 28 and 29, select no more than one of the "bee" types that you will be using.
+In the configuration section, select no more than one of the "bee" types that you will be using.
 
-- Activate the modem you wish to use by _removing_ any slashes (```//```) before the bee module you will use.
-  - The line should start with ```#define```
-- Add two slashes (```//```) in front of the modem you are NOT using.
-- If you are not using any internet connection, put two slashes (```//```) in front of both lines.
+- Activate the modem you wish to use by _removing_ any slashes (`//`) before the bee module you will use.
+  - The line should start with `#define`
+- Add two slashes (`//`) in front of the modem you are NOT using.
+- If you are not using any internet connection, put two slashes (`//`) in front of both lines.
 
 ```cpp
 #define USE_WIFI_BEE
@@ -87,10 +87,10 @@ In lines 28 and 29, select no more than one of the "bee" types that you will be 
 
 #### Add Connection Info<!--! {#example_envirodiy_monitoring_kit_connection_info} -->
 
-Replace the ```your_..``` with the appropriate APN or SSID and password for your network.
+Replace `YourAPN` or both `YourWiFiSSID` and `YourWiFiPassword` with the appropriate APN or SSID and password for your network.
 
 Your APN is assigned by your SIM card provider.
-If you are using a Hologram SIM card (recommended with the kit) the APN is ```"hologram"```.
+If you are using a Hologram SIM card (recommended with the kit) the APN is `hologram`.
 
 The SSID is the name of the wifi network.
 
@@ -102,16 +102,16 @@ You can leave the configuration for the connection type you're not using as is.
 
 ```cpp
 // APN for cellular connection
-#define CELLULAR_APN "add_your_cellular_apn"
+#define CELLULAR_APN "YourAPN"
 // WiFi access point name
-#define WIFI_ID "your_wifi_ssid"
+#define WIFI_ID "YourWiFiSSID"
 // WiFi password (WPA2)
-#define WIFI_PASSWD "your_wifi_password"
+#define WIFI_PASSWD "YourWiFiPassword"
 ```
 
 ### Set Data Logging Options<!--! {#example_envirodiy_monitoring_kit_logging_options} -->
 
-Customize your data logging options in lines 42 to 53 of the example.
+Customize your data logging options in `Data Logging Options` section of the example.
 
 #### Set the logger ID<!--! {#example_envirodiy_monitoring_kit_logger_id} -->
 
@@ -119,7 +119,7 @@ We recommend using your logger's serial number as the logger ID.
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 #### Set the logging interval<!--! {#example_envirodiy_monitoring_kit_logging_interval} -->
@@ -144,11 +144,11 @@ Please use standard time!
 const int8_t timeZone = -5;  // Eastern Standard Time
 ```
 
-### Set the universally universal identifiers (UUID) for each variable<!--! {#example_envirodiy_monitoring_kit_uuids} -->
+### Set the universally unique identifiers (UUIDs) for each variable<!--! {#example_envirodiy_monitoring_kit_uuids} -->
 
 - Go back to the web page for your site on [Monitor My Watershed](http://monitormywatershed.org/)
 - Find and click the white "View Token UUID List" button above the small map on your site page.
-- Paste the copied UUIDs into your sketch, _replacing_  lines 91-106.
+- Paste the copied UUIDs into your sketch, _replacing_ the text between `Beginning of Token UUID List` and `End of Token UUID List`.
 
 ```cpp
 // ---------------------   Beginning of Token UUID List   ---------------------

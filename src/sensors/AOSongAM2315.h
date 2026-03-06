@@ -75,7 +75,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include <Adafruit_AM2315.h>
+#include <Wire.h>
 
 /** @ingroup sensor_am2315 */
 /**@{*/
@@ -118,7 +118,7 @@
  * {{ @ref AOSongAM2315_Humidity::AOSongAM2315_Humidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; humidity should have 1 (0.1
+/// @brief Decimal places in string representation; humidity should have 1 (0.1
 /// % RH for the 16 bit sensor).
 #define AM2315_HUMIDITY_RESOLUTION 1
 /// @brief Sensor variable number; humidity is stored in sensorValues[0].
@@ -145,7 +145,7 @@
  * {{ @ref AOSongAM2315_Temp::AOSongAM2315_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1.
+/// @brief Decimal places in string representation; temperature should have 1.
 /// (0.1°C for the 16 bit sensor)
 #define AM2315_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -213,16 +213,25 @@ class AOSongAM2315 : public Sensor {
      */
     explicit AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage = 1);
     /**
-     * @brief Destroy the AOSongAM2315 object - no action needed.
+     * @brief Destroy the AOSongAM2315 object
      */
-    ~AOSongAM2315();
+    ~AOSongAM2315() override = default;
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    AOSongAM2315(const AOSongAM2315&)            = delete;
+    AOSongAM2315& operator=(const AOSongAM2315&) = delete;
+
+    // Delete move constructor and move assignment operator
+    AOSongAM2315(AOSongAM2315&&)            = delete;
+    AOSongAM2315& operator=(AOSongAM2315&&) = delete;
 
     /**
      * @brief Report the I2C address of the AM2315 - which is always 0xB8.
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -235,22 +244,15 @@ class AOSongAM2315 : public Sensor {
      * @return True if the setup was successful.  For the AOSong AM2315
      * the result will always be true.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
      * @brief An internal reference to the hardware Wire instance.
      */
     TwoWire* _i2c;
-    /**
-     * @brief Internal reference to the Adafruit sensor class
-     */
-    Adafruit_AM2315* am2315ptr;
 };
 
 
@@ -276,8 +278,8 @@ class AOSongAM2315_Humidity : public Variable {
     explicit AOSongAM2315_Humidity(
         AOSongAM2315* parentSense, const char* uuid = "",
         const char* varCode = AM2315_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(AM2315_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(AM2315_HUMIDITY_RESOLUTION),
                    AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -286,14 +288,14 @@ class AOSongAM2315_Humidity : public Variable {
      * @note This must be tied with a parent AOSongAM2315 before it can be used.
      */
     AOSongAM2315_Humidity()
-        : Variable((uint8_t)AM2315_HUMIDITY_VAR_NUM,
-                   (uint8_t)AM2315_HUMIDITY_RESOLUTION,
+        : Variable(static_cast<uint8_t>(AM2315_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(AM2315_HUMIDITY_RESOLUTION),
                    AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME,
                    AM2315_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongAM2315_Humidity object - no action needed.
      */
-    ~AOSongAM2315_Humidity() {}
+    ~AOSongAM2315_Humidity() override = default;
 };
 
 
@@ -318,22 +320,24 @@ class AOSongAM2315_Temp : public Variable {
      */
     explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",
                                const char* varCode = AM2315_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
-                   AM2315_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(AM2315_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(AM2315_TEMP_RESOLUTION),
+                   AM2315_TEMP_VAR_NAME, AM2315_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new AOSongAM2315_Temp object.
      *
      * @note This must be tied with a parent AOSongAM2315 before it can be used.
      */
     AOSongAM2315_Temp()
-        : Variable((uint8_t)AM2315_TEMP_VAR_NUM,
-                   (uint8_t)AM2315_TEMP_RESOLUTION, AM2315_TEMP_VAR_NAME,
-                   AM2315_TEMP_UNIT_NAME, AM2315_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(AM2315_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(AM2315_TEMP_RESOLUTION),
+                   AM2315_TEMP_VAR_NAME, AM2315_TEMP_UNIT_NAME,
+                   AM2315_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongAM2315_Temp object - no action needed.
      */
-    ~AOSongAM2315_Temp() {}
+    ~AOSongAM2315_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_AOSONGAM2315_H_

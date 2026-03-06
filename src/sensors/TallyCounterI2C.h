@@ -97,6 +97,16 @@
 /**@{*/
 
 /**
+ * @anchor sensor_tally_config
+ * @name Configuration Defines
+ * Defines to set the address of the Tally event counter.
+ */
+/**@{*/
+/// @brief The default address of the Tally
+#define TALLY_ADDRESS_BASE 0x33
+/**@}*/
+
+/**
  * @anchor sensor_tally_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Tally event counter
@@ -106,16 +116,6 @@
 #define TALLY_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define TALLY_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_tally_config
- * @name Configuration Defines
- * Defines to set the address of the Tally event counter.
- */
-/**@{*/
-/// @brief The default address of the Tally
-#define TALLY_ADDRESS_BASE 0x33
 /**@}*/
 
 /**
@@ -147,7 +147,7 @@
  * {{ @ref TallyCounterI2C_Events::TallyCounterI2C_Events }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; events are an integer
+/// @brief Decimal places in string representation; events are an integer
 /// should be 0 - resolution is 1 event.
 #define TALLY_EVENTS_RESOLUTION 0
 /// @brief Sensor variable number; events is stored in sensorValues[0].
@@ -203,7 +203,7 @@ class TallyCounterI2C : public Sensor {
     /**
      * @brief Destroy the Tally Counter object
      */
-    ~TallyCounterI2C();
+    ~TallyCounterI2C() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -215,18 +215,12 @@ class TallyCounterI2C : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
+    bool setup() override;
 
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
-    // bool startSingleMeasurement(void) override;  // for forced mode
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    // bool startSingleMeasurement() override;  // for forced mode
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -264,9 +258,10 @@ class TallyCounterI2C_Events : public Variable {
     explicit TallyCounterI2C_Events(
         TallyCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = TALLY_EVENTS_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TALLY_EVENTS_VAR_NUM,
-                   (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
-                   TALLY_EVENTS_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(TALLY_EVENTS_VAR_NUM),
+                   static_cast<uint8_t>(TALLY_EVENTS_RESOLUTION),
+                   TALLY_EVENTS_VAR_NAME, TALLY_EVENTS_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new TallyCounterI2C_Events object.
      *
@@ -274,13 +269,14 @@ class TallyCounterI2C_Events : public Variable {
      * used.
      */
     TallyCounterI2C_Events()
-        : Variable((uint8_t)TALLY_EVENTS_VAR_NUM,
-                   (uint8_t)TALLY_EVENTS_RESOLUTION, TALLY_EVENTS_VAR_NAME,
-                   TALLY_EVENTS_UNIT_NAME, TALLY_EVENTS_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(TALLY_EVENTS_VAR_NUM),
+                   static_cast<uint8_t>(TALLY_EVENTS_RESOLUTION),
+                   TALLY_EVENTS_VAR_NAME, TALLY_EVENTS_UNIT_NAME,
+                   TALLY_EVENTS_DEFAULT_CODE) {}
     /**
-     * @brief Destroy the BoschBME280_Temp object - no action needed.
+     * @brief Destroy the TallyCounterI2C_Events object - no action needed.
      */
-    ~TallyCounterI2C_Events() {}
+    ~TallyCounterI2C_Events() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TallyCounterI2C_H_

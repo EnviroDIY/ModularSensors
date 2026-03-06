@@ -63,7 +63,7 @@ void extendedWatchDogAVR::enableWatchDog() {
     // Bit 3: WDE  (Watchdog System Reset Enable) - 0 (Clear?)
     // Bits 2:0 Watchdog timer prescaler [WDP2:0] - see delay interval patterns
 
-    // maxium delay interval:
+    // maximum delay interval:
     // 0bxx1xx001 = 1048576 clock cycles = ~8 seconds @ 8MHz
 
     sei();  // re-enable interrupts
@@ -98,12 +98,16 @@ void extendedWatchDogAVR::clearWDTInterrupt() {
 
 /**
  * @brief ISR for watchdog early warning
+ *
+ * This makes multi cycle WDT possible.
  */
 ISR(WDT_vect) {
     MS_DEEP_DBG(F("\nWatchdog interrupt!"));
-    extendedWatchDogAVR::_barksUntilReset--;  // Increment down the counter,
-                                              // makes multi cycle WDT possible
-    if (extendedWatchDogAVR::_barksUntilReset <= 0) {
+    // De-increment down the counter, but don't allow to roll-over
+    if (extendedWatchDogAVR::_barksUntilReset > 0) {
+        extendedWatchDogAVR::_barksUntilReset--;
+    }
+    if (extendedWatchDogAVR::_barksUntilReset == 0) {
         MS_DEEP_DBG(F("The dog has barked enough; resetting the board."));
         MCUSR = 0;  // reset flags
 
@@ -123,5 +127,7 @@ ISR(WDT_vect) {
         extendedWatchDogAVR::clearWDTInterrupt();  // start timer again
     }
 }
+
+// cspell:words MCUSR WDTCSR WDCE WDRF WDIF WDIE WDT_vect
 
 #endif

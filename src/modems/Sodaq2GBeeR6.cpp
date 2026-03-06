@@ -27,12 +27,10 @@ Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream, int8_t vRefPin,
     setVRefPin(vRefPin);
 }
 
-// Destructor
-Sodaq2GBeeR6::~Sodaq2GBeeR6() {}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool Sodaq2GBeeR6::modemWakeFxn(void) {
+bool Sodaq2GBeeR6::modemWakeFxn() {
     if (_vRefPin >= 0) {
         MS_DBG(F("Enabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
         pinMode(_vRefPin, OUTPUT);
@@ -42,22 +40,22 @@ bool Sodaq2GBeeR6::modemWakeFxn(void) {
 }
 
 
-bool Sodaq2GBeeR6::modemSleepFxn(void) {
+bool Sodaq2GBeeR6::modemSleepFxn() {
     // Ask the SIM800 to shut down nicely
     MS_DBG(F("Asking SIM800 on GPRSBeeR6 to power down"));
     bool success = gsmModem.poweroff();
     if (_vRefPin >= 0) {
         MS_DBG(F("Disabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
+        pinMode(_vRefPin, OUTPUT);
         digitalWrite(_vRefPin, LOW);
     }
     gsmModem.stream.flush();
     return success;
 }
 
-bool Sodaq2GBeeR6::extraModemSetup(void) {
+bool Sodaq2GBeeR6::extraModemSetup() {
     bool success = gsmModem.init();
     _modemName   = gsmModem.getModemName();
-    if (_vRefPin >= 0) { pinMode(_vRefPin, OUTPUT); }
     return success;
 }
 

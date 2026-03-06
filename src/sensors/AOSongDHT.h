@@ -45,6 +45,11 @@
  * @section sensor_dht_datasheet Sensor Datasheet
  * [Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/AOSong-DHT22-Datasheet.pdf)
  *
+ * @section sensor_dht_config_flags Build flags
+ * - `-D DHT_DEFAULT_MEASUREMENT_RETRIES=##`
+ *      - used to set the default number of measurement retries for DHT sensors
+ *        when communication errors occur
+ *
  * @section sensor_dht_ctor Sensor Constructor
  * {{ @ref AOSongDHT::AOSongDHT }}
  *
@@ -103,6 +108,28 @@ static const uint8_t AM2301{21}; /**< AM2301 */
 /**@{*/
 
 /**
+ * @anchor sensor_dht_config
+ * @name Configuration Defines
+ * Define for the DHT measurement retry behavior.
+ */
+/**@{*/
+#if !defined(DHT_DEFAULT_MEASUREMENT_RETRIES) || defined(DOXYGEN)
+/**
+ * @brief The default number of measurement retries for DHT sensors when
+ * communication errors occur.
+ *
+ * DHT sensors use a single-wire protocol that can be susceptible to timing
+ * issues and communication errors. This define sets the default number of
+ * retries when a measurement fails.
+ *
+ * @note The default value of 5 retries provides good reliability while
+ * preventing excessive delays in case of persistent communication issues.
+ */
+#define DHT_DEFAULT_MEASUREMENT_RETRIES 5
+#endif
+/**@}*/
+
+/**
  * @anchor sensor_dht_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by an AOSong DHT
@@ -140,7 +167,7 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  * {{ @ref AOSongDHT_Humidity::AOSongDHT_Humidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; humidity should have 1 (0.1
+/// @brief Decimal places in string representation; humidity should have 1 (0.1
 /// % RH for DHT22 and 1 % RH for DHT11)
 #define DHT_HUMIDITY_RESOLUTION 1
 /// @brief Sensor variable number; humidity is stored in sensorValues[0].
@@ -167,7 +194,7 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  * {{ @ref AOSongDHT_Temp::AOSongDHT_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define DHT_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -194,7 +221,7 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  * {{ @ref AOSongDHT_HI::AOSongDHT_HI }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; heat index should have 1 -
+/// @brief Decimal places in string representation; heat index should have 1 -
 /// resolution is 0.1°C
 #define DHT_HI_RESOLUTION 1
 /// @brief Sensor variable number; HI is stored in sensorValues[2].
@@ -242,22 +269,13 @@ class AOSongDHT : public Sensor {
     /**
      * @brief Destroy the AOSongDHT object - no action needed.
      */
-    ~AOSongDHT();
+    ~AOSongDHT() override = default;
 
-    /**
-     * @copydoc Sensor::setup()
-     */
-    bool setup(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::getSensorName()
-     */
-    String getSensorName(void) override;
+    String getSensorName() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  private:
     DHT     dht_internal;  ///< Internal reference to the Adafruit DHT object
@@ -286,22 +304,24 @@ class AOSongDHT_Humidity : public Variable {
      */
     explicit AOSongDHT_Humidity(AOSongDHT* parentSense, const char* uuid = "",
                                 const char* varCode = DHT_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DHT_HUMIDITY_VAR_NUM,
-                   (uint8_t)DHT_HUMIDITY_RESOLUTION, DHT_HUMIDITY_VAR_NAME,
-                   DHT_HUMIDITY_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(DHT_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(DHT_HUMIDITY_RESOLUTION),
+                   DHT_HUMIDITY_VAR_NAME, DHT_HUMIDITY_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new AOSongDHT_Humidity object.
      *
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_Humidity()
-        : Variable((uint8_t)DHT_HUMIDITY_VAR_NUM,
-                   (uint8_t)DHT_HUMIDITY_RESOLUTION, DHT_HUMIDITY_VAR_NAME,
-                   DHT_HUMIDITY_UNIT_NAME, DHT_HUMIDITY_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(DHT_HUMIDITY_VAR_NUM),
+                   static_cast<uint8_t>(DHT_HUMIDITY_RESOLUTION),
+                   DHT_HUMIDITY_VAR_NAME, DHT_HUMIDITY_UNIT_NAME,
+                   DHT_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_Humidity object - no action needed.
      */
-    ~AOSongDHT_Humidity() {}
+    ~AOSongDHT_Humidity() override = default;
 };
 
 
@@ -327,8 +347,8 @@ class AOSongDHT_Temp : public Variable {
      */
     explicit AOSongDHT_Temp(AOSongDHT* parentSense, const char* uuid = "",
                             const char* varCode = DHT_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DHT_TEMP_VAR_NUM,
-                   (uint8_t)DHT_TEMP_RESOLUTION, DHT_TEMP_VAR_NAME,
+        : Variable(parentSense, static_cast<uint8_t>(DHT_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(DHT_TEMP_RESOLUTION), DHT_TEMP_VAR_NAME,
                    DHT_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AOSongDHT_Temp object.
@@ -336,13 +356,13 @@ class AOSongDHT_Temp : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_Temp()
-        : Variable((uint8_t)DHT_TEMP_VAR_NUM, (uint8_t)DHT_TEMP_RESOLUTION,
-                   DHT_TEMP_VAR_NAME, DHT_TEMP_UNIT_NAME,
-                   DHT_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(DHT_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(DHT_TEMP_RESOLUTION), DHT_TEMP_VAR_NAME,
+                   DHT_TEMP_UNIT_NAME, DHT_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
-    ~AOSongDHT_Temp() {}
+    ~AOSongDHT_Temp() override = default;
 };
 
 
@@ -368,8 +388,8 @@ class AOSongDHT_HI : public Variable {
      */
     explicit AOSongDHT_HI(AOSongDHT* parentSense, const char* uuid = "",
                           const char* varCode = DHT_HI_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DHT_HI_VAR_NUM,
-                   (uint8_t)DHT_HI_RESOLUTION, DHT_HI_VAR_NAME,
+        : Variable(parentSense, static_cast<uint8_t>(DHT_HI_VAR_NUM),
+                   static_cast<uint8_t>(DHT_HI_RESOLUTION), DHT_HI_VAR_NAME,
                    DHT_HI_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new AOSongDHT_HI object.
@@ -377,12 +397,13 @@ class AOSongDHT_HI : public Variable {
      * @note This must be tied with a parent AOSongDHT before it can be used.
      */
     AOSongDHT_HI()
-        : Variable((uint8_t)DHT_HI_VAR_NUM, (uint8_t)DHT_HI_RESOLUTION,
-                   DHT_HI_VAR_NAME, DHT_HI_UNIT_NAME, DHT_HI_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(DHT_HI_VAR_NUM),
+                   static_cast<uint8_t>(DHT_HI_RESOLUTION), DHT_HI_VAR_NAME,
+                   DHT_HI_UNIT_NAME, DHT_HI_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_HI object - no action needed.
      */
-    ~AOSongDHT_HI() {}
+    ~AOSongDHT_HI() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_AOSONGDHT_H_

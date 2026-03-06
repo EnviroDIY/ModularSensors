@@ -43,7 +43,8 @@
 // Include other in-library and external dependencies
 #include <pins_arduino.h>
 
-class Variable;  // Forward declaration
+class Variable;       // Forward declaration
+class VariableArray;  // Forward declaration
 
 /**
  * @brief The "Sensor" class is used for all sensor-level operations - waking,
@@ -62,6 +63,8 @@ class Variable;  // Forward declaration
  */
 class Sensor {
  public:
+    friend class Variable;
+    friend class VariableArray;
     /**
      * @brief Construct a new Sensor object.
      *
@@ -115,7 +118,7 @@ class Sensor {
     /**
      * @brief Destroy the Sensor object - no action taken.
      */
-    virtual ~Sensor();
+    virtual ~Sensor() = default;
 
     // These functions are dependent on the constructor and return the
     // constructor values.
@@ -127,26 +130,51 @@ class Sensor {
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    virtual String getSensorLocation(void);
+    virtual String getSensorLocation();
     /**
      * @brief Get the name of the sensor.
      *
      * @return The sensor name as given in the constructor.
      */
-    virtual String getSensorName(void);
+    virtual String getSensorName();
     /**
      * @brief Concatenate and returns the name and location of the sensor.
      *
      * @return A concatenation of the sensor name and its "location"
      * - how it is connected to the mcu.
      */
-    String getSensorNameAndLocation(void);
+    String getSensorNameAndLocation();
     /**
      * @brief Get the pin number controlling sensor power.
      *
      * @return The pin on the mcu controlling power to the sensor.
      */
-    virtual int8_t getPowerPin(void);
+    virtual int8_t getPowerPin();
+    /**
+     * @brief Set the pin number controlling sensor power.
+     * @param pin The pin on the mcu controlling power to the sensor.
+     */
+    virtual void setPowerPin(int8_t pin);
+    /**
+     * @brief Get the pin number controlling secondary sensor power.
+     *
+     * @return The pin on the mcu controlling secondary power
+     *
+     * This is for a second power needed to communicate with a sensor. Generally
+     * to an adapter or converter needed to talk to the sensor - i.e., an RS232
+     * adapter, an RS485 adapter, or an IO multiplexer.
+     */
+    virtual int8_t getSecondaryPowerPin();
+    /**
+     * @brief Set the pin number controlling secondary sensor power.
+     *
+     * This is for a second power needed to communicate with a sensor. Generally
+     * to an adapter or converter needed to talk to the sensor - i.e., an RS232
+     * adapter, an RS485 adapter, or an IO multiplexer.
+     *
+     * @param pin The pin on the mcu controlling secondary power
+     */
+    virtual void setSecondaryPowerPin(int8_t pin);
 
     /**
      * @brief Set the number measurements to average.
@@ -165,8 +193,80 @@ class Sensor {
      *
      * @copydetails _measurementsToAverage
      */
-    uint8_t getNumberMeasurementsToAverage(void);
+    uint8_t getNumberMeasurementsToAverage();
+    /**
+     * @brief Get the number of measurement attempts that have been made and
+     * completed (whether successful or not).
+     *
+     * @return The number of complete measurement attempts.
+     */
+    uint8_t getCompletedMeasurements();
+    /**
+     * @brief Get the number of retry attempts that have been made for the
+     * current measurement cycle
+     *
+     * @return The number of retries that have been made for the current
+     * measurement cycle.
+     *
+     * @note What is "successful" vs what qualifies for a retry varies by
+     * sensor. For some it may be that if any values were returned, for others
+     * that a specific value is in range, etc.
+     */
+    uint8_t getCurrentRetries();
+    /**
+     * @brief Get the maximum number of retries allowed if a measurement fails.
+     *
+     * @return The maximum number of allowed retries.
+     */
+    uint8_t getMaxRetries();
+    /**
+     * @brief Set the maximum number of retries if a measurement fails.
+     *
+     * @param maxRetries The maximum number of allowed retries.
+     */
+    void setMaxRetries(uint8_t maxRetries);
 
+    // _warmUpTime_ms _stabilizationTime_ms _measurementTime_ms
+
+    /**
+     * @brief Set the warm-up time for the sensor.
+     * @param warmUpTime_ms The warm-up time in milliseconds.
+     * @remark This is the time between when the sensor is powered on and when
+     * it is ready to receive a wake command.  It should be set in the sensor
+     * constructor. Only change this if you know what you're doing!
+     */
+    void setWarmUpTime(uint32_t warmUpTime_ms);
+    /**
+     * @brief Get the warm-up time for the sensor.
+     * @return The warm-up time in milliseconds.
+     */
+    uint32_t getWarmUpTime();
+    /**
+     * @brief Set the stabilization time for the sensor.
+     * @param stabilizationTime_ms The stabilization time in milliseconds.
+     * @remark This is the time between when the sensor receives a wake command
+     * and when it is able to return stable values.  It should be set in the
+     * sensor constructor. Only change this if you know what you're doing!
+     */
+    void setStabilizationTime(uint32_t stabilizationTime_ms);
+    /**
+     * @brief Get the stabilization time for the sensor.
+     * @return The stabilization time in milliseconds.
+     */
+    uint32_t getStabilizationTime();
+    /**
+     * @brief Set the measurement time for the sensor.
+     * @param measurementTime_ms The measurement time in milliseconds.
+     * @remark This is the time between when a measurement is started and when
+     * the result value is available.  It should be set in the sensor
+     * constructor. Only change this if you know what you're doing!
+     */
+    void setMeasurementTime(uint32_t measurementTime_ms);
+    /**
+     * @brief Get the measurement time for the sensor.
+     * @return The measurement time in milliseconds.
+     */
+    uint32_t getMeasurementTime();
 
     /// @brief The significance of the various status bits
     typedef enum {
@@ -198,8 +298,8 @@ class Sensor {
      * ready for sensor communication.
      *
      * Bit 3
-     * - 0 => Activation/wake attempt made
-     * - 1 => No activation/wake attempt made
+     * - 0 => No Activation/wake attempt made
+     * - 1 => Activation/wake attempt made
      * - check _millisSensorActivated or bit 4 to see if wake() attempt was
      * successful
      * - a failed activation attempt will give _millisSensorActivated = 0
@@ -211,8 +311,8 @@ class Sensor {
      * a measurement.
      *
      * Bit 5
-     * - 0 => Start measurement requested attempt made
-     * - 1 => No measurements have been requested
+     * - 0 => No measurements have been requested
+     * - 1 => Start measurement requested attempt made
      * - check _millisMeasurementRequested or bit 6 to see if
      * startSingleMeasurement() attempt was successful
      * - a failed request attempt will give _millisMeasurementRequested = 0
@@ -229,7 +329,7 @@ class Sensor {
      *
      * @return The status as a uint8_t.
      */
-    uint8_t getStatus(void);
+    uint8_t getStatus();
 
     /**
      * @brief Get the value of a specific status bit.
@@ -263,7 +363,7 @@ class Sensor {
     }
 
     /**
-     * @brief Clear a specific status bit (ie, set it to 0).
+     * @brief Clear a specific status bit (i.e., set it to 0).
      *
      * @param bitToClear The status bit to clear.
      */
@@ -294,7 +394,7 @@ class Sensor {
      *
      * @return True if the setup was successful.
      */
-    virtual bool setup(void);
+    virtual bool setup();
 
     /**
      * @brief Update the sensor's values.
@@ -316,23 +416,27 @@ class Sensor {
      * @return True if all steps of the sensor update completed
      * successfully.
      */
-    virtual bool update(void);
+    virtual bool update();
 
     /**
      * @brief Turn on the sensor power, if applicable.
      *
      * Generally this is done by setting the #_powerPin `HIGH`.  Also sets the
      * #_millisPowerOn timestamp and updates the #_sensorStatus.
+     *
+     * @todo Universally support power pins that are active LOW.
      */
-    virtual void powerUp(void);
+    virtual void powerUp();
     /**
      * @brief Turn off the sensor power, if applicable.
      *
      * Generally this is done by setting the #_powerPin `LOW`.  Also un-sets
      * the #_millisPowerOn timestamp (sets #_millisPowerOn to 0) and updates the
      * #_sensorStatus.
+     *
+     * @todo Universally support power pins that are inactive HIGH.
      */
-    virtual void powerDown(void);
+    virtual void powerDown();
 
     /**
      * @brief Wake the sensor up, if necessary.  Do whatever it takes to get a
@@ -341,11 +445,18 @@ class Sensor {
      * Verifies that the power is on and updates the #_sensorStatus.  This also
      * sets the #_millisSensorActivated timestamp.
      *
-     * @note This does NOT include any wait for sensor readiness.
+     * @note This does NOT include any wait time for sensor warm-up/readiness.
+     * Between powering the sensor and calling the wake function, most sensors
+     * have a required warm up time.  Use the separate isWarmedUp() function to
+     * check if the sensor is warmed up and use waitForWarmUp() to hold until
+     * the sensor is warmed up if needed.  The warm up time required for each
+     * sensor is held in the _warmUpTime_ms variable.  For *most* sensors, the
+     * warm up is complete when millis() - _millisPowerOn > _warmUpTime_ms.  The
+     * _millisPowerOn variable is set in the powerUp() function.
      *
      * @return True if the wake function completed successfully.
      */
-    virtual bool wake(void);
+    virtual bool wake();
     /**
      * @brief Puts the sensor to sleep, if necessary.
      *
@@ -355,7 +466,7 @@ class Sensor {
      *
      * @return True if the sleep function completed successfully.
      */
-    virtual bool sleep(void);
+    virtual bool sleep();
 
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
@@ -364,12 +475,19 @@ class Sensor {
      * #_sensorStatus.
      *
      * @note This function does NOT include any waiting for the sensor to be
-     * warmed up or stable!
+     * warmed up or stable.  Between waking and starting measurements, most
+     * sensors have a required stabilization time. Use the separate isStable()
+     * function to check if the sensor ready to start a measurement and use
+     * waitForStability() to hold  until the sensor is ready if needed.  The
+     * stabilization time required for each sensor is held in the
+     * _stabilizationTime_ms variable.  For *most* sensors, the warm up is
+     * complete when millis() - _millisSensorActivated > _stabilizationTime_ms.
+     * The _millisSensorActivated variable is set in the wake() function.
      *
      * @return True if the start measurement function completed
      * successfully.
      */
-    virtual bool startSingleMeasurement(void);
+    virtual bool startSingleMeasurement();
 
     /**
      * @brief Get the results from a single measurement.
@@ -385,7 +503,7 @@ class Sensor {
      *
      * @return True if the function completed successfully.
      */
-    virtual bool addSingleMeasurementResult(void) = 0;
+    virtual bool addSingleMeasurementResult() = 0;
 
     /**
      * @brief The array of result values for each sensor.
@@ -393,24 +511,72 @@ class Sensor {
      * @todo Support int16_t and int32_t directly in the value array so no
      * casting is needed. This could be done using a template or a union similar
      * to the modbus library's leFrame union.
+     *
+     * @note The values in this array will not be usable until after the sensor
+     * completes all requested measurements! Prior to that, the values in this
+     * array will be the sum of all good values measured so far (or
+     * #MS_INVALID_VALUE if no good values have been measured yet).
      */
     float sensorValues[MAX_NUMBER_VARS];
 
     /**
-     * @brief Clear the values array - that is, sets all values to -9999.
+     * @brief Clear the values array and reset retry counts.
+     *
+     * This clears the values array by setting all values to #MS_INVALID_VALUE,
+     * sets all values in numberGoodMeasurementsMade to 0, and resets the
+     * attempt (#_completedMeasurements) and retry (#_currentRetries)
+     * counts.
      */
     void clearValues();
     /**
-     * @brief Verify that a measurement is OK (ie, not -9999) before adding it
-     * to the result array
+     * @brief This clears all of the status bits and resets timing values.
+     *
+     * This clears all status bits except the setup bit (bit 0) - and the error
+     * bit (bit 7) - that is, it sets bits 1-6 to 0.  It also sets all timing
+     * variables to 0.  This is intended to be used at the start of an update
+     * cycle to clear any old values before beginning a cycle.
+     */
+    void clearStatus();
+    /**
+     * @brief Clears power-related status bits and resets power timing.
+     *
+     * This clears the POWER_ATTEMPTED and POWER_SUCCESSFUL status bits and
+     * resets the _millisPowerOn timing variable to 0. This is useful when
+     * you need to clear only the power-related status without affecting
+     * wake or measurement status.
+     */
+    void clearPowerStatus();
+    /**
+     * @brief Clears wake-related status bits and resets wake timing.
+     *
+     * This clears the WAKE_ATTEMPTED and WAKE_SUCCESSFUL status bits and
+     * resets the _millisSensorActivated timing variable to 0. This is useful
+     * when you need to clear only the wake-related status without affecting
+     * power or measurement status.
+     */
+    void clearWakeStatus();
+    /**
+     * @brief Clears measurement-related status bits and resets measurement
+     * timing.
+     *
+     * This clears the MEASUREMENT_ATTEMPTED and MEASUREMENT_SUCCESSFUL status
+     * bits and resets both _millisMeasurementRequested and
+     * _millisMeasurementCompleted timing variables to 0. This is useful when
+     * you need to clear only the measurement-related status without affecting
+     * power or wake status.
+     */
+    void clearMeasurementStatus();
+    /**
+     * @brief Verify that a measurement is OK (i.e., not #MS_INVALID_VALUE)
+     * before adding it to the result array
      *
      * @param resultNumber The position of the result within the result array.
      * @param resultValue The value of the result.
      */
     void verifyAndAddMeasurementResult(uint8_t resultNumber, float resultValue);
     /**
-     * @brief Verify that a measurement is OK (ie, not -9999) before adding it
-     * to the result array
+     * @brief Verify that a measurement is OK (i.e., not #MS_INVALID_VALUE)
+     * before adding it to the result array
      *
      * @param resultNumber The position of the result within the result array.
      * @param resultValue The value of the result.
@@ -430,7 +596,31 @@ class Sensor {
      * @brief Average the results of all measurements by dividing the sum of
      * all measurements by the number of measurements taken.
      */
-    void averageMeasurements(void);
+    void averageMeasurements();
+
+    /**
+     * @brief Print out the results from a measurement - whether or not there is
+     * a variable attached to the sensor to receive the results.
+     *
+     * If there is a variable attached to the sensor, the printed info will
+     * include the variable name, units, and code and the value will be
+     * formatted with the correct number of decimal places.  If there is no
+     * variable attached to the sensor, the printed info will only include the
+     * variable number position and the value will printed to two decimal
+     * places.
+     *
+     * @todo Figure out a way to have a sensor figure out the metadata about its
+     * own variables. Currently that is stored in the variable objects, but it
+     * is also a property of the sensor's results.
+     * See issue [498](https://github.com/EnviroDIY/ModularSensors/issues/498)
+     * for more discussion.
+     *
+     * @param stream An Arduino Stream instance
+     * @param printStatusBits True to include the sensor status bits in the
+     * printout, false to only print values and metadata.
+     */
+    virtual void printData(Stream* stream          = &Serial,
+                           bool    printStatusBits = false);
 
     /**
      * @brief Register a variable object to a sensor.
@@ -445,7 +635,7 @@ class Sensor {
     /**
      * @brief Notify attached variables of new values.
      */
-    void notifyVariables(void);
+    void notifyVariables();
 
 
     /**
@@ -471,7 +661,7 @@ class Sensor {
      * @brief Hold all further program execution until this sensor is ready to
      * receive commands.
      */
-    void waitForWarmUp(void);
+    void waitForWarmUp();
 
     /**
      * @brief Check whether or not enough time has passed between the sensor
@@ -490,7 +680,7 @@ class Sensor {
      * @brief Hold all further program execution until this sensor is reporting
      * stable values.
      */
-    void waitForStability(void);
+    void waitForStability();
 
     /**
      * @brief Check whether or not enough time has passed between when the
@@ -510,7 +700,7 @@ class Sensor {
      * @brief Hold all further program execution until this sensor is has
      * finished the current measurement.
      */
-    void waitForMeasurementCompletion(void);
+    void waitForMeasurementCompletion();
 
 
  protected:
@@ -527,6 +717,16 @@ class Sensor {
      */
     int8_t _powerPin;
     /**
+     * @brief Digital pin number on the mcu controlling secondary power
+     *
+     * This is for a second power needed to communicate with a sensor. Generally
+     * to an adapter or converter needed to talk to the sensor - i.e., an RS232
+     * adapter, an RS485 adapter, or an IO multiplexer.
+     *
+     * @note SIGNED int, to allow negative numbers for unused pins
+     */
+    int8_t _powerPin2 = -1;
+    /**
      * @brief The sensor name.
      */
     const char* _sensorName;
@@ -539,28 +739,50 @@ class Sensor {
      */
     const uint8_t _numReturnedValues;
     /**
-     * @brief The number of measurements from the sensor to average.
-     *
-     * This will become the number of readings actually taken by a sensor prior
-     * to data averaging.  Any "bad" (-9999) values returned by the sensor will
-     * not be included in the final averaging.  This means that the actual
-     * number of "good" values that are averaged may be less than what was
-     * requested.
-     */
-    uint8_t _measurementsToAverage;
-    /**
-     * @brief The number of included calculated variables from the
-     * sensor, if any.
+     * @brief The number of included calculated variables from the sensor, if
+     * any.
      *
      * These are used for values that we would always calculate for a sensor and
      * depend only on the raw results of that single sensor.  This is separate
      * from any calculated variables that are created on-the-fly and depend on
      * multiple other sensors.
      */
-    uint8_t _incCalcValues;
+    const uint8_t _incCalcValues;
     /**
-     * @brief Array with the number of valid measurement values taken by the
-     * sensor in the current update cycle.
+     * @brief The number of measurements from the sensor to average.
+     *
+     * This will become the number of readings actually taken by a sensor prior
+     * to data averaging.  Any "bad" (#MS_INVALID_VALUE) values returned by the
+     * sensor will not be included in the final averaging.  This means that the
+     * actual number of "good" values that are averaged may be less than what
+     * was requested.
+     */
+    uint8_t _measurementsToAverage;
+    /**
+     * @brief The number of measurement cycles completed in the current update
+     * cycle (reset by clearValues()).
+     */
+    uint8_t _completedMeasurements = 0;
+    /**
+     * @brief The number of retries that have been attempted so far for the
+     * current measurement cycle.
+     */
+    uint8_t _currentRetries = 0;
+    /**
+     * @brief The maximum number of retries allowed if a measurement fails.
+     * Setting max retries to 1 means that if a measurement fails, it will be
+     * retried once.  Setting max retries to 0 means that if a measurement
+     * fails, it will not be retried at all.
+     */
+    uint8_t _maxRetries = 1;
+    /**
+     * @brief Array with the number of valid measurement values per variable by
+     * the sensor in the current update cycle.
+     *
+     * @note The number of good measurements may vary between variables if
+     * some values are more likely to be invalid than others - i.e., a pH sensor
+     * may also measure temperature and report a valid temperature when the pH
+     * is junk.
      */
     uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];
 
@@ -584,7 +806,7 @@ class Sensor {
      */
     uint32_t _stabilizationTime_ms;
     /**
-     * @brief The processor elapsed time when the sensor was activated - ie,
+     * @brief The processor elapsed time when the sensor was activated - i.e.,
      * when the wake() function was run.
      *
      * The #_millisSensorActivated value is *usually* set in the wake()
@@ -599,7 +821,7 @@ class Sensor {
      */
     uint32_t _measurementTime_ms;
     /**
-     * @brief The processor elapsed time when a measurement was started - ie,
+     * @brief The processor elapsed time when a measurement was started - i.e.,
      * when the startSingleMeasurement() function was run.
      *
      * The #_millisMeasurementRequested value is set in the
@@ -607,6 +829,14 @@ class Sensor {
      * addSingleMeasurementResult() function.
      */
     uint32_t _millisMeasurementRequested = 0;
+    /**
+     * @brief The processor elapsed time when a measurement was completed -
+     * i.e., when the addSingleMeasurementResult() function was run.
+     *
+     * The #_millisMeasurementCompleted value is set in the
+     * addSingleMeasurementResult() function.
+     */
+    uint32_t _millisMeasurementCompleted = 0;
 
     /**
      * @brief An 8-bit code for the sensor status
@@ -615,11 +845,43 @@ class Sensor {
 
     /**
      * @brief An array for each sensor containing pointers to the variable
-     * objects tied to that sensor.  The #MAX_NUMBER_VARS cannot be determined
-     * on a per-sensor basis, because of the way memory is used on an Arduino.
-     * It must be defined once for the whole class.
+     * objects tied to that sensor.
+     *
+     * The #MAX_NUMBER_VARS cannot be determined on a per-sensor basis; it must
+     * be defined at compile time and applied to the entire class.
      */
     Variable* variables[MAX_NUMBER_VARS];
+
+    /**
+     * @brief Finalizes a measurement attempt by updating timestamps, status
+     * bits, and retry counts.
+     *
+     * This method performs multiple cleanup actions after a measurement
+     * attempt:
+     * - Records measurement completion timestamp
+     * - Clears measurement request status bits
+     * - Updates retry counters with proper semantics
+     * - Conditionally increments completed measurements based on success or
+     * retry limit
+     *
+     * @param wasSuccessful True if the measurement was successful, false
+     * otherwise
+     * @return The input parameter for easy chaining in return statements
+     */
+    bool finalizeMeasurementAttempt(bool wasSuccessful);
+
+ private:
+    /**
+     * @brief Helper function to check if a pin is physically LOW
+     *
+     * Reads the current physical state of a pin using direct port access.
+     * Returns true if the pin is configured and physically LOW, false if
+     * the pin is unconfigured (< 0) or HIGH.
+     *
+     * @param pin The pin number to check
+     * @return True if pin is configured and physically LOW, false otherwise
+     */
+    bool isPinLow(int8_t pin);
 };
 
 #endif  // SRC_SENSORBASE_H_

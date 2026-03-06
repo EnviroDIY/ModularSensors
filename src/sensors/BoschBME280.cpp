@@ -16,30 +16,26 @@ BoschBME280::BoschBME280(TwoWire* theI2C, int8_t powerPin,
                          uint8_t i2cAddressHex, uint8_t measurementsToAverage)
     : Sensor("BoschBME280", BME280_NUM_VARIABLES, BME280_WARM_UP_TIME_MS,
              BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage),
-      _i2cAddressHex(i2cAddressHex),
-      _i2c(theI2C) {}
-
-BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex,
-                         uint8_t measurementsToAverage)
-    : Sensor("BoschBME280", BME280_NUM_VARIABLES, BME280_WARM_UP_TIME_MS,
-             BME280_STABILIZATION_TIME_MS, BME280_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage, BME280_INC_CALC_VARIABLES),
       _i2cAddressHex(i2cAddressHex),
-      _i2c(&Wire) {}
+      _i2c(theI2C != nullptr ? theI2C : &Wire) {}
 
-// Destructor
-BoschBME280::~BoschBME280() {}
+// Delegating constructor
+BoschBME280::BoschBME280(int8_t powerPin, uint8_t i2cAddressHex,
+                         uint8_t measurementsToAverage)
+    : BoschBME280(&Wire, powerPin, i2cAddressHex, measurementsToAverage) {}
 
 
-String BoschBME280::getSensorLocation(void) {
-    String address = F("I2C_0x");
+String BoschBME280::getSensorLocation() {
+    String address;
+    address.reserve(10);  // Reserve for "I2C_0x" + 2 hex chars
+    address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool BoschBME280::setup(void) {
+bool BoschBME280::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -59,6 +55,7 @@ bool BoschBME280::setup(void) {
         ntries++;
     }
     if (!success) {
+        MS_DBG(getSensorNameAndLocation(), F("setup failed after 5 attempts"));
         // Set the status error bit (bit 7)
         setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
@@ -66,14 +63,14 @@ bool BoschBME280::setup(void) {
     }
     retVal &= success;
 
-    // Turn the power back off it it had been turned on
+    // Turn the power back off if it had been turned on
     if (!wasOn) { powerDown(); }
 
     return retVal;
 }
 
 
-bool BoschBME280::wake(void) {
+bool BoschBME280::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -114,61 +111,51 @@ bool BoschBME280::wake(void) {
 }
 
 
-bool BoschBME280::addSingleMeasurementResult(void) {
-    bool success = false;
-
-    // Initialize float variables
-    float temp  = -9999;
-    float humid = -9999;
-    float press = -9999;
-    float alt   = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        // Read values
-        temp = bme_internal.readTemperature();
-        if (isnan(temp)) temp = -9999;
-        humid = bme_internal.readHumidity();
-        if (isnan(humid)) humid = -9999;
-        press = bme_internal.readPressure();
-        if (isnan(press)) press = -9999;
-        alt = bme_internal.readAltitude(SEALEVELPRESSURE_HPA);
-        if (isnan(alt)) alt = -9999;
-
-        // Assume that if all three are 0, really a failed response
-        // May also return a very negative temp when receiving a bad response
-        if ((temp == 0 && press == 0 && humid == 0) || temp < -40) {
-            MS_DBG(F("All values 0 or bad, assuming sensor non-response!"));
-            temp  = -9999;
-            press = -9999;
-            humid = -9999;
-            alt   = -9999;
-        } else {
-            success = true;
-        }
-
-        MS_DBG(F("  Temperature:"), temp, F("°C"));
-        MS_DBG(F("  Humidity:"), humid, F("%RH"));
-        MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
-        MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+bool BoschBME280::addSingleMeasurementResult() {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return finalizeMeasurementAttempt(false);
     }
 
-    verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
-    verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
-    verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
+    bool  success = false;
+    float temp    = MS_INVALID_VALUE;
+    float humid   = MS_INVALID_VALUE;
+    float press   = MS_INVALID_VALUE;
+    float alt     = MS_INVALID_VALUE;
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    return success;
+    // Read values
+    temp = bme_internal.readTemperature();
+    if (isnan(temp)) temp = MS_INVALID_VALUE;
+    humid = bme_internal.readHumidity();
+    if (isnan(humid)) humid = MS_INVALID_VALUE;
+    press = bme_internal.readPressure();
+    if (isnan(press)) press = MS_INVALID_VALUE;
+    alt = bme_internal.readAltitude(MS_SEA_LEVEL_PRESSURE_HPA);
+    if (isnan(alt)) alt = MS_INVALID_VALUE;
+
+    MS_DBG(F("  Temperature:"), temp, F("°C"));
+    MS_DBG(F("  Humidity:"), humid, F("%RH"));
+    MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
+    MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
+
+    bool values_ok = temp != MS_INVALID_VALUE && humid != MS_INVALID_VALUE &&
+        press != MS_INVALID_VALUE && alt != MS_INVALID_VALUE;
+    // Assume that if temperature, pressure, and humidity are all 0, it's really
+    // a failed response. A temperature below -40°C (outside sensor range) also
+    // indicates a bad response.
+    if (!values_ok || (temp == 0 && press == 0 && humid == 0) || temp < -40) {
+        MS_DBG(F("Invalid reading (missing, all zeros, or out of range), "
+                 "assuming sensor non-response!"));
+    } else {
+        verifyAndAddMeasurementResult(BME280_TEMP_VAR_NUM, temp);
+        verifyAndAddMeasurementResult(BME280_HUMIDITY_VAR_NUM, humid);
+        verifyAndAddMeasurementResult(BME280_PRESSURE_VAR_NUM, press);
+        verifyAndAddMeasurementResult(BME280_ALTITUDE_VAR_NUM, alt);
+        success = true;
+    }
+
+    // Return success value when finished
+    return finalizeMeasurementAttempt(success);
 }
-
-// cSpell:ignore SEALEVELPRESSURE_HPA

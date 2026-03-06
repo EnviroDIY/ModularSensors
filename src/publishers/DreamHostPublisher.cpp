@@ -22,27 +22,22 @@ const char* DreamHostPublisher::loggerTag      = "?LoggerID=";
 const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
 // Constructors
+// Primary constructor with all parameters
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
+                                       const char* dhUrl)
+    : dataPublisher(baseLogger, inClient) {
+    if (dhUrl) setDreamHostPortalRX(dhUrl);
+}
+
+// Delegating constructors
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient)
+    : DreamHostPublisher(baseLogger, inClient, nullptr) {}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl)
+    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr), dhUrl) {}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger)
+    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
+                         static_cast<const char*>(nullptr)) {}
 DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
-
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
-
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
-
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                                       int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setDreamHostPortalRX(dhUrl);
-}
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       const char* dhUrl, int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setDreamHostPortalRX(dhUrl);
-}
-// Destructor
-DreamHostPublisher::~DreamHostPublisher() {}
 
 
 // Functions for private SWRC server
@@ -64,8 +59,14 @@ void DreamHostPublisher::begin(Logger& baseLogger, const char* dhUrl) {
 
 
 // Post the data to dream host.
-// int16_t DreamHostPublisher::postDataDreamHost(void)
 int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
+    // Validate required DreamHost URL is set before proceeding
+    if (_DreamHostPortalRX == nullptr) {
+        MS_DBG(F("ERROR: DreamHost Portal RX URL not set. Call begin() or "
+                 "setDreamHostPortalRX() first."));
+        return -1;
+    }
+
     // Create a buffer for the portions of the request and response
     char     tempBuffer[37] = "";
     uint16_t did_respond    = 0;
@@ -128,7 +129,7 @@ int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond > 0) {
             char responseCode_char[4];
-            memcpy(responseCode_char, tempBuffer + 9, 3);
+            memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string
             memset(responseCode_char + 3, '\0', 1);
             responseCode = atoi(responseCode_char);

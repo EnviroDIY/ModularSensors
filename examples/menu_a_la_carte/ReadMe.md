@@ -27,9 +27,7 @@ ___
 
 - [Example showing all possible functionality](#example-showing-all-possible-functionality)
 - [Walking Through the Code](#walking-through-the-code)
-  - [Defines and Includes](#defines-and-includes)
-    - [Defines for the Arduino IDE](#defines-for-the-arduino-ide)
-    - [Library Includes](#library-includes)
+  - [Library Includes](#library-includes)
   - [Logger Settings](#logger-settings)
     - [Creating Extra Serial Ports](#creating-extra-serial-ports)
       - [AVR Boards](#avr-boards)
@@ -79,6 +77,7 @@ ___
       - [Decagon CTD-10 Conductivity, Temperature, and Depth Sensor](#decagon-ctd-10-conductivity-temperature-and-depth-sensor)
     - [Decagon ES2 Conductivity and Temperature Sensor](#decagon-es2-conductivity-and-temperature-sensor)
       - [Everlight ALS-PT19 Ambient Light Sensor](#everlight-als-pt19-ambient-light-sensor)
+    - [External Voltage via Processor ADC](#external-voltage-via-processor-adc)
     - [External Voltage via TI ADS1x15](#external-voltage-via-ti-ads1x15)
     - [Freescale Semiconductor MPL115A2 Miniature I2C Digital Barometer](#freescale-semiconductor-mpl115a2-miniature-i2c-digital-barometer)
     - [Geolux HydroCam Camera](#geolux-hydrocam-camera)
@@ -91,6 +90,7 @@ ___
     - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
     - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
+    - [TE Connectivity MS5837 Pressure Sensor](#te-connectivity-ms5837-pressure-sensor)
     - [Meter SDI-12 Sensors](#meter-sdi-12-sensors)
       - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
       - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
@@ -159,31 +159,7 @@ ___
 
 <!--! @endif -->
 
-## Defines and Includes<!--! {#menu_walk_defines_includes} -->
-
-### Defines for the Arduino IDE<!--! {#menu_walk_defines} -->
-
-The top few lines of the examples set defines of buffer sizes and yields needed for the Arduino IDE.
-That IDE read any defines within the top few lines and applies them as build flags for the processor.
-This is *not* standard behavior for C++ (which is what Arduino code really is) - this is a unique aspect of the Arduino IDE.
-
-<!--! @menusnip{defines} -->
-
-If you are using PlatformIO, you should instead set these as global build flags in your platformio.ini.
-This is standard behavior for C++.
-
-```ini
-build_flags =
-    -D SDI12_EXTERNAL_PCINT
-    -D NEOSWSERIAL_EXTERNAL_PCINT
-    -D MQTT_MAX_PACKET_SIZE=240
-    -D TINY_GSM_RX_BUFFER=64
-    -D TINY_GSM_YIELD_MS=2
-```
-
-___
-
-### Library Includes<!--! {#menu_walk_includes} -->
+## Library Includes<!--! {#menu_walk_includes} -->
 
 Next, include the libraries needed for every program using ModularSensors.
 
@@ -208,7 +184,7 @@ ___
 
 #### AVR Boards<!--! {#menu_walk_avr_serial_ports} -->
 
-Most Arduino AVR style boards have very few (ie, one, or none) dedicated serial ports *available* after counting out the programming serial port.
+Most Arduino AVR style boards have very few (i.e., one, or none) dedicated serial ports *available* after counting out the programming serial port.
 So to connect anything else, we need to try to emulate the processor serial functionality with a software library.
 This example shows three possible libraries that can be used to emulate a serial port on an AVR board.
 
@@ -604,8 +580,8 @@ ___
 Set options and create the objects for using the processor as a sensor to report battery level, processor free ram, and sample number.
 
 The processor can return the number of "samples" it has taken, the amount of RAM it has available and, for some boards, the battery voltage (EnviroDIY Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers).
-The version of the board is required as input (ie, for a EnviroDIY Mayfly: "v0.3" or "v0.4" or "v0.5").
-Use a blank value (ie, "") for un-versioned boards.
+The version of the board is required as input (i.e., for a EnviroDIY Mayfly: "v0.3" or "v0.4" or "v0.5").
+Use a blank value (i.e., "") for un-versioned boards.
 Please note that while you can opt to average more than one sample, it really makes no sense to do so for the processor.
 The number of "samples" taken will increase by one for each time another processor "measurement" is taken so averaging multiple measurements from the processor will result in the number of samples increasing by more than one with each loop.
 
@@ -756,7 +732,7 @@ ___
 
 Here is the code for the Bosch BME280 environmental sensor.
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
-Keep in mind that the possible I2C addresses of the BME280 match those of the MS5803; when using those sensors together, make sure they are set to opposite addresses.
+Keep in mind that the I2C address (0x76) of the BME280 matches those of some configurations of the MS5803, MS5837, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_bme280
 
@@ -765,6 +741,8 @@ Keep in mind that the possible I2C addresses of the BME280 match those of the MS
 ___
 
 ### Bosch BMP388 and BMP398 Pressure Sensors<!--! {#menu_walk_bosch_bmp3xx} -->
+
+Keep in mind that the I2C address (0x76) of the BMP388/BMP390 sensors matches those of some configurations of the MS5803, MS5837, and BME280 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_bmp3xx
 
@@ -829,6 +807,18 @@ ___
 @see @ref sensor_alspt19
 
 <!--! @menusnip{everlight_alspt19} -->
+
+___
+
+### External Voltage via Processor ADC<!--! {#menu_walk_processor_analog} -->
+
+The Arduino pin controlling power on/off, the analog data pin on the processor, and the multiplier for a voltage divider are required for the sensor constructor.
+If your processor operating voltage is not defined in KnownProcessors.h, you must input it as the fourth argument; otherwise you can enter the value `OPERATING_VOLTAGE` to use the voltage defined in KnownProcessors.h.
+The number of measurements to average, if more than one is desired, goes as the fifth argument.
+
+@see @ref sensor_processor_analog
+
+<!--! @menusnip{processor_analog} -->
 
 ___
 
@@ -899,7 +889,7 @@ ___
 
 The next two sections are for Keller RS485/Modbus water level sensors.
 The sensor class constructors for each are nearly identical, except for the class name.
-The sensor constructors require as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
+The sensor constructors require as input: the sensor modbus address,  a stream instance for data (i.e., `Serial`), and one or two power pins.
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 In tests on these sensors, SoftwareSerial_ExtInts *did not work* to communicate with these sensors, because it isn't stable enough.
@@ -933,7 +923,7 @@ ___
 
 ### Maxbotix HRXL Ultrasonic Range Finder<!--! {#menu_walk_max_botix_sonar} -->
 
-The Arduino pin controlling power on/off, a stream instance for received data (ie, `Serial`), and the Arduino pin controlling the trigger are required for the sensor constructor.
+The Arduino pin controlling power on/off, a stream instance for received data (i.e., `Serial`), and the Arduino pin controlling the trigger are required for the sensor constructor.
 (Use -1 for the trigger pin if you do not have it connected.)
 Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 
@@ -961,11 +951,23 @@ ___
 ### Measurement Specialties MS5803-14BA Pressure Sensor<!--! {#menu_walk_mea_spec_ms5803} -->
 
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
-Keep in mind that the possible I2C addresses of the MS5803 match those of the BME280.
+Keep in mind that the I2C address (0x76) of the MS5803 matches those of some configurations of the MS5837, BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_ms5803
 
 <!--! @menusnip{mea_spec_ms5803} -->
+
+___
+
+### TE Connectivity MS5837 Pressure Sensor<!--! {#menu_walk_te_connectivity_ms5837} -->
+
+The MS5837 is commonly used in Blue Robotics Bar02/Bar30 pressure sensors for underwater applications and depth measurement.
+The only required input is the Arduino pin controlling power on/off; the sensor model, fluid density, air pressure, and number of readings to average are optional.
+Keep in mind that the I2C address (0x76) of the MS5837 matches those of some configurations of the MS5803, BME280, BMP388, and BMP390 sensors.
+
+@see @ref sensor_ms5837
+
+<!--! @menusnip{te_connectivity_ms5837} -->
 
 ___
 
@@ -1130,7 +1132,7 @@ ___
 
 The next several sections are for Yosemitech brand sensors.
 The sensor class constructors for each are nearly identical, except for the class name.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (ie, `Serial`), and one or two power pins.
+The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (i.e., `Serial`), and one or two power pins.
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
 For most of the sensors, Yosemitech strongly recommends averaging multiple (in most cases 10) readings for each measurement.
@@ -1277,8 +1279,8 @@ Here we use the `new` keyword to create multiple variables and get pointers to t
 
 #### Creating Variables and Pasting UUIDs from MonitorMyWatershed<!--! {#menu_walk_variables_separate_uuids} -->
 
-If you are sending data to monitor my watershed, it is much easier to create the variables in an array and then to paste the UUID's all together as copied from the "View Token UUID List" link for a site.
-If using this method, be very, very, very careful to make sure the order of your variables exactly matches the order of your UUID's.
+If you are sending data to Monitor My Watershed, it is much easier to create the variables in an array and then to paste the UUIDs all together as copied from the "View Token UUID List" link for a site.
+If using this method, be careful to ensure the order of your variables exactly matches the order of your UUIDs.
 
 <!--! @menusnip{variables_separate_uuids} -->
 
@@ -1302,13 +1304,13 @@ ___
 
 Here we set up all three possible data publishers and link all of them to the same Logger object.
 
-#### Monitor My Watershed<!--! {#menu_walk_enviro_diy_publisher} -->
+#### Monitor My Watershed<!--! {#menu_walk_monitor_my_watershed_publisher} -->
 
-To publish data to the Monitor My Watershed / EnviroDIY Data Sharing Portal first you must register yourself as a user at <https://monitormywatershed.org> or <https://data.envirodiy.org>.
+To publish data to Monitor My Watershed, you must first register as a user at <https://monitormywatershed.org>.
 Then you must register your site.
 After registering your site, a sampling feature and registration token for that site should be visible on the site page.
 
-<!--! @menusnip{enviro_diy_publisher} -->
+<!--! @menusnip{monitor_my_watershed_publisher} -->
 
 ___
 
@@ -1596,7 +1598,6 @@ All together, this gives:
 <!--! @menusnip{complex_loop} -->
 
 If you need more help in writing a complex loop, the [double_logger example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger) demonstrates using a custom loop function in order to log two different groups of sensors at different logging intervals.
-The [data_saving example program](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/data_saving) shows using a custom loop in order to save cellular data by saving data from many variables on the SD card, but only sending a portion of the data to the EnviroDIY data portal.
 
 <!--! @section example_menu_pio_config PlatformIO Configuration -->
 

@@ -96,7 +96,7 @@
  * {{ @ref YosemitechY533_ORP::YosemitechY533_ORP }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; ph should have 2 -
+/// @brief Decimal places in string representation; ORP should have 0 -
 /// resolution is 1 mV units.
 #define Y533_ORP_RESOLUTION 0
 /// @brief Sensor variable number; ORP is stored in sensorValues[0].
@@ -125,7 +125,7 @@
  * {{ @ref YosemitechY533_Temp::YosemitechY533_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y533_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -196,7 +196,7 @@ class YosemitechY533 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y533 object
      */
-    ~YosemitechY533() {}
+    ~YosemitechY533() override = default;
 };
 
 
@@ -224,8 +224,8 @@ class YosemitechY533_ORP : public Variable {
     explicit YosemitechY533_ORP(YosemitechY533* parentSense,
                                 const char*     uuid    = "",
                                 const char*     varCode = Y533_ORP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y533_ORP_VAR_NUM,
-                   (uint8_t)Y533_ORP_RESOLUTION, Y533_ORP_VAR_NAME,
+        : Variable(parentSense, static_cast<uint8_t>(Y533_ORP_VAR_NUM),
+                   static_cast<uint8_t>(Y533_ORP_RESOLUTION), Y533_ORP_VAR_NAME,
                    Y533_ORP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY533_ORP object.
@@ -234,13 +234,13 @@ class YosemitechY533_ORP : public Variable {
      * used.
      */
     YosemitechY533_ORP()
-        : Variable((uint8_t)Y533_ORP_VAR_NUM, (uint8_t)Y533_ORP_RESOLUTION,
-                   Y533_ORP_VAR_NAME, Y533_ORP_UNIT_NAME,
-                   Y533_ORP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(Y533_ORP_VAR_NUM),
+                   static_cast<uint8_t>(Y533_ORP_RESOLUTION), Y533_ORP_VAR_NAME,
+                   Y533_ORP_UNIT_NAME, Y533_ORP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY533_ORP object - no action needed.
      */
-    ~YosemitechY533_ORP() {}
+    ~YosemitechY533_ORP() override = default;
 };
 
 
@@ -268,9 +268,9 @@ class YosemitechY533_Temp : public Variable {
     explicit YosemitechY533_Temp(YosemitechY533* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y533_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y533_TEMP_VAR_NUM,
-                   (uint8_t)Y533_TEMP_RESOLUTION, Y533_TEMP_VAR_NAME,
-                   Y533_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(Y533_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y533_TEMP_RESOLUTION),
+                   Y533_TEMP_VAR_NAME, Y533_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Construct a new YosemitechY533_Temp object.
      *
@@ -278,13 +278,14 @@ class YosemitechY533_Temp : public Variable {
      * used.
      */
     YosemitechY533_Temp()
-        : Variable((uint8_t)Y533_TEMP_VAR_NUM, (uint8_t)Y533_TEMP_RESOLUTION,
+        : Variable(static_cast<uint8_t>(Y533_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(Y533_TEMP_RESOLUTION),
                    Y533_TEMP_VAR_NAME, Y533_TEMP_UNIT_NAME,
                    Y533_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY533_Temp object - no action needed.
      */
-    ~YosemitechY533_Temp() {}
+    ~YosemitechY533_Temp() override = default;
 };
 
 /**@}*/

@@ -9,6 +9,7 @@
  */
 
 #include "AOSongAM2315.h"
+#include <Adafruit_AM2315.h>
 
 
 // The constructor - because this is I2C, only need the power pin
@@ -18,25 +19,18 @@ AOSongAM2315::AOSongAM2315(TwoWire* theI2C, int8_t powerPin,
     : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES, AM2315_WARM_UP_TIME_MS,
              AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage),
-      _i2c(theI2C) {
-    am2315ptr = new Adafruit_AM2315(_i2c);
-}
+      _i2c(theI2C != nullptr ? theI2C : &Wire) {}
+// Delegating constructor
 AOSongAM2315::AOSongAM2315(int8_t powerPin, uint8_t measurementsToAverage)
-    : Sensor("AOSongAM2315", AM2315_NUM_VARIABLES, AM2315_WARM_UP_TIME_MS,
-             AM2315_STABILIZATION_TIME_MS, AM2315_MEASUREMENT_TIME_MS, powerPin,
-             -1, measurementsToAverage, AM2315_INC_CALC_VARIABLES),
-      _i2c(&Wire) {
-    am2315ptr = new Adafruit_AM2315(_i2c);
-}
-AOSongAM2315::~AOSongAM2315() {}
+    : AOSongAM2315(&Wire, powerPin, measurementsToAverage) {}
 
 
-String AOSongAM2315::getSensorLocation(void) {
+String AOSongAM2315::getSensorLocation() {
     return F("I2C_0xB8");
 }
 
 
-bool AOSongAM2315::setup(void) {
+bool AOSongAM2315::setup() {
     _i2c->begin();  // Start the wire library (sensor power not required)
     // Eliminate any potential extra waits in the wire library
     // These waits would be caused by a readBytes or parseX being called
@@ -50,35 +44,33 @@ bool AOSongAM2315::setup(void) {
 }
 
 
-bool AOSongAM2315::addSingleMeasurementResult(void) {
-    // Initialize float variables
-    float temp_val  = -9999;
-    float humid_val = -9999;
-    bool  ret_val   = false;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        ret_val = am2315ptr->readTemperatureAndHumidity(&temp_val, &humid_val);
-
-        if (!ret_val || isnan(temp_val)) temp_val = -9999;
-        if (!ret_val || isnan(humid_val)) humid_val = -9999;
-
-        MS_DBG(F("  Temp:"), temp_val, F("°C"));
-        MS_DBG(F("  Humidity:"), humid_val, '%');
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+bool AOSongAM2315::addSingleMeasurementResult() {
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        return finalizeMeasurementAttempt(false);
     }
 
-    verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
-    verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
+    bool  success   = false;
+    float temp_val  = MS_INVALID_VALUE;
+    float humid_val = MS_INVALID_VALUE;
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    return ret_val;
+    Adafruit_AM2315 am2315(_i2c);
+    success = am2315.readTemperatureAndHumidity(&temp_val, &humid_val);
+
+
+    success &= !isnan(temp_val) && temp_val != MS_INVALID_VALUE &&
+        !isnan(humid_val) && humid_val != MS_INVALID_VALUE;
+
+    MS_DBG(F("  Temp:"), temp_val, F("°C"));
+    MS_DBG(F("  Humidity:"), humid_val, '%');
+
+    if (success) {
+        verifyAndAddMeasurementResult(AM2315_TEMP_VAR_NUM, temp_val);
+        verifyAndAddMeasurementResult(AM2315_HUMIDITY_VAR_NUM, humid_val);
+    }
+
+    // Return success value when finished
+    return finalizeMeasurementAttempt(success);
 }

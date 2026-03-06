@@ -48,9 +48,31 @@ class DreamHostPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new DreamHost Publisher object with no members set.
+     * @brief Construct a new DreamHost Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param dhUrl The URL for sending data to DreamHost
      */
-    DreamHostPublisher();
+    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl);
+    /**
+     * @brief Construct a new DreamHost Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     */
+    DreamHostPublisher(Logger& baseLogger, Client* inClient);
+    /**
+     * @brief Construct a new DreamHost Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param dhUrl The URL for sending data to DreamHost
+     */
+    DreamHostPublisher(Logger& baseLogger, const char* dhUrl);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -59,52 +81,23 @@ class DreamHostPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
-    explicit DreamHostPublisher(Logger& baseLogger, int sendEveryX = 1);
+    explicit DreamHostPublisher(Logger& baseLogger);
     /**
-     * @brief Construct a new DreamHost Publisher object
+     * @brief Construct a new DreamHost Publisher object with all members set to
+     * default or null.
      *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * @note You must call the begin() function to initialize the members before
+     * using the publisher.
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                       int sendEveryX = 1);
-    /**
-     * @brief Construct a new DreamHost Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param dhUrl The URL for sending data to DreamHost
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                       int sendEveryX = 1);
-    /**
-     * @brief Construct a new DreamHost Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param dhUrl The URL for sending data to DreamHost
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl,
-                       int sendEveryX = 1);
+    DreamHostPublisher();
     /**
      * @brief Destroy the DreamHost Publisher object
      */
-    virtual ~DreamHostPublisher();
+    ~DreamHostPublisher() override = default;
 
     // Returns the data destination
-    String getEndpoint(void) override {
+    String getEndpoint() override {
         return String(dreamhostHost);
     }
 

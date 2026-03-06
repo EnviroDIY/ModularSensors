@@ -14,8 +14,6 @@
 
 // Constructor
 LogBuffer::LogBuffer() {}
-// Destructor
-LogBuffer::~LogBuffer() {}
 
 void LogBuffer::setNumVariables(uint8_t numVariables_) {
     // each record is one uint32_t to hold the timestamp, plus N floats to hold
@@ -27,7 +25,7 @@ void LogBuffer::setNumVariables(uint8_t numVariables_) {
     clear();
 }
 
-void LogBuffer::clear(void) {
+void LogBuffer::clear() {
     // clear out the buffer
     numRecords      = 0;
     dataBufferTail  = 0;
@@ -35,15 +33,15 @@ void LogBuffer::clear(void) {
     _bufferOverflow = false;
 }
 
-uint8_t LogBuffer::getNumVariables(void) {
+uint8_t LogBuffer::getNumVariables() {
     return numVariables;
 }
 
-int LogBuffer::getNumRecords(void) {
+int LogBuffer::getNumRecords() {
     return numRecords;
 }
 
-uint8_t LogBuffer::getPercentFull(void) {
+uint8_t LogBuffer::getPercentFull() {
     uint32_t bytesFull  = (uint32_t)numRecords * (uint32_t)recordSize;
     uint32_t bytesTotal = MS_LOG_DATA_BUFFER_SIZE;
 

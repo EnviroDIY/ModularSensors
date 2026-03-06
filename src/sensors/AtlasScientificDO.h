@@ -73,6 +73,18 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_do_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas DO sensor
+ */
+/**@{*/
+#ifndef ATLAS_DO_I2C_ADDR
+/// @brief The default I2C address of the Atlas DO sensor is 0x61 (97)
+#define ATLAS_DO_I2C_ADDR 0x61
+#endif
+/**@}*/
+
+/**
  * @anchor sensor_atlas_do_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas DO sensor
@@ -83,16 +95,6 @@
 #define ATLAS_DO_NUM_VARIABLES 2
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_DO_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_do_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas DO sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas DO sensor is 0x61 (97)
-#define ATLAS_DO_I2C_ADDR 0x61
 /**@}*/
 
 /**
@@ -131,7 +133,7 @@
  * {{ @ref AtlasScientificDO_DOmgL::AtlasScientificDO_DOmgL }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen
+/// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define ATLAS_DOMGL_RESOLUTION 2
 /// @brief Sensor variable number; dissolved oxygen concentration is stored in
@@ -159,7 +161,7 @@
  * {{ @ref AtlasScientificDO_DOpct::AtlasScientificDO_DOpct }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen percent
+/// @brief Decimal places in string representation; dissolved oxygen percent
 /// should have 1 - resolution is 0.1 % saturation.
 #define ATLAS_DOPCT_RESOLUTION 1
 /// @brief Sensor variable number; dissolved oxygen percent is stored in
@@ -239,7 +241,7 @@ class AtlasScientificDO : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific DO object
      */
-    ~AtlasScientificDO();
+    ~AtlasScientificDO() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -251,7 +253,7 @@ class AtlasScientificDO : public AtlasParent {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 };
 
 /* clang-format off */
@@ -278,9 +280,10 @@ class AtlasScientificDO_DOmgL : public Variable {
     explicit AtlasScientificDO_DOmgL(
         AtlasScientificDO* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_DOMGL_VAR_NUM,
-                   (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
-                   ATLAS_DOMGL_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_DOMGL_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_DOMGL_RESOLUTION),
+                   ATLAS_DOMGL_VAR_NAME, ATLAS_DOMGL_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new AtlasScientificDO_DOmgL object.
      *
@@ -288,13 +291,14 @@ class AtlasScientificDO_DOmgL : public Variable {
      * used.
      */
     AtlasScientificDO_DOmgL()
-        : Variable((uint8_t)ATLAS_DOMGL_VAR_NUM,
-                   (uint8_t)ATLAS_DOMGL_RESOLUTION, ATLAS_DOMGL_VAR_NAME,
-                   ATLAS_DOMGL_UNIT_NAME, ATLAS_DOMGL_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ATLAS_DOMGL_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_DOMGL_RESOLUTION),
+                   ATLAS_DOMGL_VAR_NAME, ATLAS_DOMGL_UNIT_NAME,
+                   ATLAS_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificDO_DOmgL object - no action needed.
      */
-    ~AtlasScientificDO_DOmgL() {}
+    ~AtlasScientificDO_DOmgL() override = default;
 };
 
 /* clang-format off */
@@ -321,9 +325,10 @@ class AtlasScientificDO_DOpct : public Variable {
     explicit AtlasScientificDO_DOpct(
         AtlasScientificDO* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_DOPCT_VAR_NUM,
-                   (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
-                   ATLAS_DOPCT_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(ATLAS_DOPCT_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_DOPCT_RESOLUTION),
+                   ATLAS_DOPCT_VAR_NAME, ATLAS_DOPCT_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Construct a new AtlasScientificDO_DOpct object.
      *
@@ -331,13 +336,14 @@ class AtlasScientificDO_DOpct : public Variable {
      * used.
      */
     AtlasScientificDO_DOpct()
-        : Variable((uint8_t)ATLAS_DOPCT_VAR_NUM,
-                   (uint8_t)ATLAS_DOPCT_RESOLUTION, ATLAS_DOPCT_VAR_NAME,
-                   ATLAS_DOPCT_UNIT_NAME, ATLAS_DOPCT_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(ATLAS_DOPCT_VAR_NUM),
+                   static_cast<uint8_t>(ATLAS_DOPCT_RESOLUTION),
+                   ATLAS_DOPCT_VAR_NAME, ATLAS_DOPCT_UNIT_NAME,
+                   ATLAS_DOPCT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificDO_DOpct object - no action needed.
      */
-    ~AtlasScientificDO_DOpct() {}
+    ~AtlasScientificDO_DOpct() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICDO_H_

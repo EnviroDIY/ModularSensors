@@ -35,7 +35,7 @@
  * is managed by the
  * [Adafruit MPL115A2 library](https://github.com/adafruit/Adafruit_MPL115A2).
  *
- * @note Software I2C is *not* supported for the AM2315.
+ * @note Software I2C is *not* supported for the MPL115A2.
  * A secondary hardware I2C on a SAMD board is supported.
  *
  * @section sensor_mpl115a2_datasheet Sensor Datasheet
@@ -125,7 +125,7 @@
  * {{ @ref FreescaleMPL115A2_Temp::FreescaleMPL115A2_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define MPL115A2_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -152,7 +152,7 @@
  * {{ @ref FreescaleMPL115A2_Pressure::FreescaleMPL115A2_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 2 -
+/// @brief Decimal places in string representation; pressure should have 2 -
 /// resolution is 1.5 hPa.
 #define MPL115A2_PRESSURE_RESOLUTION 2
 /// @brief Sensor variable number; pressure is stored in sensorValues[1].
@@ -220,7 +220,7 @@ class FreescaleMPL115A2 : public Sensor {
     /**
      * @brief Destroy the FreescaleMPL115A2 object
      */
-    ~FreescaleMPL115A2();
+    ~FreescaleMPL115A2() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -233,16 +233,11 @@ class FreescaleMPL115A2 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    String getSensorLocation() override;
+
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -288,9 +283,10 @@ class FreescaleMPL115A2_Temp : public Variable {
     explicit FreescaleMPL115A2_Temp(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)MPL115A2_TEMP_VAR_NUM,
-                   (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
-                   MPL115A2_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, static_cast<uint8_t>(MPL115A2_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(MPL115A2_TEMP_RESOLUTION),
+                   MPL115A2_TEMP_VAR_NAME, MPL115A2_TEMP_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Construct a new FreescaleMPL115A2_Temp object.
      *
@@ -298,13 +294,14 @@ class FreescaleMPL115A2_Temp : public Variable {
      * used.
      */
     FreescaleMPL115A2_Temp()
-        : Variable((uint8_t)MPL115A2_TEMP_VAR_NUM,
-                   (uint8_t)MPL115A2_TEMP_RESOLUTION, MPL115A2_TEMP_VAR_NAME,
-                   MPL115A2_TEMP_UNIT_NAME, MPL115A2_TEMP_DEFAULT_CODE) {}
+        : Variable(static_cast<uint8_t>(MPL115A2_TEMP_VAR_NUM),
+                   static_cast<uint8_t>(MPL115A2_TEMP_RESOLUTION),
+                   MPL115A2_TEMP_VAR_NAME, MPL115A2_TEMP_UNIT_NAME,
+                   MPL115A2_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the FreescaleMPL115A2_Temp object - no action needed.
      */
-    ~FreescaleMPL115A2_Temp() {}
+    ~FreescaleMPL115A2_Temp() override = default;
 };
 
 /**
@@ -340,8 +337,8 @@ class FreescaleMPL115A2_Pressure : public Variable {
     explicit FreescaleMPL115A2_Pressure(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+        : Variable(parentSense, static_cast<uint8_t>(MPL115A2_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(MPL115A2_PRESSURE_RESOLUTION),
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -351,14 +348,14 @@ class FreescaleMPL115A2_Pressure : public Variable {
      * used.
      */
     FreescaleMPL115A2_Pressure()
-        : Variable((uint8_t)MPL115A2_PRESSURE_VAR_NUM,
-                   (uint8_t)MPL115A2_PRESSURE_RESOLUTION,
+        : Variable(static_cast<uint8_t>(MPL115A2_PRESSURE_VAR_NUM),
+                   static_cast<uint8_t>(MPL115A2_PRESSURE_RESOLUTION),
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    MPL115A2_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the FreescaleMPL115A2_Pressure object - no action needed.
      */
-    ~FreescaleMPL115A2_Pressure() {}
+    ~FreescaleMPL115A2_Pressure() override = default;
 };
 
 /**
