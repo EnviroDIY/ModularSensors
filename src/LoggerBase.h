@@ -245,7 +245,7 @@ class Logger {
     // Backwards-compatibility shims
     /// @copydoc setStartupMeasurements
     /// @m_deprecated_since{0,38,0} use setStartupMeasurements
-    void setStartupMeasurements(int16_t initialShortIntervals) {
+    void setinitialShortIntervals(int16_t initialShortIntervals) {
         setStartupMeasurements(initialShortIntervals);
     }
     /// @copydoc getStartupMeasurements
@@ -400,7 +400,7 @@ class Logger {
      *
      * Once in testing mode, the logger will attempt to connect to the internet
      * and take 25 measurements spaced at 5 second intervals writing the results
-     * to the main output destination (ie, Serial).  Testing mode cannot be
+     * to the main output destination (i.e., Serial).  Testing mode cannot be
      * entered while the logger is taking a scheduled measurement.  No data is
      * written to the SD card in testing mode.
      *
@@ -1122,8 +1122,8 @@ class Logger {
      *
      * @warning During sleep, the I2C/Wire interface is disabled and the SCL and
      * SDA pins are forced low to save power. Any attempt to communicate with an
-     * I2C device during sleep (ie, thorough an interrupt) will cause the board
-     * to hang indefinitely.
+     * I2C device during sleep (i.e., thorough an interrupt) will cause the
+     * board to hang indefinitely.
      */
     void systemSleep();
 
