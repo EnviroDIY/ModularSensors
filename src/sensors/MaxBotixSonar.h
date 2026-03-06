@@ -85,6 +85,11 @@
  * - [MaxTemp Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-HR-MaxTemp-Datasheet.pdf)
  * - [Wiring Guide](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Maxbotix-MaxSonar-MB7954-Datasheet-ConnectWire.pdf)
  *
+ * @section sensor_maxbotix_flags Build flags
+ * - ```-D MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES=25```
+ *      - Changes the default number of measurement retries when a measurement
+ * fails. The default value is 25. This sensor fails frequently.
+ *
  * @section sensor_maxbotix_ctor Sensor Constructor
  * {{ @ref MaxBotixSonar::MaxBotixSonar }}
  *
@@ -122,6 +127,34 @@
 
 /** @ingroup sensor_maxbotix */
 /**@{*/
+
+/**
+ * @anchor sensor_maxbotix_config
+ * @name Sensor Configuration
+ * Build-time configuration for the MaxBotix HRXL MaxSonar
+ */
+/**@{*/
+#if !defined(MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES) || defined(DOXYGEN)
+/**
+ * @brief Default number of measurement retries for MaxBotix sensors
+ *
+ * The default number of times to retry a measurement when it fails. The
+ * MaxBotix sensors can sometimes return invalid readings (0 or values above
+ * the maximum range), especially in challenging environmental conditions.
+ * Higher values provide better reliability but may increase total measurement
+ * time on sensor failures. This can be set at runtime for individual sensors
+ * and the default can be overridden at compile time with `-D
+ * MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES=value`
+ */
+#define MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES 25
+#endif
+
+// Static assert to validate measurement retries is reasonable
+static_assert(MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES >= 0 &&
+                  MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES <= 50,
+              "MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES must be between 0 and 50 "
+              "(reasonable measurement retry range)");
+/**@}*/
 
 /**
  * @anchor sensor_maxbotix_var_counts
@@ -255,6 +288,7 @@ class MaxBotixSonar : public Sensor {
     // override to empty and flush the stream
     bool sleep() override;
 
+    bool startSingleMeasurement() override;
     bool addSingleMeasurementResult() override;
 
  private:
@@ -270,6 +304,14 @@ class MaxBotixSonar : public Sensor {
      * Maxbotix sensor.
      */
     Stream* _stream;
+
+    /**
+     * @brief Helper function to dump any available characters from the stream buffer
+     *
+     * Reads and discards all available characters from the stream to clear the buffer.
+     * Optionally prints debugging output showing the discarded characters.
+     */
+    void dumpBuffer();
 };
 
 
