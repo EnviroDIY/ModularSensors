@@ -159,7 +159,7 @@ bool DigiXBee3GBypass::modemHardReset() {
     }
     if (success) {
         MS_DBG(F("... and forcing a reset of the cellular component."));
-        // Force a reset of the undelying cellular component
+        // Force a reset of the underlying cellular component
         gsmModem.sendAT(GF("!R"));
         success &= gsmModem.waitResponse(30000L, GF("OK\r")) == 1;
         // Exit command mode

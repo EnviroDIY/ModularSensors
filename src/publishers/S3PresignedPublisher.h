@@ -321,8 +321,8 @@ class S3PresignedPublisher : public dataPublisher {
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:
-    virtual Client* createClient() override;
-    virtual void    deleteClient(Client* client) override;
+    Client* createClient() override;
+    void    deleteClient(Client* client) override;
 
     const char* s3_parent_host = "s3.amazonaws.com";  ///< The host name
     int         s3Port         = 443;                 ///< The host port

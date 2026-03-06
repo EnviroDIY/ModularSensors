@@ -104,7 +104,7 @@ static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
 /**
  * @brief The largest number of sensors in a single variable array.
  *
- * @note This iS **not** the same as the maximum number of variables in a
+ * @note This is **not** the same as the maximum number of variables in a
  * variable array. One sensor may return many variables but only counts as one
  * sensor.
  *

@@ -203,15 +203,16 @@ class SodaqUBeeU201 : public loggerModem {
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet() override;
 
-    virtual Client* createClient() override;
-    virtual void    deleteClient(Client* client);
-    virtual Client* createSecureClient() override;
-    virtual void    deleteSecureClient(Client* client);
-    virtual Client* createSecureClient(
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) override;
-    virtual Client*
+    Client* createClient() override;
+    void    deleteClient(Client* client) override;
+    Client* createSecureClient() override;
+    void    deleteSecureClient(Client* client) override;
+    Client* createSecureClient(SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) override;
+    Client*
     createSecureClient(const char* pskIdent, const char* psKey,
                        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
     Client*

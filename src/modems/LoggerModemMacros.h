@@ -667,45 +667,45 @@
         return gsmModem.getNetworkEpoch(TinyGSM_EpochStart::UNIX);         \
     }
 #elif defined(TINY_GSM_MODEM_HAS_NTP) && defined(TINY_GSM_MODEM_HAS_TIME)
-#define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                  \
-    uint32_t specificModem::getNISTTime() {                                 \
-        /** Check for and bail if not connected to the internet. */         \
-        if (!isInternetAvailable()) {                                       \
-            MS_DBG(F("No internet connection, cannot get network time."));  \
-            return 0;                                                       \
-        }                                                                   \
-                                                                            \
-        MS_DBG("Asking modem to sync with NTP");                            \
-        gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                 \
-        gsmModem.waitForTimeSync();                                         \
-                                                                            \
-        /* Create ints to hold time parts */                                \
-        int seconds = 0;                                                    \
-        int minutes = 0;                                                    \
-        int hours   = 0;                                                    \
-        int day     = 0;                                                    \
-        int month   = 0;                                                    \
-        int year    = 0;                                                    \
-        /* Fetch the time as parts */                                       \
-        bool success = gsmModem.getNetworkTime(&year, &month, &day, &hours, \
-                                               &minutes, &seconds, 0);      \
-        if (!success) { return 0; }                                         \
-        tm timeParts       = {};                                            \
-        timeParts.tm_sec   = seconds;                                       \
-        timeParts.tm_min   = minutes;                                       \
-        timeParts.tm_hour  = hours;                                         \
-        timeParts.tm_mday  = day;                                           \
-        timeParts.tm_mon   = month - 1;   /* tm_mon is 0-11 */              \
-        timeParts.tm_year  = year - 1900; /* tm_year is since 1900 */       \
-        timeParts.tm_wday  = 0; /* day of week, will be calculated */       \
-        timeParts.tm_yday  = 0; /* day of year, will be calculated */       \
-        timeParts.tm_isdst = 0; /* daylight saving time flag */             \
-        time_t timeTimeT   = mktime(&timeParts);                            \
-        /* The mktime fuction uses 'local' time in making the timestamp. */ \
-        /* We subtrack whatever the processor thinks is 'local' */          \
-        /* to get back to UTC.*/                                            \
-        return static_cast<uint32_t>(timeTimeT) -                           \
-            loggerClock::getCoreTimeZone();                                 \
+#define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                   \
+    uint32_t specificModem::getNISTTime() {                                  \
+        /** Check for and bail if not connected to the internet. */          \
+        if (!isInternetAvailable()) {                                        \
+            MS_DBG(F("No internet connection, cannot get network time."));   \
+            return 0;                                                        \
+        }                                                                    \
+                                                                             \
+        MS_DBG("Asking modem to sync with NTP");                             \
+        gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                  \
+        gsmModem.waitForTimeSync();                                          \
+                                                                             \
+        /* Create ints to hold time parts */                                 \
+        int seconds = 0;                                                     \
+        int minutes = 0;                                                     \
+        int hours   = 0;                                                     \
+        int day     = 0;                                                     \
+        int month   = 0;                                                     \
+        int year    = 0;                                                     \
+        /* Fetch the time as parts */                                        \
+        bool success = gsmModem.getNetworkTime(&year, &month, &day, &hours,  \
+                                               &minutes, &seconds, 0);       \
+        if (!success) { return 0; }                                          \
+        tm timeParts       = {};                                             \
+        timeParts.tm_sec   = seconds;                                        \
+        timeParts.tm_min   = minutes;                                        \
+        timeParts.tm_hour  = hours;                                          \
+        timeParts.tm_mday  = day;                                            \
+        timeParts.tm_mon   = month - 1;   /* tm_mon is 0-11 */               \
+        timeParts.tm_year  = year - 1900; /* tm_year is since 1900 */        \
+        timeParts.tm_wday  = 0; /* day of week, will be calculated */        \
+        timeParts.tm_yday  = 0; /* day of year, will be calculated */        \
+        timeParts.tm_isdst = 0; /* daylight saving time flag */              \
+        time_t timeTimeT   = mktime(&timeParts);                             \
+        /* The mktime function uses 'local' time in making the timestamp. */ \
+        /* We subtract whatever the processor thinks is 'local' */           \
+        /* to get back to UTC.*/                                             \
+        return static_cast<uint32_t>(timeTimeT) -                            \
+               loggerClock::getCoreTimeZone();                               \
     }
 #else
 #define MS_MODEM_GET_NIST_TIME(specificModem, TinyGSMType)                   \

@@ -83,6 +83,12 @@ bool VariableArray::populateSensorList() {
         _sensorList[i] = nullptr;
     }
 
+    // Early exit if no valid variable array
+    if (arrayOfVars == nullptr) {
+        _sensorCount = 0;
+        return true;
+    }
+
     for (uint8_t i = 0; i < _variableCount; i++) {
         // Skip calculated variables since they don't have parent sensors
         if (arrayOfVars[i]->isCalculated) { continue; }
@@ -448,7 +454,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
         // assuming they are awake.  If the sensors are not powered, the
         // checkPowerOn function will reset the power *and wake* bits so the
         // wake check or wake function will work correctly.
-        MS_DBG(F("----->> Checking the power state of all sensor. ..."));
+        MS_DBG(F("----->> Checking the power state of all sensors. ..."));
         for (uint8_t i = 0; i < _sensorCount; i++) {
             _sensorList[i]->checkPowerOn();
         }

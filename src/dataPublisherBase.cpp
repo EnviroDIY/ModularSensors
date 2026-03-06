@@ -40,6 +40,7 @@ dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX,
 // initialized
 dataPublisher::dataPublisher()
     : _baseLogger(nullptr),
+      _baseModem(nullptr),
       _inClient(nullptr),
       _sendEveryX(1),
       _initialTransmissionsRemaining(5) {}
