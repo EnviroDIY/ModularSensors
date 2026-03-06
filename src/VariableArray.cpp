@@ -95,6 +95,9 @@ bool VariableArray::populateSensorList() {
 
         Sensor* currentSensor = arrayOfVars[i]->parentSensor;
 
+        // Skip variables with null parent sensors to avoid crashes
+        if (currentSensor == nullptr) { continue; }
+
         // Check if this sensor is already in the list
         bool alreadyInList = false;
         for (uint8_t j = 0; j < addedSensors; j++) {

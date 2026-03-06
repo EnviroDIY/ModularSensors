@@ -51,6 +51,12 @@
  */
 #define HTTP_VERSION_PREFIX_LEN 9
 
+// Data publisher defaults
+/**
+ * @brief Default number of initial transmissions to send immediately after each data point
+ */
+#define DEFAULT_INITIAL_TRANSMISSIONS 5
+
 /**
  * @brief The dataPublisher class is a virtual class used by other publishers to
  * distribute data online.

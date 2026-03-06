@@ -134,7 +134,7 @@
             MS_DBG(F("Wait"), _wakeDelayTime_ms - (millis() - _millisPowerOn), \
                    F("ms longer for warm-up"));                                \
             while (millis() - _millisPowerOn < _wakeDelayTime_ms) {            \
-                /* wait*/                                                      \
+                yield(); /* wait */                                            \
             }                                                                  \
         }                                                                      \
                                                                                \

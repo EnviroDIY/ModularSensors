@@ -256,8 +256,6 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
 
 
 bool DigiXBeeCellularTransparent::updateModemMetadata() {
-    bool success = true;
-
     // Unset whatever we had previously
     loggerModem::_priorRSSI           = MS_INVALID_VALUE;
     loggerModem::_priorSignalPercent  = MS_INVALID_VALUE;
@@ -298,7 +296,7 @@ bool DigiXBeeCellularTransparent::updateModemMetadata() {
             if (signalQual != 0 && signalQual != MS_INVALID_VALUE) break;
             delay(250);
         } while ((signalQual == 0 || signalQual == MS_INVALID_VALUE) &&
-                 millis() - startMillis < 15000L && success);
+                 millis() - startMillis < 15000L);
 
         // Convert signal quality to RSSI
         loggerModem::_priorRSSI = signalQual;
@@ -323,5 +321,5 @@ bool DigiXBeeCellularTransparent::updateModemMetadata() {
     MS_DBG(F("Leaving Command Mode after updating modem metadata:"));
     gsmModem.exitCommand();
 
-    return success;
+    return true;
 }

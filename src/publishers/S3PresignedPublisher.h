@@ -352,7 +352,7 @@ class S3PresignedPublisher : public dataPublisher {
      * @note This will be *ignored* if the filename is set. If neither the
      * filename nor the file prefix is set, the logger ID will be used.
      */
-    const char* _filePrefix;
+    const char* _filePrefix = nullptr;
     /**
      * @brief  The extension to add to files, if generating a filename based on
      * the date/time
@@ -360,7 +360,7 @@ class S3PresignedPublisher : public dataPublisher {
      * @note This will be *ignored* if the filename is set. If neither the
      * filename nor the file extension is set, `#S3_DEFAULT_FILE_EXTENSION`.
      */
-    const char* _fileExtension;
+    const char* _fileExtension = nullptr;
     /**
      * @brief Private reference to function used fetch a new file name.
      */

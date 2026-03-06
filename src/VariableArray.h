@@ -406,7 +406,7 @@ class VariableArray {
     /**
      * @brief Array of pointers to unique sensors derived from variables
      */
-    Sensor* _sensorList[MAX_NUMBER_SENSORS];
+    Sensor* _sensorList[MAX_NUMBER_SENSORS] = {};
 
 #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
     /**

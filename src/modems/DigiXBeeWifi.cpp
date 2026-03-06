@@ -517,8 +517,7 @@ bool DigiXBeeWifi::updateModemMetadata() {
     if ((_pollModemMetaData & MODEM_TEMPERATURE_ENABLE_BITMASK) ==
         MODEM_TEMPERATURE_ENABLE_BITMASK) {
         MS_DBG(F("Getting chip temperature:"));
-        float chip_temp              = MS_INVALID_VALUE;
-        chip_temp                    = getModemChipTemperature();
+        float chip_temp              = getModemChipTemperature();
         loggerModem::_priorModemTemp = chip_temp;
         MS_DBG(F("CURRENT Modem temperature(C):"),
                loggerModem::_priorModemTemp);

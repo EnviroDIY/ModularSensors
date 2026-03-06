@@ -43,7 +43,7 @@ dataPublisher::dataPublisher()
       _baseModem(nullptr),
       _inClient(nullptr),
       _sendEveryX(1),
-      _initialTransmissionsRemaining(5) {}
+      _initialTransmissionsRemaining(DEFAULT_INITIAL_TRANSMISSIONS) {}
 
 
 // Sets the client
