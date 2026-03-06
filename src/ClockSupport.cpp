@@ -11,6 +11,9 @@
 #include "ClockSupport.h"
 #include "LoggerBase.h"
 
+// Constants
+constexpr time_t SECONDS_IN_DAY = 86400L;  // 86400 (60*60*24)seconds in a day
+
 
 epochTime::epochTime(time_t timestamp, epochStart epoch) {
     _unixTimestamp = convert_epoch(timestamp, epoch, epochStart::unix_epoch);
@@ -656,21 +659,34 @@ int32_t loggerClock::getProcessorTimeZone() {
     // Since we started with Jan 1, 2000, the offset from the input time and 0
     // in the Y2K epoch can only be caused by timezone shifts within the mktime
     // function.
-    // Since time_t can be unsigned and is > 16 bit, we do checks before
-    // casting. If the timeY2K is less than 24 hours, it's a positive offset of
-    // that many seconds. If it's more than 24 hours, it's a negative offset of
-    // tz_offset (because the time would have rolled back to the previous day).
-    int32_t      tz_offset;
-    const time_t secondsInDay = 60L * 60L * 24L;  // 86400 seconds in a day
-    if (timeY2K < secondsInDay) {
-        tz_offset = static_cast<int32_t>(timeY2K);
-    } else if ((-1 * timeY2K) <
-               secondsInDay) {  // force roll-over and check size
-        tz_offset = -1 * (static_cast<int32_t>(-1 * timeY2K));
-    } else {  // If the difference is more than 24 hours, something is wrong and
-              // we should just return 0 (UTC)
-        tz_offset = static_cast<int32_t>(0);
-        // NOTE: Do this silently in case Serial isn't initialized yet.
+    // Handle both signed and unsigned time_t properly
+    // Check if time_t is signed by testing if (time_t)-1 < (time_t)0
+    int32_t    tz_offset;
+    const bool is_time_t_signed = ((time_t)-1 < (time_t)0);
+
+    if (is_time_t_signed) {
+        // For signed time_t, negative values are represented normally
+        if (timeY2K >= -SECONDS_IN_DAY && timeY2K <= SECONDS_IN_DAY) {
+            tz_offset = static_cast<int32_t>(timeY2K);
+        } else {
+            tz_offset = 0;  // Outside reasonable timezone range (±24 hours)
+        }
+    } else {
+        // For unsigned time_t, check for wraparound indicating negative values
+        if (timeY2K <= SECONDS_IN_DAY) {
+            // Positive offset or zero
+            tz_offset = static_cast<int32_t>(timeY2K);
+        } else {
+            // Check if this looks like a wrapped negative value
+            const time_t max_unsigned = (time_t)-1;
+            if (timeY2K > (max_unsigned - SECONDS_IN_DAY)) {
+                // This is likely a wrapped negative offset
+                time_t offsetMagnitude = max_unsigned - timeY2K + 1;
+                tz_offset              = -static_cast<int32_t>(offsetMagnitude);
+            } else {
+                tz_offset = 0;  // Outside reasonable timezone range
+            }
+        }
     }
     loggerClock::_core_tz = tz_offset;
     return tz_offset;
