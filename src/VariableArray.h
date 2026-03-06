@@ -369,6 +369,19 @@ class VariableArray {
     bool areMeasurementsComplete(uint8_t sensorIndex);
 
     /**
+     * @brief Check if two sensors share any power pins
+     *
+     * This helper function checks if two sensors share either primary or
+     * secondary power pins by comparing all combinations of power pin
+     * assignments between the sensors.
+     *
+     * @param a First sensor to compare
+     * @param b Second sensor to compare
+     * @return True if sensors share any power pins
+     */
+    bool sharesPowerPin(Sensor* a, Sensor* b);
+
+    /**
      * @brief Check if sensor can be powered down safely
      *
      * This helper function checks if a sensor can be powered down by verifying

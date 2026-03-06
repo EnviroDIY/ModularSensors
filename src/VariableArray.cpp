@@ -167,6 +167,23 @@ inline bool VariableArray::areMeasurementsComplete(uint8_t sensorIndex) {
         _sensorList[sensorIndex]->getNumberMeasurementsToAverage();
 }
 
+// Helper function to check if two sensors share any power pins
+inline bool VariableArray::sharesPowerPin(Sensor* a, Sensor* b) {
+    // Check if sensor a's primary pin matches either of sensor b's pins
+    if (a->getPowerPin() >= 0 &&
+        (a->getPowerPin() == b->getPowerPin() ||
+         a->getPowerPin() == b->getSecondaryPowerPin())) {
+        return true;
+    }
+    // Check if sensor a's secondary pin matches either of sensor b's pins
+    if (a->getSecondaryPowerPin() >= 0 &&
+        (a->getSecondaryPowerPin() == b->getPowerPin() ||
+         a->getSecondaryPowerPin() == b->getSecondaryPowerPin())) {
+        return true;
+    }
+    return false;
+}
+
 // Helper function to check if sensor can be powered down safely with debug
 // output
 bool VariableArray::canPowerDownSensor(uint8_t sensorIndex) {
@@ -178,24 +195,9 @@ bool VariableArray::canPowerDownSensor(uint8_t sensorIndex) {
     for (uint8_t k = 0; k < _sensorCount; k++) {
         if (k == sensorIndex) continue;  // Skip self-comparison
 
-        if ((
-                // Check if sensor i's primary pin matches either of sensor k's
-                // pins
-                (_sensorList[sensorIndex]->getPowerPin() >= 0 &&
-                 (_sensorList[sensorIndex]->getPowerPin() ==
-                      _sensorList[k]->getPowerPin() ||
-                  _sensorList[sensorIndex]->getPowerPin() ==
-                      _sensorList[k]->getSecondaryPowerPin()))
-                // Check if sensor i's secondary pin matches either of sensor
-                // k's pins
-                || (_sensorList[sensorIndex]->getSecondaryPowerPin() >= 0 &&
-                    (_sensorList[sensorIndex]->getSecondaryPowerPin() ==
-                         _sensorList[k]->getPowerPin() ||
-                     _sensorList[sensorIndex]->getSecondaryPowerPin() ==
-                         _sensorList[k]->getSecondaryPowerPin())))
-            // Check if sensor k still needs measurements
-            && (_sensorList[k]->getCompletedMeasurements() <
-                _sensorList[k]->getNumberMeasurementsToAverage())) {
+        if (sharesPowerPin(_sensorList[sensorIndex], _sensorList[k]) &&
+            (_sensorList[k]->getCompletedMeasurements() <
+             _sensorList[k]->getNumberMeasurementsToAverage())) {
             // If sensors share a power pin and sensor k still needs
             // measurements, can't power down
             canPowerDown = false;
