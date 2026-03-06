@@ -161,7 +161,7 @@ bool GroPointParent::sleep() {
 bool GroPointParent::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool success  = false;
@@ -235,7 +235,7 @@ bool GroPointParent::addSingleMeasurementResult() {
 
     // Return success value when finished.  Success requires both the moisture
     // and temperature values to be successfully retrieved
-    return bumpMeasurementAttemptCount((success && successT));
+    return finalizeMeasurementAttempt((success && successT));
 }
 
 // cSpell:ignore gsensor

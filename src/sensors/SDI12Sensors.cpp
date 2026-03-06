@@ -713,13 +713,13 @@ bool SDI12Sensors::getResults(bool verify_crc) {
 bool SDI12Sensors::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool success = getResults(MS_SDI12_USE_CRC);
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
 #else  // concurrent measurement disabled
 // This is for non-concurrent measurements, so this function must both start the
@@ -730,7 +730,7 @@ bool SDI12Sensors::addSingleMeasurementResult() {
 bool SDI12Sensors::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool success = false;
@@ -801,6 +801,6 @@ bool SDI12Sensors::addSingleMeasurementResult() {
     deactivate();
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
 #endif  // #ifndef MS_SDI12_NON_CONCURRENT

@@ -187,7 +187,7 @@ bool GeoluxHydroCam::startSingleMeasurement() {
 bool GeoluxHydroCam::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool    success           = false;
@@ -199,7 +199,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult() {
     if (image_size <= 0) {
         MS_DBG(F("Camera returned an image size <= 0, which means the snapshot "
                  "failed!"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // set a new filename based on the current RTC time
@@ -211,7 +211,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult() {
     // skip everything else if there's no SD card, otherwise it might hang
     if (!_baseLogger->initializeSDCard()) {
         MS_DBG(F("Failed initialize SD card, aborting!"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Open the file in write mode - creating a new file if it doesn't exist or
@@ -220,7 +220,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult() {
         MS_DBG(F("Created new file:"), filename);
     } else {
         MS_DBG(F("Failed to create the image file, aborting!"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // dump anything in the camera stream, just in case
@@ -258,7 +258,7 @@ bool GeoluxHydroCam::addSingleMeasurementResult() {
     verifyAndAddMeasurementResult(HYDROCAM_ERROR_VAR_NUM, byte_error);
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
 
 // check if the camera is ready

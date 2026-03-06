@@ -70,7 +70,7 @@ bool TallyCounterI2C::setup() {
 bool TallyCounterI2C::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool    success = false;
@@ -99,5 +99,5 @@ bool TallyCounterI2C::addSingleMeasurementResult() {
     MS_DBG(F("  Events:"), events);
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }

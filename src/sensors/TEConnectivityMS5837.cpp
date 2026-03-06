@@ -149,19 +149,19 @@ bool TEConnectivityMS5837::wake() {
 bool TEConnectivityMS5837::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Validate configuration parameters
     if (_fluidDensity <= 0.1 || _fluidDensity > 5.0) {
         MS_DBG(F("Invalid fluid density:"), _fluidDensity,
                F("g/cm³. Expected range: (0.1-5.0]"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
     if (_airPressure < 500.0 || _airPressure > 1200.0) {
         MS_DBG(F("Invalid air pressure:"), _airPressure,
                F("mBar. Expected range: 500-1200"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Read values from the sensor - returns 0 on success
@@ -177,7 +177,7 @@ bool TEConnectivityMS5837::addSingleMeasurementResult() {
         default:
             MS_DBG(F("Invalid oversampling ratio:"), _overSamplingRatio,
                    F(". Valid values: 256, 512, 1024, 2048, 4096, 8192"));
-            return bumpMeasurementAttemptCount(false);
+            return finalizeMeasurementAttempt(false);
     }
     MS_DBG(F("  Requesting"), OSR, F("bit OSR (oversampling ratio:"),
            _overSamplingRatio, F(")"));
@@ -199,7 +199,7 @@ bool TEConnectivityMS5837::addSingleMeasurementResult() {
     } else {
         MS_DBG(F("  Read failed, error:"), MS5837_internal.getLastError(),
                F("Return value from read():"), read_return);
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Validate the readings
@@ -271,7 +271,7 @@ bool TEConnectivityMS5837::addSingleMeasurementResult() {
     }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
 
 

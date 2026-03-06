@@ -81,19 +81,19 @@ bool EverlightALSPT19::setup() {
 bool EverlightALSPT19::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Check if we have a valid analog voltage reader
     if (_analogVoltageReader == nullptr) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader available"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
     // Check if we have a valid load resistor
     if (_loadResistor <= 0) {
         MS_DBG(getSensorNameAndLocation(), F("Invalid load resistor value"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     float adcVoltage = MS_INVALID_VALUE;
@@ -137,5 +137,5 @@ bool EverlightALSPT19::addSingleMeasurementResult() {
     } else {
         MS_DBG(F("  Failed to get valid voltage from analog reader"));
     }
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }

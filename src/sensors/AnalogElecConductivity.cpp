@@ -74,21 +74,21 @@ bool AnalogElecConductivity::setup() {
 bool AnalogElecConductivity::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Check if we have a valid analog voltage reader
     if (_analogVoltageReader == nullptr) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader available"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Check if we have a resistance and cell constant
     if (_Rseries_ohms <= 0 || _sensorEC_Konst <= 0) {
         MS_DBG(getSensorNameAndLocation(),
                F(" has an invalid cell constant or resistor value!"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     float adcVoltage = MS_INVALID_VALUE;
@@ -106,7 +106,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult() {
         float supplyVoltage = _analogVoltageReader->getSupplyVoltage();
         if (supplyVoltage <= 0.0f) {
             MS_DBG(F("  Invalid supply voltage from analog reader"));
-            return bumpMeasurementAttemptCount(false);
+            return finalizeMeasurementAttempt(false);
         }
         float adcRatio = adcVoltage / supplyVoltage;
 
@@ -118,7 +118,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult() {
         } else if (adcRatio < 0.0f) {
             MS_DBG(F("  Negative ADC ratio ("), adcRatio,
                    F("); negative supply or ADC voltage"));
-            return bumpMeasurementAttemptCount(false);
+            return finalizeMeasurementAttempt(false);
         }
 
         float Rwater_ohms = _Rseries_ohms * adcRatio / (1.0f - adcRatio);
@@ -138,7 +138,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult() {
     } else {
         MS_DBG(F("  Failed to get valid voltage from analog reader"));
     }
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
 
 // cSpell:ignore AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater_ohms

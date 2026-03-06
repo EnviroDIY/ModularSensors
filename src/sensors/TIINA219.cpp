@@ -91,7 +91,7 @@ bool TIINA219::wake() {
 bool TIINA219::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool  success    = false;
@@ -125,7 +125,7 @@ bool TIINA219::addSingleMeasurementResult() {
 
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
 
 // cSpell:ignore TIINA219

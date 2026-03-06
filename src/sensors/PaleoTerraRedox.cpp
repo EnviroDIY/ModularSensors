@@ -104,7 +104,7 @@ bool PaleoTerraRedox::setup() {
 bool PaleoTerraRedox::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool    success  = false;
@@ -127,14 +127,14 @@ bool PaleoTerraRedox::addSingleMeasurementResult() {
         0b10001100);  // initiate conversion, One-Shot mode, 18 bits, PGA x1
     i2c_status = _i2c->endTransmission();
     // fail if transmission error
-    if (i2c_status != 0) { return bumpMeasurementAttemptCount(false); }
+    if (i2c_status != 0) { return finalizeMeasurementAttempt(false); }
 
     // wait for the conversion to complete
     delay(PTR_CONVERSION_WAIT_TIME_MS);
 
     // Get 4 bytes from device
     if (_i2c->requestFrom(int(_i2cAddressHex), 4) != 4) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
     // per the datasheet, in 18 bit mode:
     // byte 1: [MMMMMM D17 D16 (1st data byte]
@@ -177,5 +177,5 @@ bool PaleoTerraRedox::addSingleMeasurementResult() {
     }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }

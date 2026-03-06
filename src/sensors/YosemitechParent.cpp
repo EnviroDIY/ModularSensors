@@ -169,7 +169,7 @@ bool YosemitechParent::sleep() {
 bool YosemitechParent::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool success = false;
@@ -250,7 +250,7 @@ bool YosemitechParent::addSingleMeasurementResult() {
     }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
 
 // cSpell:ignore ysensor

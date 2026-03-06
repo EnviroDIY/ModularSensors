@@ -67,5 +67,5 @@ bool MaximDS3231::addSingleMeasurementResult() {
     bool success = !isnan(tempVal);
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }

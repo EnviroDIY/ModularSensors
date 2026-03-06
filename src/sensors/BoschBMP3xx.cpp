@@ -287,7 +287,7 @@ bool BoschBMP3xx::startSingleMeasurement() {
 bool BoschBMP3xx::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool  success = false;
@@ -312,7 +312,7 @@ bool BoschBMP3xx::addSingleMeasurementResult() {
     }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
 
 // cSpell:words oversample

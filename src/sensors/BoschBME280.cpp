@@ -113,7 +113,7 @@ bool BoschBME280::wake() {
 bool BoschBME280::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool  success = false;
@@ -156,5 +156,5 @@ bool BoschBME280::addSingleMeasurementResult() {
     }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }

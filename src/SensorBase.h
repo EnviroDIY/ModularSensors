@@ -848,12 +848,22 @@ class Sensor {
     Variable* variables[MAX_NUMBER_VARS];
 
     /**
-     * @brief A helper function to correctly bump the measurement counts and
-     * retries and set the appropriate timestamp and status bits.
-     * @param wasSuccessful True if the measurement attempt was successful.
-     * @return Returns the input parameter wasSuccessful.
+     * @brief Finalizes a measurement attempt by updating timestamps, status
+     * bits, and retry counts.
+     *
+     * This method performs multiple cleanup actions after a measurement
+     * attempt:
+     * - Records measurement completion timestamp
+     * - Clears measurement request status bits
+     * - Updates retry counters with proper semantics
+     * - Conditionally increments completed measurements based on success or
+     * retry limit
+     *
+     * @param wasSuccessful True if the measurement was successful, false
+     * otherwise
+     * @return The input parameter for easy chaining in return statements
      */
-    bool bumpMeasurementAttemptCount(bool wasSuccessful);
+    bool finalizeMeasurementAttempt(bool wasSuccessful);
 };
 
 #endif  // SRC_SENSORBASE_H_

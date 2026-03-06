@@ -71,14 +71,14 @@ bool TurnerCyclops::setup() {
 bool TurnerCyclops::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Check if we have a valid analog voltage reader
     if (_analogVoltageReader == nullptr) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader available"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Print out the calibration curve
@@ -86,7 +86,7 @@ bool TurnerCyclops::addSingleMeasurementResult() {
            F(".  "), _volt_blank, F("V blank."));
     if (fabsf(_volt_std - _volt_blank) < CYCLOPS_CALIBRATION_EPSILON) {
         MS_DBG(F("Invalid calibration: point voltage equals blank voltage"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     float adcVoltage = MS_INVALID_VALUE;
@@ -113,5 +113,5 @@ bool TurnerCyclops::addSingleMeasurementResult() {
     }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }

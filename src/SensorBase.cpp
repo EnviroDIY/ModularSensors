@@ -554,7 +554,7 @@ bool Sensor::update() {
     // loop through until we have the requested number of successful
     // measurements
     // NOTE: The number of measurement attempts completed is bumped by
-    // bumpMeasurementAttemptCount() only after success or the last retry
+    // finalizeMeasurementAttempt() only after success or the last retry
     // attempt, so it's safe to check this value to determine if we have the
     // requested number of successful measurements.
     while (_completedMeasurements < _measurementsToAverage) {
@@ -565,13 +565,13 @@ bool Sensor::update() {
             // count to trigger retry logic, but skip waiting for measurement
             // completion and adding a result since we didn't actually start a
             // measurement
-            bumpMeasurementAttemptCount(false);
+            finalizeMeasurementAttempt(false);
         } else {
             // wait for the measurement to finish
             waitForMeasurementCompletion();
 
             // get the measurement result - this should call
-            // bumpMeasurementAttemptCount() to update the measurement attempt
+            // finalizeMeasurementAttempt() to update the measurement attempt
             // and retry counts as needed so we don't call that function
             // directly here
             ret_val &= addSingleMeasurementResult();
@@ -774,7 +774,7 @@ void Sensor::waitForMeasurementCompletion() {
 }
 
 
-bool Sensor::bumpMeasurementAttemptCount(bool wasSuccessful) {
+bool Sensor::finalizeMeasurementAttempt(bool wasSuccessful) {
     // Record the time that the measurement was completed
     _millisMeasurementCompleted = millis();
     // Unset the time stamp for the beginning of this measurement
@@ -784,9 +784,9 @@ bool Sensor::bumpMeasurementAttemptCount(bool wasSuccessful) {
     // Bump the number of attempted retries
     _currentRetries++;
 
-    if (wasSuccessful || _currentRetries > _maxRetries) {
+    if (wasSuccessful || _currentRetries >= _maxRetries) {
         // Bump the number of completed measurement attempts - we've succeeded
-        // or failed but exceeded retries
+        // or failed but reached the retry limit
         _completedMeasurements++;
         // Reset the number of retries made for the next measurement attempt
         _currentRetries = 0;

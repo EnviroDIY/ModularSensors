@@ -272,7 +272,7 @@ bool ProcessorStats::addSingleMeasurementResult() {
     }
 
     // Return true value when finished
-    return bumpMeasurementAttemptCount(true);
+    return finalizeMeasurementAttempt(true);
 }
 
 // cSpell:ignore ADALOGGER RSTC RCAUSE BKUPEXIT BODCORE BODVDD BBPS brkval MCUSR

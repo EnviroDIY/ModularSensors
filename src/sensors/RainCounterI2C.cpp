@@ -98,7 +98,7 @@ bool RainCounterI2C::setup() {
 bool RainCounterI2C::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     bool    success = false;             // assume the worst
@@ -123,7 +123,7 @@ bool RainCounterI2C::addSingleMeasurementResult() {
         }
         if (byte_in < 1) {
             MS_DBG(F("  No data bytes received"));
-            return bumpMeasurementAttemptCount(false);
+            return finalizeMeasurementAttempt(false);
         }
 
         // Concatenate bytes into uint32_t by bit-shifting
@@ -173,5 +173,5 @@ bool RainCounterI2C::addSingleMeasurementResult() {
     }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }

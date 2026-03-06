@@ -119,7 +119,7 @@ bool MaxBotixSonar::sleep() {
 bool MaxBotixSonar::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Initialize values
@@ -187,5 +187,5 @@ bool MaxBotixSonar::addSingleMeasurementResult() {
     if (success) { verifyAndAddMeasurementResult(HRXL_VAR_NUM, result); }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }

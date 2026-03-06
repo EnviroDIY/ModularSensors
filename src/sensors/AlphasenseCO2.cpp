@@ -75,14 +75,14 @@ bool AlphasenseCO2::setup() {
 bool AlphasenseCO2::addSingleMeasurementResult() {
     // Immediately quit if the measurement was not successfully started
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     // Check if we have a valid analog voltage reader
     if (_analogVoltageReader == nullptr) {
         MS_DBG(getSensorNameAndLocation(),
                F("No analog voltage reader available"));
-        return bumpMeasurementAttemptCount(false);
+        return finalizeMeasurementAttempt(false);
     }
 
     float adcVoltage = MS_INVALID_VALUE;
@@ -113,5 +113,5 @@ bool AlphasenseCO2::addSingleMeasurementResult() {
     }
 
     // Return success value when finished
-    return bumpMeasurementAttemptCount(success);
+    return finalizeMeasurementAttempt(success);
 }
