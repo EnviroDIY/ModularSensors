@@ -611,14 +611,12 @@ bool Sensor::checkPowerOn(bool debug) {
     bool pp1_off = false;
     bool pp2_off = false;
     if (_powerPin >= 0) {
-        auto powerBitNumber =
-            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin)) / log(2));
+        auto powerBitNumber = static_cast<int8_t>(__builtin_ctz(digitalPinToBitMask(_powerPin)));
         pp1_off = bitRead(*portInputRegister(digitalPinToPort(_powerPin)),
                           powerBitNumber) == LOW;
     }
     if (_powerPin2 >= 0) {
-        auto powerBitNumber2 =
-            static_cast<int8_t>(log(digitalPinToBitMask(_powerPin2)) / log(2));
+        auto powerBitNumber2 = static_cast<int8_t>(__builtin_ctz(digitalPinToBitMask(_powerPin2)));
         pp2_off = bitRead(*portInputRegister(digitalPinToPort(_powerPin2)),
                           powerBitNumber2) == LOW;
     }
