@@ -80,9 +80,9 @@ bool EspressifESP32::extraModemSetup() {
         //     ISO 3166-1 alpha-2 for country codes.
         // <start_channel>: the channel number to start. Range: [1,14].
         // <total_channel_count>: total number of channels.
-        gsmModem.sendAT(GF(
-            "+CWCOUNTRY=0,\"US\",1,13"));  // Set country code to default to US,
-                                           // but allow to change if the AP is
+        // We set the country code to default to US, but allow it to change if
+        // the AP is in a different country.
+        gsmModem.sendAT(GF("+CWCOUNTRY=0,\"US\",1,13"));
         success &= (gsmModem.waitResponse() == 1);
     }
     return success;

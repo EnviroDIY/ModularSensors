@@ -76,6 +76,6 @@ bool SIMComSIM800::modemSleepFxn() {
         return res;
     } else {  // DON'T go to sleep if we can't wake up!
         gsmModem.stream.flush();
-        return true;
+        return true;  // nothing's wrong with sleeping, we just won't do it!
     }
 }

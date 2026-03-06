@@ -568,9 +568,9 @@ void loggerClock::rtcISR() {
 
 void loggerClock::begin() {
     MS_DBG(F("Getting the epoch the processor core uses for gmtime"));
-    loggerClock::_core_epoch = getProcessorEpochStart();
+    getProcessorEpochStart();  // Sets _core_epoch internally
     MS_DBG(F("Getting the timezone the processor core uses for mktime"));
-    loggerClock::_core_tz = getProcessorTimeZone();
+    getProcessorTimeZone();  // Sets _core_tz internally
     PRINTOUT(F("An"), MS_CLOCK_NAME, F("will be used as the real time clock"));
     MS_DBG(F("Beginning"), MS_CLOCK_NAME, F("real time clock"));
     rtcBegin();

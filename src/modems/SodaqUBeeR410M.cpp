@@ -178,7 +178,7 @@ void SodaqUBeeR410M::configureLowBaudRate() {
     _modemSerial->end();
     _modemSerial->begin(9600);
     gsmModem.sendAT(GF("E0"));
-    gsmModem.waitResponse();
+    gsmModem.waitResponse();  // allowed to fail
 }
 #endif
 

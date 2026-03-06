@@ -288,7 +288,7 @@ static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
                   MS_DEFAULT_ADS1X15_ADDRESS == 0x49 ||
                   MS_DEFAULT_ADS1X15_ADDRESS == 0x4A ||
                   MS_DEFAULT_ADS1X15_ADDRESS == 0x4B,
-              "MS_DEFAULT_ADS1X15_ADDRESS should be 0x48, 0x49, 0x4A, or 0x4B "
+              "MS_DEFAULT_ADS1X15_ADDRESS must be 0x48, 0x49, 0x4A, or 0x4B "
               "for ADS1X15");
 //==============================================================
 

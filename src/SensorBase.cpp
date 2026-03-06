@@ -177,8 +177,8 @@ void Sensor::powerUp() {
 // This turns off sensor power
 void Sensor::powerDown() {
     if (_powerPin >= 0 || _powerPin2 >= 0) {
-        // Reset power pin mode every power up because pins are set to tri-state
-        // on sleep on SAMD boards
+        // Reset power pin mode every pin access because pins are set to
+        // tri-state on sleep on SAMD boards
         if (_powerPin >= 0) {
             pinMode(_powerPin, OUTPUT);
             MS_DBG(F("Turning off"), getSensorNameAndLocation(), F("with pin"),

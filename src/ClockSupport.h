@@ -337,7 +337,7 @@ class epochTime {
  * static offset from UTC), daylight savings time, or any of the other
  * complications of time.
  *
- * If you though handling time was simple, read this:
+ * If you thought handling time was simple, read this:
  * https://gist.github.com/timvisee/fcda9bbdff88d45cc9061606b4b923ca
  */
 class loggerClock {
@@ -492,9 +492,14 @@ class loggerClock {
      * the epoch).
      *
      * @return True if the input timestamp passes sanity checks **and**
-     * the clock has been successfully set.
+     * the clock is now at or within tolerance (±5 seconds) of the target time.
+     * This includes both cases where the clock was successfully set and where
+     * the clock was already within tolerance and did not need adjustment.
      *
      * @note There is no timezone correction in this function
+     * @note Changed behavior: Previously returned true only when clock was
+     * actually written. Now returns true when clock is at/within tolerance,
+     * regardless of whether it was written.
      */
     static bool setRTClock(time_t ts, int8_t utcOffset, epochStart epoch);
     /**
@@ -505,9 +510,14 @@ class loggerClock {
      * @param utcOffset The offset of the epoch time from UTC.
      *
      * @return True if the input timestamp passes sanity checks **and**
-     * the clock has been successfully set.
+     * the clock is now at or within tolerance (±5 seconds) of the target time.
+     * This includes both cases where the clock was successfully set and where
+     * the clock was already within tolerance and did not need adjustment.
      *
      * @note There is no timezone correction in this function
+     * @note Changed behavior: Previously returned true only when clock was
+     * actually written. Now returns true when clock is at/within tolerance,
+     * regardless of whether it was written.
      */
     static bool setRTClock(epochTime in_time, int8_t utcOffset);
 
