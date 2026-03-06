@@ -22,28 +22,25 @@ const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                                            const char* caCertName,
                                            String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)(),
-                                           int     sendEveryX,
-                                           uint8_t initialTransmissions)
-    : dataPublisher(baseLogger, inClient, sendEveryX, initialTransmissions) {
+                                           String (*getFileNameFxn)())
+    : dataPublisher(baseLogger, inClient) {
     if (caCertName) setCACertName(caCertName);
     if (getUrlFxn) setURLUpdateFunction(getUrlFxn);
     if (getFileNameFxn) setFileUpdateFunction(getFileNameFxn);
 }
 
 // Delegating constructors
-S3PresignedPublisher::S3PresignedPublisher(
-    Logger& baseLogger, const char* caCertName, String (*getUrlFxn)(String),
-    String (*getFileNameFxn)(), int sendEveryX, uint8_t initialTransmissions)
+S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
+                                           const char* caCertName,
+                                           String (*getUrlFxn)(String),
+                                           String (*getFileNameFxn)())
     : S3PresignedPublisher(baseLogger, nullptr, caCertName, getUrlFxn,
-                           getFileNameFxn, sendEveryX, initialTransmissions) {}
+                           getFileNameFxn) {}
 S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                                            String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)(),
-                                           int     sendEveryX,
-                                           uint8_t initialTransmissions)
+                                           String (*getFileNameFxn)())
     : S3PresignedPublisher(baseLogger, inClient, nullptr, getUrlFxn,
-                           getFileNameFxn, sendEveryX, initialTransmissions) {}
+                           getFileNameFxn) {}
 S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
 
 

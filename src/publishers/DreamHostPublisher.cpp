@@ -24,28 +24,19 @@ const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 // Constructors
 // Primary constructor with all parameters
 DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       const char* dhUrl, int sendEveryX,
-                                       uint8_t initialTransmissions)
-    : dataPublisher(baseLogger, inClient, sendEveryX, initialTransmissions) {
+                                       const char* dhUrl)
+    : dataPublisher(baseLogger, inClient) {
     if (dhUrl) setDreamHostPortalRX(dhUrl);
 }
 
 // Delegating constructors
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
-                                       int     sendEveryX,
-                                       uint8_t initialTransmissions)
-    : DreamHostPublisher(baseLogger, inClient, nullptr, sendEveryX,
-                         initialTransmissions) {}
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                                       int     sendEveryX,
-                                       uint8_t initialTransmissions)
-    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr), dhUrl,
-                         sendEveryX, initialTransmissions) {}
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, int sendEveryX,
-                                       uint8_t initialTransmissions)
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient)
+    : DreamHostPublisher(baseLogger, inClient, nullptr) {}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl)
+    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr), dhUrl) {}
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger)
     : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
-                         static_cast<const char*>(nullptr), sendEveryX,
-                         initialTransmissions) {}
+                         static_cast<const char*>(nullptr)) {}
 DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
 
 

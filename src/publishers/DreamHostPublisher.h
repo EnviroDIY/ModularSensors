@@ -55,17 +55,8 @@ class DreamHostPublisher : public dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param dhUrl The URL for sending data to DreamHost
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl,
-                       int sendEveryX = 1, uint8_t initialTransmissions = 5);
+    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -73,33 +64,15 @@ class DreamHostPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
-                       uint8_t initialTransmissions = 5);
+    DreamHostPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
      * @param dhUrl The URL for sending data to DreamHost
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    DreamHostPublisher(Logger& baseLogger, const char* dhUrl,
-                       int sendEveryX = 1, uint8_t initialTransmissions = 5);
+    DreamHostPublisher(Logger& baseLogger, const char* dhUrl);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
@@ -108,17 +81,8 @@ class DreamHostPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    explicit DreamHostPublisher(Logger& baseLogger, int sendEveryX = 1,
-                                uint8_t initialTransmissions = 5);
+    explicit DreamHostPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new DreamHost Publisher object with all members set to
      * default or null.

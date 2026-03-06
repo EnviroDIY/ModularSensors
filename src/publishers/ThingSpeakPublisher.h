@@ -70,21 +70,12 @@ class ThingSpeakPublisher : public dataPublisher {
      * probably the same as your MQTT device's client name.
      * @param thingSpeakMQTTPassword The password for your MQTT device.
      * @param thingSpeakChannelID The numeric channel id for your channel.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
     ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                         const char* thingSpeakClientName,
                         const char* thingSpeakMQTTUser,
                         const char* thingSpeakMQTTPassword,
-                        const char* thingSpeakChannelID, int sendEveryX = 1,
-                        uint8_t initialTransmissions = 5);
+                        const char* thingSpeakChannelID);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -95,20 +86,11 @@ class ThingSpeakPublisher : public dataPublisher {
      * probably the same as your MQTT device's client name.
      * @param thingSpeakMQTTPassword The password for your MQTT device.
      * @param thingSpeakChannelID The numeric channel id for your channel.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
     ThingSpeakPublisher(Logger& baseLogger, const char* thingSpeakClientName,
                         const char* thingSpeakMQTTUser,
                         const char* thingSpeakMQTTPassword,
-                        const char* thingSpeakChannelID, int sendEveryX = 1,
-                        uint8_t initialTransmissions = 5);
+                        const char* thingSpeakChannelID);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -116,17 +98,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                        int sendEveryX = 1, uint8_t initialTransmissions = 5);
+    ThingSpeakPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new ThingSpeak Publisher object
      *
@@ -135,17 +108,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    explicit ThingSpeakPublisher(Logger& baseLogger, int sendEveryX = 1,
-                                 uint8_t initialTransmissions = 5);
+    explicit ThingSpeakPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new ThingSpeak Publisher object with all members set
      * to defaults or null.

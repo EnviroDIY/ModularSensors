@@ -146,14 +146,6 @@ class S3PresignedPublisher : public dataPublisher {
      * with SSL. @see setCACertName()
      * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param getFileNameFxn A function to call to get a new filename
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      *
      * @note The inputs to this is the **NAME** of the certificate **file** as
      * it is stored on you modem module, not the actual certificate content.
@@ -161,8 +153,7 @@ class S3PresignedPublisher : public dataPublisher {
     S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                          const char* caCertName,
                          String (*getUrlFxn)(String) = nullptr,
-                         String (*getFileNameFxn)()  = nullptr,
-                         int sendEveryX = 1, uint8_t initialTransmissions = 5);
+                         String (*getFileNameFxn)()  = nullptr);
     /**
      * @brief Construct a new S3 Publisher object with certificate
      *
@@ -172,19 +163,10 @@ class S3PresignedPublisher : public dataPublisher {
      * you modem module, not the actual certificate content.
      * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param getFileNameFxn A function to call to get a new filename
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
     S3PresignedPublisher(Logger& baseLogger, const char* caCertName,
                          String (*getUrlFxn)(String) = nullptr,
-                         String (*getFileNameFxn)()  = nullptr,
-                         int sendEveryX = 1, uint8_t initialTransmissions = 5);
+                         String (*getFileNameFxn)()  = nullptr);
     /**
      * @brief Construct a new S3 Publisher object without certificate
      *
@@ -194,19 +176,10 @@ class S3PresignedPublisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param getFileNameFxn A function to call to get a new filename
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
     S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                          String (*getUrlFxn)(String) = nullptr,
-                         String (*getFileNameFxn)()  = nullptr,
-                         int sendEveryX = 1, uint8_t initialTransmissions = 5);
+                         String (*getFileNameFxn)()  = nullptr);
     /**
      * @brief Construct a new S3 Publisher object with no members set.
      */

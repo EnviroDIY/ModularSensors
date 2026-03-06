@@ -31,10 +31,8 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
-                                         const char* thingSpeakChannelID,
-                                         int         sendEveryX,
-                                         uint8_t     initialTransmissions)
-    : dataPublisher(baseLogger, inClient, sendEveryX, initialTransmissions) {
+                                         const char* thingSpeakChannelID)
+    : dataPublisher(baseLogger, inClient) {
     if (thingSpeakClientName) setMQTTClient(thingSpeakClientName);
     if (thingSpeakMQTTUser) setUserName(thingSpeakMQTTUser);
     if (thingSpeakMQTTPassword) setPassword(thingSpeakMQTTPassword);
@@ -46,28 +44,20 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
-                                         const char* thingSpeakChannelID,
-                                         int         sendEveryX,
-                                         uint8_t     initialTransmissions)
+                                         const char* thingSpeakChannelID)
     : ThingSpeakPublisher(baseLogger, nullptr, thingSpeakClientName,
                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
-                          thingSpeakChannelID, sendEveryX,
-                          initialTransmissions) {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         int     sendEveryX,
-                                         uint8_t initialTransmissions)
+                          thingSpeakChannelID) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient)
     : ThingSpeakPublisher(
           baseLogger, inClient, static_cast<const char*>(nullptr),
           static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), sendEveryX, initialTransmissions) {
-}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX,
-                                         uint8_t initialTransmissions)
+          static_cast<const char*>(nullptr)) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger)
     : ThingSpeakPublisher(
           baseLogger, nullptr, static_cast<const char*>(nullptr),
           static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), sendEveryX, initialTransmissions) {
-}
+          static_cast<const char*>(nullptr)) {}
 ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
 
 

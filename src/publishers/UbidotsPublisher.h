@@ -59,18 +59,9 @@ class UbidotsPublisher : public dataPublisher {
      * specific device's setup panel).
      * @param deviceID The device API Label from Ubidots, derived from the
      * user-specified device name.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
     UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                     const char* authenticationToken, const char* deviceID,
-                     int sendEveryX = 1, uint8_t initialTransmissions = 5);
+                     const char* authenticationToken, const char* deviceID);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -81,18 +72,9 @@ class UbidotsPublisher : public dataPublisher {
      * specific device's setup panel).
      * @param deviceID The device API Label from Ubidots, derived from the
      * user-specified device name.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
     UbidotsPublisher(Logger& baseLogger, const char* authenticationToken,
-                     const char* deviceID, int sendEveryX = 1,
-                     uint8_t initialTransmissions = 5);
+                     const char* deviceID);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -100,17 +82,8 @@ class UbidotsPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
-                     uint8_t initialTransmissions = 5);
+    UbidotsPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -119,17 +92,8 @@ class UbidotsPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions Number of transmissions to send immediately
-     * after each data point is logged (default: 5).
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    explicit UbidotsPublisher(Logger& baseLogger, int sendEveryX = 1,
-                              uint8_t initialTransmissions = 5);
+    explicit UbidotsPublisher(Logger& baseLogger);
     /**
      * @brief Construct a new Ubidots Publisher object with all members set to
      * defaults or null.

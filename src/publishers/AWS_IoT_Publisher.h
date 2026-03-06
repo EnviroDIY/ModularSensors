@@ -100,14 +100,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
      * @param samplingFeatureUUID The sampling feature UUID
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions The number of initial transmissions
-     * (default: 5). This will be inverted from the argument!
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      *
      * @note The inputs to this are the **NAMES** of the certificate **files**
      * as they are stored on you modem module, not the content of the
@@ -116,8 +108,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                       const char* awsIoTEndpoint, const char* caCertName,
                       const char* clientCertName, const char* clientKeyName,
-                      const char* samplingFeatureUUID, int sendEveryX = 1,
-                      uint8_t initialTransmissions = 5);
+                      const char* samplingFeatureUUID);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
@@ -128,14 +119,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
      * @param samplingFeatureUUID The sampling feature UUID
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions The number of initial transmissions
-     * (default: 5). This will be inverted from the argument!
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      *
      * @note The inputs to this are the **NAMES** of the certificate **files**
      * as they are stored on you modem module, not the content of the
@@ -144,8 +127,7 @@ class AWS_IoT_Publisher : public dataPublisher {
     AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
                       const char* caCertName, const char* clientCertName,
                       const char* clientKeyName,
-                      const char* samplingFeatureUUID, int sendEveryX = 1,
-                      uint8_t initialTransmissions = 5);
+                      const char* samplingFeatureUUID);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
@@ -155,14 +137,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      * file
      * @param clientCertName The name of your client certificate file
      * @param clientKeyName The name of your client private key file
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions The number of initial transmissions
-     * (default: 5). This will be inverted from the argument!
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      *
      * @note The inputs to this are the **NAMES** of the certificate **files**
      * as they are stored on you modem module, not the content of the
@@ -170,8 +144,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      */
     AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
                       const char* caCertName, const char* clientCertName,
-                      const char* clientKeyName, int sendEveryX = 1,
-                      uint8_t initialTransmissions = 5);
+                      const char* clientKeyName);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
@@ -181,19 +154,10 @@ class AWS_IoT_Publisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param samplingFeatureUUID The sampling feature UUID
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions The number of initial transmissions
-     * (default: 5). This will be inverted from the argument!
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
     AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                       const char* awsIoTEndpoint,
-                      const char* samplingFeatureUUID, int sendEveryX = 1,
-                      uint8_t initialTransmissions = 5);
+                      const char* samplingFeatureUUID);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
@@ -201,17 +165,8 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions The number of initial transmissions
-     * (default: 5). This will be inverted from the argument!
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
-                      uint8_t initialTransmissions = 5);
+    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
@@ -220,20 +175,12 @@ class AWS_IoT_Publisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param initialTransmissions The number of initial transmissions
-     * (default: 5). This will be inverted from the argument!
-     *
-     * @remark The sendEveryX and initialTransmissions parameters are not
-     * implemented by this publisher. Data will be sent every time the logger
-     * records data.
      */
-    explicit AWS_IoT_Publisher(Logger& baseLogger, int sendEveryX = 1,
-                               uint8_t initialTransmissions = 5);
+    explicit AWS_IoT_Publisher(Logger& baseLogger);
     /**
      * @brief Construct a new AWS IoT Core Publisher object with all members set
-     * to defaults or nulls
+     * to defaults or nulls.  This cannot be used without setting up the AWS IoT
+     * connection parameters and client before use.
      */
     AWS_IoT_Publisher();
     /**
@@ -241,9 +188,8 @@ class AWS_IoT_Publisher : public dataPublisher {
      */
     ~AWS_IoT_Publisher() override = default;
 
-    // Returns the data destination
     String getEndpoint() override {
-        return String(_awsIoTEndpoint);
+        return _awsIoTEndpoint ? String(_awsIoTEndpoint) : String();
     }
 
     /**
