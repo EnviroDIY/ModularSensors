@@ -56,6 +56,9 @@ ProcessorStats::ProcessorStats(const char* version,
         } else {
             _batteryPin = 33;
         }
+    } else {
+        MS_DBG(F(
+            "No Sodaq Autonomo version specified - using default battery pin"));
     }
 #endif
 }

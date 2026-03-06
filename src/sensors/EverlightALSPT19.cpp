@@ -71,7 +71,7 @@ bool EverlightALSPT19::setup() {
         }
     } else {
         MS_DBG(getSensorNameAndLocation(),
-               F("No analog voltage reader to initialize"));
+               F("Unexpected: analog voltage reader is null"));
     }
 
     return sensorSetupSuccess && analogVoltageReaderSuccess;

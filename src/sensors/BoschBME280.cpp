@@ -55,6 +55,7 @@ bool BoschBME280::setup() {
         ntries++;
     }
     if (!success) {
+        MS_DBG(getSensorNameAndLocation(), F("setup failed after 5 attempts"));
         // Set the status error bit (bit 7)
         setStatusBit(ERROR_OCCURRED);
         // UN-set the set-up bit (bit 0) since setup failed!
