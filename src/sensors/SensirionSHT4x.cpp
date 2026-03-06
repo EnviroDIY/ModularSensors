@@ -134,7 +134,7 @@ bool SensirionSHT4x::addSingleMeasurementResult() {
 
 // The function to run the internal heater before going to sleep
 bool SensirionSHT4x::sleep() {
-    if (_useHeater) { return Sensor::sleep(); }
+    if (!_useHeater) { return Sensor::sleep(); }
 
     if (!checkPowerOn()) { return true; }
     if (_millisSensorActivated == 0) {

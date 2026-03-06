@@ -220,10 +220,10 @@
  * {{ @ref ProcessorStats_ResetCode::ProcessorStats_ResetCode }}
  */
 /**@{*/
-/// @brief Decimal places in string representation; ram should have 0 -
+/// @brief Decimal places in string representation; reset code should have 0 -
 /// it's just a code
 #define PROCESSOR_RESET_RESOLUTION 0
-/// @brief Free RAM is stored in sensorValues[1]
+/// @brief Reset code is stored in sensorValues[3]
 #define PROCESSOR_RESET_VAR_NUM 3
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
