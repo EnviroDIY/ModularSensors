@@ -258,7 +258,8 @@ int16_t MonitorMyWatershedPublisher::publishData(Client* outClient,
         PRINTOUT(
             F("Setting number of variables in log buffer to match number of "
               "variables in logger."));
-        PRINTOUT(F("THIS WILL ERASE THE BUFFER AND DELETE ANY UNSENT DATA!"));
+        PRINTOUT(F("THIS WILL ERASE THE BUFFER AND DELETE"),
+                 _logBuffer.getNumRecords(), F("UNSENT RECORDS!"));
         _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
     }
 
@@ -412,7 +413,7 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond > 0) {
             char responseCode_char[4];
-            memcpy(responseCode_char, tempBuffer + 9, 3);
+            memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string
             responseCode_char[3] = '\0';
             responseCode         = atoi(responseCode_char);

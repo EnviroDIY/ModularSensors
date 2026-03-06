@@ -289,7 +289,7 @@ int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond > 0) {
             char responseCode_char[4];
-            memcpy(responseCode_char, tempBuffer + 9, 3);
+            memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string
             memset(responseCode_char + 3, '\0', 1);
             responseCode = atoi(responseCode_char);

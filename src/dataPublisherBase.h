@@ -45,6 +45,12 @@
 #include "LoggerBase.h"
 #include "Client.h"
 
+// HTTP response parsing constants
+/**
+ * @brief Length of the HTTP version prefix "HTTP/1.1 " used when parsing HTTP response codes
+ */
+#define HTTP_VERSION_PREFIX_LEN 9
+
 /**
  * @brief The dataPublisher class is a virtual class used by other publishers to
  * distribute data online.
