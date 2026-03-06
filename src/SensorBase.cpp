@@ -769,8 +769,6 @@ bool Sensor::finalizeMeasurementAttempt(bool wasSuccessful) {
     _millisMeasurementRequested = 0;
     // Unset the status bits for a measurement request (bits 5 & 6)
     clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-    // Bump the number of attempted retries
-    _currentRetries++;
 
     if (wasSuccessful || _currentRetries >= _maxRetries) {
         // Bump the number of completed measurement attempts - we've succeeded
@@ -778,7 +776,11 @@ bool Sensor::finalizeMeasurementAttempt(bool wasSuccessful) {
         _completedMeasurements++;
         // Reset the number of retries made for the next measurement attempt
         _currentRetries = 0;
+    } else {
+        // Bump the number of attempted retries
+        _currentRetries++;
     }
+
     // Return the input parameter so it's easy to use this in a return statement
     // to pass forward a value
     return wasSuccessful;
@@ -790,8 +792,7 @@ bool Sensor::isPinLow(int8_t pin) {
     if (pin < 0) {
         return false;  // Unconfigured pins are treated as not LOW
     }
-    auto powerBitNumber =
-        static_cast<int8_t>(__builtin_ctz(digitalPinToBitMask(pin)));
-    return bitRead(*portInputRegister(digitalPinToPort(pin)), powerBitNumber) ==
-        LOW;
+    uint8_t bitMask   = digitalPinToBitMask(pin);
+    uint8_t portValue = *portInputRegister(digitalPinToPort(pin));
+    return (portValue & bitMask) == 0;
 }

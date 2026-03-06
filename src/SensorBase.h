@@ -768,6 +768,9 @@ class Sensor {
     uint8_t _currentRetries = 0;
     /**
      * @brief The maximum number of retries allowed if a measurement fails.
+     * Setting max retries to 1 means that if a measurement fails, it will be
+     * retried once.  Setting max retries to 0 means that if a measurement
+     * fails, it will not be retried at all.
      */
     uint8_t _maxRetries = 1;
     /**
