@@ -245,12 +245,12 @@ class Logger {
     }
     // Backwards-compatibility shims
     /// @copydoc setInitialShortIntervals
-    /// @deprecated use setInitialShortIntervals
+    /// @m_deprecated_since{0,38,0} use setInitialShortIntervals
     void setinitialShortIntervals(int16_t initialShortIntervals) {
         setInitialShortIntervals(initialShortIntervals);
     }
     /// @copydoc getInitialShortIntervals
-    /// @deprecated use getInitialShortIntervals
+    /// @m_deprecated_since{0,38,0} use getInitialShortIntervals
     int16_t getinitialShortIntervals() {
         return getInitialShortIntervals();
     }
@@ -1256,7 +1256,7 @@ class Logger {
      * @brief Print a comma separated list of values of variable data -
      * including the time in the logging timezone -  out over an Arduino stream
      *
-     * @deprecated{0,39,0} Use printVariableValuesCSV() instead.
+     * @m_deprecated_since{0,38,0} Use printVariableValuesCSV() instead.
      * @param stream An Arduino stream instance
      */
     void printSensorDataCSV(Stream* stream);

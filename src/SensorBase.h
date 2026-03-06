@@ -617,7 +617,8 @@ class Sensor {
      *
      * @param stream An Arduino Stream instance
      */
-    virtual void printData(Stream* stream = &Serial);
+    virtual void printData(Stream* stream          = &Serial,
+                           bool    printStatusBits = false);
 
     /**
      * @brief Register a variable object to a sensor.

@@ -173,6 +173,8 @@ bool VariableArray::canPowerDownSensor(uint8_t sensorIndex) {
         true;  // assume we can power down unless we find a conflict
 
     for (uint8_t k = 0; k < _sensorCount; k++) {
+        if (k == sensorIndex) continue;  // Skip self-comparison
+
         if ((
                 // Check if sensor i's primary pin matches either of sensor k's
                 // pins
@@ -691,15 +693,6 @@ void VariableArray::printVariableData(Stream* stream) {
             stream->println();
         } else {
             stream->print(arrayOfVars[i]->getParentSensorNameAndLocation());
-            // stream->print(F(" with status 0b"));
-            // stream->print(getSensorStatusBit(i, 7));
-            // stream->print(getSensorStatusBit(i, 6));
-            // stream->print(getSensorStatusBit(i, 5));
-            // stream->print(getSensorStatusBit(i, 4));
-            // stream->print(getSensorStatusBit(i, 3));
-            // stream->print(getSensorStatusBit(i, 2));
-            // stream->print(getSensorStatusBit(i, 1));
-            // stream->print(getSensorStatusBit(i, 0));
             stream->print(F(" reports "));
             stream->print(arrayOfVars[i]->getVarName());
             stream->print(F(" ("));

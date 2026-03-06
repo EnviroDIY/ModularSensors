@@ -42,7 +42,8 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
     : parentSensor(nullptr),
       isCalculated(false),
       _currentValue(MS_INVALID_VALUE),
-      _calcFxn(nullptr) {
+      _calcFxn(nullptr),
+      _sensorVarNum(0) {
     if (uuid) setVarUUID(uuid);
     if (varCode) setVarCode(varCode);
     if (varUnit) setVarUnit(varUnit);

@@ -83,7 +83,7 @@ bool EspressifESP32::extraModemSetup() {
         gsmModem.sendAT(GF(
             "+CWCOUNTRY=0,\"US\",1,13"));  // Set country code to default to US,
                                            // but allow to change if the AP is
-        success &= gsmModem.waitResponse() == 1;
+        success &= (gsmModem.waitResponse() == 1);
     }
     return success;
 }

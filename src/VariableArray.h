@@ -288,7 +288,7 @@ class VariableArray {
      * @brief Print out the results for all variables in the variable array to a
      * stream
      *
-     * @deprecated{0,39,0} Use printVariableData() instead.
+     * @m_deprecated_since{0,38,0} Use printVariableData() instead.
      * @param stream An Arduino Stream instance
      */
     void printSensorData(Stream* stream = &Serial);

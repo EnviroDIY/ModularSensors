@@ -471,18 +471,20 @@ void Sensor::averageMeasurements() {
 }
 
 
-void Sensor::printData(Stream* stream) {
+void Sensor::printData(Stream* stream, bool printStatusBits) {
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
         stream->print(getSensorNameAndLocation());
-        // stream->print(F(" with status 0b"));
-        // stream->print(getStatusBit(7));
-        // stream->print(getStatusBit(6));
-        // stream->print(getStatusBit(5));
-        // stream->print(getStatusBit(4));
-        // stream->print(getStatusBit(3));
-        // stream->print(getStatusBit(2));
-        // stream->print(getStatusBit(1));
-        // stream->print(getStatusBit(0));
+        if (printStatusBits) {
+            stream->print(F(" with status 0b"));
+            stream->print(getStatusBit(ERROR_OCCURRED));
+            stream->print(getStatusBit(MEASUREMENT_SUCCESSFUL));
+            stream->print(getStatusBit(MEASUREMENT_ATTEMPTED));
+            stream->print(getStatusBit(WAKE_SUCCESSFUL));
+            stream->print(getStatusBit(WAKE_ATTEMPTED));
+            stream->print(getStatusBit(POWER_SUCCESSFUL));
+            stream->print(getStatusBit(POWER_ATTEMPTED));
+            stream->print(getStatusBit(SETUP_SUCCESSFUL));
+        }
         stream->print(F(" reports "));
         if (variables[i] != nullptr) {
             stream->print(variables[i]->getVarName());
