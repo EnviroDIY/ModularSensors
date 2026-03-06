@@ -78,7 +78,7 @@ bool KellerParent::sleep() {
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
     return Sensor::sleep();
-};
+}
 
 
 bool KellerParent::addSingleMeasurementResult() {

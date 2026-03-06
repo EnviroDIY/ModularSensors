@@ -61,15 +61,13 @@ TEConnectivityMS5837::TEConnectivityMS5837(int8_t powerPin, MS5837Model model,
 
 
 String TEConnectivityMS5837::getSensorName() {
-    auto   modelEnum = static_cast<MS5837Model>(_model);
-    String modelStr  = F("TEConnectivityMS5837_");
+    auto modelEnum = static_cast<MS5837Model>(_model);
     switch (modelEnum) {
-        case MS5837Model::MS5837_02BA: modelStr += F("02BA"); break;
-        case MS5837Model::MS5837_30BA: modelStr += F("30BA"); break;
+        case MS5837Model::MS5837_02BA: return F("TEConnectivityMS5837_02BA");
+        case MS5837Model::MS5837_30BA: return F("TEConnectivityMS5837_30BA");
         case MS5837Model::MS5803_01BA: return F("TEConnectivityMS5803_01BA");
-        default: modelStr += F("Unknown"); break;
+        default: return F("TEConnectivityMS5837_Unknown");
     }
-    return modelStr;
 }
 
 
@@ -83,7 +81,6 @@ bool TEConnectivityMS5837::setup() {
         Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
-    delay(10);
     bool wasOn = checkPowerOn();
     if (!wasOn) { powerUp(); }
     waitForWarmUp();

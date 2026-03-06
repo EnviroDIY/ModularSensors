@@ -43,7 +43,7 @@ bool MeterTeros11::getResults(bool verify_crc) {
 
     // Calculate the VWC from EA using the Topp equation
     // range check
-    if (ea < 0 || ea > 350) {
+    if (ea != MS_INVALID_VALUE && (ea < 0 || ea > 350)) {
         MS_DBG(F("WARNING:  Ea results out of range (0-350)!  Cannot calculate "
                  "VWC"));
         ea = MS_INVALID_VALUE;

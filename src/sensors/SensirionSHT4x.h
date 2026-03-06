@@ -161,8 +161,8 @@
  */
 /**@{*/
 /**
- * @brief Decimal places in string representation; humidity should have 2 (0.01
- * °C).
+ * @brief Decimal places in string representation; temperature should have 2
+ * (0.01 °C).
  *
  * @note This resolution is some-what silly in light of the ± 0.2°C accuracy.
  */

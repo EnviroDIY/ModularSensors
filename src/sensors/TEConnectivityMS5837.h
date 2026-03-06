@@ -496,7 +496,7 @@ class TEConnectivityMS5837 : public Sensor {
 
  private:
     /**
-     * @brief Private internal reference to the MS5837 object.
+     * @brief Private internal MS5837 object instance.
      */
     MS5837 MS5837_internal;
     /**

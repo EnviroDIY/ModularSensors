@@ -38,26 +38,26 @@
  * @def BUILT_IN_ALS_POWER_PIN
  * @brief The digital pin controlling power to the built-in ambient light sensor
  * (ALS) on EnviroDIY boards.
- * @note Set to -1 when the ALS is always powered or when no built-in ALS is
- * available on the board.
+ * @note Set to -1 when the ALS is always powered. *Leave undefined* when no
+ * built-in ALS is available on the board.
  *
  * @def BUILT_IN_ALS_DATA_PIN
  * @brief The analog pin connected to the built-in ambient light sensor (ALS)
  * on EnviroDIY boards.
- * @note The data pin varies by board model and version. Set to -1 when no
- * built-in ALS is available on the board.
+ * @note The data pin varies by board model and version. *Leave undefined* when
+ * no built-in ALS is available on the board.
  *
  * @def BUILT_IN_ALS_SUPPLY_VOLTAGE
  * @brief The supply voltage for the built-in ambient light sensor (ALS) on
  * EnviroDIY boards, in volts.
- * @note Typically matches the board's operating voltage. Set to -1 when no
- * built-in ALS is available on the board.
+ * @note Typically matches the board's operating voltage. *Leave undefined* when
+ * no built-in ALS is available on the board.
  *
  * @def BUILT_IN_ALS_LOADING_RESISTANCE
  * @brief The loading resistance for the built-in ambient light sensor (ALS)
  * on EnviroDIY boards, in kΩ.
- * @note The loading resistance affects light measurement calculations. Set to
- * -1 when no built-in ALS is available on the board.
+ * @note The loading resistance affects light measurement calculations. *Leave
+ * undefined* when no built-in ALS is available on the board.
  */
 
 // EnviroDIY boards
@@ -66,26 +66,18 @@
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN A6
 #define BATTERY_MULTIPLIER 4.7  // for v0.5 and later
-/// @brief The power pin for the ALS on the EnviroDIY Mayfly v1.x
 #define BUILT_IN_ALS_POWER_PIN -1
-/// @brief The data pin for the ALS on the EnviroDIY Mayfly v1.x
 #define BUILT_IN_ALS_DATA_PIN A4
-/// @brief The supply voltage for the ALS on the EnviroDIY Mayfly v1.x
 #define BUILT_IN_ALS_SUPPLY_VOLTAGE 3.3
-/// @brief The loading resistance for the ALS on the EnviroDIY Mayfly v1.x
 #define BUILT_IN_ALS_LOADING_RESISTANCE 10
 #elif defined(ENVIRODIY_STONEFLY_M4)
 #define LOGGER_BOARD "EnviroDIY Stonefly"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN A9
 #define BATTERY_MULTIPLIER 4.7
-/// @brief The power pin for the ALS on the EnviroDIY Stonefly v0.x
 #define BUILT_IN_ALS_POWER_PIN -1
-/// @brief The data pin for the ALS on the EnviroDIY Stonefly v0.x
 #define BUILT_IN_ALS_DATA_PIN A8
-/// @brief The supply voltage for the ALS on the EnviroDIY Stonefly v0.x
 #define BUILT_IN_ALS_SUPPLY_VOLTAGE 3.3
-/// @brief The loading resistance for the ALS on the EnviroDIY Stonefly v0.x
 #define BUILT_IN_ALS_LOADING_RESISTANCE 10
 
 // Sodaq boards
