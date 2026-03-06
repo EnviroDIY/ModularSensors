@@ -53,7 +53,8 @@
 #undef MS_USE_RV8803
 #undef MS_USE_RTC_ZERO
 #elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)) && \
-    !defined(MS_USE_DS3231) && !defined(MS_USE_RV8803) &&     \
+    !defined(MS_USE_DS3231) &&                                \
+    !defined(MS_USE_RV8803) &&                                \
     !defined(MS_USE_RTC_ZERO)
 /**
  * @brief Select the SAMD21's internal clock (via RTC Zero) if no other RTC is
@@ -64,7 +65,8 @@
 #undef MS_USE_DS3231
 #endif
 
-#if !defined(MS_USE_RV8803) && !defined(MS_USE_DS3231) && \
+#if !defined(MS_USE_RV8803) && \
+    !defined(MS_USE_DS3231) && \
     !defined(MS_USE_RTC_ZERO)
 #error Define a clock to use for the RTC for Modular Sensors!
 #endif
@@ -158,14 +160,14 @@ enum class epochStart : time_t {
         EPOCH_NIST_TO_UNIX,  ///< Use a Unix epoch, starting Jan 1, 1970.
                              ///< This is the default for this library
     y2k_epoch = EPOCH_NIST_TO_UNIX +
-        EPOCH_UNIX_TO_Y2K,  ///< Use an epoch starting Jan 1, 2000, as some
-                            ///< RTC's and Arduinos do (946684800s ahead of
-                            ///< UNIX epoch)
+                EPOCH_UNIX_TO_Y2K,  ///< Use an epoch starting Jan 1, 2000, as
+                                    ///< some RTC's and Arduinos do (946684800s
+                                    ///< ahead of UNIX epoch)
     gps_epoch = EPOCH_NIST_TO_UNIX +
-        EPOCH_UNIX_TO_GPS,  ///< Use the GPS epoch starting Jan 5, 1980
-                            ///< (was 315964800s ahead of UNIX epoch at
-                            ///< founding, has drifted farther apart due to
-                            ///< leap seconds)
+                EPOCH_UNIX_TO_GPS,  ///< Use the GPS epoch starting Jan 5, 1980
+                                    ///< (was 315964800s ahead of UNIX epoch at
+                                    ///< founding, has drifted farther apart due
+                                    ///< to leap seconds)
     nist_epoch = 0  ///< Use the epoch starting Jan 1, 1900 as returned by
                     ///< the NIST Network Time Protocol (RFC-1305 and later
                     ///< versions) and Time Protocol (RFC-868) (2208988800
@@ -622,7 +624,7 @@ class loggerClock {
      * @return The timezone offset for the processor/Arduino core in seconds
      * from UTC
      */
-    static int16_t getCoreTimeZone() {
+    static int32_t getCoreTimeZone() {
         return loggerClock::_core_tz;
     };
     /**
@@ -654,7 +656,7 @@ class loggerClock {
      *
      * @return The timezone offset in seconds from UTC
      */
-    static int16_t getProcessorTimeZone();
+    static int32_t getProcessorTimeZone();
 
     /**
      * @brief The start of the epoch for the processor core's internal time.h
@@ -665,7 +667,7 @@ class loggerClock {
     /**
      * @brief The timezone used by the processor core's internal time.h library.
      */
-    static int16_t _core_tz;
+    static int32_t _core_tz;
 
     /**
      * @brief The static offset data of the real time clock from UTC in hours

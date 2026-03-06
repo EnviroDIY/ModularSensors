@@ -182,7 +182,7 @@ const uint32_t epochTime::leapSeconds[NUMBER_LEAP_SECONDS] = LEAP_SECONDS;
 // Initialize the processor epoch
 epochStart loggerClock::_core_epoch = epochStart::y2k_epoch;
 // Initialize the processor timezone offset
-int16_t loggerClock::_core_tz = 0;
+int32_t loggerClock::_core_tz = 0;
 // Initialize the static timezone
 int8_t loggerClock::_rtcUTCOffset = 0;
 
@@ -633,7 +633,7 @@ epochStart loggerClock::getProcessorEpochStart() {
 // how to consistently set or detect the timezone across platforms, so instead
 // we will just use mktime and then compare the returned timestamp to the known
 // epoch start to figure out the offset.
-int16_t loggerClock::getProcessorTimeZone() {
+int32_t loggerClock::getProcessorTimeZone() {
     // Create a time struct for Jan 1, 2000 at 00:00:00 in the processor's epoch
     tm timeParts       = {};
     timeParts.tm_sec   = 0;
@@ -660,17 +660,17 @@ int16_t loggerClock::getProcessorTimeZone() {
     // casting. If the timeY2K is less than 24 hours, it's a positive offset of
     // that many seconds. If it's more than 24 hours, it's a negative offset of
     // tz_offset (because the time would have rolled back to the previous day).
-    int16_t      tz_offset;
+    int32_t      tz_offset;
     const time_t secondsInDay = 60L * 60L * 24L;  // 86400 seconds in a day
     if (timeY2K < secondsInDay) {
-        tz_offset = static_cast<int16_t>(timeY2K);
+        tz_offset = static_cast<int32_t>(timeY2K);
     } else if ((-1 * timeY2K) <
                secondsInDay) {  // force roll-over and check size
-        tz_offset = static_cast<int16_t>(-1 * (-1 * timeY2K));
+        tz_offset = -1 * (static_cast<int32_t>(-1 * timeY2K));
     } else {  // If the difference is more than 24 hours, something is wrong and
               // we should just return 0 (UTC)
-        tz_offset = static_cast<int16_t>(0);
-        // NOTE: Do this silently in case Serial isn't initialzed yet.
+        tz_offset = static_cast<int32_t>(0);
+        // NOTE: Do this silently in case Serial isn't initialized yet.
     }
     loggerClock::_core_tz = tz_offset;
     return tz_offset;
