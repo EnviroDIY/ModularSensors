@@ -9,6 +9,7 @@
  */
 
 #include "AOSongAM2315.h"
+#include <Adafruit_AM2315.h>
 
 
 // The constructor - because this is I2C, only need the power pin

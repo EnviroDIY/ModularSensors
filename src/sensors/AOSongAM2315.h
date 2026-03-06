@@ -75,7 +75,6 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include <Adafruit_AM2315.h>
 
 /** @ingroup sensor_am2315 */
 /**@{*/
