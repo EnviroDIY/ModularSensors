@@ -12,18 +12,19 @@
 
 
 // Constructors
-// Primary constructor with all parameters
+// Primary constructor with all parameters - ensures proper initialization order
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
-    : VariableArray(variableCount, variableList) {
-    matchUUIDs(uuids);
-}
-
-// Delegating constructors
-VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
+    // Match UUIDs first, before populating sensor list
+    if (uuids) matchUUIDs(uuids);
     populateSensorList();
+}
+
+// Delegating constructor - delegates to primary constructor with null UUIDs
+VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
+    : VariableArray(variableCount, variableList, nullptr) {
 }
 // Default constructor with no arguments - delegates to ensure all members are
 // initialized
