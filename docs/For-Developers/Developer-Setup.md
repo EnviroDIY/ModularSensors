@@ -38,7 +38,7 @@ setupGitFilters.bat
 
 If you prefer to configure the filters manually, run these Git commands from the repository root (requires PowerShell):
 
-```bash
+```powershell
 git config --local filter.smudgePasswords.clean "powershell -ExecutionPolicy Bypass -File filters/cleanPasswords.ps1"
 git config --local filter.smudgePasswords.smudge "powershell -ExecutionPolicy Bypass -File filters/smudgePasswords.ps1"
 git config --local filter.disableDebug.clean "powershell -ExecutionPolicy Bypass -File filters/cleanDebugConfig.ps1"

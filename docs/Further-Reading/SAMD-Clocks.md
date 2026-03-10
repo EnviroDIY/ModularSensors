@@ -42,7 +42,7 @@
 
 Essentially every microprocessor or computer needs a consistent way of their own speed of operation so they can communicate with internal components and external devices.
 
-An *[oscillator](https://en.wikipedia.org/wiki/Electronic_oscillator)* is a circuit that makes an oscillating signal - i.e., it switches back and forth between to states at a consistent rate.
+An *[oscillator](https://en.wikipedia.org/wiki/Electronic_oscillator)* is a circuit that makes an oscillating signal - i.e., it switches back and forth between two states at a consistent rate.
 The oscillator works like a metronome.
 An oscillator alone does not keep track of time; it ticks, but it doesn't count how many ticks have passed.
 

@@ -50,7 +50,7 @@
  * Digital communication with Keller sensors configured for SDI12 communication
  * protocols are not supported by this library.
  *
- * The sensor constructors require as input: the sensor modbus address,  a
+ * The sensor constructors require as input: the sensor modbus address, a
  * stream instance for data (i.e., ```Serial```), and one or two power pins.  The
  * Arduino pin controlling the receive and data enable on your RS485-to-TTL
  * adapter and the number of readings to average are optional.  (Use -1 for the

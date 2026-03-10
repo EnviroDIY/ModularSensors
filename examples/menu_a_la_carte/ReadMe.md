@@ -580,7 +580,7 @@ ___
 Set options and create the objects for using the processor as a sensor to report battery level, processor free ram, and sample number.
 
 The processor can return the number of "samples" it has taken, the amount of RAM it has available and, for some boards, the battery voltage (EnviroDIY Mayfly, Sodaq Mbili, Ndogo, Autonomo, and One, Adafruit Feathers).
-The version of the board is required as input (i.e., for a EnviroDIY Mayfly: "v0.3" or "v0.4" or "v0.5").
+The version of the board is required as input (i.e., for an EnviroDIY Mayfly: "v0.3" or "v0.4" or "v0.5").
 Use a blank value (i.e., "") for un-versioned boards.
 Please note that while you can opt to average more than one sample, it really makes no sense to do so for the processor.
 The number of "samples" taken will increase by one for each time another processor "measurement" is taken so averaging multiple measurements from the processor will result in the number of samples increasing by more than one with each loop.
@@ -889,7 +889,7 @@ ___
 
 The next two sections are for Keller RS485/Modbus water level sensors.
 The sensor class constructors for each are nearly identical, except for the class name.
-The sensor constructors require as input: the sensor modbus address,  a stream instance for data (i.e., `Serial`), and one or two power pins.
+The sensor constructors require as input: the sensor modbus address, a stream instance for data (i.e., `Serial`), and one or two power pins.
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)  Please see the section "[Notes on Arduino Streams and Software Serial](https://envirodiy.github.io/ModularSensors/page_arduino_streams.html)" for more information about what streams can be used along with this library.
 In tests on these sensors, SoftwareSerial_ExtInts *did not work* to communicate with these sensors, because it isn't stable enough.
@@ -1132,7 +1132,7 @@ ___
 
 The next several sections are for Yosemitech brand sensors.
 The sensor class constructors for each are nearly identical, except for the class name.
-The sensor constructor requires as input: the sensor modbus address,  a stream instance for data (i.e., `Serial`), and one or two power pins.
+The sensor constructor requires as input: the sensor modbus address, a stream instance for data (i.e., `Serial`), and one or two power pins.
 The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
 (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
 For most of the sensors, Yosemitech strongly recommends averaging multiple (in most cases 10) readings for each measurement.

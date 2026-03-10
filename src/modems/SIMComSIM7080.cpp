@@ -50,8 +50,8 @@ bool SIMComSIM7080::extraModemSetup() {
     gsmModem.waitResponse();
     // Enable netlight indication of GPRS status
     // Enable, the netlight will be forced to enter into 64ms on/300ms off
-    // blinking state in GPRS data transmission service.Otherwise,  the netlight
-    // state is not restricted.
+    // blinking state in GPRS data transmission service.  Otherwise, the
+    // netlight state is not restricted.
     gsmModem.sendAT(F("+CNETLIGHT=1"));
     gsmModem.waitResponse();
 

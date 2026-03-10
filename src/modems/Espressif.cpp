@@ -56,7 +56,7 @@ bool Espressif::modemWakeFxn() {
     if (_powerPin >= 0) {  // Turns on when power is applied
         MS_DEEP_DBG(
             F("Power pin"), _powerPin,
-            F("takes priority over reset pin,  modem wakes on power on"));
+            F("takes priority over reset pin, modem wakes on power on"));
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }

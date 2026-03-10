@@ -1123,7 +1123,7 @@ class Logger {
      *
      * @warning During sleep, the I2C/Wire interface is disabled and the SCL and
      * SDA pins are forced low to save power. Any attempt to communicate with an
-     * I2C device during sleep (i.e., thorough an interrupt) will cause the
+     * I2C device during sleep (i.e., through an interrupt) will cause the
      * board to hang indefinitely.
      */
     void systemSleep();

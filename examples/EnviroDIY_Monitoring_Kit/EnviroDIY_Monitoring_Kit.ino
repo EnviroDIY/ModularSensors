@@ -166,8 +166,6 @@ Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 int32_t         modemBaud   = 57600;    // Communication speed of the modem
-// NOTE:  This baud rate too fast for the Mayfly.  We'll slow it down in the
-// setup.
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply

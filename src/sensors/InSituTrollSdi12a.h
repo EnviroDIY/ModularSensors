@@ -47,7 +47,7 @@
  * Parameters are very flexible and need to be aligned used WinSitu with this module.
  *
  * The depth sensor third parameter may need to be created. The expected
- * parameters and order are Pressure (PSI),  Temperature (C),  Depth (ft).
+ * parameters and order are Pressure (PSI), Temperature (C), Depth (ft).
  *
  * Tested with Level TROLL 500.
  *

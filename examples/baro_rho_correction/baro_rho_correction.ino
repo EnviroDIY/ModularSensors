@@ -240,9 +240,13 @@ Variable* calcWaterPress = new Variable(
 // For this, we're using the conversion between mbar and mm pure water at 4°C
 // This calculation gives a final result in mm of water
 float calculateWaterDepthRaw(void) {
-    float waterDepth = calculateWaterPressure() * 10.1972;
-    if (calculateWaterPressure() == MS_INVALID_VALUE)
+    float pressure = calculateWaterPressure();
+    float waterDepth;
+    if (pressure == MS_INVALID_VALUE) {
         waterDepth = MS_INVALID_VALUE;
+    } else {
+        waterDepth = pressure * 10.1972;
+    }
     // Serial.print(F("'Raw' water depth is "));  // for debugging
     // Serial.println(waterDepth);  // for debugging
     return waterDepth;

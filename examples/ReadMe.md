@@ -121,7 +121,7 @@ ___
 
 ### The EnviroDIY Sensor Station Kit<!--! {#examples_envirodiy_kit} -->
 
-The EnviroDIY Sensor Station Kit is designed to be used with the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
+This example is designed to be used with the hardware in the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 
 - [Instructions for the EnviroDIY sensor station kit example](https://envirodiy.github.io/ModularSensors/example_envirodiy_monitoring_kit.html)
 - [The EnviroDIY sensor station kit example on GitHub](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/EnviroDIY_Monitoring_Kit)

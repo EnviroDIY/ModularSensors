@@ -371,8 +371,8 @@ class loggerClock {
      * @brief Set the static offset in hours from UTC that the RTC is programmed
      * in.
      *
-     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC(i.e., offset
-     * = 0)
+     * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
+     * (i.e., offset = 0)
      *
      * @param offsetHours The offset of the real-time clock (RTC) from UTC in
      * hours
@@ -641,7 +641,7 @@ class loggerClock {
      * @return The epoch start for the RTC
      */
     static epochStart getRTCEpochStart() {
-        return _rtcEpoch;
+        return loggerClock::_rtcEpoch;
     }
 
  protected:
