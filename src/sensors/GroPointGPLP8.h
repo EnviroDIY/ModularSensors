@@ -231,21 +231,6 @@ class GroPointGPLP8_Moist : public Variable {
                    GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new GroPointGPLP8_Moist object.
-     *
-     * @param sensorVarNum The position the variable result holds in the
-     * variable result array.  The GroPoint GPLP8 can have up to 8 soil moisture
-     * results. When creating the variable for soil moisture, you must specify
-     * the output number from the sensor.
-     *
-     * @note This must be tied with a parent GroPointGPLP8 before it can be
-     * used.
-     */
-    GroPointGPLP8_Moist(const uint8_t sensorVarNum)
-        : Variable(sensorVarNum, static_cast<uint8_t>(GPLP8_MOIST_RESOLUTION),
-                   GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME,
-                   GPLP8_MOIST_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the GroPointGPLP8_Moist object - no action needed.
      */
     ~GroPointGPLP8_Moist() override = default;
@@ -283,21 +268,6 @@ class GroPointGPLP8_Temp : public Variable {
         : Variable(parentSense, sensorVarNum,
                    static_cast<uint8_t>(GPLP8_TEMP_RESOLUTION),
                    GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new GroPointGPLP8_Temp object.
-     *
-     * @param sensorVarNum The position the variable result holds in the
-     * variable result array.  The GroPoint GPLP8 can have up to 8 temperature
-     * results. When creating the variable for temperature, you must specify the
-     * output number from the sensor.
-     *
-     * @note This must be tied with a parent GroPointGPLP8 before it can be
-     * used.
-     */
-    GroPointGPLP8_Temp(const uint8_t sensorVarNum)
-        : Variable(sensorVarNum, static_cast<uint8_t>(GPLP8_TEMP_RESOLUTION),
-                   GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME,
-                   GPLP8_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GroPointGPLP8_Temp object - no action needed.
      */

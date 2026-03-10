@@ -239,17 +239,6 @@ class YosemitechY511_Turbidity : public Variable {
                    static_cast<uint8_t>(Y511_TURB_RESOLUTION),
                    Y511_TURB_VAR_NAME, Y511_TURB_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY511_Turbidity object.
-     *
-     * @note This must be tied with a parent YosemitechY511 before it can be
-     * used.
-     */
-    YosemitechY511_Turbidity()
-        : Variable(static_cast<uint8_t>(Y511_TURB_VAR_NUM),
-                   static_cast<uint8_t>(Y511_TURB_RESOLUTION),
-                   Y511_TURB_VAR_NAME, Y511_TURB_UNIT_NAME,
-                   Y511_TURB_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY511_Turbidity object - no action needed.
      */
     ~YosemitechY511_Turbidity() override = default;
@@ -283,17 +272,6 @@ class YosemitechY511_Temp : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y511_TEMP_VAR_NUM),
                    static_cast<uint8_t>(Y511_TEMP_RESOLUTION),
                    Y511_TEMP_VAR_NAME, Y511_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY511_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY511 before it can be
-     * used.
-     */
-    YosemitechY511_Temp()
-        : Variable(static_cast<uint8_t>(Y511_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y511_TEMP_RESOLUTION),
-                   Y511_TEMP_VAR_NAME, Y511_TEMP_UNIT_NAME,
-                   Y511_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY511_Temp object - no action needed.
      */

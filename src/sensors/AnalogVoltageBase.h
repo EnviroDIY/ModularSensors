@@ -67,7 +67,6 @@ class AnalogVoltageBase {
                                                         : 1.0f),
           _supplyVoltage((supplyVoltage > 0.0f) ? supplyVoltage
                                                 : OPERATING_VOLTAGE) {}
-
     /**
      * @brief Destroy the AnalogVoltageBase object
      */

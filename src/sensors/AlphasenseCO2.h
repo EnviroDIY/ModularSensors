@@ -366,17 +366,6 @@ class AlphasenseCO2_CO2 : public Variable {
                    ALPHASENSE_CO2_VAR_NAME, ALPHASENSE_CO2_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new AlphasenseCO2_CO2 object.
-     *
-     * @note This must be tied with a parent AlphasenseCO2 before it can be
-     * used.
-     */
-    AlphasenseCO2_CO2()
-        : Variable(static_cast<uint8_t>(ALPHASENSE_CO2_VAR_NUM),
-                   static_cast<uint8_t>(ALPHASENSE_CO2_RESOLUTION),
-                   ALPHASENSE_CO2_VAR_NAME, ALPHASENSE_CO2_UNIT_NAME,
-                   ALPHASENSE_CO2_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AlphasenseCO2_CO2 object - no action needed.
      */
     ~AlphasenseCO2_CO2() override = default;
@@ -410,18 +399,6 @@ class AlphasenseCO2_Voltage : public Variable {
                    static_cast<uint8_t>(ALPHASENSE_CO2_VOLTAGE_RESOLUTION),
                    ALPHASENSE_CO2_VOLTAGE_VAR_NAME,
                    ALPHASENSE_CO2_VOLTAGE_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new AlphasenseCO2_Voltage object.
-     *
-     * @note This must be tied with a parent AlphasenseCO2 before it can be
-     * used.
-     */
-    AlphasenseCO2_Voltage()
-        : Variable(static_cast<uint8_t>(ALPHASENSE_CO2_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(ALPHASENSE_CO2_VOLTAGE_RESOLUTION),
-                   ALPHASENSE_CO2_VOLTAGE_VAR_NAME,
-                   ALPHASENSE_CO2_VOLTAGE_UNIT_NAME,
-                   ALPHASENSE_CO2_VOLTAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AlphasenseCO2_Voltage object - no action needed.
      */

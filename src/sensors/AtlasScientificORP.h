@@ -231,17 +231,6 @@ class AtlasScientificORP_Potential : public Variable {
                    static_cast<uint8_t>(ATLAS_ORP_RESOLUTION),
                    ATLAS_ORP_VAR_NAME, ATLAS_ORP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new AtlasScientificORP_Potential object.
-     *
-     * @note This must be tied with a parent AtlasScientificORP before it can be
-     * used.
-     */
-    AtlasScientificORP_Potential()
-        : Variable(static_cast<uint8_t>(ATLAS_ORP_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_ORP_RESOLUTION),
-                   ATLAS_ORP_VAR_NAME, ATLAS_ORP_UNIT_NAME,
-                   ATLAS_ORP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AtlasScientificORP_Potential() object - no action
      * needed.
      */

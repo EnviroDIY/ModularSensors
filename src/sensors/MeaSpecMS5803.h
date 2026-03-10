@@ -300,17 +300,6 @@ class MeaSpecMS5803_Temp : public Variable {
                    MS5803_TEMP_VAR_NAME, MS5803_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new MeaSpecMS5803_Temp object.
-     *
-     * @note This must be tied with a parent MeaSpecMS5803 before it can be
-     * used.
-     */
-    MeaSpecMS5803_Temp()
-        : Variable(static_cast<uint8_t>(MS5803_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(MS5803_TEMP_RESOLUTION),
-                   MS5803_TEMP_VAR_NAME, MS5803_TEMP_UNIT_NAME,
-                   MS5803_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the MeaSpecMS5803_Temp object - no action needed.
      */
     ~MeaSpecMS5803_Temp() override = default;
@@ -346,17 +335,6 @@ class MeaSpecMS5803_Pressure : public Variable {
                    static_cast<uint8_t>(MS5803_PRESSURE_RESOLUTION),
                    MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new MeaSpecMS5803_Pressure object.
-     *
-     * @note This must be tied with a parent MeaSpecMS5803 before it can be
-     * used.
-     */
-    MeaSpecMS5803_Pressure()
-        : Variable(static_cast<uint8_t>(MS5803_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(MS5803_PRESSURE_RESOLUTION),
-                   MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME,
-                   MS5803_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeaSpecMS5803_Pressure object - no action needed.
      */

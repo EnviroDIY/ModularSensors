@@ -256,16 +256,6 @@ class YosemitechY551_COD : public Variable {
                    static_cast<uint8_t>(Y551_COD_RESOLUTION), Y551_COD_VAR_NAME,
                    Y551_COD_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY551_COD object.
-     *
-     * @note This must be tied with a parent YosemitechY551 before it can be
-     * used.
-     */
-    YosemitechY551_COD()
-        : Variable(static_cast<uint8_t>(Y551_COD_VAR_NUM),
-                   static_cast<uint8_t>(Y551_COD_RESOLUTION), Y551_COD_VAR_NAME,
-                   Y551_COD_UNIT_NAME, Y551_COD_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY551_COD object - no action needed.
      */
     ~YosemitechY551_COD() override = default;
@@ -300,17 +290,6 @@ class YosemitechY551_Temp : public Variable {
                    static_cast<uint8_t>(Y551_TEMP_RESOLUTION),
                    Y551_TEMP_VAR_NAME, Y551_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY551_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY551 before it can be
-     * used.
-     */
-    YosemitechY551_Temp()
-        : Variable(static_cast<uint8_t>(Y551_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y551_TEMP_RESOLUTION),
-                   Y551_TEMP_VAR_NAME, Y551_TEMP_UNIT_NAME,
-                   Y551_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY551_Temp object - no action needed.
      */
     ~YosemitechY551_Temp() override = default;
@@ -344,17 +323,6 @@ class YosemitechY551_Turbidity : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y551_TURB_VAR_NUM),
                    static_cast<uint8_t>(Y551_TURB_RESOLUTION),
                    Y551_TURB_VAR_NAME, Y551_TURB_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY551_Turbidity object.
-     *
-     * @note This must be tied with a parent YosemitechY551 before it can be
-     * used.
-     */
-    YosemitechY551_Turbidity()
-        : Variable(static_cast<uint8_t>(Y551_TURB_VAR_NUM),
-                   static_cast<uint8_t>(Y551_TURB_RESOLUTION),
-                   Y551_TURB_VAR_NAME, Y551_TURB_UNIT_NAME,
-                   Y551_TURB_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY551_Turbidity object - no action needed.
      */

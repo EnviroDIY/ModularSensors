@@ -212,17 +212,6 @@ class KellerAcculevel_Pressure : public Variable {
                    KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new KellerAcculevel_Pressure object.
-     *
-     * @note This must be tied with a parent KellerAcculevel before it can be
-     * used.
-     */
-    KellerAcculevel_Pressure()
-        : Variable(static_cast<uint8_t>(KELLER_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(ACCULEVEL_PRESSURE_RESOLUTION),
-                   KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME,
-                   ACCULEVEL_PRESSURE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the KellerAcculevel_Pressure object - no action needed.
      */
     ~KellerAcculevel_Pressure() override = default;
@@ -258,17 +247,6 @@ class KellerAcculevel_Temp : public Variable {
                    KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new KellerAcculevel_Temp object.
-     *
-     * @note This must be tied with a parent KellerAcculevel before it can be
-     * used.
-     */
-    KellerAcculevel_Temp()
-        : Variable(static_cast<uint8_t>(KELLER_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(ACCULEVEL_TEMP_RESOLUTION),
-                   KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME,
-                   ACCULEVEL_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the KellerAcculevel_Temp object - no action needed.
      */
     ~KellerAcculevel_Temp() override = default;
@@ -303,17 +281,6 @@ class KellerAcculevel_Height : public Variable {
                    static_cast<uint8_t>(ACCULEVEL_HEIGHT_RESOLUTION),
                    KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new KellerAcculevel_Height object.
-     *
-     * @note This must be tied with a parent KellerAcculevel before it can be
-     * used.
-     */
-    KellerAcculevel_Height()
-        : Variable(static_cast<uint8_t>(KELLER_HEIGHT_VAR_NUM),
-                   static_cast<uint8_t>(ACCULEVEL_HEIGHT_RESOLUTION),
-                   KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME,
-                   ACCULEVEL_HEIGHT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerAcculevel_Height object - no action needed.
      */

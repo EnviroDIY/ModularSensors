@@ -360,17 +360,6 @@ class EverlightALSPT19_Voltage : public Variable {
                    ALSPT19_VOLTAGE_VAR_NAME, ALSPT19_VOLTAGE_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new EverlightALSPT19_Voltage object.
-     *
-     * @note This must be tied with a parent EverlightALSPT19 before it can be
-     * used.
-     */
-    EverlightALSPT19_Voltage()
-        : Variable(static_cast<uint8_t>(ALSPT19_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(ALSPT19_VOLTAGE_RESOLUTION),
-                   ALSPT19_VOLTAGE_VAR_NAME, ALSPT19_VOLTAGE_UNIT_NAME,
-                   ALSPT19_VOLTAGE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the EverlightALSPT19_Voltage object - no action needed.
      */
     ~EverlightALSPT19_Voltage() override = default;
@@ -403,17 +392,6 @@ class EverlightALSPT19_Current : public Variable {
                    static_cast<uint8_t>(ALSPT19_CURRENT_RESOLUTION),
                    ALSPT19_CURRENT_VAR_NAME, ALSPT19_CURRENT_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new EverlightALSPT19_Current object.
-     *
-     * @note This must be tied with a parent EverlightALSPT19 before it can be
-     * used.
-     */
-    EverlightALSPT19_Current()
-        : Variable(static_cast<uint8_t>(ALSPT19_CURRENT_VAR_NUM),
-                   static_cast<uint8_t>(ALSPT19_CURRENT_RESOLUTION),
-                   ALSPT19_CURRENT_VAR_NAME, ALSPT19_CURRENT_UNIT_NAME,
-                   ALSPT19_CURRENT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the EverlightALSPT19_Current object - no action needed.
      */
@@ -448,17 +426,6 @@ class EverlightALSPT19_Illuminance : public Variable {
                    static_cast<uint8_t>(ALSPT19_ILLUMINANCE_RESOLUTION),
                    ALSPT19_ILLUMINANCE_VAR_NAME, ALSPT19_ILLUMINANCE_UNIT_NAME,
                    varCode, uuid) {}
-    /**
-     * @brief Construct a new EverlightALSPT19_Illuminance object.
-     *
-     * @note This must be tied with a parent EverlightALSPT19 before it can be
-     * used.
-     */
-    EverlightALSPT19_Illuminance()
-        : Variable(static_cast<uint8_t>(ALSPT19_ILLUMINANCE_VAR_NUM),
-                   static_cast<uint8_t>(ALSPT19_ILLUMINANCE_RESOLUTION),
-                   ALSPT19_ILLUMINANCE_VAR_NAME, ALSPT19_ILLUMINANCE_UNIT_NAME,
-                   ALSPT19_ILLUMINANCE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the EverlightALSPT19_Illuminance object - no action
      * needed.

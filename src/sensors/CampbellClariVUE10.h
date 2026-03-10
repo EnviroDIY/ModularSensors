@@ -251,7 +251,6 @@ class CampbellClariVUE10 : public SDI12Sensors {
               CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
               CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
               CLARIVUE10_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the Campbell ClariVUE10 object
      */
@@ -289,18 +288,6 @@ class CampbellClariVUE10_Turbidity : public Variable {
                    CLARIVUE10_TURBIDITY_VAR_NAME,
                    CLARIVUE10_TURBIDITY_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new CampbellClariVUE10_Turbidity object.
-     *
-     * @note This must be tied with a parent CampbellClariVUE10 before it can be
-     * used.
-     */
-    CampbellClariVUE10_Turbidity()
-        : Variable(static_cast<uint8_t>(CLARIVUE10_TURBIDITY_VAR_NUM),
-                   static_cast<uint8_t>(CLARIVUE10_TURBIDITY_RESOLUTION),
-                   CLARIVUE10_TURBIDITY_VAR_NAME,
-                   CLARIVUE10_TURBIDITY_UNIT_NAME,
-                   CLARIVUE10_TURBIDITY_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the CampbellClariVUE10_Turbidity object - no action
      * needed.
      */
@@ -337,17 +324,6 @@ class CampbellClariVUE10_Temp : public Variable {
                    CLARIVUE10_TEMP_VAR_NAME, CLARIVUE10_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new CampbellClariVUE10_Temp object.
-     *
-     * @note This must be tied with a parent CampbellClariVUE10 before it can be
-     * used.
-     */
-    CampbellClariVUE10_Temp()
-        : Variable(static_cast<uint8_t>(CLARIVUE10_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(CLARIVUE10_TEMP_RESOLUTION),
-                   CLARIVUE10_TEMP_VAR_NAME, CLARIVUE10_TEMP_UNIT_NAME,
-                   CLARIVUE10_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the CampbellClariVUE10_Temp object - no action needed.
      */
     ~CampbellClariVUE10_Temp() override = default;
@@ -383,18 +359,6 @@ class CampbellClariVUE10_ErrorCode : public Variable {
                    static_cast<uint8_t>(CLARIVUE10_ERRORCODE_RESOLUTION),
                    CLARIVUE10_ERRORCODE_VAR_NAME,
                    CLARIVUE10_ERRORCODE_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new CampbellClariVUE10_ErrorCode object.
-     *
-     * @note This must be tied with a parent CampbellClariVUE10 before it can be
-     * used.
-     */
-    CampbellClariVUE10_ErrorCode()
-        : Variable(static_cast<uint8_t>(CLARIVUE10_ERRORCODE_VAR_NUM),
-                   static_cast<uint8_t>(CLARIVUE10_ERRORCODE_RESOLUTION),
-                   CLARIVUE10_ERRORCODE_VAR_NAME,
-                   CLARIVUE10_ERRORCODE_UNIT_NAME,
-                   CLARIVUE10_ERRORCODE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the CampbellClariVUE10_ErrorCode object - no action
      * needed.

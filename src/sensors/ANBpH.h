@@ -734,17 +734,6 @@ class ANBpH_pH : public Variable {
                    static_cast<uint8_t>(ANB_PH_PH_RESOLUTION),
                    ANB_PH_PH_VAR_NAME, ANB_PH_PH_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new ANBpH_pH object.
-     *
-     * @note This must be tied with a parent ANBpH before it can be
-     * used.
-     */
-    ANBpH_pH()
-        : Variable(static_cast<uint8_t>(ANB_PH_PH_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_PH_RESOLUTION),
-                   ANB_PH_PH_VAR_NAME, ANB_PH_PH_UNIT_NAME,
-                   ANB_PH_PH_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ANBpH_pH object - no action needed.
      */
     ~ANBpH_pH() override = default;
@@ -775,17 +764,6 @@ class ANBpH_Temp : public Variable {
                    ANB_PH_TEMP_VAR_NAME, ANB_PH_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new ANBpH_Temp object.
-     *
-     * @note This must be tied with a parent ANBpH before it can be
-     * used.
-     */
-    ANBpH_Temp()
-        : Variable(static_cast<uint8_t>(ANB_PH_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_TEMP_RESOLUTION),
-                   ANB_PH_TEMP_VAR_NAME, ANB_PH_TEMP_UNIT_NAME,
-                   ANB_PH_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ANBpH_Temp object - no action needed.
      */
     ~ANBpH_Temp() override = default;
@@ -815,17 +793,6 @@ class ANBpH_Salinity : public Variable {
                    static_cast<uint8_t>(ANB_PH_SALINITY_RESOLUTION),
                    ANB_PH_SALINITY_VAR_NAME, ANB_PH_SALINITY_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new ANBpH_Salinity object.
-     *
-     * @note This must be tied with a parent ANBpH object before it can be
-     * used.
-     */
-    ANBpH_Salinity()
-        : Variable(static_cast<uint8_t>(ANB_PH_SALINITY_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_SALINITY_RESOLUTION),
-                   ANB_PH_SALINITY_VAR_NAME, ANB_PH_SALINITY_UNIT_NAME,
-                   ANB_PH_SALINITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_Salinity() object - no action
      * needed.
@@ -859,16 +826,6 @@ class ANBpH_SpCond : public Variable {
                    ANB_PH_SPCOND_VAR_NAME, ANB_PH_SPCOND_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new ANBpH_SpCond object.
-     *
-     * @note This must be tied with a parent ANBpH object before it can be used.
-     */
-    ANBpH_SpCond()
-        : Variable(static_cast<uint8_t>(ANB_PH_SPCOND_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_SPCOND_RESOLUTION),
-                   ANB_PH_SPCOND_VAR_NAME, ANB_PH_SPCOND_UNIT_NAME,
-                   ANB_PH_SPCOND_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ANBpH_SpCond object - no action needed.
      */
     ~ANBpH_SpCond() override = default;
@@ -897,17 +854,6 @@ class ANBpH_EC : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(ANB_PH_EC_VAR_NUM),
                    static_cast<uint8_t>(ANB_PH_EC_RESOLUTION),
                    ANB_PH_EC_VAR_NAME, ANB_PH_EC_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new ANBpH_EC object.
-     *
-     * @note This must be tied with a parent ANBpH object before it can be
-     * used.
-     */
-    ANBpH_EC()
-        : Variable(static_cast<uint8_t>(ANB_PH_EC_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_EC_RESOLUTION),
-                   ANB_PH_EC_VAR_NAME, ANB_PH_EC_UNIT_NAME,
-                   ANB_PH_EC_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_EC object - no action needed.
      */
@@ -942,17 +888,6 @@ class ANBpH_HealthCode : public Variable {
                    static_cast<uint8_t>(ANB_PH_HEALTH_CODE_RESOLUTION),
                    ANB_PH_HEALTH_CODE_VAR_NAME, ANB_PH_HEALTH_CODE_UNIT_NAME,
                    varCode, uuid) {}
-    /**
-     * @brief Construct a new ANBpH_HealthCode object.
-     *
-     * @note This must be tied with a parent ANBpH object before it can be
-     * used.
-     */
-    ANBpH_HealthCode()
-        : Variable(static_cast<uint8_t>(ANB_PH_HEALTH_CODE_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_HEALTH_CODE_RESOLUTION),
-                   ANB_PH_HEALTH_CODE_VAR_NAME, ANB_PH_HEALTH_CODE_UNIT_NAME,
-                   ANB_PH_HEALTH_CODE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_HealthCode object - no action
      * needed.
@@ -989,18 +924,6 @@ class ANBpH_DiagnosticCode : public Variable {
                    ANB_PH_DIAGNOSTIC_CODE_VAR_NAME,
                    ANB_PH_DIAGNOSTIC_CODE_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new ANBpH_DiagnosticCode object.
-     *
-     * @note This must be tied with a parent ANBpH object before it can be
-     * used.
-     */
-    ANBpH_DiagnosticCode()
-        : Variable(static_cast<uint8_t>(ANB_PH_DIAGNOSTIC_CODE_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_DIAGNOSTIC_CODE_RESOLUTION),
-                   ANB_PH_DIAGNOSTIC_CODE_VAR_NAME,
-                   ANB_PH_DIAGNOSTIC_CODE_UNIT_NAME,
-                   ANB_PH_DIAGNOSTIC_CODE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ANBpH_DiagnosticCode object - no action
      * needed.
      */
@@ -1035,17 +958,6 @@ class ANBpH_StatusCode : public Variable {
                    static_cast<uint8_t>(ANB_PH_STATUS_CODE_RESOLUTION),
                    ANB_PH_STATUS_CODE_VAR_NAME, ANB_PH_STATUS_CODE_UNIT_NAME,
                    varCode, uuid) {}
-    /**
-     * @brief Construct a new ANBpH_StatusCode object.
-     *
-     * @note This must be tied with a parent ANBpH object before it can be
-     * used.
-     */
-    ANBpH_StatusCode()
-        : Variable(static_cast<uint8_t>(ANB_PH_STATUS_CODE_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_STATUS_CODE_RESOLUTION),
-                   ANB_PH_STATUS_CODE_VAR_NAME, ANB_PH_STATUS_CODE_UNIT_NAME,
-                   ANB_PH_STATUS_CODE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ANBpH_StatusCode object - no action
      * needed.

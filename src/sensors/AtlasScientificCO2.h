@@ -275,17 +275,6 @@ class AtlasScientificCO2_CO2 : public Variable {
                    static_cast<uint8_t>(ATLAS_CO2_RESOLUTION),
                    ATLAS_CO2_VAR_NAME, ATLAS_CO2_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new AtlasScientificCO2_CO2 object.
-     *
-     * @note This must be tied with a parent AtlasScientificCO2 before it can be
-     * used.
-     */
-    AtlasScientificCO2_CO2()
-        : Variable(static_cast<uint8_t>(ATLAS_CO2_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_CO2_RESOLUTION),
-                   ATLAS_CO2_VAR_NAME, ATLAS_CO2_UNIT_NAME,
-                   ATLAS_CO2_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AtlasScientificCO2_CO2 object - no action needed.
      */
     ~AtlasScientificCO2_CO2() override = default;
@@ -319,17 +308,6 @@ class AtlasScientificCO2_Temp : public Variable {
                    static_cast<uint8_t>(ATLAS_CO2TEMP_RESOLUTION),
                    ATLAS_CO2TEMP_VAR_NAME, ATLAS_CO2TEMP_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new AtlasScientificCO2_Temp object.
-     *
-     * @note This must be tied with a parent AtlasScientificCO2 before it can be
-     * used.
-     */
-    AtlasScientificCO2_Temp()
-        : Variable(static_cast<uint8_t>(ATLAS_CO2TEMP_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_CO2TEMP_RESOLUTION),
-                   ATLAS_CO2TEMP_VAR_NAME, ATLAS_CO2TEMP_UNIT_NAME,
-                   ATLAS_CO2TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificCO2_Temp object - no action needed.
      */

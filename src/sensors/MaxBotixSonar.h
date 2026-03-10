@@ -345,16 +345,6 @@ class MaxBotixSonar_Range : public Variable {
                    static_cast<uint8_t>(HRXL_RESOLUTION), HRXL_VAR_NAME,
                    HRXL_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new MaxBotixSonar_Range object.
-     *
-     * @note This must be tied with a parent MaxBotixSonar before it can be
-     * used.
-     */
-    MaxBotixSonar_Range()
-        : Variable(static_cast<uint8_t>(HRXL_VAR_NUM),
-                   static_cast<uint8_t>(HRXL_RESOLUTION), HRXL_VAR_NAME,
-                   HRXL_UNIT_NAME, HRXL_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the MaxBotixSonar_Range object - no action needed.
      */
     ~MaxBotixSonar_Range() override = default;

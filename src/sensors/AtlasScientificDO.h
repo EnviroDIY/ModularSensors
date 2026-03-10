@@ -285,17 +285,6 @@ class AtlasScientificDO_DOmgL : public Variable {
                    ATLAS_DOMGL_VAR_NAME, ATLAS_DOMGL_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new AtlasScientificDO_DOmgL object.
-     *
-     * @note This must be tied with a parent AtlasScientificDO before it can be
-     * used.
-     */
-    AtlasScientificDO_DOmgL()
-        : Variable(static_cast<uint8_t>(ATLAS_DOMGL_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_DOMGL_RESOLUTION),
-                   ATLAS_DOMGL_VAR_NAME, ATLAS_DOMGL_UNIT_NAME,
-                   ATLAS_DOMGL_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AtlasScientificDO_DOmgL object - no action needed.
      */
     ~AtlasScientificDO_DOmgL() override = default;
@@ -329,17 +318,6 @@ class AtlasScientificDO_DOpct : public Variable {
                    static_cast<uint8_t>(ATLAS_DOPCT_RESOLUTION),
                    ATLAS_DOPCT_VAR_NAME, ATLAS_DOPCT_UNIT_NAME, varCode, uuid) {
     }
-    /**
-     * @brief Construct a new AtlasScientificDO_DOpct object.
-     *
-     * @note This must be tied with a parent AtlasScientificDO before it can be
-     * used.
-     */
-    AtlasScientificDO_DOpct()
-        : Variable(static_cast<uint8_t>(ATLAS_DOPCT_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_DOPCT_RESOLUTION),
-                   ATLAS_DOPCT_VAR_NAME, ATLAS_DOPCT_UNIT_NAME,
-                   ATLAS_DOPCT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificDO_DOpct object - no action needed.
      */

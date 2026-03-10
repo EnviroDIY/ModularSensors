@@ -406,17 +406,6 @@ class YosemitechY4000_DOmgL : public Variable {
                    Y4000_DOMGL_VAR_NAME, Y4000_DOMGL_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new YosemitechY4000_DOmgL object.
-     *
-     * @note This must be tied with a parent YosemitechY4000 before it can be
-     * used.
-     */
-    YosemitechY4000_DOmgL()
-        : Variable(static_cast<uint8_t>(Y4000_DOMGL_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_DOMGL_RESOLUTION),
-                   Y4000_DOMGL_VAR_NAME, Y4000_DOMGL_UNIT_NAME,
-                   Y4000_DOMGL_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY4000_DOmgL object - no action needed.
      */
     ~YosemitechY4000_DOmgL() override = default;
@@ -449,17 +438,6 @@ class YosemitechY4000_Turbidity : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y4000_TURB_VAR_NUM),
                    static_cast<uint8_t>(Y4000_TURB_RESOLUTION),
                    Y4000_TURB_VAR_NAME, Y4000_TURB_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY4000_Turbidity object.
-     *
-     * @note This must be tied with a parent YosemitechY4000 before it can be
-     * used.
-     */
-    YosemitechY4000_Turbidity()
-        : Variable(static_cast<uint8_t>(Y4000_TURB_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_TURB_RESOLUTION),
-                   Y4000_TURB_VAR_NAME, Y4000_TURB_UNIT_NAME,
-                   Y4000_TURB_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_Turbidity object - no action needed.
      */
@@ -494,17 +472,6 @@ class YosemitechY4000_Cond : public Variable {
                    static_cast<uint8_t>(Y4000_COND_RESOLUTION),
                    Y4000_COND_VAR_NAME, Y4000_COND_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY4000_Cond object.
-     *
-     * @note This must be tied with a parent YosemitechY4000 before it can be
-     * used.
-     */
-    YosemitechY4000_Cond()
-        : Variable(static_cast<uint8_t>(Y4000_COND_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_COND_RESOLUTION),
-                   Y4000_COND_VAR_NAME, Y4000_COND_UNIT_NAME,
-                   Y4000_COND_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY4000_Cond object - no action needed.
      */
     ~YosemitechY4000_Cond() override = default;
@@ -537,16 +504,6 @@ class YosemitechY4000_pH : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y4000_PH_VAR_NUM),
                    static_cast<uint8_t>(Y4000_PH_RESOLUTION), Y4000_PH_VAR_NAME,
                    Y4000_PH_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY4000_pH object.
-     *
-     * @note This must be tied with a parent YosemitechY4000 before it can be
-     * used.
-     */
-    YosemitechY4000_pH()
-        : Variable(static_cast<uint8_t>(Y4000_PH_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_PH_RESOLUTION), Y4000_PH_VAR_NAME,
-                   Y4000_PH_UNIT_NAME, Y4000_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_pH object - no action needed.
      */
@@ -581,17 +538,6 @@ class YosemitechY4000_Temp : public Variable {
                    static_cast<uint8_t>(Y4000_TEMP_RESOLUTION),
                    Y4000_TEMP_VAR_NAME, Y4000_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY4000_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY4000 before it can be
-     * used.
-     */
-    YosemitechY4000_Temp()
-        : Variable(static_cast<uint8_t>(Y4000_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_TEMP_RESOLUTION),
-                   Y4000_TEMP_VAR_NAME, Y4000_TEMP_UNIT_NAME,
-                   Y4000_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY4000_Temp object - no action needed.
      */
     ~YosemitechY4000_Temp() override = default;
@@ -624,17 +570,6 @@ class YosemitechY4000_ORP : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y4000_ORP_VAR_NUM),
                    static_cast<uint8_t>(Y4000_ORP_RESOLUTION),
                    Y4000_ORP_VAR_NAME, Y4000_ORP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY4000_ORP object.
-     *
-     * @note This must be tied with a parent YosemitechY4000 before it can be
-     * used.
-     */
-    YosemitechY4000_ORP()
-        : Variable(static_cast<uint8_t>(Y4000_ORP_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_ORP_RESOLUTION),
-                   Y4000_ORP_VAR_NAME, Y4000_ORP_UNIT_NAME,
-                   Y4000_ORP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_ORP object - no action needed.
      */
@@ -670,17 +605,6 @@ class YosemitechY4000_Chlorophyll : public Variable {
                    Y4000_CHLORO_VAR_NAME, Y4000_CHLORO_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new YosemitechY4000_Chlorophyll object.
-     *
-     * @note This must be tied with a parent YosemitechY4000 before it can be
-     * used.
-     */
-    YosemitechY4000_Chlorophyll()
-        : Variable(static_cast<uint8_t>(Y4000_CHLORO_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_CHLORO_RESOLUTION),
-                   Y4000_CHLORO_VAR_NAME, Y4000_CHLORO_UNIT_NAME,
-                   Y4000_CHLORO_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY4000_Chlorophyll() object - no action
      * needed.
      */
@@ -714,17 +638,6 @@ class YosemitechY4000_BGA : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y4000_BGA_VAR_NUM),
                    static_cast<uint8_t>(Y4000_BGA_RESOLUTION),
                    Y4000_BGA_VAR_NAME, Y4000_BGA_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY4000_BGA object.
-     *
-     * @note This must be tied with a parent YosemitechY4000 before it can be
-     * used.
-     */
-    YosemitechY4000_BGA()
-        : Variable(static_cast<uint8_t>(Y4000_BGA_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_BGA_RESOLUTION),
-                   Y4000_BGA_VAR_NAME, Y4000_BGA_UNIT_NAME,
-                   Y4000_BGA_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY4000_BGA object - no action needed.
      */

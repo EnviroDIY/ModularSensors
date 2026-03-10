@@ -273,7 +273,6 @@ class MeterHydros21 : public SDI12Sensors {
               "MeterHydros21", HYDROS21_NUM_VARIABLES, HYDROS21_WARM_UP_TIME_MS,
               HYDROS21_STABILIZATION_TIME_MS, HYDROS21_MEASUREMENT_TIME_MS,
               HYDROS21_EXTRA_WAKE_TIME_MS, HYDROS21_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the Meter Hydros 21 object
      */
@@ -309,17 +308,6 @@ class MeterHydros21_Cond : public Variable {
                    HYDROS21_COND_VAR_NAME, HYDROS21_COND_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new MeterHydros21_Cond object.
-     *
-     * @note This must be tied with a parent MeterHydros21 before it can be
-     * used.
-     */
-    MeterHydros21_Cond()
-        : Variable(static_cast<uint8_t>(HYDROS21_COND_VAR_NUM),
-                   static_cast<uint8_t>(HYDROS21_COND_RESOLUTION),
-                   HYDROS21_COND_VAR_NAME, HYDROS21_COND_UNIT_NAME,
-                   HYDROS21_COND_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the MeterHydros21_Cond object - no action needed.
      */
     ~MeterHydros21_Cond() override = default;
@@ -354,17 +342,6 @@ class MeterHydros21_Temp : public Variable {
                    HYDROS21_TEMP_VAR_NAME, HYDROS21_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new MeterHydros21_Temp object.
-     *
-     * @note This must be tied with a parent MeterHydros21 before it can be
-     * used.
-     */
-    MeterHydros21_Temp()
-        : Variable(static_cast<uint8_t>(HYDROS21_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(HYDROS21_TEMP_RESOLUTION),
-                   HYDROS21_TEMP_VAR_NAME, HYDROS21_TEMP_UNIT_NAME,
-                   HYDROS21_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the MeterHydros21_Temp object - no action needed.
      */
     ~MeterHydros21_Temp() override = default;
@@ -398,17 +375,6 @@ class MeterHydros21_Depth : public Variable {
                    static_cast<uint8_t>(HYDROS21_DEPTH_RESOLUTION),
                    HYDROS21_DEPTH_VAR_NAME, HYDROS21_DEPTH_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new MeterHydros21_Depth object.
-     *
-     * @note This must be tied with a parent MeterHydros21 before it can be
-     * used.
-     */
-    MeterHydros21_Depth()
-        : Variable(static_cast<uint8_t>(HYDROS21_DEPTH_VAR_NUM),
-                   static_cast<uint8_t>(HYDROS21_DEPTH_RESOLUTION),
-                   HYDROS21_DEPTH_VAR_NAME, HYDROS21_DEPTH_UNIT_NAME,
-                   HYDROS21_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterHydros21_Depth object - no action needed.
      */

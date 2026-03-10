@@ -201,7 +201,6 @@ class AtlasScientificpH : public AtlasParent {
                       ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
                       ATLAS_PH_MEASUREMENT_TIME_MS,
                       ATLAS_PH_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the Atlas Scientific pH object
      */
@@ -238,16 +237,6 @@ class AtlasScientificpH_pH : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(ATLAS_PH_VAR_NUM),
                    static_cast<uint8_t>(ATLAS_PH_RESOLUTION), ATLAS_PH_VAR_NAME,
                    ATLAS_PH_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new AtlasScientificpH_pH object.
-     *
-     * @note This must be tied with a parent AtlasScientificpH before it can be
-     * used.
-     */
-    AtlasScientificpH_pH()
-        : Variable(static_cast<uint8_t>(ATLAS_PH_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_PH_RESOLUTION), ATLAS_PH_VAR_NAME,
-                   ATLAS_PH_UNIT_NAME, ATLAS_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificpH_pH object - no action needed.
      */

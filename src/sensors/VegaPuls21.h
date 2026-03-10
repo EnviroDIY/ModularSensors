@@ -294,7 +294,6 @@ class VegaPuls21 : public SDI12Sensors {
               VEGAPULS21_WARM_UP_TIME_MS, VEGAPULS21_STABILIZATION_TIME_MS,
               VEGAPULS21_MEASUREMENT_TIME_MS, VEGAPULS21_EXTRA_WAKE_TIME_MS,
               VEGAPULS21_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the VEGAPULS C 21 object
      */
@@ -330,17 +329,6 @@ class VegaPuls21_Stage : public Variable {
                    static_cast<uint8_t>(VEGAPULS21_STAGE_RESOLUTION),
                    VEGAPULS21_STAGE_VAR_NAME, VEGAPULS21_STAGE_UNIT_NAME,
                    varCode, uuid) {}
-    /**
-     * @brief Construct a new VegaPuls21_Stage object.
-     *
-     * @note This must be tied with a parent VegaPuls21 before it can be
-     * used.
-     */
-    VegaPuls21_Stage()
-        : Variable(static_cast<uint8_t>(VEGAPULS21_STAGE_VAR_NUM),
-                   static_cast<uint8_t>(VEGAPULS21_STAGE_RESOLUTION),
-                   VEGAPULS21_STAGE_VAR_NAME, VEGAPULS21_STAGE_UNIT_NAME,
-                   VEGAPULS21_STAGE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the VegaPuls21_Stage object - no action needed.
      */
@@ -378,17 +366,6 @@ class VegaPuls21_Distance : public Variable {
                    VEGAPULS21_DISTANCE_VAR_NAME, VEGAPULS21_DISTANCE_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new VegaPuls21_Distance object.
-     *
-     * @note This must be tied with a parent VegaPuls21 before it can be
-     * used.
-     */
-    VegaPuls21_Distance()
-        : Variable(static_cast<uint8_t>(VEGAPULS21_DISTANCE_VAR_NUM),
-                   static_cast<uint8_t>(VEGAPULS21_DISTANCE_RESOLUTION),
-                   VEGAPULS21_DISTANCE_VAR_NAME, VEGAPULS21_DISTANCE_UNIT_NAME,
-                   VEGAPULS21_DISTANCE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the VegaPuls21_Distance object - no action needed.
      */
     ~VegaPuls21_Distance() override = default;
@@ -422,17 +399,6 @@ class VegaPuls21_Temp : public Variable {
                    static_cast<uint8_t>(VEGAPULS21_TEMP_RESOLUTION),
                    VEGAPULS21_TEMP_VAR_NAME, VEGAPULS21_TEMP_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new VegaPuls21_Temp object.
-     *
-     * @note This must be tied with a parent VegaPuls21 before it can be
-     * used.
-     */
-    VegaPuls21_Temp()
-        : Variable(static_cast<uint8_t>(VEGAPULS21_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(VEGAPULS21_TEMP_RESOLUTION),
-                   VEGAPULS21_TEMP_VAR_NAME, VEGAPULS21_TEMP_UNIT_NAME,
-                   VEGAPULS21_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the VegaPuls21_Temp object - no action needed.
      */
@@ -470,18 +436,6 @@ class VegaPuls21_Reliability : public Variable {
                    VEGAPULS21_RELIABILITY_VAR_NAME,
                    VEGAPULS21_RELIABILITY_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new VegaPuls21_Reliability object.
-     *
-     * @note This must be tied with a parent VegaPuls21 before it can be
-     * used.
-     */
-    VegaPuls21_Reliability()
-        : Variable(static_cast<uint8_t>(VEGAPULS21_RELIABILITY_VAR_NUM),
-                   static_cast<uint8_t>(VEGAPULS21_RELIABILITY_RESOLUTION),
-                   VEGAPULS21_RELIABILITY_VAR_NAME,
-                   VEGAPULS21_RELIABILITY_UNIT_NAME,
-                   VEGAPULS21_RELIABILITY_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the VegaPuls21_Reliability object - no action
      * needed.
      */
@@ -518,18 +472,6 @@ class VegaPuls21_ErrorCode : public Variable {
                    static_cast<uint8_t>(VEGAPULS21_ERRORCODE_RESOLUTION),
                    VEGAPULS21_ERRORCODE_VAR_NAME,
                    VEGAPULS21_ERRORCODE_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new VegaPuls21_ErrorCode object.
-     *
-     * @note This must be tied with a parent VegaPuls21 before it can be
-     * used.
-     */
-    VegaPuls21_ErrorCode()
-        : Variable(static_cast<uint8_t>(VEGAPULS21_ERRORCODE_VAR_NUM),
-                   static_cast<uint8_t>(VEGAPULS21_ERRORCODE_RESOLUTION),
-                   VEGAPULS21_ERRORCODE_VAR_NAME,
-                   VEGAPULS21_ERRORCODE_UNIT_NAME,
-                   VEGAPULS21_ERRORCODE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the VegaPuls21_ErrorCode object - no action
      * needed.

@@ -370,16 +370,6 @@ class BoschBME280_Temp : public Variable {
                    BME280_TEMP_VAR_NAME, BME280_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new BoschBME280_Temp object.
-     *
-     * @note This must be tied with a parent BoschBME280 before it can be used.
-     */
-    BoschBME280_Temp()
-        : Variable(static_cast<uint8_t>(BME280_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(BME280_TEMP_RESOLUTION),
-                   BME280_TEMP_VAR_NAME, BME280_TEMP_UNIT_NAME,
-                   BME280_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the BoschBME280_Temp object - no action needed.
      */
     ~BoschBME280_Temp() override = default;
@@ -414,16 +404,6 @@ class BoschBME280_Humidity : public Variable {
                    static_cast<uint8_t>(BME280_HUMIDITY_RESOLUTION),
                    BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new BoschBME280_Humidity object.
-     *
-     * @note This must be tied with a parent BoschBME280 before it can be used.
-     */
-    BoschBME280_Humidity()
-        : Variable(static_cast<uint8_t>(BME280_HUMIDITY_VAR_NUM),
-                   static_cast<uint8_t>(BME280_HUMIDITY_RESOLUTION),
-                   BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME,
-                   BME280_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBME280_Humidity object - no action needed.
      */
@@ -460,16 +440,6 @@ class BoschBME280_Pressure : public Variable {
                    BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new BoschBME280_Pressure object.
-     *
-     * @note This must be tied with a parent BoschBME280 before it can be used.
-     */
-    BoschBME280_Pressure()
-        : Variable(static_cast<uint8_t>(BME280_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(BME280_PRESSURE_RESOLUTION),
-                   BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME,
-                   BME280_PRESSURE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the BoschBME280_Pressure object - no action needed.
      */
     ~BoschBME280_Pressure() override = default;
@@ -504,16 +474,6 @@ class BoschBME280_Altitude : public Variable {
                    static_cast<uint8_t>(BME280_ALTITUDE_RESOLUTION),
                    BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new BoschBME280_Altitude object.
-     *
-     * @note This must be tied with a parent BoschBME280 before it can be used.
-     */
-    BoschBME280_Altitude()
-        : Variable(static_cast<uint8_t>(BME280_ALTITUDE_VAR_NUM),
-                   static_cast<uint8_t>(BME280_ALTITUDE_RESOLUTION),
-                   BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME,
-                   BME280_ALTITUDE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBME280_Altitude object - no action needed.
      */

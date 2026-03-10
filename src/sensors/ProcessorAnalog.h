@@ -330,17 +330,6 @@ class ProcessorAnalog_Voltage : public Variable {
                    PROCESSOR_ANALOG_VAR_NAME, PROCESSOR_ANALOG_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new ProcessorAnalog_Voltage object.
-     *
-     * @note This must be tied with a parent ProcessorAnalog before it can be
-     * used.
-     */
-    ProcessorAnalog_Voltage()
-        : Variable(static_cast<uint8_t>(PROCESSOR_ANALOG_VAR_NUM),
-                   static_cast<uint8_t>(PROCESSOR_ANALOG_RESOLUTION),
-                   PROCESSOR_ANALOG_VAR_NAME, PROCESSOR_ANALOG_UNIT_NAME,
-                   PROCESSOR_ANALOG_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ProcessorAnalog_Voltage object - no action needed.
      */
     ~ProcessorAnalog_Voltage() override = default;

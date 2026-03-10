@@ -226,17 +226,6 @@ class YosemitechY520_Cond : public Variable {
                    static_cast<uint8_t>(Y520_COND_RESOLUTION),
                    Y520_COND_VAR_NAME, Y520_COND_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY520_Cond object.
-     *
-     * @note This must be tied with a parent YosemitechY520 before it can be
-     * used.
-     */
-    YosemitechY520_Cond()
-        : Variable(static_cast<uint8_t>(Y520_COND_VAR_NUM),
-                   static_cast<uint8_t>(Y520_COND_RESOLUTION),
-                   Y520_COND_VAR_NAME, Y520_COND_UNIT_NAME,
-                   Y520_COND_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY520_Cond object - no action needed.
      */
     ~YosemitechY520_Cond() override = default;
@@ -270,17 +259,6 @@ class YosemitechY520_Temp : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y520_TEMP_VAR_NUM),
                    static_cast<uint8_t>(Y520_TEMP_RESOLUTION),
                    Y520_TEMP_VAR_NAME, Y520_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY520_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY520 before it can be
-     * used.
-     */
-    YosemitechY520_Temp()
-        : Variable(static_cast<uint8_t>(Y520_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y520_TEMP_RESOLUTION),
-                   Y520_TEMP_VAR_NAME, Y520_TEMP_UNIT_NAME,
-                   Y520_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY520_Temp object - no action needed.
      */

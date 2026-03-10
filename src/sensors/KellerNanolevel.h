@@ -204,17 +204,6 @@ class KellerNanolevel_Pressure : public Variable {
                    KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new KellerNanolevel_Pressure object.
-     *
-     * @note This must be tied with a parent KellerNanolevel before it can be
-     * used.
-     */
-    KellerNanolevel_Pressure()
-        : Variable(static_cast<uint8_t>(KELLER_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(NANOLEVEL_PRESSURE_RESOLUTION),
-                   KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME,
-                   NANOLEVEL_PRESSURE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the KellerNanolevel_Pressure object - no action needed.
      */
     ~KellerNanolevel_Pressure() override = default;
@@ -250,17 +239,6 @@ class KellerNanolevel_Temp : public Variable {
                    KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new KellerNanolevel_Temp object.
-     *
-     * @note This must be tied with a parent KellerNanolevel before it can be
-     * used.
-     */
-    KellerNanolevel_Temp()
-        : Variable(static_cast<uint8_t>(KELLER_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(NANOLEVEL_TEMP_RESOLUTION),
-                   KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME,
-                   NANOLEVEL_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the KellerNanolevel_Temp object - no action needed.
      */
     ~KellerNanolevel_Temp() override = default;
@@ -295,17 +273,6 @@ class KellerNanolevel_Height : public Variable {
                    static_cast<uint8_t>(NANOLEVEL_HEIGHT_RESOLUTION),
                    KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new KellerNanolevel_Height object.
-     *
-     * @note This must be tied with a parent KellerNanolevel before it can be
-     * used.
-     */
-    KellerNanolevel_Height()
-        : Variable(static_cast<uint8_t>(KELLER_HEIGHT_VAR_NUM),
-                   static_cast<uint8_t>(NANOLEVEL_HEIGHT_RESOLUTION),
-                   KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME,
-                   NANOLEVEL_HEIGHT_DEFAULT_CODE) {}
     /**
      * @brief Destroy the KellerNanolevel_Height object - no action needed.
      */

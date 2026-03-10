@@ -217,6 +217,8 @@ This affects the following classes:
 
 ### Removed
 
+- **BREAKING** Removed all constructors for sensor-associated variables that don't include a pointer to the sensor.
+You now *must* create the sensor instance before creating the variable and tie the variable to the sensor when creating the variable.
 - Unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function.
 - Unnecessary copy doc calls for inherited functions and properties.
 - All overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.

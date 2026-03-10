@@ -581,17 +581,6 @@ class TEConnectivityMS5837_Temp : public Variable {
                    MS5837_TEMP_VAR_NAME, MS5837_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new TEConnectivityMS5837_Temp object.
-     *
-     * @note This must be tied with a parent TEConnectivityMS5837 before it can
-     * be used.
-     */
-    TEConnectivityMS5837_Temp()
-        : Variable(static_cast<uint8_t>(MS5837_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(MS5837_TEMP_RESOLUTION),
-                   MS5837_TEMP_VAR_NAME, MS5837_TEMP_UNIT_NAME,
-                   MS5837_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the TEConnectivityMS5837_Temp object - no action needed.
      */
     ~TEConnectivityMS5837_Temp() override = default;
@@ -626,17 +615,6 @@ class TEConnectivityMS5837_Pressure : public Variable {
                    static_cast<uint8_t>(MS5837_PRESSURE_RESOLUTION),
                    MS5837_PRESSURE_VAR_NAME, MS5837_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new TEConnectivityMS5837_Pressure object.
-     *
-     * @note This must be tied with a parent TEConnectivityMS5837 before it can
-     * be used.
-     */
-    TEConnectivityMS5837_Pressure()
-        : Variable(static_cast<uint8_t>(MS5837_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(MS5837_PRESSURE_RESOLUTION),
-                   MS5837_PRESSURE_VAR_NAME, MS5837_PRESSURE_UNIT_NAME,
-                   MS5837_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TEConnectivityMS5837_Pressure object - no action
      * needed.
@@ -674,17 +652,6 @@ class TEConnectivityMS5837_Depth : public Variable {
                    MS5837_DEPTH_VAR_NAME, MS5837_DEPTH_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new TEConnectivityMS5837_Depth object.
-     *
-     * @note This must be tied with a parent TEConnectivityMS5837 before it can
-     * be used.
-     */
-    TEConnectivityMS5837_Depth()
-        : Variable(static_cast<uint8_t>(MS5837_DEPTH_VAR_NUM),
-                   static_cast<uint8_t>(MS5837_DEPTH_RESOLUTION),
-                   MS5837_DEPTH_VAR_NAME, MS5837_DEPTH_UNIT_NAME,
-                   MS5837_DEPTH_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the TEConnectivityMS5837_Depth object - no action needed.
      */
     ~TEConnectivityMS5837_Depth() override = default;
@@ -719,17 +686,6 @@ class TEConnectivityMS5837_Altitude : public Variable {
                    static_cast<uint8_t>(MS5837_ALTITUDE_RESOLUTION),
                    MS5837_ALTITUDE_VAR_NAME, MS5837_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new TEConnectivityMS5837_Altitude object.
-     *
-     * @note This must be tied with a parent TEConnectivityMS5837 before it can
-     * be used.
-     */
-    TEConnectivityMS5837_Altitude()
-        : Variable(static_cast<uint8_t>(MS5837_ALTITUDE_VAR_NUM),
-                   static_cast<uint8_t>(MS5837_ALTITUDE_RESOLUTION),
-                   MS5837_ALTITUDE_VAR_NAME, MS5837_ALTITUDE_UNIT_NAME,
-                   MS5837_ALTITUDE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the TEConnectivityMS5837_Altitude object - no action
      * needed.

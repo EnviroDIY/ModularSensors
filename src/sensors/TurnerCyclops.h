@@ -443,17 +443,6 @@ class TurnerCyclops_Voltage : public Variable {
                    CYCLOPS_VOLTAGE_VAR_NAME, CYCLOPS_VOLTAGE_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new TurnerCyclops_Voltage object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Voltage()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_VOLTAGE_RESOLUTION),
-                   CYCLOPS_VOLTAGE_VAR_NAME, CYCLOPS_VOLTAGE_UNIT_NAME,
-                   CYCLOPS_VOLTAGE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the Turner Cyclops Voltage object - no action needed.
      */
     ~TurnerCyclops_Voltage() override = default;
@@ -502,17 +491,6 @@ class TurnerCyclops_Chlorophyll : public Variable {
                    "chlorophyllFluorescence", "microgramPerLiter", varCode,
                    uuid) {}
     /**
-     * @brief Construct a new TurnerCyclops_Chlorophyll object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Chlorophyll()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "chlorophyllFluorescence", "microgramPerLiter",
-                   "CyclopsChlorophyll") {}
-    /**
      * @brief Destroy the Turner Cyclops Chlorophyll variable object - no action
      * needed.
      */
@@ -560,17 +538,6 @@ class TurnerCyclops_Rhodamine : public Variable {
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "RhodamineFluorescence", "partPerBillion", varCode, uuid) {}
     /**
-     * @brief Construct a new TurnerCyclops_Rhodamine object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Rhodamine()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "RhodamineFluorescence", "partPerBillion",
-                   "CyclopsRhodamine") {}
-    /**
      * @brief Destroy the Turner Cyclops Rhodamine variable object - no action
      * needed.
      */
@@ -617,16 +584,6 @@ class TurnerCyclops_Fluorescein : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION), "fluorescein",
                    "partPerBillion", varCode, uuid) {}
-    /**
-     * @brief Construct a new TurnerCyclops_Fluorescein object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Fluorescein()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "fluorescein",
-                   "partPerBillion", "CyclopsFluorescein") {}
     /**
      * @brief Destroy the Turner Cyclops Fluorescein variable object - no action
      * needed.
@@ -677,17 +634,6 @@ class TurnerCyclops_Phycocyanin : public Variable {
                    "blue_GreenAlgae_Cyanobacteria_Phycocyanin",
                    "partPerBillion", varCode, uuid) {}
     /**
-     * @brief Construct a new TurnerCyclops_Phycocyanin object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Phycocyanin()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "blue_GreenAlgae_Cyanobacteria_Phycocyanin",
-                   "partPerBillion", "CyclopsPhycocyanin") {}
-    /**
      * @brief Destroy the Turner Cyclops Phycocyanin variable object - no action
      * needed.
      */
@@ -735,16 +681,6 @@ class TurnerCyclops_Phycoerythrin : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION), "phycoerythrin",
                    "partPerBillion", varCode, uuid) {}
-    /**
-     * @brief Construct a new TurnerCyclops_Phycoerythrin object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Phycoerythrin()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "phycoerythrin",
-                   "partPerBillion", "CyclopsPhycoerythrin") {}
     /**
      * @brief Destroy the Turner Cyclops Phycoerythrin variable object - no
      * action needed.
@@ -798,17 +734,6 @@ class TurnerCyclops_CDOM : public Variable {
                    "fluorescenceDissolvedOrganicMatter", "partPerBillion",
                    varCode, uuid) {}
     /**
-     * @brief Construct a new TurnerCyclops_CDOM object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_CDOM()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "fluorescenceDissolvedOrganicMatter", "partPerBillion",
-                   "CyclopsCDOM") {}
-    /**
      * @brief Destroy the Turner Cyclops CDOM variable object - no action
      * needed.
      */
@@ -858,17 +783,6 @@ class TurnerCyclops_CrudeOil : public Variable {
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "petroleumHydrocarbonTotal", "partPerBillion", varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new TurnerCyclops_CrudeOil object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_CrudeOil()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "petroleumHydrocarbonTotal", "partPerBillion",
-                   "CyclopsCrudeOil") {}
     /**
      * @brief Destroy the Turner Cyclops CrudeOil variable object - no action
      * needed.
@@ -920,17 +834,6 @@ class TurnerCyclops_Brighteners : public Variable {
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "opticalBrighteners", "partPerBillion", varCode, uuid) {}
     /**
-     * @brief Construct a new TurnerCyclops_Brighteners object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Brighteners()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "opticalBrighteners", "partPerBillion",
-                   "CyclopsOpticalBrighteners") {}
-    /**
      * @brief Destroy the Turner Cyclops Brighteners object - no action needed.
      */
     ~TurnerCyclops_Brighteners() override = default;
@@ -976,16 +879,6 @@ class TurnerCyclops_Turbidity : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION), "Turbidity",
                    "nephelometricTurbidityUnit", varCode, uuid) {}
-    /**
-     * @brief Construct a new TurnerCyclops_Turbidity object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Turbidity()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "Turbidity",
-                   "nephelometricTurbidityUnit", "CyclopsTurbidity") {}
     /**
      * @brief Destroy the Turner Cyclops Turbidity variable object - no action
      * needed.
@@ -1035,16 +928,6 @@ class TurnerCyclops_PTSA : public Variable {
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION), "ptsa",
                    "partPerBillion", varCode, uuid) {}
     /**
-     * @brief Construct a new TurnerCyclops_PTSA object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_PTSA()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "ptsa",
-                   "partPerBillion", "CyclopsPTSA") {}
-    /**
      * @brief Destroy the Turner Cyclops PTSA variable object - no action
      * needed.
      */
@@ -1093,16 +976,6 @@ class TurnerCyclops_BTEX : public Variable {
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION), "btex",
                    "partPerMillion", varCode, uuid) {}
     /**
-     * @brief Construct a new TurnerCyclops_BTEX object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_BTEX()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "btex",
-                   "partPerMillion", "CyclopsBTEX") {}
-    /**
      * @brief Destroy the Turner Cyclops BTEX variable object - no action
      * needed.
      */
@@ -1149,16 +1022,6 @@ class TurnerCyclops_Tryptophan : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION), "tryptophan",
                    "partPerBillion", varCode, uuid) {}
-    /**
-     * @brief Construct a new TurnerCyclops_Tryptophan object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_Tryptophan()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "tryptophan",
-                   "partPerBillion", "CyclopsTryptophan") {}
     /**
      * @brief Destroy the Turner Cyclops Tryptophan variable object - no action
      * needed.
@@ -1208,17 +1071,6 @@ class TurnerCyclops_RedChlorophyll : public Variable {
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
                    "chlorophyllFluorescence", "microgramPerLiter", varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new TurnerCyclops_RedChlorophyll object.
-     *
-     * @note This must be tied with a parent TurnerCyclops before it can be
-     * used.
-     */
-    TurnerCyclops_RedChlorophyll()
-        : Variable(static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "chlorophyllFluorescence", "microgramPerLiter",
-                   "CyclopsRedChlorophyll") {}
     /**
      * @brief Destroy the Turner Cyclops Red Chlorophyll variable object - no
      * action needed.

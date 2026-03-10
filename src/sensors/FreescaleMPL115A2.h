@@ -288,17 +288,6 @@ class FreescaleMPL115A2_Temp : public Variable {
                    MPL115A2_TEMP_VAR_NAME, MPL115A2_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new FreescaleMPL115A2_Temp object.
-     *
-     * @note This must be tied with a parent FreescaleMPL115A2 before it can be
-     * used.
-     */
-    FreescaleMPL115A2_Temp()
-        : Variable(static_cast<uint8_t>(MPL115A2_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(MPL115A2_TEMP_RESOLUTION),
-                   MPL115A2_TEMP_VAR_NAME, MPL115A2_TEMP_UNIT_NAME,
-                   MPL115A2_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the FreescaleMPL115A2_Temp object - no action needed.
      */
     ~FreescaleMPL115A2_Temp() override = default;
@@ -341,17 +330,6 @@ class FreescaleMPL115A2_Pressure : public Variable {
                    static_cast<uint8_t>(MPL115A2_PRESSURE_RESOLUTION),
                    MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
-    /**
-     * @brief Construct a new FreescaleMPL115A2_Pressure object.
-     *
-     * @note This must be tied with a parent FreescaleMPL115A2 before it can be
-     * used.
-     */
-    FreescaleMPL115A2_Pressure()
-        : Variable(static_cast<uint8_t>(MPL115A2_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(MPL115A2_PRESSURE_RESOLUTION),
-                   MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
-                   MPL115A2_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the FreescaleMPL115A2_Pressure object - no action needed.
      */

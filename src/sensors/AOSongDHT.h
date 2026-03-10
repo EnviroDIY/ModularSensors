@@ -309,16 +309,6 @@ class AOSongDHT_Humidity : public Variable {
                    DHT_HUMIDITY_VAR_NAME, DHT_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new AOSongDHT_Humidity object.
-     *
-     * @note This must be tied with a parent AOSongDHT before it can be used.
-     */
-    AOSongDHT_Humidity()
-        : Variable(static_cast<uint8_t>(DHT_HUMIDITY_VAR_NUM),
-                   static_cast<uint8_t>(DHT_HUMIDITY_RESOLUTION),
-                   DHT_HUMIDITY_VAR_NAME, DHT_HUMIDITY_UNIT_NAME,
-                   DHT_HUMIDITY_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AOSongDHT_Humidity object - no action needed.
      */
     ~AOSongDHT_Humidity() override = default;
@@ -351,15 +341,6 @@ class AOSongDHT_Temp : public Variable {
                    static_cast<uint8_t>(DHT_TEMP_RESOLUTION), DHT_TEMP_VAR_NAME,
                    DHT_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new AOSongDHT_Temp object.
-     *
-     * @note This must be tied with a parent AOSongDHT before it can be used.
-     */
-    AOSongDHT_Temp()
-        : Variable(static_cast<uint8_t>(DHT_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(DHT_TEMP_RESOLUTION), DHT_TEMP_VAR_NAME,
-                   DHT_TEMP_UNIT_NAME, DHT_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
     ~AOSongDHT_Temp() override = default;
@@ -391,15 +372,6 @@ class AOSongDHT_HI : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(DHT_HI_VAR_NUM),
                    static_cast<uint8_t>(DHT_HI_RESOLUTION), DHT_HI_VAR_NAME,
                    DHT_HI_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new AOSongDHT_HI object.
-     *
-     * @note This must be tied with a parent AOSongDHT before it can be used.
-     */
-    AOSongDHT_HI()
-        : Variable(static_cast<uint8_t>(DHT_HI_VAR_NUM),
-                   static_cast<uint8_t>(DHT_HI_RESOLUTION), DHT_HI_VAR_NAME,
-                   DHT_HI_UNIT_NAME, DHT_HI_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongDHT_HI object - no action needed.
      */

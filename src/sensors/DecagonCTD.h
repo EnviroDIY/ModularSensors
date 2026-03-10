@@ -252,7 +252,6 @@ class DecagonCTD : public SDI12Sensors {
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
                        CTD_EXTRA_WAKE_TIME_MS, CTD_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the Decagon CTD object
      */
@@ -286,15 +285,6 @@ class DecagonCTD_Cond : public Variable {
                    static_cast<uint8_t>(CTD_COND_RESOLUTION), CTD_COND_VAR_NAME,
                    CTD_COND_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new DecagonCTD_Cond object.
-     *
-     * @note This must be tied with a parent DecagonCTD before it can be used.
-     */
-    DecagonCTD_Cond()
-        : Variable(static_cast<uint8_t>(CTD_COND_VAR_NUM),
-                   static_cast<uint8_t>(CTD_COND_RESOLUTION), CTD_COND_VAR_NAME,
-                   CTD_COND_UNIT_NAME, CTD_COND_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the DecagonCTD_Cond object - no action needed.
      */
     ~DecagonCTD_Cond() override = default;
@@ -327,15 +317,6 @@ class DecagonCTD_Temp : public Variable {
                    static_cast<uint8_t>(CTD_TEMP_RESOLUTION), CTD_TEMP_VAR_NAME,
                    CTD_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new DecagonCTD_Temp object.
-     *
-     * @note This must be tied with a parent DecagonCTD before it can be used.
-     */
-    DecagonCTD_Temp()
-        : Variable(static_cast<uint8_t>(CTD_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(CTD_TEMP_RESOLUTION), CTD_TEMP_VAR_NAME,
-                   CTD_TEMP_UNIT_NAME, CTD_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the DecagonCTD_Temp object - no action needed.
      */
     ~DecagonCTD_Temp() override = default;
@@ -367,16 +348,6 @@ class DecagonCTD_Depth : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(CTD_DEPTH_VAR_NUM),
                    static_cast<uint8_t>(CTD_DEPTH_RESOLUTION),
                    CTD_DEPTH_VAR_NAME, CTD_DEPTH_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new DecagonCTD_Depth object.
-     *
-     * @note This must be tied with a parent DecagonCTD before it can be used.
-     */
-    DecagonCTD_Depth()
-        : Variable(static_cast<uint8_t>(CTD_DEPTH_VAR_NUM),
-                   static_cast<uint8_t>(CTD_DEPTH_RESOLUTION),
-                   CTD_DEPTH_VAR_NAME, CTD_DEPTH_UNIT_NAME,
-                   CTD_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the DecagonCTD_Depth object - no action needed.
      */

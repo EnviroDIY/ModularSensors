@@ -238,17 +238,6 @@ class AtlasScientificRTD_Temp : public Variable {
                    static_cast<uint8_t>(ATLAS_RTD_RESOLUTION),
                    ATLAS_RTD_VAR_NAME, ATLAS_RTD_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new AtlasScientificRTD_Temp object.
-     *
-     * @note This must be tied with a parent AtlasScientificRTD before it can be
-     * used.
-     */
-    AtlasScientificRTD_Temp()
-        : Variable(static_cast<uint8_t>(ATLAS_RTD_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_RTD_RESOLUTION),
-                   ATLAS_RTD_VAR_NAME, ATLAS_RTD_UNIT_NAME,
-                   ATLAS_RTD_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AtlasScientificRTD_Temp object - no action needed.
      */
     ~AtlasScientificRTD_Temp() override = default;

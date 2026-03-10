@@ -369,16 +369,6 @@ class MeterTeros11_Count : public Variable {
                    TEROS11_COUNT_VAR_NAME, TEROS11_COUNT_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new MeterTeros11_Count object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_Count()
-        : Variable(static_cast<uint8_t>(TEROS11_COUNT_VAR_NUM),
-                   static_cast<uint8_t>(TEROS11_COUNT_RESOLUTION),
-                   TEROS11_COUNT_VAR_NAME, TEROS11_COUNT_UNIT_NAME,
-                   TEROS11_COUNT_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the MeterTeros11_Count object - no action needed.
      */
     ~MeterTeros11_Count() override = default;
@@ -412,16 +402,6 @@ class MeterTeros11_Temp : public Variable {
                    static_cast<uint8_t>(TEROS11_TEMP_RESOLUTION),
                    TEROS11_TEMP_VAR_NAME, TEROS11_TEMP_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new MeterTeros11_Temp object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_Temp()
-        : Variable(static_cast<uint8_t>(TEROS11_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(TEROS11_TEMP_RESOLUTION),
-                   TEROS11_TEMP_VAR_NAME, TEROS11_TEMP_UNIT_NAME,
-                   TEROS11_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterTeros11_Temp object - no action needed.
      */
@@ -457,16 +437,6 @@ class MeterTeros11_Ea : public Variable {
                    static_cast<uint8_t>(TEROS11_EA_RESOLUTION),
                    TEROS11_EA_VAR_NAME, TEROS11_EA_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new MeterTeros11_Ea object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_Ea()
-        : Variable(static_cast<uint8_t>(TEROS11_EA_VAR_NUM),
-                   static_cast<uint8_t>(TEROS11_EA_RESOLUTION),
-                   TEROS11_EA_VAR_NAME, TEROS11_EA_UNIT_NAME,
-                   TEROS11_EA_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the MeterTeros11_Ea object - no action needed.
      */
     ~MeterTeros11_Ea() override = default;
@@ -500,16 +470,6 @@ class MeterTeros11_VWC : public Variable {
                    static_cast<uint8_t>(TEROS11_VWC_RESOLUTION),
                    TEROS11_VWC_VAR_NAME, TEROS11_VWC_UNIT_NAME, varCode, uuid) {
     }
-    /**
-     * @brief Construct a new MeterTeros11_VWC object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_VWC()
-        : Variable(static_cast<uint8_t>(TEROS11_VWC_VAR_NUM),
-                   static_cast<uint8_t>(TEROS11_VWC_RESOLUTION),
-                   TEROS11_VWC_VAR_NAME, TEROS11_VWC_UNIT_NAME,
-                   TEROS11_VWC_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterTeros11_VWC object - no action needed.
      */

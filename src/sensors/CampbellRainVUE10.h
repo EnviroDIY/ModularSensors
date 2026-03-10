@@ -290,7 +290,6 @@ class CampbellRainVUE10 : public SDI12Sensors {
               RAINVUE10_WARM_UP_TIME_MS, RAINVUE10_STABILIZATION_TIME_MS,
               RAINVUE10_MEASUREMENT_TIME_MS, RAINVUE10_EXTRA_WAKE_TIME_MS,
               RAINVUE10_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the Campbell RainVUE10 object
      */
@@ -328,18 +327,6 @@ class CampbellRainVUE10_Precipitation : public Variable {
                    RAINVUE10_PRECIPITATION_VAR_NAME,
                    RAINVUE10_PRECIPITATION_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new CampbellRainVUE10_Precipitation object.
-     *
-     * @note This must be tied with a parent CampbellRainVUE10 before it can be
-     * used.
-     */
-    CampbellRainVUE10_Precipitation()
-        : Variable(static_cast<uint8_t>(RAINVUE10_PRECIPITATION_VAR_NUM),
-                   static_cast<uint8_t>(RAINVUE10_PRECIPITATION_RESOLUTION),
-                   RAINVUE10_PRECIPITATION_VAR_NAME,
-                   RAINVUE10_PRECIPITATION_UNIT_NAME,
-                   RAINVUE10_PRECIPITATION_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the CampbellRainVUE10_Precipitation object - no action
      * needed.
      */
@@ -376,17 +363,6 @@ class CampbellRainVUE10_Tips : public Variable {
                    RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new CampbellRainVUE10_Tips object.
-     *
-     * @note This must be tied with a parent CampbellRainVUE10 before it can be
-     * used.
-     */
-    CampbellRainVUE10_Tips()
-        : Variable(static_cast<uint8_t>(RAINVUE10_TIPS_VAR_NUM),
-                   static_cast<uint8_t>(RAINVUE10_TIPS_RESOLUTION),
-                   RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME,
-                   RAINVUE10_TIPS_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the CampbellRainVUE10_Tips object - no action needed.
      */
     ~CampbellRainVUE10_Tips() override = default;
@@ -422,18 +398,6 @@ class CampbellRainVUE10_RainRateAve : public Variable {
                    static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_RESOLUTION),
                    RAINVUE10_RAINRATEAVE_VAR_NAME,
                    RAINVUE10_RAINRATEAVE_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new CampbellRainVUE10_RainRateAve object.
-     *
-     * @note This must be tied with a parent CampbellRainVUE10 before it can be
-     * used.
-     */
-    CampbellRainVUE10_RainRateAve()
-        : Variable(static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_VAR_NUM),
-                   static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_RESOLUTION),
-                   RAINVUE10_RAINRATEAVE_VAR_NAME,
-                   RAINVUE10_RAINRATEAVE_UNIT_NAME,
-                   RAINVUE10_RAINRATEAVE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the CampbellRainVUE10_RainRateAve object - no action
      * needed.
@@ -472,18 +436,6 @@ class CampbellRainVUE10_RainRateMax : public Variable {
                    static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_RESOLUTION),
                    RAINVUE10_RAINRATEMAX_VAR_NAME,
                    RAINVUE10_RAINRATEMAX_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new CampbellRainVUE10_RainRateMax object.
-     *
-     * @note This must be tied with a parent CampbellRainVUE10 before it can be
-     * used.
-     */
-    CampbellRainVUE10_RainRateMax()
-        : Variable(static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_VAR_NUM),
-                   static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_RESOLUTION),
-                   RAINVUE10_RAINRATEMAX_VAR_NAME,
-                   RAINVUE10_RAINRATEMAX_UNIT_NAME,
-                   RAINVUE10_RAINRATEMAX_DEFAULT_CODE) {}
     /**
      * @brief Destroy the CampbellRainVUE10_RainRateMax object - no action
      * needed.

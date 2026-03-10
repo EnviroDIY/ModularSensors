@@ -253,17 +253,6 @@ class YosemitechY560_NH4_N : public Variable {
                    static_cast<uint8_t>(Y560_NH4_N_RESOLUTION),
                    Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY560_NH4_N object.
-     *
-     * @note This must be tied with a parent YosemitechY560 before it can be
-     * used.
-     */
-    YosemitechY560_NH4_N()
-        : Variable(static_cast<uint8_t>(Y560_NH4_N_VAR_NUM),
-                   static_cast<uint8_t>(Y560_NH4_N_RESOLUTION),
-                   Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME,
-                   Y560_NH4_N_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY560_NH4_N object - no action needed.
      */
     ~YosemitechY560_NH4_N() override = default;
@@ -298,17 +287,6 @@ class YosemitechY560_Temp : public Variable {
                    static_cast<uint8_t>(Y560_TEMP_RESOLUTION),
                    Y560_TEMP_VAR_NAME, Y560_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY560_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY560 before it can be
-     * used.
-     */
-    YosemitechY560_Temp()
-        : Variable(static_cast<uint8_t>(Y560_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y560_TEMP_RESOLUTION),
-                   Y560_TEMP_VAR_NAME, Y560_TEMP_UNIT_NAME,
-                   Y560_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY560_Temp object - no action needed.
      */
     ~YosemitechY560_Temp() override = default;
@@ -342,16 +320,6 @@ class YosemitechY560_pH : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y560_PH_VAR_NUM),
                    static_cast<uint8_t>(Y560_PH_RESOLUTION), Y560_PH_VAR_NAME,
                    Y560_PH_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY560_pH object.
-     *
-     * @note This must be tied with a parent YosemitechY560 before it can be
-     * used.
-     */
-    YosemitechY560_pH()
-        : Variable(static_cast<uint8_t>(Y560_PH_VAR_NUM),
-                   static_cast<uint8_t>(Y560_PH_RESOLUTION), Y560_PH_VAR_NAME,
-                   Y560_PH_UNIT_NAME, Y560_PH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY560_pH object - no action needed.
      */

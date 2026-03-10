@@ -228,16 +228,6 @@ class YosemitechY533_ORP : public Variable {
                    static_cast<uint8_t>(Y533_ORP_RESOLUTION), Y533_ORP_VAR_NAME,
                    Y533_ORP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY533_ORP object.
-     *
-     * @note This must be tied with a parent YosemitechY533 before it can be
-     * used.
-     */
-    YosemitechY533_ORP()
-        : Variable(static_cast<uint8_t>(Y533_ORP_VAR_NUM),
-                   static_cast<uint8_t>(Y533_ORP_RESOLUTION), Y533_ORP_VAR_NAME,
-                   Y533_ORP_UNIT_NAME, Y533_ORP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY533_ORP object - no action needed.
      */
     ~YosemitechY533_ORP() override = default;
@@ -271,17 +261,6 @@ class YosemitechY533_Temp : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y533_TEMP_VAR_NUM),
                    static_cast<uint8_t>(Y533_TEMP_RESOLUTION),
                    Y533_TEMP_VAR_NAME, Y533_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY533_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY533 before it can be
-     * used.
-     */
-    YosemitechY533_Temp()
-        : Variable(static_cast<uint8_t>(Y533_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y533_TEMP_RESOLUTION),
-                   Y533_TEMP_VAR_NAME, Y533_TEMP_UNIT_NAME,
-                   Y533_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY533_Temp object - no action needed.
      */

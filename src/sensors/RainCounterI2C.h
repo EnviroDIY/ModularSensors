@@ -346,17 +346,6 @@ class RainCounterI2C_Tips : public Variable {
                    BUCKET_TIPS_VAR_NAME, BUCKET_TIPS_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new RainCounterI2C_Tips object.
-     *
-     * @note This must be tied with a parent RainCounterI2C before it can be
-     * used.
-     */
-    RainCounterI2C_Tips()
-        : Variable(static_cast<uint8_t>(BUCKET_TIPS_VAR_NUM),
-                   static_cast<uint8_t>(BUCKET_TIPS_RESOLUTION),
-                   BUCKET_TIPS_VAR_NAME, BUCKET_TIPS_UNIT_NAME,
-                   BUCKET_TIPS_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the RainCounterI2C_Tips object - no action needed.
      */
     ~RainCounterI2C_Tips() override = default;
@@ -389,17 +378,6 @@ class RainCounterI2C_Depth : public Variable {
                    static_cast<uint8_t>(BUCKET_RAIN_RESOLUTION),
                    BUCKET_RAIN_VAR_NAME, BUCKET_RAIN_UNIT_NAME, varCode, uuid) {
     }
-    /**
-     * @brief Construct a new RainCounterI2C_Depth object.
-     *
-     * @note This must be tied with a parent RainCounterI2C before it can be
-     * used.
-     */
-    RainCounterI2C_Depth()
-        : Variable(static_cast<uint8_t>(BUCKET_RAIN_VAR_NUM),
-                   static_cast<uint8_t>(BUCKET_RAIN_RESOLUTION),
-                   BUCKET_RAIN_VAR_NAME, BUCKET_RAIN_UNIT_NAME,
-                   BUCKET_RAIN_DEFAULT_CODE) {}
     /**
      * @brief Destroy the RainCounterI2C_Depth object - no action needed.
      */

@@ -394,17 +394,6 @@ class ProcessorStats_Battery : public Variable {
                    PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new ProcessorStats_Battery object.
-     *
-     * @note This must be tied with a parent ProcessorStats before it can be
-     * used.
-     */
-    ProcessorStats_Battery()
-        : Variable(static_cast<uint8_t>(PROCESSOR_BATTERY_VAR_NUM),
-                   static_cast<uint8_t>(PROCESSOR_BATTERY_RESOLUTION),
-                   PROCESSOR_BATTERY_VAR_NAME, PROCESSOR_BATTERY_UNIT_NAME,
-                   PROCESSOR_BATTERY_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ProcessorStats_Battery object - no action needed.
      */
     ~ProcessorStats_Battery() override = default;
@@ -447,17 +436,6 @@ class ProcessorStats_FreeRam : public Variable {
                    PROCESSOR_RAM_VAR_NAME, PROCESSOR_RAM_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new ProcessorStats_FreeRam object.
-     *
-     * @note This must be tied with a parent ProcessorStats before it can be
-     * used.
-     */
-    ProcessorStats_FreeRam()
-        : Variable(static_cast<uint8_t>(PROCESSOR_RAM_VAR_NUM),
-                   static_cast<uint8_t>(PROCESSOR_RAM_RESOLUTION),
-                   PROCESSOR_RAM_VAR_NAME, PROCESSOR_RAM_UNIT_NAME,
-                   PROCESSOR_RAM_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ProcessorStats_FreeRam object - no action needed.
      */
     ~ProcessorStats_FreeRam() override = default;
@@ -495,17 +473,6 @@ class ProcessorStats_SampleNumber : public Variable {
                    static_cast<uint8_t>(PROCESSOR_SAMPNUM_RESOLUTION),
                    PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
                    varCode, uuid) {}
-    /**
-     * @brief Construct a new ProcessorStats_SampleNumber object.
-     *
-     * @note This must be tied with a parent ProcessorStats before it can be
-     * used.
-     */
-    ProcessorStats_SampleNumber()
-        : Variable(static_cast<uint8_t>(PROCESSOR_SAMPNUM_VAR_NUM),
-                   static_cast<uint8_t>(PROCESSOR_SAMPNUM_RESOLUTION),
-                   PROCESSOR_SAMPNUM_VAR_NAME, PROCESSOR_SAMPNUM_UNIT_NAME,
-                   PROCESSOR_SAMPNUM_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ProcessorStats_SampleNumber() object - no action
      * needed.
@@ -546,17 +513,6 @@ class ProcessorStats_ResetCode : public Variable {
                    static_cast<uint8_t>(PROCESSOR_RESET_RESOLUTION),
                    PROCESSOR_RESET_VAR_NAME, PROCESSOR_RESET_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new ProcessorStats_ResetCode object.
-     *
-     * @note This must be tied with a parent ProcessorStats before it can be
-     * used.
-     */
-    ProcessorStats_ResetCode()
-        : Variable(static_cast<uint8_t>(PROCESSOR_RESET_VAR_NUM),
-                   static_cast<uint8_t>(PROCESSOR_RESET_RESOLUTION),
-                   PROCESSOR_RESET_VAR_NAME, PROCESSOR_RESET_UNIT_NAME,
-                   PROCESSOR_RESET_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ProcessorStats_ResetCode object - no action needed.
      */

@@ -283,16 +283,6 @@ class AOSongAM2315_Humidity : public Variable {
                    AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new AOSongAM2315_Humidity object.
-     *
-     * @note This must be tied with a parent AOSongAM2315 before it can be used.
-     */
-    AOSongAM2315_Humidity()
-        : Variable(static_cast<uint8_t>(AM2315_HUMIDITY_VAR_NUM),
-                   static_cast<uint8_t>(AM2315_HUMIDITY_RESOLUTION),
-                   AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME,
-                   AM2315_HUMIDITY_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AOSongAM2315_Humidity object - no action needed.
      */
     ~AOSongAM2315_Humidity() override = default;
@@ -324,16 +314,6 @@ class AOSongAM2315_Temp : public Variable {
                    static_cast<uint8_t>(AM2315_TEMP_RESOLUTION),
                    AM2315_TEMP_VAR_NAME, AM2315_TEMP_UNIT_NAME, varCode, uuid) {
     }
-    /**
-     * @brief Construct a new AOSongAM2315_Temp object.
-     *
-     * @note This must be tied with a parent AOSongAM2315 before it can be used.
-     */
-    AOSongAM2315_Temp()
-        : Variable(static_cast<uint8_t>(AM2315_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(AM2315_TEMP_RESOLUTION),
-                   AM2315_TEMP_VAR_NAME, AM2315_TEMP_UNIT_NAME,
-                   AM2315_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AOSongAM2315_Temp object - no action needed.
      */

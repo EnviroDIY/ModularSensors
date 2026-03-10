@@ -347,17 +347,6 @@ class AtlasScientificEC_Cond : public Variable {
                    static_cast<uint8_t>(ATLAS_COND_RESOLUTION),
                    ATLAS_COND_VAR_NAME, ATLAS_COND_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new AtlasScientificEC_Cond object.
-     *
-     * @note This must be tied with a parent AtlasScientificEC before it can be
-     * used.
-     */
-    AtlasScientificEC_Cond()
-        : Variable(static_cast<uint8_t>(ATLAS_COND_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_COND_RESOLUTION),
-                   ATLAS_COND_VAR_NAME, ATLAS_COND_UNIT_NAME,
-                   ATLAS_COND_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AtlasScientificEC_Cond object - no action needed.
      */
     ~AtlasScientificEC_Cond() override = default;
@@ -390,17 +379,6 @@ class AtlasScientificEC_TDS : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(ATLAS_TDS_VAR_NUM),
                    static_cast<uint8_t>(ATLAS_TDS_RESOLUTION),
                    ATLAS_TDS_VAR_NAME, ATLAS_TDS_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new AtlasScientificEC_TDS object.
-     *
-     * @note This must be tied with a parent AtlasScientificEC before it can be
-     * used.
-     */
-    AtlasScientificEC_TDS()
-        : Variable(static_cast<uint8_t>(ATLAS_TDS_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_TDS_RESOLUTION),
-                   ATLAS_TDS_VAR_NAME, ATLAS_TDS_UNIT_NAME,
-                   ATLAS_TDS_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificEC_TDS object - no action needed.
      */
@@ -436,17 +414,6 @@ class AtlasScientificEC_Salinity : public Variable {
                    ATLAS_SALINITY_VAR_NAME, ATLAS_SALINITY_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new AtlasScientificEC_Salinity object.
-     *
-     * @note This must be tied with a parent AtlasScientificEC before it can be
-     * used.
-     */
-    AtlasScientificEC_Salinity()
-        : Variable(static_cast<uint8_t>(ATLAS_SALINITY_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_SALINITY_RESOLUTION),
-                   ATLAS_SALINITY_VAR_NAME, ATLAS_SALINITY_UNIT_NAME,
-                   ATLAS_SALINITY_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the AtlasScientificEC_Salinity() object - no action
      * needed.
      */
@@ -480,16 +447,6 @@ class AtlasScientificEC_SpecificGravity : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(ATLAS_SG_VAR_NUM),
                    static_cast<uint8_t>(ATLAS_SG_RESOLUTION), ATLAS_SG_VAR_NAME,
                    ATLAS_SG_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new AtlasScientificEC_SpecificGravity object.
-     *
-     * @note This must be tied with a parent AtlasScientificEC before it can be
-     * used.
-     */
-    AtlasScientificEC_SpecificGravity()
-        : Variable(static_cast<uint8_t>(ATLAS_SG_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_SG_RESOLUTION), ATLAS_SG_VAR_NAME,
-                   ATLAS_SG_UNIT_NAME, ATLAS_SG_DEFAULT_CODE) {}
     /**
      * @brief Destroy the AtlasScientificEC_SpecificGravity() object - no action
      * needed.

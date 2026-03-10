@@ -445,17 +445,6 @@ class InSituRDO_DOmgL : public Variable {
                    INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new InSituRDO_DOmgL object.
-     *
-     * @note This must be tied with a parent InSituRDO before it can be
-     * used.
-     */
-    InSituRDO_DOmgL()
-        : Variable(static_cast<uint8_t>(INSITU_RDO_DOMGL_VAR_NUM),
-                   static_cast<uint8_t>(INSITU_RDO_DOMGL_RESOLUTION),
-                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
-                   INSITU_RDO_DOMGL_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the InSituRDO_DOmgL object - no action needed.
      */
     ~InSituRDO_DOmgL() override = default;
@@ -491,17 +480,6 @@ class InSituRDO_DOpct : public Variable {
                    INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new InSituRDO_DOpct object.
-     *
-     * @note This must be tied with a parent InSituRDO before it can be
-     * used.
-     */
-    InSituRDO_DOpct()
-        : Variable(static_cast<uint8_t>(INSITU_RDO_DOPCT_VAR_NUM),
-                   static_cast<uint8_t>(INSITU_RDO_DOPCT_RESOLUTION),
-                   INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
-                   INSITU_RDO_DOPCT_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the InSituRDO_DOpct object - no action needed.
      */
     ~InSituRDO_DOpct() override = default;
@@ -535,17 +513,6 @@ class InSituRDO_Temp : public Variable {
                    static_cast<uint8_t>(INSITU_RDO_TEMP_RESOLUTION),
                    INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new InSituRDO_Temp object.
-     *
-     * @note This must be tied with a parent InSituRDO before it can be
-     * used.
-     */
-    InSituRDO_Temp()
-        : Variable(static_cast<uint8_t>(INSITU_RDO_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(INSITU_RDO_TEMP_RESOLUTION),
-                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME,
-                   INSITU_RDO_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_Temp object - no action needed.
      */
@@ -582,17 +549,6 @@ class InSituRDO_Pressure : public Variable {
                    static_cast<uint8_t>(INSITU_RDO_PRESSURE_RESOLUTION),
                    INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
-    /**
-     * @brief Construct a new InSituRDO_Pressure object.
-     *
-     * @note This must be tied with a parent InSituRDO before it can be
-     * used.
-     */
-    InSituRDO_Pressure()
-        : Variable(static_cast<uint8_t>(INSITU_RDO_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(INSITU_RDO_PRESSURE_RESOLUTION),
-                   INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
-                   INSITU_RDO_PRESSURE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituRDO_Pressure object - no action needed.
      */

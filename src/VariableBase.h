@@ -86,27 +86,7 @@ class Variable {
     Variable(Sensor* parentSense, uint8_t sensorVarNum,
              uint8_t decimalResolution, const char* varName,
              const char* varUnit, const char* varCode, const char* uuid);
-    /**
-     * @brief Construct a new Variable object for a measured variable - that is,
-     * one whose values are updated by a sensor - but do not tie it to a
-     * specific sensor.
-     *
-     * @note This constructor is NOT intended to be used outside of this
-     * libraries.  It is intended to be used internally with sensors defined in
-     * this library.
-     *
-     * @param sensorVarNum The position in the sensor's value array of this
-     * variable's value.
-     * @param decimalResolution The resolution (in decimal places) of the value.
-     * @param varName The name of the variable per the [ODM2 variable name
-     * controlled vocabulary](http://vocabulary.odm2.org/variablename/)
-     * @param varUnit The unit of the variable per the [ODM2 unit controlled
-     * vocabulary](http://vocabulary.odm2.org/units/)
-     * @param varCode A custom code for the variable.  This can be any short
-     * text helping to identify the variable in files.
-     */
-    Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
-             const char* varName, const char* varUnit, const char* varCode);
+
 
     /**
      * @brief Construct a new Variable object for a calculated variable - that

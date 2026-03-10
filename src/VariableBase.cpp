@@ -53,11 +53,6 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
 }
 
 // Delegating constructors
-Variable::Variable(uint8_t sensorVarNum, uint8_t decimalResolution,
-                   const char* varName, const char* varUnit,
-                   const char* varCode)
-    : Variable(nullptr, sensorVarNum, decimalResolution, varName, varUnit,
-               varCode, nullptr) {}
 Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode)

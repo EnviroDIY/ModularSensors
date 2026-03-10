@@ -411,18 +411,7 @@ class AnalogElecConductivity_EC : public Variable {
                    ANALOGELECCONDUCTIVITY_EC_VAR_NAME,
                    ANALOGELECCONDUCTIVITY_EC_UNIT_NAME, varCode, uuid) {}
 
-    /**
-     * @brief Construct a new AnalogElecConductivity_EC object.
-     *
-     * @note This must be tied with a parent AnalogElecConductivity before it
-     * can be used.
-     */
-    AnalogElecConductivity_EC()
-        : Variable(static_cast<uint8_t>(ANALOGELECCONDUCTIVITY_EC_VAR_NUM),
-                   static_cast<uint8_t>(ANALOGELECCONDUCTIVITY_EC_RESOLUTION),
-                   ANALOGELECCONDUCTIVITY_EC_VAR_NAME,
-                   ANALOGELECCONDUCTIVITY_EC_UNIT_NAME,
-                   ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE) {}
+
     /**
      * @brief Destroy the AnalogElecConductivity_EC object - no action needed.
      */

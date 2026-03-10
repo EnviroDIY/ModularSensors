@@ -281,17 +281,6 @@ class ZebraTechDOpto_Temp : public Variable {
                    static_cast<uint8_t>(DOPTO_TEMP_RESOLUTION),
                    DOPTO_TEMP_VAR_NAME, DOPTO_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new ZebraTechDOpto_Temp object.
-     *
-     * @note This must be tied with a parent ZebraTechDOpto before it can be
-     * used.
-     */
-    ZebraTechDOpto_Temp()
-        : Variable(static_cast<uint8_t>(DOPTO_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(DOPTO_TEMP_RESOLUTION),
-                   DOPTO_TEMP_VAR_NAME, DOPTO_TEMP_UNIT_NAME,
-                   DOPTO_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ZebraTechDOpto_Temp object - no action needed.
      */
     ~ZebraTechDOpto_Temp() override = default;
@@ -327,17 +316,6 @@ class ZebraTechDOpto_DOpct : public Variable {
                    DOPTO_DOPCT_VAR_NAME, DOPTO_DOPCT_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new ZebraTechDOpto_DOpct object.
-     *
-     * @note This must be tied with a parent ZebraTechDOpto before it can be
-     * used.
-     */
-    ZebraTechDOpto_DOpct()
-        : Variable(static_cast<uint8_t>(DOPTO_DOPCT_VAR_NUM),
-                   static_cast<uint8_t>(DOPTO_DOPCT_RESOLUTION),
-                   DOPTO_DOPCT_VAR_NAME, DOPTO_DOPCT_UNIT_NAME,
-                   DOPTO_DOPCT_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the ZebraTechDOpto_DOpct object - no action needed.
      */
     ~ZebraTechDOpto_DOpct() override = default;
@@ -372,17 +350,6 @@ class ZebraTechDOpto_DOmgL : public Variable {
                    static_cast<uint8_t>(DOPTO_DOMGL_RESOLUTION),
                    DOPTO_DOMGL_VAR_NAME, DOPTO_DOMGL_UNIT_NAME, varCode, uuid) {
     }
-    /**
-     * @brief Construct a new ZebraTechDOpto_DOmgL object.
-     *
-     * @note This must be tied with a parent ZebraTechDOpto before it can be
-     * used.
-     */
-    ZebraTechDOpto_DOmgL()
-        : Variable(static_cast<uint8_t>(DOPTO_DOMGL_VAR_NUM),
-                   static_cast<uint8_t>(DOPTO_DOMGL_RESOLUTION),
-                   DOPTO_DOMGL_VAR_NAME, DOPTO_DOMGL_UNIT_NAME,
-                   DOPTO_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the ZebraTechDOpto_DOmgL object - no action needed.
      */

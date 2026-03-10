@@ -226,16 +226,6 @@ class MaximDS3231_Temp : public Variable {
                    DS3231_TEMP_VAR_NAME, DS3231_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new MaximDS3231_Temp object.
-     *
-     * @note This must be tied with a parent MaximDS3231 before it can be used.
-     */
-    MaximDS3231_Temp()
-        : Variable(static_cast<uint8_t>(DS3231_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(DS3231_TEMP_RESOLUTION),
-                   DS3231_TEMP_VAR_NAME, DS3231_TEMP_UNIT_NAME,
-                   DS3231_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the MaximDS3231_Temp object - no action needed.
      */
     ~MaximDS3231_Temp() override = default;

@@ -302,17 +302,6 @@ class InSituTrollSdi12a_Pressure : public Variable {
                    ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
                    varCode, uuid) {}
     /**
-     * @brief Construct a new InSituTrollSdi12a_Pressure object.
-     *
-     * @note This must be tied with a parent InSituTrollSdi12a before it can be
-     * used.
-     */
-    InSituTrollSdi12a_Pressure()
-        : Variable(static_cast<uint8_t>(ITROLLA_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(ITROLLA_PRESSURE_RESOLUTION),
-                   ITROLLA_PRESSURE_VAR_NAME, ITROLLA_PRESSURE_UNIT_NAME,
-                   ITROLLA_PRESSURE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the InSituTrollSdi12a_Pressure object - no action needed.
      */
     ~InSituTrollSdi12a_Pressure() override = default;
@@ -345,18 +334,6 @@ class InSituTrollSdi12a_Temp : public Variable {
                    static_cast<uint8_t>(ITROLLA_TEMP_RESOLUTION),
                    ITROLLA_TEMP_TEMP_VAR_NAME, ITROLLA_TEMP_TEMP_UNIT_NAME,
                    varCode, uuid) {}
-
-    /**
-     * @brief Construct a new InSituTrollSdi12a_Temp object.
-     *
-     * @note This must be tied with a parent InSituTrollSdi12a before it can be
-     * used.
-     */
-    InSituTrollSdi12a_Temp()
-        : Variable(static_cast<uint8_t>(ITROLLA_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(ITROLLA_TEMP_RESOLUTION),
-                   ITROLLA_TEMP_TEMP_VAR_NAME, ITROLLA_TEMP_TEMP_UNIT_NAME,
-                   ITROLLA_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituTrollSdi12a_Temp object - no action needed.
      */
@@ -390,17 +367,6 @@ class InSituTrollSdi12a_Depth : public Variable {
                    static_cast<uint8_t>(ITROLLA_DEPTH_RESOLUTION),
                    ITROLLA_DEPTH_VAR_NAME, ITROLLA_DEPTH_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new InSituTrollSdi12a_Depth object.
-     *
-     * @note This must be tied with a parent InSituTrollSdi12a before it can be
-     * used.
-     */
-    InSituTrollSdi12a_Depth()
-        : Variable(static_cast<uint8_t>(ITROLLA_DEPTH_VAR_NUM),
-                   static_cast<uint8_t>(ITROLLA_DEPTH_RESOLUTION),
-                   ITROLLA_DEPTH_VAR_NAME, ITROLLA_DEPTH_UNIT_NAME,
-                   ITROLLA_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the InSituTrollSdi12a_Depth object - no action needed.
      */

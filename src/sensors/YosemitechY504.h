@@ -259,17 +259,6 @@ class YosemitechY504_DOpct : public Variable {
                    static_cast<uint8_t>(Y504_DOPCT_RESOLUTION),
                    Y504_DOPCT_VAR_NAME, Y504_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY504_DOpct object.
-     *
-     * @note This must be tied with a parent YosemitechY504 before it can be
-     * used.
-     */
-    YosemitechY504_DOpct()
-        : Variable(static_cast<uint8_t>(Y504_DOPCT_VAR_NUM),
-                   static_cast<uint8_t>(Y504_DOPCT_RESOLUTION),
-                   Y504_DOPCT_VAR_NAME, Y504_DOPCT_UNIT_NAME,
-                   Y504_DOPCT_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY504_DOpct object - no action needed.
      */
     ~YosemitechY504_DOpct() override = default;
@@ -304,17 +293,6 @@ class YosemitechY504_Temp : public Variable {
                    static_cast<uint8_t>(Y504_TEMP_RESOLUTION),
                    Y504_TEMP_VAR_NAME, Y504_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new YosemitechY504_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY504 before it can be
-     * used.
-     */
-    YosemitechY504_Temp()
-        : Variable(static_cast<uint8_t>(Y504_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y504_TEMP_RESOLUTION),
-                   Y504_TEMP_VAR_NAME, Y504_TEMP_UNIT_NAME,
-                   Y504_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the YosemitechY504_Temp object - no action needed.
      */
     ~YosemitechY504_Temp() override = default;
@@ -348,17 +326,6 @@ class YosemitechY504_DOmgL : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(Y504_DOMGL_VAR_NUM),
                    static_cast<uint8_t>(Y504_DOMGL_RESOLUTION),
                    Y504_DOMGL_VAR_NAME, Y504_DOMGL_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY504_DOmgL object.
-     *
-     * @note This must be tied with a parent YosemitechY504 before it can be
-     * used.
-     */
-    YosemitechY504_DOmgL()
-        : Variable(static_cast<uint8_t>(Y504_DOMGL_VAR_NUM),
-                   static_cast<uint8_t>(Y504_DOMGL_RESOLUTION),
-                   Y504_DOMGL_VAR_NAME, Y504_DOMGL_UNIT_NAME,
-                   Y504_DOMGL_DEFAULT_CODE) {}
     /**
      * @brief Destroy the YosemitechY504_DOmgL object - no action needed.
      */

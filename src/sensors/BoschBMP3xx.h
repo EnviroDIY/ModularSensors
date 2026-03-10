@@ -608,16 +608,6 @@ class BoschBMP3xx_Temp : public Variable {
                    BMP3XX_TEMP_VAR_NAME, BMP3XX_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new BoschBMP3xx_Temp object.
-     *
-     * @note This must be tied with a parent BoschBMP3xx before it can be used.
-     */
-    BoschBMP3xx_Temp()
-        : Variable(static_cast<uint8_t>(BMP3XX_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(BMP3XX_TEMP_RESOLUTION),
-                   BMP3XX_TEMP_VAR_NAME, BMP3XX_TEMP_UNIT_NAME,
-                   BMP3XX_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the BoschBMP3xx_Temp object - no action needed.
      */
     ~BoschBMP3xx_Temp() override = default;
@@ -653,16 +643,6 @@ class BoschBMP3xx_Pressure : public Variable {
                    BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME, varCode,
                    uuid) {}
     /**
-     * @brief Construct a new BoschBMP3xx_Pressure object.
-     *
-     * @note This must be tied with a parent BoschBMP3xx before it can be used.
-     */
-    BoschBMP3xx_Pressure()
-        : Variable(static_cast<uint8_t>(BMP3XX_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(BMP3XX_PRESSURE_RESOLUTION),
-                   BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME,
-                   BMP3XX_PRESSURE_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the BoschBMP3xx_Pressure object - no action needed.
      */
     ~BoschBMP3xx_Pressure() override = default;
@@ -697,16 +677,6 @@ class BoschBMP3xx_Altitude : public Variable {
                    static_cast<uint8_t>(BMP3XX_ALTITUDE_RESOLUTION),
                    BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME, varCode,
                    uuid) {}
-    /**
-     * @brief Construct a new BoschBMP3xx_Altitude object.
-     *
-     * @note This must be tied with a parent BoschBMP3xx before it can be used.
-     */
-    BoschBMP3xx_Altitude()
-        : Variable(static_cast<uint8_t>(BMP3XX_ALTITUDE_VAR_NUM),
-                   static_cast<uint8_t>(BMP3XX_ALTITUDE_RESOLUTION),
-                   BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME,
-                   BMP3XX_ALTITUDE_DEFAULT_CODE) {}
     /**
      * @brief Destroy the BoschBMP3xx_Altitude object - no action needed.
      */

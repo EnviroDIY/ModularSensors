@@ -319,15 +319,6 @@ class Decagon5TM_Ea : public Variable {
                    static_cast<uint8_t>(TM_EA_RESOLUTION), TM_EA_VAR_NAME,
                    TM_EA_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new Decagon5TM_Ea object.
-     *
-     * @note This must be tied with a parent Decagon5TM before it can be used.
-     */
-    Decagon5TM_Ea()
-        : Variable(static_cast<uint8_t>(TM_EA_VAR_NUM),
-                   static_cast<uint8_t>(TM_EA_RESOLUTION), TM_EA_VAR_NAME,
-                   TM_EA_UNIT_NAME, TM_EA_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the Decagon5TM_Ea object - no action needed.
      */
     ~Decagon5TM_Ea() override = default;
@@ -360,15 +351,6 @@ class Decagon5TM_Temp : public Variable {
                    static_cast<uint8_t>(TM_TEMP_RESOLUTION), TM_TEMP_VAR_NAME,
                    TM_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new Decagon5TM_Temp object.
-     *
-     * @note This must be tied with a parent Decagon5TM before it can be used.
-     */
-    Decagon5TM_Temp()
-        : Variable(static_cast<uint8_t>(TM_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(TM_TEMP_RESOLUTION), TM_TEMP_VAR_NAME,
-                   TM_TEMP_UNIT_NAME, TM_TEMP_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the Decagon5TM_Temp object - no action needed.
      */
     ~Decagon5TM_Temp() override = default;
@@ -400,15 +382,6 @@ class Decagon5TM_VWC : public Variable {
         : Variable(parentSense, static_cast<uint8_t>(TM_VWC_VAR_NUM),
                    static_cast<uint8_t>(TM_VWC_RESOLUTION), TM_VWC_VAR_NAME,
                    TM_VWC_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new Decagon5TM_VWC object.
-     *
-     * @note This must be tied with a parent Decagon5TM before it can be used.
-     */
-    Decagon5TM_VWC()
-        : Variable(static_cast<uint8_t>(TM_VWC_VAR_NUM),
-                   static_cast<uint8_t>(TM_VWC_RESOLUTION), TM_VWC_VAR_NAME,
-                   TM_VWC_UNIT_NAME, TM_VWC_DEFAULT_CODE) {}
     /**
      * @brief Destroy the Decagon5TM_VWC object - no action needed.
      */

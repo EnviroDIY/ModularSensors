@@ -583,17 +583,6 @@ class TIADS1x15_Voltage : public Variable {
                    static_cast<uint8_t>(TIADS1X15_RESOLUTION),
                    TIADS1X15_VAR_NAME, TIADS1X15_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new TIADS1x15_Voltage object.
-     *
-     * @note This must be tied with a parent TIADS1x15 before it can be
-     * used.
-     */
-    TIADS1x15_Voltage()
-        : Variable(static_cast<uint8_t>(TIADS1X15_VAR_NUM),
-                   static_cast<uint8_t>(TIADS1X15_RESOLUTION),
-                   TIADS1X15_VAR_NAME, TIADS1X15_UNIT_NAME,
-                   TIADS1X15_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the TIADS1x15_Voltage object - no action needed.
      */
     ~TIADS1x15_Voltage() override = default;
