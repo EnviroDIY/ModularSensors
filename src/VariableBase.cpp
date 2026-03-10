@@ -52,54 +52,6 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
     if (calcFxn) setCalculation(calcFxn);
 }
 
-// Delegating constructors
-Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
-                   const char* varName, const char* varUnit,
-                   const char* varCode)
-    : Variable(calcFxn, decimalResolution, varName, varUnit, varCode, nullptr) {
-}
-// Default constructor with no arguments - delegates to ensure all members are
-// initialized
-Variable::Variable()
-    : Variable(nullptr, 0, 0, nullptr, nullptr, nullptr, nullptr) {}
-
-
-// This does all of the setup that can't happen in the constructors
-// That is, anything that depends on another object having been created
-// first or anything that requires the actual processor/MCU to do something.
-Variable* Variable::begin(Sensor* parentSense, const char* uuid,
-                          const char* customVarCode) {
-    setVarCode(customVarCode);
-    return begin(parentSense, uuid);
-}
-Variable* Variable::begin(Sensor* parentSense, const char* uuid) {
-    setVarUUID(uuid);
-    return begin(parentSense);
-}
-Variable* Variable::begin(Sensor* parentSense) {
-    attachSensor(parentSense);
-    return this;
-}
-
-
-// Begin functions for calculated variables
-Variable* Variable::begin(float (*calcFxn)(), uint8_t decimalResolution,
-                          const char* varName, const char* varUnit,
-                          const char* varCode, const char* uuid) {
-    setVarUUID(uuid);
-    return begin(calcFxn, decimalResolution, varName, varUnit, varCode);
-}
-Variable* Variable::begin(float (*calcFxn)(), uint8_t decimalResolution,
-                          const char* varName, const char* varUnit,
-                          const char* varCode) {
-    setVarCode(varCode);
-    setVarUnit(varUnit);
-    setVarName(varName);
-    setResolution(decimalResolution);
-    setCalculation(calcFxn);
-    return this;
-}
-
 
 // This notifies the parent sensor that it has an observing variable
 // This function should never be called for a calculated variable

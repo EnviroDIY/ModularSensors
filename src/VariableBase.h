@@ -107,114 +107,13 @@ class Variable {
      * program will compile but immediately hang.
      */
     Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
-             const char* varUnit, const char* varCode, const char* uuid);
-    /**
-     * @brief Construct a new Variable object for a calculated variable - that
-     * is, one whose value is calculated by the calcFxn which returns a float.
-     *
-     * @param calcFxn Any function returning a float value
-     * @param decimalResolution The resolution (in decimal places) of the value.
-     * @param varName The name of the variable per the [ODM2 variable name
-     * controlled vocabulary](http://vocabulary.odm2.org/variablename/)
-     * @param varUnit The unit of the variable per the [ODM2 unit controlled
-     * vocabulary](http://vocabulary.odm2.org/units/)
-     * @param varCode A custom code for the variable.  This can be any short
-     * text helping to identify the variable in files.
-     *
-     * @warning The `calcFxn` absolutely must return a float value.  If it
-     * returns a value of any other type (i.e., some type of integer), your
-     * program will compile but immediately hang.
-     */
-    Variable(float (*calcFxn)(), uint8_t decimalResolution, const char* varName,
-             const char* varUnit, const char* varCode);
-    /**
-     * @brief Construct a new Variable object
-     */
-    Variable();
+             const char* varUnit, const char* varCode,
+             const char* uuid = nullptr);
 
     /**
      * @brief Destroy the Variable object - no action taken.
      */
     virtual ~Variable() = default;
-
-    /**
-     * @brief Begin for the Variable object
-     *
-     * @param parentSense The Sensor object supplying values.  Supersedes any
-     * Sensor supplied in the constructor.
-     * @param uuid A universally unique identifier for the variable.
-     * Supersedes any value supplied in the constructor.
-     * @param customVarCode A custom code for the variable.  Supersedes
-     * any value supplied in the constructor.
-     * @return A pointer to the variable object
-     */
-    Variable* begin(Sensor* parentSense, const char* uuid,
-                    const char* customVarCode);
-    /**
-     * @brief Begin for the Variable object
-     *
-     * @param parentSense The Sensor object supplying values.  Supersedes any
-     * Sensor supplied in the constructor.
-     * @param uuid A universally unique identifier for the variable.
-     * Supersedes any value supplied in the constructor.
-     * @return A pointer to the variable object
-     */
-    Variable* begin(Sensor* parentSense, const char* uuid);
-    /**
-     * @brief Begin for the Variable object
-     *
-     * @param parentSense The Sensor object supplying values.  Supersedes any
-     * Sensor supplied in the constructor.
-     * @return A pointer to the variable object
-     */
-    Variable* begin(Sensor* parentSense);
-
-    /**
-     * @brief Begin for the Variable object
-     *
-     * @param calcFxn Any function returning a float value.  Supersedes any
-     * function supplied in the constructor.
-     * @param decimalResolution The resolution (in decimal places) of the value.
-     * Supersedes any value supplied in the constructor.
-     * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary.  Supersedes any value supplied in the constructor.
-     * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary.  Supersedes any value supplied in the constructor.
-     * @param varCode A custom code for the variable.  Supersedes any value
-     * supplied in the constructor.
-     * @param uuid A universally unique identifier for the variable.
-     * Supersedes any value supplied in the constructor.
-     * @return A pointer to the variable object
-     *
-     * @warning The `calcFxn` absolutely must return a float value.  If it
-     * returns a value of any other type (i.e., some type of integer), your
-     * program will compile but immediately hang.
-     */
-    Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
-                    const char* varName, const char* varUnit,
-                    const char* varCode, const char* uuid);
-    /**
-     * @brief Begin for the Variable object
-     *
-     * @param calcFxn Any function returning a float value.  Supersedes any
-     * function supplied in the constructor.
-     * @param decimalResolution The resolution (in decimal places) of the value.
-     * Supersedes any value supplied in the constructor.
-     * @param varName The name of the variable per the ODM2 variable name
-     * controlled vocabulary.  Supersedes any value supplied in the constructor.
-     * @param varUnit The unit of the variable per the ODM2 unit controlled
-     * vocabulary.  Supersedes any value supplied in the constructor.
-     * @param varCode A custom code for the variable.  Supersedes any value
-     * supplied in the constructor.
-     * @return A pointer to the variable object
-     *
-     * @warning The `calcFxn` absolutely must return a float value.  If it
-     * returns a value of any other type (i.e., some type of integer), your
-     * program will compile but immediately hang.
-     */
-    Variable* begin(float (*calcFxn)(), uint8_t decimalResolution,
-                    const char* varName, const char* varUnit,
-                    const char* varCode);
 
 
     /**

@@ -148,7 +148,7 @@ To achieve the same functionality as the old `updateAllSensors()` function (i.e.
 #### Library-Wide
 
 - Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
-- Applied many suggestions from Code Rabbit AI.
+- Applied many suggestions from CodeRabbit AI.
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
 - When importing TinyGSM for the modem objects, the specific modem client headers are now imported directly rather than importing the TinyGsmClient.h header which defines typedefs for the sub-types.
 - Moved the define for the default address used for a TI ADS from multiple individual files to the ModSensorConfig and renamed to `MS_DEFAULT_ADS1X15_ADDRESS`.
@@ -217,8 +217,11 @@ This affects the following classes:
 
 ### Removed
 
-- **BREAKING** Removed all constructors for sensor-associated variables that don't include a pointer to the sensor.
+- **BREAKING** Constructors for sensor-associated variables that don't include a pointer to the sensor.
 You now *must* create the sensor instance before creating the variable and tie the variable to the sensor when creating the variable.
+- **BREAKING** All flavors of the variable.begin() functions.
+These were not needed since all arguments should be set in the constructor or setters for individual parameters.
+There was no functionality needed in a typical Arduino "begin" function - that is, nothing that needed to be performed after the hardware was active.
 - Unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function.
 - Unnecessary copy doc calls for inherited functions and properties.
 - All overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
