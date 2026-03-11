@@ -195,7 +195,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         did_respond = outClient->readBytes(tempBuffer, 12);
         // Process the HTTP response code
         // The first 9 characters should be "HTTP/1.1 "
-        if (did_respond > 0) {
+        if (did_respond >= 12) {
             char responseCode_char[4];
             memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string

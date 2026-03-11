@@ -409,7 +409,7 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
         did_respond = outClient->readBytes(tempBuffer, 12);
         // Process the HTTP response code
         // The first 9 characters should be "HTTP/1.1 "
-        if (did_respond > 0) {
+        if (did_respond >= 12) {
             char responseCode_char[4];
             memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string
@@ -441,8 +441,8 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
     } else {
         PRINTOUT(F(
             "\n -- Unable to Establish Connection to Monitor My Watershed --"));
+        responseCode = -5;  // Connection failure
     }
-
     if (responseCode == 201) {
         // data was successfully transmitted, we can discard it from the buffer
         _logBuffer.clear();
