@@ -11,11 +11,6 @@
 #include "ClockSupport.h"
 #include "LoggerBase.h"
 
-// Constants
-// 86400 (60*60*24) seconds in a day
-#define SECONDS_IN_DAY 86400L
-
-
 epochTime::epochTime(time_t timestamp, epochStart epoch) {
     _unixTimestamp = convert_epoch(timestamp, epoch, epochStart::unix_epoch);
 }

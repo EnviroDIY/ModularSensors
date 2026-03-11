@@ -739,7 +739,7 @@ bool Logger::checkMarkedInterval() {
     if (Logger::markedLocalUnixTime != 0 &&
         (Logger::markedLocalUnixTime % (interval * 60) == 0)) {
         MS_DBG(F("Time to log!"));
-        // De-increment the number of startup measurements after marking
+        // Decrement the number of startup measurements after marking
         if (_startupMeasurements > 0) {
             MS_DBG(F("Within startup measurements. There are "),
                    _startupMeasurements, F("left."));

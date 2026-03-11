@@ -45,7 +45,7 @@ String MaximDS18::makeAddressString(DeviceAddress owAddr) {
     addrStr += (_dataPin);
     addrStr += '{';
     for (uint8_t i = 0; i < 8; i++) {
-        addrStr += "0x";
+        addrStr += F("0x");
         if (owAddr[i] < 0x10) addrStr += "0";
         addrStr += String(owAddr[i], HEX);
         if (i < 7) addrStr += ",";

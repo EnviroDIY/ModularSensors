@@ -388,7 +388,7 @@ class CampbellRainVUE10_RainRateAve : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "RainVUEError".
+     * optional with a default value of "RainVUERateAve".
      */
     explicit CampbellRainVUE10_RainRateAve(
         CampbellRainVUE10* parentSense, const char* uuid = "",
@@ -426,7 +426,7 @@ class CampbellRainVUE10_RainRateMax : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "RainVUERateAve".
+     * optional with a default value of "RainVUERateMax".
      */
     explicit CampbellRainVUE10_RainRateMax(
         CampbellRainVUE10* parentSense, const char* uuid = "",

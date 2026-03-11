@@ -90,7 +90,10 @@ bool SodaqUBeeU201::extraModemSetup() {
     // Turn on network indicator light
     // Pin 16 = GPIO1, function 2 = network status indication
     gsmModem.sendAT(GF("+UGPIOC=16,2"));
-    gsmModem.waitResponse();
+    if (gsmModem.waitResponse() != 1) {
+        // NOTE: We don't consider setup a failure without the light
+        MS_DBG(F("Failed to configure network indicator LED"));
+    }
     return success;
 }
 

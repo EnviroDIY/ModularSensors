@@ -236,12 +236,9 @@ class YosemitechParent : public Sensor {
      */
     bool wake() override;
     /**
-     * @brief Puts the sensor to sleep, if necessary.
+     * @brief Stop measurements and empty and flush the stream before sleeping.
      *
-     * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
-     * This does NOT power down the sensor!
-     *
-     * @return True if the sleep function completed successfully.
+     * @return True if sleep was successful.
      */
     bool sleep() override;
 

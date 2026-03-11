@@ -308,7 +308,7 @@ class VariableArray {
      * @brief Check if the current variable is the last variable that the sensor
      * will return.
      *
-     * This is used for formating output where the format is slightly different
+     * This is used for formatting output where the format is slightly different
      * for the last value. (i.e., no comma after the last value)
      *
      * @param arrayIndex The index of the variable in the sensor variable array

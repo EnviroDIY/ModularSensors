@@ -24,8 +24,7 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
 
 // Delegating constructor - delegates to primary constructor with null UUIDs
 VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
-    : VariableArray(variableCount, variableList, nullptr) {
-}
+    : VariableArray(variableCount, variableList, nullptr) {}
 // Default constructor with no arguments - delegates to ensure all members are
 // initialized
 VariableArray::VariableArray() : VariableArray(0, nullptr) {}
@@ -33,7 +32,16 @@ VariableArray::VariableArray() : VariableArray(0, nullptr) {}
 
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
                           const char* uuids[]) {
-    begin(variableCount, variableList);
+    _variableCount = variableCount;
+    arrayOfVars    = variableList;
+    if (_variableCount == 0 || arrayOfVars == nullptr) {
+        MS_DBG(F("No variable array in the VariableArray object!"));
+        return;
+    }
+    if (!populateSensorList()) {
+        MS_DBG(F("Warning: Sensor list may be truncated - exceeded "
+                 "MAX_NUMBER_SENSORS limit."));
+    }
     matchUUIDs(uuids);
     checkVariableUUIDs();
 }
@@ -47,7 +55,10 @@ void VariableArray::begin() {
         MS_DBG(F("No variable array in the VariableArray object!"));
         return;
     }
-    populateSensorList();
+    if (!populateSensorList()) {
+        MS_DBG(F("Warning: Sensor list may be truncated - exceeded "
+                 "MAX_NUMBER_SENSORS limit."));
+    }
     checkVariableUUIDs();
 }
 

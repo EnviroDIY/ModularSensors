@@ -170,11 +170,11 @@ bool MaxBotixSonar::addSingleMeasurementResult() {
 
 
 void MaxBotixSonar::dumpBuffer() {
-    auto junkChars = static_cast<uint8_t>(_stream->available());
-    if (junkChars) {
+    auto junkChars = _stream->available();
+    if (junkChars > 0) {
         MS_DBG(F("Dumping"), junkChars,
                F("characters from MaxBotix stream buffer:"));
-        for (uint8_t i = 0; i < junkChars; i++) {
+        while (_stream->available()) {
 #ifdef MS_MAXBOTIXSONAR_DEBUG
             MS_SERIAL_OUTPUT.print(_stream->read());
 #else

@@ -168,15 +168,13 @@ class GroPointParent : public Sensor {
      */
     bool setup() override;
 
-    bool wake() override;
     /**
-     * @brief Puts the sensor to sleep, if necessary.
+     * @brief Wake up the sensor and manually activate the brushes.
      *
-     * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
-     * This does NOT power down the sensor!
-     *
-     * @return True if the sleep function completed successfully.
+     * @return True if the sensor wake and brush activation succeeded, false
+     * if activation failed after retries.
      */
+    bool wake() override;
     bool sleep() override;
 
     bool addSingleMeasurementResult() override;

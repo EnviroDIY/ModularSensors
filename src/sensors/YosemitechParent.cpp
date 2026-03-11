@@ -228,7 +228,7 @@ bool YosemitechParent::addSingleMeasurementResult() {
                 parmValue *= 1000;
             }
 
-            MS_DBG(F(" "), _ysensor.getParameter(), ':', parmValue);
+            MS_DBG(' ', _ysensor.getParameter(), ':', parmValue);
             MS_DBG(F("  Temp:"), tempValue);
 
             // Not all sensors return a third value

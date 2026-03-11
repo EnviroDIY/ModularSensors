@@ -242,17 +242,6 @@ class MaximDS18 : public Sensor {
 
     String getSensorLocation() override;
 
-    /**
-     * @brief Tell the sensor to start a single measurement, if needed.
-     *
-     * This also sets the #_millisMeasurementRequested timestamp.
-     *
-     * @note This function does NOT include any waiting for the sensor to be
-     * warmed up or stable!
-     *
-     * @return True if the start measurement function completed
-     * successfully. successfully.
-     */
     bool startSingleMeasurement() override;
     bool addSingleMeasurementResult() override;
 

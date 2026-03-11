@@ -323,7 +323,6 @@ class BoschBME280 : public Sensor {
 
     String getSensorLocation() override;
 
-    // bool startSingleMeasurement() override;  // for forced mode
     bool addSingleMeasurementResult() override;
 
  private:

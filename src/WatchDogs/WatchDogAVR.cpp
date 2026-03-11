@@ -103,7 +103,7 @@ void extendedWatchDogAVR::clearWDTInterrupt() {
  */
 ISR(WDT_vect) {
     MS_DEEP_DBG(F("\nWatchdog interrupt!"));
-    // De-increment down the counter, but don't allow to roll-over
+    // Decrement the counter, but don't allow to roll-over
     if (extendedWatchDogAVR::_barksUntilReset > 0) {
         extendedWatchDogAVR::_barksUntilReset--;
     }

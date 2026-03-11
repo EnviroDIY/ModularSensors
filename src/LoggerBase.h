@@ -1244,7 +1244,7 @@ class Logger {
 
     /**
      * @brief Print a comma separated list of the values of the variables in the
-     * underling variable array - along with the logged time in the logger's
+     * underlying variable array - along with the logged time in the logger's
      * timezone -  out over an Arduino stream
      *
      * @param stream An Arduino stream instance - expected to be an SdFat file -

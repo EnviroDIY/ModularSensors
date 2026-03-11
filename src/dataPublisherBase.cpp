@@ -87,8 +87,8 @@ void dataPublisher::setStartupTransmissions(uint8_t count) {
         _startupTransmissions = 1;
     } else {
         _startupTransmissions = count;
+        MS_DBG(F("Startup transmissions set to:"), _startupTransmissions);
     }
-    MS_DBG(F("Startup transmissions set to:"), _startupTransmissions);
 }
 
 

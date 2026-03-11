@@ -302,7 +302,7 @@ class Variable {
         }
 
         // Calculate the number of decimal places needed to represent the
-        // resolution We want at least one significant digit beyond the
+        // resolution.  We want at least one significant digit beyond the
         // resolution
         float log10Resolution = log10f(resolution);
         int   decimalPlaces   = static_cast<int>(ceilf(-log10Resolution)) + 1;

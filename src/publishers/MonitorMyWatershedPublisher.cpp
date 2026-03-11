@@ -398,8 +398,8 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client* outClient) {
 
         // Wait 30 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 30000L && outClient->connected() &&
-               outClient->available() < 12) {
+        while ((millis() - start) < MMW_RESPONSE_TIMEOUT_MS &&
+               outClient->connected() && outClient->available() < 12) {
             delay(10);
         }
 

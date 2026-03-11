@@ -67,8 +67,11 @@ bool EspressifESP32::modemSleepFxn() {
 bool EspressifESP32::extraModemSetup() {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
     bool success = gsmModem.init();
-    _modemName   = gsmModem.getModemName();  // Name is set by the ESP32 modem
-                                           // object independent of the init fxn
+    // Attempt to get the modem name even without a successful init
+    // The full make and model won't be returned, but it will at least be
+    // something that identifies the modem as an ESP32, which is helpful for
+    // debugging.
+    _modemName = gsmModem.getModemName();
     if (success) {
         // AT+CWCOUNTRY=<country_policy>,<country_code>,<start_channel>,<total_channel_count>
         // <country_policy>:

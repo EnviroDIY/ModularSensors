@@ -141,6 +141,9 @@
      599184012, 820108813, 914803214, 1025136015, 1119744016, 1167264017}
 #endif
 
+/// @brief The number of seconds in a day
+#define SECONDS_IN_DAY 86400L
+
 
 /**
  * @brief Set the epoch start value.

@@ -34,6 +34,9 @@
 #include "dataPublisherBase.h"
 #include "LogBuffer.h"
 
+/// Timeout for server response in milliseconds
+#define MMW_RESPONSE_TIMEOUT_MS 30000L
+
 
 // ============================================================================
 //  Functions for Monitor My Watershed

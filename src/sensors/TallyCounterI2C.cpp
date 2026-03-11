@@ -43,13 +43,13 @@ bool TallyCounterI2C::setup() {
     // Make 5 attempts
     uint8_t ntries  = 0;
     bool    success = false;
-    uint8_t Stat    = false;  // Used to test for connectivity to Tally device
+    uint8_t status  = 0;  // Used to test for connectivity to Tally device
     while (!success && ntries < 5) {
-        Stat = counter_internal.begin();
+        status = counter_internal.begin();
         counter_internal.Sleep();  // Engage auto-sleep mode between event
                                    // counts
         counter_internal.Clear();  // Clear count to ensure valid first reading
-        if (Stat == 0) success = true;
+        if (status == 0) success = true;
         ntries++;
     }
     if (!success) {

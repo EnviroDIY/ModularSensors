@@ -574,13 +574,7 @@ class Sensor {
      * @param resultValue The value of the result.
      */
     void verifyAndAddMeasurementResult(uint8_t resultNumber, float resultValue);
-    /**
-     * @brief Verify that a measurement is OK (i.e., not #MS_INVALID_VALUE)
-     * before adding it to the result array
-     *
-     * @param resultNumber The position of the result within the result array.
-     * @param resultValue The value of the result.
-     */
+    /// @copydoc verifyAndAddMeasurementResult(uint8_t, float)
     void verifyAndAddMeasurementResult(uint8_t resultNumber,
                                        int16_t resultValue);
     /**

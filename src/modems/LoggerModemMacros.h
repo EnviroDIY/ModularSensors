@@ -661,7 +661,7 @@
             return 0;                                                      \
         }                                                                  \
                                                                            \
-        MS_DBG("Asking modem to sync with NTP");                           \
+        MS_DBG(F("Asking modem to sync with NTP"));                        \
         gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                \
         gsmModem.waitForTimeSync();                                        \
         return gsmModem.getNetworkEpoch(TinyGSM_EpochStart::UNIX);         \
@@ -675,7 +675,7 @@
             return 0;                                                        \
         }                                                                    \
                                                                              \
-        MS_DBG("Asking modem to sync with NTP");                             \
+        MS_DBG(F("Asking modem to sync with NTP"));                          \
         gsmModem.NTPServerSync("pool.ntp.org", 0); /*UTC!*/                  \
         gsmModem.waitForTimeSync();                                          \
                                                                              \
@@ -718,7 +718,7 @@
                                                                              \
         /** Try up to 12 times to get a timestamp from NIST. */              \
         for (uint8_t i = 0; i < NIST_SERVER_RETRYS; i++) {                   \
-            while (millis() < _lastNISTrequest + 4000) { yield(); }          \
+            while (millis() - _lastNISTrequest < 4000) { yield(); }          \
                                                                              \
             /** Make TCP connection. */                                      \
             TinyGsm##TinyGSMType::GsmClient##TinyGSMType gsmClient(          \

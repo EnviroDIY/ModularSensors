@@ -279,6 +279,9 @@ class ApogeeSQ212 : public Sensor {
                 AnalogVoltageBase* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the ApogeeSQ212 object
+     *
+     * If the object owns the analog voltage reader (i.e., it was internally
+     * created), the reader is deleted.
      */
     ~ApogeeSQ212() override;
 

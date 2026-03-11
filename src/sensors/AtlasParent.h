@@ -199,27 +199,8 @@ class AtlasParent : public Sensor {
     // wake it and ask for a reading.
     // bool wake() override;
 
-    /**
-     * @brief Puts the sensor to sleep, if necessary.
-     *
-     * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
-     * This does NOT power down the sensor!
-     *
-     * @return True if the sleep function completed successfully.
-     */
     bool sleep() override;
 
-    /**
-     * @brief Tell the sensor to start a single measurement, if needed.
-     *
-     * This also sets the #_millisMeasurementRequested timestamp.
-     *
-     * @note This function does NOT include any waiting for the sensor to be
-     * warmed up or stable!
-     *
-     * @return True if the start measurement function completed
-     * successfully.
-     */
     bool startSingleMeasurement() override;
     bool addSingleMeasurementResult() override;
 

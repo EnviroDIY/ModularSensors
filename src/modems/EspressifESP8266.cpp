@@ -67,6 +67,10 @@ bool EspressifESP8266::modemSleepFxn() {
 bool EspressifESP8266::extraModemSetup() {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
     bool success = gsmModem.init();
-    _modemName   = gsmModem.getModemName();
+    // Attempt to get the modem name even without a successful init
+    // The full make and model won't be returned, but it will at least be
+    // something that identifies the modem as an ESP8266, which is helpful for
+    // debugging.
+    _modemName = gsmModem.getModemName();
     return success;
 }

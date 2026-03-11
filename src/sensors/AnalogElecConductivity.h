@@ -352,6 +352,14 @@ class AnalogElecConductivity : public Sensor {
      */
     String getSensorLocation() override;
 
+    /**
+     * @brief Do any one-time preparations needed before the sensor will be able
+     * to take readings.
+     *
+     * This also initializes the internal analog voltage reader.
+     *
+     * @return True if the setup was successful.
+     */
     bool setup() override;
 
     bool addSingleMeasurementResult() override;

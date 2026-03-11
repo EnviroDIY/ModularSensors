@@ -238,17 +238,6 @@ class SDI12Sensors : public Sensor {
 // Only need this for concurrent measurements.
 // NOTE:  By default, concurrent measurements are used!
 #ifndef MS_SDI12_NON_CONCURRENT
-    /**
-     * @brief Tell the sensor to start a single measurement, if needed.
-     *
-     * This also sets the #_millisMeasurementRequested timestamp.
-     *
-     * @note This function does NOT include any waiting for the sensor to be
-     * warmed up or stable!
-     *
-     * @return True if the start measurement function completed
-     * successfully.
-     */
     bool startSingleMeasurement() override;
 #endif
     bool addSingleMeasurementResult() override;

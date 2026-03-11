@@ -20,7 +20,7 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Typedef for backward compatibility with EnviroDIY data portal receivers.
 // ============================================================================
 /**
  * @brief typedef for backwards compatibility; use the

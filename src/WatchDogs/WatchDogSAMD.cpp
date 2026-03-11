@@ -394,7 +394,7 @@ void extendedWatchDogSAMD::waitForGCLKBitSync() {
 
 
 // ISR for watchdog early warning
-void WDT_Handler() {
+void WDT_Handler(void) {
     extendedWatchDogSAMD::clearWDTInterrupt();
     MS_DEEP_DBG(F("\nWatchdog early warning interrupt!"));
 #if defined(MS_WATCHDOGSAMD_DEBUG_DEEP)

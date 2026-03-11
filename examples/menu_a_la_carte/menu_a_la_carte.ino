@@ -1636,7 +1636,7 @@ Variable* alsPt19Volt = new EverlightALSPT19_Voltage(
 Variable* alsPt19Current = new EverlightALSPT19_Current(
     &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
-    &alsPt19, "b7cf9961-246a-4443-b57f-0526fecfea8f");
+    &alsPt19, "12345678-abcd-1234-ef00-1234567890ab");
 
 // create a custom analog reader based on the Processor ADC (optional)
 float               alsMultiplier = 1.0f;  // factor for a voltage divider

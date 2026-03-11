@@ -248,7 +248,11 @@ class KellerParent : public Sensor {
      */
     bool setup() override;
 
-    // override to empty and flush the stream
+    /**
+     * @brief Empty and flush the stream before sleeping.
+     *
+     * @return True if sleep was successful.
+     */
     bool sleep() override;
 
     bool addSingleMeasurementResult() override;
