@@ -518,4 +518,4 @@ class ProcessorStats_ResetCode : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_
 
-// cSpell:ignore SAMPNUM sampno Tatu Moja Adalogger Duemilanove Esplora Lilypad
+// cSpell:ignore SAMPNUM sampno Tatu Moja Adalogger Duemilanove Esplora

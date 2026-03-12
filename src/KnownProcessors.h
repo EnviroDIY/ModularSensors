@@ -359,7 +359,8 @@
 // Use log buffer size defaults
 // An external RTC is required
 
-// https://docs.arduino.cc/retired/boards/arduino-ethernet-rev3-without-poe/ (Retired)
+// https://docs.arduino.cc/retired/boards/arduino-ethernet-rev3-without-poe/
+// (Retired)
 #elif defined(ARDUINO_AVR_ETHERNET)
 #define LOGGER_BOARD "Arduino Ethernet"
 #define OPERATING_VOLTAGE 5
@@ -379,7 +380,8 @@
 // Use log buffer size defaults
 // An external RTC is required
 
-// Arduino version: https://docs.arduino.cc/retired/boards/arduino-gemma/ (Retired)
+// Arduino version: https://docs.arduino.cc/retired/boards/arduino-gemma/
+// (Retired)
 // Adafruit version: https://www.adafruit.com/product/1222
 #elif defined(ARDUINO_AVR_GEMMA)
 #define LOGGER_BOARD "Arduino Gemma"
@@ -394,29 +396,6 @@
 #elif defined(ARDUINO_AVR_LEONARDO)
 #define LOGGER_BOARD "Arduino Leonardo"
 #define OPERATING_VOLTAGE 5
-#define BATTERY_PIN -1
-#define BATTERY_MULTIPLIER -1
-// Use ADC defaults for an AVR processor
-// Use log buffer size defaults
-// An external RTC is required
-
-// https://docs.arduino.cc/retired/getting-started-guides/ArduinoLilyPad/
-// (Retired)
-#elif defined(ARDUINO_AVR_LILYPAD)
-#define LOGGER_BOARD "Arduino Lilypad"
-// NOTE: The operating voltage is 2.7-5.5V
-#define OPERATING_VOLTAGE 3.3
-#define BATTERY_PIN -1
-#define BATTERY_MULTIPLIER -1
-// Use ADC defaults for an AVR processor
-// Use log buffer size defaults
-// An external RTC is required
-
-// https://docs.arduino.cc/retired/getting-started-guides/ArduinoLilyPadUSB/
-// (Retired)
-#elif defined(ARDUINO_AVR_LILYPAD_USB)
-#define LOGGER_BOARD "Arduino Lilypad USB"
-#define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
 // Use ADC defaults for an AVR processor
@@ -446,28 +425,6 @@
 // https://store-usa.arduino.cc/products/arduino-nano
 #elif defined(ARDUINO_AVR_NANO)
 #define LOGGER_BOARD "Arduino Nano"
-#define OPERATING_VOLTAGE 5
-#define BATTERY_PIN -1
-#define BATTERY_MULTIPLIER -1
-// Use ADC defaults for an AVR processor
-// Use log buffer size defaults
-// An external RTC is required
-
-// https://docs.arduino.cc/retired/boards/arduino-ng/ (Retired)
-#elif defined(ARDUINO_AVR_NG)
-#define LOGGER_BOARD "Arduino NG"
-// WARNING: I can't find confirmation of the operating voltage online!
-#define OPERATING_VOLTAGE 5
-#define BATTERY_PIN -1
-#define BATTERY_MULTIPLIER -1
-// Use ADC defaults for an AVR processor
-// Use log buffer size defaults
-// An external RTC is required
-
-// https://docs.arduino.cc/retired/boards/arduino-pro/ (Retired)
-#elif defined(ARDUINO_AVR_PRO)
-#define LOGGER_BOARD "Arduino Pro"
-// NOTE: The operating voltage is 3.3V or 5V depending on the model
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
@@ -583,6 +540,6 @@
     "The battery multiplier can be added by editing KnownProcessors.h."
 #endif
 
-// cspell:words Tatu Moja Adalogger Duemilanove Esplora Lilypad
+// cspell:words Tatu Moja Adalogger Duemilanove Esplora
 
 #endif

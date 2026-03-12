@@ -27,7 +27,7 @@
   - [AtMega644p (Sanguino)](#atmega644p-sanguino)
     - [Specific Supported AtMega644p Boards](#specific-supported-atmega644p-boards)
     - [AtMega644p Processor Information](#atmega644p-processor-information)
-  - [AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc)](#atmega328p-arduino-uno-duemilanove-lilypad-mini-seeeduino-stalker-etc)
+  - [AtMega328p (Arduino Uno, Seeeduino Stalker, etc)](#atmega328p-arduino-uno-seeeduino-stalker-etc)
     - [Specific Supported AtMega328p Boards](#specific-supported-atmega328p-boards)
     - [AtMega328p Processor Information](#atmega328p-processor-information)
   - [AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)](#atmega32u4-arduino-leonardomicro-adafruit-florafeather-etc)
@@ -280,7 +280,7 @@ Should be fully functional, but untested.
 
 ___
 
-## AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc)<!--! {#processor_uno} -->
+## AtMega328p (Arduino Uno, Seeeduino Stalker, etc)<!--! {#processor_uno} -->
 
 All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
 You will only be able to use a small number of sensors at one time and may not be able to log data.
@@ -292,11 +292,8 @@ You will only be able to use a small number of sensors at one time and may not b
 - **Arduino Duemilanove** (`ARDUINO_AVR_DUEMILANOVE`)
 - **Arduino Ethernet** (`ARDUINO_AVR_ETHERNET`)
 - **Arduino Fio** (`ARDUINO_AVR_FIO`)
-- **Arduino Lilypad** (`ARDUINO_AVR_LILYPAD`)
 - **Arduino Mini 05** (`ARDUINO_AVR_MINI`)
 - **Arduino Nano** (`ARDUINO_AVR_NANO`)
-- **Arduino NG** (`ARDUINO_AVR_NG`)
-- **Arduino Pro** (`ARDUINO_AVR_PRO`)
 - **Arduino Uno** (`ARDUINO_AVR_UNO`)
 
 ### AtMega328p Processor Information
@@ -324,7 +321,6 @@ You will only be able to use a small number of sensors at one time and may not b
 - **Arduino Esplora** (`ARDUINO_AVR_ESPLORA`)
 - **Arduino Gemma** (`ARDUINO_AVR_GEMMA`)
 - **Arduino Leonardo** (`ARDUINO_AVR_LEONARDO`)
-- **Arduino Lilypad USB** (`ARDUINO_AVR_LILYPAD_USB`)
 - **Arduino Micro** (`ARDUINO_AVR_MICRO`)
 - **Arduino Yun** (`ARDUINO_AVR_YUN`)
 
