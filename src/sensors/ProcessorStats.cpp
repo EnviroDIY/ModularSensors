@@ -28,7 +28,7 @@ ProcessorStats::ProcessorStats(const char* version,
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
     // fix battery multiplier for older Mayfly versions
     if (_version != nullptr &&
-        (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0)) {
+        (strcmp_P(_version, PSTR("v0.3")) == 0 || strcmp_P(_version, PSTR("v0.4")) == 0)) {
         _batteryMultiplier = 1.47;
     }
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
@@ -235,7 +235,7 @@ bool ProcessorStats::addSingleMeasurementResult() {
 
     // NOTE: Only running this section if there are no measurements already for
     // the RAM!
-    if (numberGoodMeasurementsMade[PROCESSOR_RAM_VAR_NUM] == 0) {
+    if (validCount[PROCESSOR_RAM_VAR_NUM] == 0) {
         // Used only for debugging - can be removed
         MS_DBG(F("Getting Free RAM"));
 
@@ -256,7 +256,7 @@ bool ProcessorStats::addSingleMeasurementResult() {
     // average-able measurement, only for new measurements. This is a workaround
     // in case someone wants to average more than one measurement of the battery
     // voltage.
-    if (numberGoodMeasurementsMade[PROCESSOR_SAMPNUM_VAR_NUM] == 0) {
+    if (validCount[PROCESSOR_SAMPNUM_VAR_NUM] == 0) {
         // bump up the sample number
         sampNum += 1;
 
@@ -267,7 +267,7 @@ bool ProcessorStats::addSingleMeasurementResult() {
 
     // NOTE: Only running this section if there are no measurements already for
     // the reset cause!
-    if (numberGoodMeasurementsMade[PROCESSOR_RESET_VAR_NUM] == 0) {
+    if (validCount[PROCESSOR_RESET_VAR_NUM] == 0) {
         // Used only for debugging - can be removed
         MS_DBG(F("Getting last reset cause"));
 
