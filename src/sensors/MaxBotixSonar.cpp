@@ -37,7 +37,8 @@ String MaxBotixSonar::getSensorLocation() {
     // attach the trigger pin to the stream number
     String loc;
     loc.reserve(25);  // Reserve for "sonarStream_trigger" + pin number
-    loc = "sonarStream_trigger" + String(_triggerPin);
+    loc = F("sonarStream_trigger");
+    loc += _triggerPin;
     return loc;
 }
 
