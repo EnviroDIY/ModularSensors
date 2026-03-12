@@ -172,7 +172,7 @@ class ProcessorAnalogReader : public AnalogVoltageReader {
      * likely 3.3 or 5.
      */
     ProcessorAnalogReader(float voltageMultiplier = 1.0f,
-                        float operatingVoltage  = OPERATING_VOLTAGE);
+                          float operatingVoltage  = OPERATING_VOLTAGE);
 
     /**
      * @brief Destroy the ProcessorAnalogReader object
@@ -262,7 +262,7 @@ class ProcessorAnalog : public Sensor {
      * ProcessorAnalogReader with default settings.
      */
     ProcessorAnalog(int8_t powerPin, int8_t dataPin,
-                    uint8_t               measurementsToAverage = 1,
+                    uint8_t                measurementsToAverage = 1,
                     ProcessorAnalogReader* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Processor Analog object

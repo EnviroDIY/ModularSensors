@@ -273,7 +273,7 @@ class TurnerTurbidityPlus : public Sensor {
     TurnerTurbidityPlus(int8_t powerPin, int8_t wiperTriggerPin,
                         int8_t analogChannel, int8_t analogReferenceChannel,
                         float conc_std, float volt_std, float volt_blank,
-                        uint8_t            measurementsToAverage = 1,
+                        uint8_t              measurementsToAverage = 1,
                         AnalogVoltageReader* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Turner Turbidity Plus object

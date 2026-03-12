@@ -276,13 +276,13 @@ class TIADS1x15Reader : public AnalogVoltageReader {
      * @param adsDataRate The data rate for the ADS1x15 (samples per second)
      */
     explicit TIADS1x15Reader(TwoWire* theI2C, float voltageMultiplier = 1.0f,
-                           adsGain_t adsGain    = GAIN_ONE,
-                           uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
-                           float     adsSupplyVoltage = OPERATING_VOLTAGE,
+                             adsGain_t adsGain    = GAIN_ONE,
+                             uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
+                             float     adsSupplyVoltage = OPERATING_VOLTAGE,
 #ifndef MS_USE_ADS1015
-                           uint16_t adsDataRate = RATE_ADS1115_128SPS
+                             uint16_t adsDataRate = RATE_ADS1115_128SPS
 #else
-                           uint16_t adsDataRate = RATE_ADS1015_1600SPS
+                             uint16_t adsDataRate = RATE_ADS1015_1600SPS
 #endif
     );
 
@@ -297,13 +297,13 @@ class TIADS1x15Reader : public AnalogVoltageReader {
      * @param adsDataRate The data rate for the ADS1x15 (samples per second)
      */
     explicit TIADS1x15Reader(float     voltageMultiplier = 1.0f,
-                           adsGain_t adsGain           = GAIN_ONE,
-                           uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
-                           float     adsSupplyVoltage = OPERATING_VOLTAGE,
+                             adsGain_t adsGain           = GAIN_ONE,
+                             uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
+                             float     adsSupplyVoltage = OPERATING_VOLTAGE,
 #ifndef MS_USE_ADS1015
-                           uint16_t adsDataRate = RATE_ADS1115_128SPS
+                             uint16_t adsDataRate = RATE_ADS1115_128SPS
 #else
-                           uint16_t adsDataRate = RATE_ADS1015_1600SPS
+                             uint16_t adsDataRate = RATE_ADS1015_1600SPS
 #endif
     );
 
@@ -497,8 +497,8 @@ class TIADS1x15 : public Sensor {
      * default settings.
      */
     TIADS1x15(int8_t powerPin, int8_t adsChannel,
-              int8_t        analogReferenceChannel = -1,
-              uint8_t       measurementsToAverage  = 1,
+              int8_t           analogReferenceChannel = -1,
+              uint8_t          measurementsToAverage  = 1,
               TIADS1x15Reader* analogVoltageReader    = nullptr);
     /**
      * @brief Destroy the TIADS1x15 object

@@ -328,10 +328,10 @@ class TurnerCyclops : public Sensor {
      * turned off between measurements.
      * @param analogChannel The analog data channel or processor pin for voltage
      * measurements.  The significance of the channel number depends on the
-     * specific AnalogVoltageReader implementation used for voltage readings. For
-     * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
-     * the sensor is connected to.  Negative or invalid channel numbers are not
-     * clamped and will cause the reading to fail and emit a warning.
+     * specific AnalogVoltageReader implementation used for voltage readings.
+     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
+     * that the sensor is connected to.  Negative or invalid channel numbers are
+     * not clamped and will cause the reading to fail and emit a warning.
      * @param conc_std The concentration of the standard used for a 1-point
      * sensor calibration.  The concentration units should be the same as the
      * final measuring units.
@@ -361,7 +361,7 @@ class TurnerCyclops : public Sensor {
      */
     TurnerCyclops(int8_t powerPin, int8_t analogChannel, float conc_std,
                   float volt_std, float volt_blank,
-                  uint8_t            measurementsToAverage = 1,
+                  uint8_t              measurementsToAverage = 1,
                   AnalogVoltageReader* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Turner Cyclops object

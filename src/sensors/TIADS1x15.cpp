@@ -22,8 +22,8 @@
 
 // Constructor with TwoWire instance
 TIADS1x15Reader::TIADS1x15Reader(TwoWire* theI2C, float voltageMultiplier,
-                             adsGain_t adsGain, uint8_t i2cAddress,
-                             float adsSupplyVoltage, uint16_t adsDataRate)
+                                 adsGain_t adsGain, uint8_t i2cAddress,
+                                 float adsSupplyVoltage, uint16_t adsDataRate)
     : AnalogVoltageReader(voltageMultiplier, adsSupplyVoltage),
       _wire(theI2C != nullptr ? theI2C : &Wire),
       _i2cAddress(i2cAddress),
@@ -44,10 +44,10 @@ TIADS1x15Reader::TIADS1x15Reader(TwoWire* theI2C, float voltageMultiplier,
 
 // Constructor using default Wire instance
 TIADS1x15Reader::TIADS1x15Reader(float voltageMultiplier, adsGain_t adsGain,
-                             uint8_t i2cAddress, float adsSupplyVoltage,
-                             uint16_t adsDataRate)
+                                 uint8_t i2cAddress, float adsSupplyVoltage,
+                                 uint16_t adsDataRate)
     : TIADS1x15Reader(&Wire, voltageMultiplier, adsGain, i2cAddress,
-                    adsSupplyVoltage, adsDataRate) {}
+                      adsSupplyVoltage, adsDataRate) {}
 
 
 // ============================================================================
@@ -85,7 +85,7 @@ bool TIADS1x15Reader::begin() {
 }
 
 String TIADS1x15Reader::getAnalogLocation(int8_t analogChannel,
-                                        int8_t analogReferenceChannel) {
+                                          int8_t analogReferenceChannel) {
     String sensorLocation;
 #ifndef MS_USE_ADS1015
     sensorLocation += F("ADS1115_0x");
@@ -106,7 +106,7 @@ String TIADS1x15Reader::getAnalogLocation(int8_t analogChannel,
 }
 
 bool TIADS1x15Reader::readVoltageSingleEnded(int8_t analogChannel,
-                                           float& resultValue) {
+                                             float& resultValue) {
     bool    success      = false;
     int16_t adcCounts    = MS_INVALID_VALUE;
     float   adcVoltage   = MS_INVALID_VALUE;
@@ -169,8 +169,8 @@ bool TIADS1x15Reader::readVoltageSingleEnded(int8_t analogChannel,
 }
 
 bool TIADS1x15Reader::readVoltageDifferential(int8_t analogChannel,
-                                            int8_t analogReferenceChannel,
-                                            float& resultValue) {
+                                              int8_t analogReferenceChannel,
+                                              float& resultValue) {
     bool    success      = false;
     int16_t adcCounts    = MS_INVALID_VALUE;
     float   adcVoltage   = MS_INVALID_VALUE;
@@ -237,7 +237,8 @@ bool TIADS1x15Reader::readVoltageDifferential(int8_t analogChannel,
 }
 
 // Validation function for differential channel pairs
-bool TIADS1x15Reader::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
+bool TIADS1x15Reader::isValidDifferentialPair(int8_t channel1,
+                                              int8_t channel2) {
     // Only canonical ordered pairs are valid (lower channel number first)
     // This ensures consistent polarity: channel1 is positive, channel2 is
     // negative Valid combinations are: 0-1, 0-3, 1-3, or 2-3 (in that order
@@ -350,8 +351,8 @@ bool TIADS1x15Reader::probeI2C() {
 // The constructor - need the power pin the data pin, and voltage multiplier if
 // non standard
 TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
-                     int8_t         analogReferenceChannel,
-                     uint8_t        measurementsToAverage,
+                     int8_t           analogReferenceChannel,
+                     uint8_t          measurementsToAverage,
                      TIADS1x15Reader* analogVoltageReader)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,

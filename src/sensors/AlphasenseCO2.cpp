@@ -17,8 +17,8 @@
 
 // The constructor - need the power pin and the data pin
 AlphasenseCO2::AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
-                             int8_t             analogReferenceChannel,
-                             uint8_t            measurementsToAverage,
+                             int8_t               analogReferenceChannel,
+                             uint8_t              measurementsToAverage,
                              AnalogVoltageReader* analogVoltageReader)
     : Sensor("AlphasenseCO2", ALPHASENSE_CO2_NUM_VARIABLES,
              ALPHASENSE_CO2_WARM_UP_TIME_MS,

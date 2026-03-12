@@ -324,9 +324,9 @@ class AnalogElecConductivity : public Sensor {
      */
     AnalogElecConductivity(
         int8_t powerPin, int8_t dataPin,
-        float              Rseries_ohms   = ANALOGELECCONDUCTIVITY_RSERIES_OHMS,
-        float              sensorEC_Konst = ANALOGELECCONDUCTIVITY_KONST,
-        uint8_t            measurementsToAverage = 1,
+        float                Rseries_ohms = ANALOGELECCONDUCTIVITY_RSERIES_OHMS,
+        float                sensorEC_Konst = ANALOGELECCONDUCTIVITY_KONST,
+        uint8_t              measurementsToAverage = 1,
         AnalogVoltageReader* analogVoltageReader   = nullptr);
 
     /**

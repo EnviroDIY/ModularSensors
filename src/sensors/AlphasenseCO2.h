@@ -298,8 +298,8 @@ class AlphasenseCO2 : public Sensor {
      * inputs for the differential voltage measurement.
      */
     AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
-                  int8_t             analogReferenceChannel,
-                  uint8_t            measurementsToAverage = 7,
+                  int8_t               analogReferenceChannel,
+                  uint8_t              measurementsToAverage = 7,
                   AnalogVoltageReader* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the AlphasenseCO2 object

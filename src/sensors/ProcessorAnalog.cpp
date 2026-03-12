@@ -17,7 +17,7 @@
 // ============================================================================
 
 ProcessorAnalogReader::ProcessorAnalogReader(float voltageMultiplier,
-                                         float operatingVoltage)
+                                             float operatingVoltage)
     : AnalogVoltageReader(voltageMultiplier, operatingVoltage) {}
 
 
@@ -32,7 +32,7 @@ bool ProcessorAnalogReader::begin() {
 }
 
 bool ProcessorAnalogReader::readVoltageSingleEnded(int8_t analogChannel,
-                                                 float& resultValue) {
+                                                   float& resultValue) {
     // Compile-time validation of ADC configuration
     static_assert(PROCESSOR_ADC_MAX > 0,
                   "PROCESSOR_ADC_MAX must be greater than 0. Check "
@@ -124,7 +124,7 @@ float ProcessorAnalogReader::calculateAnalogResolutionVolts() {
 // The constructor - need the power pin, the data pin, and the number of
 // measurements to average, with an optional external analog reader
 ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
-                                 uint8_t              measurementsToAverage,
+                                 uint8_t                measurementsToAverage,
                                  ProcessorAnalogReader* analogVoltageReader)
     : Sensor("ProcessorAnalog", PROCESSOR_ANALOG_NUM_VARIABLES,
              PROCESSOR_ANALOG_WARM_UP_TIME_MS,

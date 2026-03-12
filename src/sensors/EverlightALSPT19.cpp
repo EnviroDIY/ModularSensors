@@ -14,7 +14,7 @@
 
 EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
                                    float alsSupplyVoltage, float loadResistor,
-                                   uint8_t            measurementsToAverage,
+                                   uint8_t              measurementsToAverage,
                                    AnalogVoltageReader* analogVoltageReader)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
@@ -33,7 +33,7 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
      defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
      defined(BUILT_IN_ALS_LOADING_RESISTANCE)) ||                         \
     defined(DOXYGEN)
-EverlightALSPT19::EverlightALSPT19(uint8_t            measurementsToAverage,
+EverlightALSPT19::EverlightALSPT19(uint8_t              measurementsToAverage,
                                    AnalogVoltageReader* analogVoltageReader)
     : EverlightALSPT19(BUILT_IN_ALS_POWER_PIN, BUILT_IN_ALS_DATA_PIN,
                        BUILT_IN_ALS_SUPPLY_VOLTAGE,

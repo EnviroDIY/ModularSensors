@@ -16,7 +16,7 @@
 // The constructor - need the power pin, the data pin, and the calibration info
 CampbellOBS3::CampbellOBS3(int8_t powerPin, int8_t analogChannel,
                            float x2_coeff_A, float x1_coeff_B, float x0_coeff_C,
-                           uint8_t            measurementsToAverage,
+                           uint8_t              measurementsToAverage,
                            AnalogVoltageReader* analogVoltageReader)
     : Sensor("CampbellOBS3", OBS3_NUM_VARIABLES, OBS3_WARM_UP_TIME_MS,
              OBS3_STABILIZATION_TIME_MS, OBS3_MEASUREMENT_TIME_MS, powerPin,

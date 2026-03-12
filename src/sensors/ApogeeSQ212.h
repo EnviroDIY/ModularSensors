@@ -252,10 +252,10 @@ class ApogeeSQ212 : public Sensor {
      * - The SQ-212 requires 3.3 to 24 V DC; current draw 10 µA
      * @param analogChannel The analog data channel or processor pin for voltage
      * measurements.  The significance of the channel number depends on the
-     * specific AnalogVoltageReader implementation used for voltage readings. For
-     * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
-     * the sensor is connected to.  Negative or invalid channel numbers are not
-     * clamped and will cause the reading to fail and emit a warning.
+     * specific AnalogVoltageReader implementation used for voltage readings.
+     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
+     * that the sensor is connected to.  Negative or invalid channel numbers are
+     * not clamped and will cause the reading to fail and emit a warning.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
@@ -275,7 +275,7 @@ class ApogeeSQ212 : public Sensor {
      * compiler error or a silent reading error.
      */
     ApogeeSQ212(int8_t powerPin, int8_t analogChannel,
-                uint8_t            measurementsToAverage = 1,
+                uint8_t              measurementsToAverage = 1,
                 AnalogVoltageReader* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the ApogeeSQ212 object

@@ -291,8 +291,9 @@ class EverlightALSPT19 : public Sensor {
      * non-null pointer is supplied, the caller retains ownership and must
      * ensure its lifetime exceeds that of this object.
      */
-    explicit EverlightALSPT19(uint8_t            measurementsToAverage = 10,
-                              AnalogVoltageReader* analogVoltageReader = nullptr);
+    explicit EverlightALSPT19(
+        uint8_t              measurementsToAverage = 10,
+        AnalogVoltageReader* analogVoltageReader   = nullptr);
 #endif
     /**
      * @brief Destroy the EverlightALSPT19 object.

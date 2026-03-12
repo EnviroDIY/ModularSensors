@@ -16,7 +16,7 @@
 // The constructor - need the power pin, the data pin, and the calibration info
 TurnerCyclops::TurnerCyclops(int8_t powerPin, int8_t analogChannel,
                              float conc_std, float volt_std, float volt_blank,
-                             uint8_t            measurementsToAverage,
+                             uint8_t              measurementsToAverage,
                              AnalogVoltageReader* analogVoltageReader)
     : Sensor("TurnerCyclops", CYCLOPS_NUM_VARIABLES, CYCLOPS_WARM_UP_TIME_MS,
              CYCLOPS_STABILIZATION_TIME_MS, CYCLOPS_MEASUREMENT_TIME_MS,

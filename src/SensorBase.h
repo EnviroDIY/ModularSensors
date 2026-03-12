@@ -497,8 +497,8 @@ class Sensor {
      * - Clears values array on first measurement attempt
      * - Checks if measurement was successfully started
      *
-     * @return True if initialization succeeded and measurement processing should
-     * continue, false if the measurement attempt should be aborted.
+     * @return True if initialization succeeded and measurement processing
+     * should continue, false if the measurement attempt should be aborted.
      */
     bool initializeMeasurementResult();
 
