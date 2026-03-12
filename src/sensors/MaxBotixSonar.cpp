@@ -129,10 +129,8 @@ bool MaxBotixSonar::startSingleMeasurement() {
 
 
 bool MaxBotixSonar::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     // Initialize values
     bool    success = false;

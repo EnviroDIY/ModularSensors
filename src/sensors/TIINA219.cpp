@@ -89,10 +89,8 @@ bool TIINA219::wake() {
 
 
 bool TIINA219::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     bool  success    = false;
     float current_mA = MS_INVALID_VALUE;

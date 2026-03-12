@@ -558,9 +558,9 @@ bool Sensor::update() {
     // them before starting a measurement.
     clearMeasurementStatus();
 
-    // Clear stale values and reset the measurement attempt and retry
-    // counts before starting new measurements.
-    clearValues();
+    // Reset the measurement attempt and retry counts before starting new
+    // measurements.
+    resetMeasurementCounts();
 
     // Wait for the sensor to stabilize
     waitForStability();
@@ -798,6 +798,21 @@ bool Sensor::finalizeMeasurementAttempt(bool wasSuccessful) {
     // Return the input parameter so it's easy to use this in a return statement
     // to pass forward a value
     return wasSuccessful;
+}
+
+
+// Common initialization for addSingleMeasurementResult implementations
+bool Sensor::initializeMeasurementResult() {
+    // If it's the first attempt, clear all stale values in the value array
+    if (getCompletedMeasurements() == 0 && getCurrentRetries() == 0) {
+        clearValues();
+    }
+    // Immediately quit if the measurement was not successfully started
+    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+        finalizeMeasurementAttempt(false);
+        return false;
+    }
+    return true;
 }
 
 

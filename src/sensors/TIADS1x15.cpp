@@ -409,10 +409,8 @@ bool TIADS1x15::setup() {
 }
 
 bool TIADS1x15::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     // Check if we have a valid analog voltage reader
     if (_analogVoltageReader == nullptr) {

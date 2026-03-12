@@ -181,8 +181,8 @@ static_assert(MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES >= 0 &&
 #define HRXL_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; the HRXL takes 166ms to complete a
 /// measurement.  It outputs results at least every 166ms.
-/// @note Because this sensor allows up to 25 retries if a measurement fails,
-/// the actual time to get a measurement may be much longer than 166ms.
+/// @note Because the default number of measurement retries is 25, the actual
+/// time to get a measurement result may be much longer than 166ms.
 #define HRXL_MEASUREMENT_TIME_MS 250
 /**@}*/
 

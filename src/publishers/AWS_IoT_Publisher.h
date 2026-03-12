@@ -102,7 +102,7 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param samplingFeatureUUID The sampling feature UUID
      *
      * @note The inputs to this are the **NAMES** of the certificate **files**
-     * as they are stored on you modem module, not the content of the
+     * as they are stored on your modem module, not the content of the
      * certificates.
      */
     AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,

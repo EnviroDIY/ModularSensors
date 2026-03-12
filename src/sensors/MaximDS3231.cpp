@@ -54,9 +54,13 @@ bool MaximDS3231::startSingleMeasurement() {
 
 
 bool MaximDS3231::addSingleMeasurementResult() {
-    // NOTE: If this fails we have much bigger problems than just a lost
-    // temperature value. That is, if I2C communication with the clock fails,
-    // the system is too broken to even ask for this temperature.
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
+
+    // NOTE: If this the start measurement or get temperature fails we have much
+    // bigger problems than just a lost temperature value. That is, if I2C
+    // communication with the clock fails, the system is too broken to even ask
+    // for this temperature.
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     float tempVal = rtc.getTemperature();
     MS_DBG(F("  Temp:"), tempVal, F("°C"));

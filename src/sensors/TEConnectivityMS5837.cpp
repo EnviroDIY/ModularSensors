@@ -144,10 +144,8 @@ bool TEConnectivityMS5837::wake() {
 
 
 bool TEConnectivityMS5837::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     // Validate configuration parameters
     if (_fluidDensity <= 0.1 || _fluidDensity > 5.0) {

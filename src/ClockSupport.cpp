@@ -670,7 +670,8 @@ int32_t loggerClock::getProcessorTimeZone() {
 
     if (is_time_t_signed) {
         // For signed time_t, negative values are represented normally
-        if (timeY2K >= -SECONDS_IN_DAY && timeY2K <= SECONDS_IN_DAY) {
+        if (timeY2K >= -static_cast<int32_t>(SECONDS_IN_DAY) &&
+            timeY2K <= static_cast<int32_t>(SECONDS_IN_DAY)) {
             tz_offset = static_cast<int32_t>(timeY2K);
         } else {
             tz_offset = 0;  // Outside reasonable timezone range (±24 hours)

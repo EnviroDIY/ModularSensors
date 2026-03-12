@@ -41,10 +41,8 @@ String AOSongDHT::getSensorName() {
 
 
 bool AOSongDHT::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     bool  success   = false;
     float humid_val = MS_INVALID_VALUE;

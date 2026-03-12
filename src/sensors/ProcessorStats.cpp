@@ -224,8 +224,10 @@ String ProcessorStats::getLastResetCause() {
 
 
 bool ProcessorStats::addSingleMeasurementResult() {
-    // NOTE: We don't need to check if a measurement was started successfully
-    // because there is no way for it to fail!
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
+
+    // NOTE: There is no way for the measurement start to fail!
 
     float sensorValue_battery = getBatteryVoltage();
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM,

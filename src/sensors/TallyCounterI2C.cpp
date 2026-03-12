@@ -68,10 +68,8 @@ bool TallyCounterI2C::setup() {
 
 
 bool TallyCounterI2C::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     bool    success = false;
     int16_t events  = MS_INVALID_VALUE;  // Number of events

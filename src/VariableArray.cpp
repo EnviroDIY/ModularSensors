@@ -503,10 +503,10 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
 
     // Clear the initial variable values arrays and reset the measurement
     // attempt and retry counts.
-    MS_DBG(F("----->> Clearing all results arrays before taking new "
+    MS_DBG(F("----->> Resetting all measurement counts before taking new "
              "measurements. ..."));
     for (uint8_t i = 0; i < _sensorCount; i++) {
-        _sensorList[i]->clearValues();
+        _sensorList[i]->resetMeasurementCounts();
     }
     MS_DBG(F("   ... Complete. <<-----"));
 

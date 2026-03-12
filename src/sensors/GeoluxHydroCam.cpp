@@ -185,10 +185,8 @@ bool GeoluxHydroCam::startSingleMeasurement() {
 
 
 bool GeoluxHydroCam::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     bool    success           = false;
     int32_t bytes_transferred = MS_INVALID_VALUE;

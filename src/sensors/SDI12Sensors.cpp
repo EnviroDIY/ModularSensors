@@ -711,10 +711,8 @@ bool SDI12Sensors::getResults(bool verify_crc) {
 // bit was set in the specialized startSingleMeasurement function based on
 // whether the response to the SDI-12 start measurement command.
 bool SDI12Sensors::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     bool success = getResults(MS_SDI12_USE_CRC);
 
@@ -728,10 +726,8 @@ bool SDI12Sensors::addSingleMeasurementResult() {
 // startSingleMeasurement function from sensor base, which only verifies that
 // the sensor is awake and capable of starting measurements.
 bool SDI12Sensors::addSingleMeasurementResult() {
-    // Immediately quit if the measurement was not successfully started
-    if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        return finalizeMeasurementAttempt(false);
-    }
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
     bool success = false;
 

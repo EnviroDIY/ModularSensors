@@ -312,7 +312,7 @@ class Sensor {
      *
      * Bit 5
      * - 0 => No measurements have been requested
-     * - 1 => Start measurement requested attempt made
+     * - 1 => Measurement start requested
      * - check _millisMeasurementRequested or bit 6 to see if
      * startSingleMeasurement() attempt was successful
      * - a failed request attempt will give _millisMeasurementRequested = 0
@@ -490,6 +490,19 @@ class Sensor {
     virtual bool startSingleMeasurement();
 
     /**
+     * @brief Common initialization logic for addSingleMeasurementResult().
+     *
+     * This function performs the standard checks and initialization required
+     * at the start of every addSingleMeasurementResult() implementation:
+     * - Clears values array on first measurement attempt
+     * - Checks if measurement was successfully started
+     *
+     * @return True if initialization succeeded and measurement processing should
+     * continue, false if the measurement attempt should be aborted.
+     */
+    bool initializeMeasurementResult();
+
+    /**
      * @brief Get the results from a single measurement.
      *
      * This asks the sensor for a new result, verifies that it passes sanity
@@ -525,7 +538,7 @@ class Sensor {
      * This clears the values array by setting all values to #MS_INVALID_VALUE.
      */
     void clearValueArray();
-    
+
     /**
      * @brief Reset all measurement counts.
      *
@@ -534,7 +547,7 @@ class Sensor {
      * counts.
      */
     void resetMeasurementCounts();
-    
+
     /**
      * @brief Clear the values array and reset retry counts.
      *
