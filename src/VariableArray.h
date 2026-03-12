@@ -97,7 +97,10 @@ class VariableArray {
      */
     VariableArray(uint8_t variableCount, Variable* variableList[]);
     /**
-     * @brief Construct a new Variable Array object
+     * @brief Construct a new Variable Array object without initialization.
+     *
+     * Use this constructor when the variable list is not yet available.
+     * Call begin() to initialize the array before use.
      */
     VariableArray();
     /**
@@ -318,7 +321,8 @@ class VariableArray {
     /**
      * @brief Check that all variables have valid UUIDs, if they are assigned
      *
-     * @return True if all variables have valid UUIDs.
+     * @return True if all assigned UUIDs are valid; also returns true if no
+     * UUIDs are assigned.
      *
      * @warning This does not check that the UUIDs are the true UUIDs for the
      * variables, just that the text is a validly formed UUID.

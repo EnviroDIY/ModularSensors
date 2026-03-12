@@ -39,11 +39,11 @@ void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
         MS_DBG(F("No variable array in the VariableArray object!"));
         return;
     }
+    matchUUIDs(uuids);
     if (!populateSensorList()) {
         MS_DBG(F("Warning: Sensor list may be truncated - exceeded "
                  "MAX_NUMBER_SENSORS limit."));
     }
-    matchUUIDs(uuids);
     checkVariableUUIDs();
 }
 void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
@@ -82,6 +82,7 @@ uint8_t VariableArray::getSensorCount() {
 
 // This matches UUIDs from an array of pointers to the variable array
 void VariableArray::matchUUIDs(const char* uuids[]) {
+    if (uuids == nullptr) return;
     for (uint8_t i = 0; i < _variableCount; i++) {
         arrayOfVars[i]->setVarUUID(uuids[i]);
     }

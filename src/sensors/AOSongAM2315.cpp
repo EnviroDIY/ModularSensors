@@ -62,8 +62,7 @@ bool AOSongAM2315::addSingleMeasurementResult() {
     success = am2315.readTemperatureAndHumidity(&temp_val, &humid_val);
 
 
-    success &= !isnan(temp_val) && temp_val != MS_INVALID_VALUE &&
-        !isnan(humid_val) && humid_val != MS_INVALID_VALUE;
+    success &= !isnan(temp_val) && !isnan(humid_val);
 
     MS_DBG(F("  Temp:"), temp_val, F("°C"));
     MS_DBG(F("  Humidity:"), humid_val, '%');

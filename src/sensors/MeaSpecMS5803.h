@@ -325,8 +325,7 @@ class MeaSpecMS5803_Pressure : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of th a default value of
-     * MeaSpecMS5803Pressure
+     * optional with a default value of MeaSpecMS5803Pressure
      */
     explicit MeaSpecMS5803_Pressure(
         MeaSpecMS5803* parentSense, const char* uuid = "",

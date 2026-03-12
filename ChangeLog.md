@@ -118,9 +118,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - The `verifyAndAddMeasurementResult()` is now consistently used in all sensors and is only called when the sensor successfully returned a measurement response.
   - Also removed all places where sensor values were re-set to -9999 after a measurement failed and then that -9999 was sent to the `verifyAndAddMeasurementResult()` function.
     These resets were an awkward attempt to deal with bad values before feeding any bad values to the `verifyAndAddMeasurementResult()` function which was previously always called even if the sensor returned junk.
-    This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
+    This was probably a hold-over from incorrect implementation and calling of the `clearValues()` function deep in the library history.
   - Also made the return from the `addSingleMeasurementResult()` function consistently false for a bad sensor response and true for a good one - where it's possible to tell the difference.
-- The Sensor::clearValues() function now resets the attempt and retry counts in addition to setting all values in the value array to MS_INVALID_VALUE.
 
 #### Individual Publishers
 
@@ -180,6 +179,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
     When multiple 'measurements to average' are requested, the values of each successful measurement is stored and averaged.
     Measurements that return bad values even after retries are still not included in averaging.
   - The default number of retry attempts for most sensors is 1.
+  - The number of retries and the number of attempted measurements can be reset with `resetMeasurementCounts().`
 - Made a secondary power pin a property of all sensors.
 - Added internal function to run the steps of setting the timing and bits after a measurement.
 - Added setter and getter functions for sensor timing variables.
@@ -217,11 +217,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 
-- **BREAKING** Constructors for sensor-associated variables that don't include a pointer to the sensor.
+- **Potentially Breaking** Constructors for sensor-associated variables that don't include a pointer to the sensor.
   You now *must* create the sensor instance before creating the variable and tie the variable to the sensor when creating the variable.
-- **BREAKING** All flavors of the variable.begin() functions.
+  This functionality was never used in any examples and is unlikely to affect any users.
+- **Potentially Breaking** All flavors of the variable.begin() functions.
   These were not needed since all arguments should be set in the constructor or setters for individual parameters.
   There was no functionality needed in a typical Arduino "begin" function - that is, nothing that needed to be performed after the hardware was active.
+  This functionality was never used in any examples and is unlikely to affect any users.
 - Unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function.
 - Unnecessary copy doc calls for inherited functions and properties.
 - All overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.

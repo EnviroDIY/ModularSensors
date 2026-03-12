@@ -46,6 +46,7 @@ The specific processors supported by the ModularSensors library are defined in t
 The [KnownProcessors.h](../src/sensors/KnownProcessors.h) file defines board-specific parameters for optimal configuration:
 
 **Basic Board Information:**
+
 - `LOGGER_BOARD`: Pretty text name for the board
 - `OPERATING_VOLTAGE`: Board operating voltage in volts
 - `BATTERY_PIN`: Analog pin for battery voltage monitoring
@@ -126,6 +127,7 @@ Each board entry should specify:
 ### Configuration Override
 
 All board-specific defaults can be overridden in [ModSensorConfig.h](../src/ModSensorConfig.h) if needed:
+
 - Users can uncomment and modify clock, ADC, or buffer size settings
 - Build flags can also be used with PlatformIO for custom configurations
 - Arduino IDE users should modify ModSensorConfig.h as build flags aren't available

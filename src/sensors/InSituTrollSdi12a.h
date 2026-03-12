@@ -123,12 +123,7 @@
  * {{ @ref InSituTrollSdi12a_Pressure::InSituTrollSdi12a_Pressure }}
  */
 /**@{*/
-/**
- * @brief Decimal places in string representation; conductivity should have 1.
- *
- * 0 are reported, adding extra digit to resolution to allow the proper number
- * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
- */
+/// @brief Decimal places in string representation; pressure should have 5.
 #define ITROLLA_PRESSURE_RESOLUTION 5
 /// @brief Sensor variable number; pressure is stored in sensorValues[0].
 #define ITROLLA_PRESSURE_VAR_NUM 0

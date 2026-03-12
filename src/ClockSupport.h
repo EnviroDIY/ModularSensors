@@ -39,14 +39,15 @@
 
 // Validate that exactly one clock has been selected (should be set by
 // KnownProcessors.h)
-#if defined(MS_USE_RV8803) && defined(MS_USE_DS3231)
+#if (defined(MS_USE_RV8803) + defined(MS_USE_DS3231) + \
+     defined(MS_USE_RTC_ZERO)) > 1
 #error Multiple clocks defined! Only one of MS_USE_RV8803, MS_USE_DS3231, or MS_USE_RTC_ZERO can be selected at a time.
-#elif defined(MS_USE_RV8803) && defined(MS_USE_RTC_ZERO)
-#error Multiple clocks defined! Only one of MS_USE_RV8803, MS_USE_DS3231, or MS_USE_RTC_ZERO can be selected at a time.
-#elif defined(MS_USE_DS3231) && defined(MS_USE_RTC_ZERO)
-#error Multiple clocks defined! Only one of MS_USE_RV8803, MS_USE_DS3231, or MS_USE_RTC_ZERO can be selected at a time.
-#elif !defined(MS_USE_RV8803) && !defined(MS_USE_DS3231) && \
-    !defined(MS_USE_RTC_ZERO)
+#elif (defined(MS_USE_RV8803) + defined(MS_USE_DS3231) + \
+       defined(MS_USE_RTC_ZERO)) == 0 &&                 \
+    (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__))
+#pragma message "No clock defined! Using processor as RTC."
+#elif (defined(MS_USE_RV8803) + defined(MS_USE_DS3231) + \
+       defined(MS_USE_RTC_ZERO)) == 0
 #error No clock defined! Define exactly one of MS_USE_RV8803, MS_USE_DS3231, or MS_USE_RTC_ZERO for the RTC. Check that KnownProcessors.h is properly setting defaults for your board, or select a clock in ModSensorConfig.h for other processors.
 #endif
 

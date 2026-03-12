@@ -97,7 +97,7 @@
  * @brief The largest number of variables from a single sensor.
  *
  * Every sensor will create a buffer of this length for holding variable values.
- * Decrease this value to save a memory.
+ * Decrease this value to save memory.
  *
  * @note This is the maximum number of variables that can be tied to any one
  * sensor, not the maximum number of variables in a variable array.
@@ -325,7 +325,7 @@ static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
  * local atmospheric conditions for more accurate calculations.
  *
  * @note In library versions prior to 0.37.0, this variable was named
- * SEALEVELPRESSURE_HPA. and was defined in the header files for the BME280 and
+ * SEALEVELPRESSURE_HPA and was defined in the header files for the BME280 and
  * BMP3xx sensors.
  */
 #define MS_SEA_LEVEL_PRESSURE_HPA 1013.25f
@@ -506,6 +506,11 @@ static_assert(MS_AWS_IOT_PUBLISHER_PUB_COUNT >= 0 &&
  */
 #define MS_AWS_IOT_MAX_CONNECTION_TIME 30000L
 #endif
+// Static assert to validate AWS IoT connection timeout is reasonable
+static_assert(MS_AWS_IOT_MAX_CONNECTION_TIME > 0 &&
+                  MS_AWS_IOT_MAX_CONNECTION_TIME <= 600000L,
+              "MS_AWS_IOT_MAX_CONNECTION_TIME must be between 1 and 600000 "
+              "milliseconds (10 minutes max)");
 //==============================================================
 
 

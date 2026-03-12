@@ -308,8 +308,8 @@ class Variable {
         int   decimalPlaces   = static_cast<int>(ceilf(-log10Resolution)) + 1;
 
         // Clamp to reasonable bounds (0-6 decimal places)
-        if (decimalPlaces < 0) decimalPlaces = 0;
-        if (decimalPlaces > 6) decimalPlaces = 6;
+        if (decimalPlaces < 0) { decimalPlaces = 0; }
+        if (decimalPlaces > 6) { decimalPlaces = 6; }
 
         return static_cast<uint8_t>(decimalPlaces);
     }

@@ -78,7 +78,8 @@
 // Use ADC defaults for an AVR processor
 // Use log buffer size defaults
 // Built in DS3231 RTC
-#ifndef MS_USE_DS3231
+#if (defined(MS_USE_RV8803) + defined(MS_USE_DS3231) + \
+     defined(MS_USE_RTC_ZERO)) == 0
 #define MS_USE_DS3231
 #endif
 
@@ -95,7 +96,8 @@
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
 // Built in RV-8803 RTC
-#ifndef MS_USE_RV8803
+#if (defined(MS_USE_RV8803) + defined(MS_USE_DS3231) + \
+     defined(MS_USE_RTC_ZERO)) == 0
 #define MS_USE_RV8803
 #endif
 
@@ -112,10 +114,7 @@
 #define BATTERY_MULTIPLIER -1
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
-// Use the processor as an RTC
-#ifndef MS_USE_RTC_ZERO
-#define MS_USE_RTC_ZERO
-#endif
+// The processor can be used as an RTC, but the user must manually select it
 
 // https://learn.sodaq.com/Boards/Autonomo/ (Discontinued)
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
@@ -125,10 +124,7 @@
 #define BATTERY_MULTIPLIER 1.47
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
-// Use the processor as an RTC
-#ifndef MS_USE_RTC_ZERO
-#define MS_USE_RTC_ZERO
-#endif
+// The processor can be used as an RTC, but the user must manually select it
 
 // https://learn.sodaq.com/Boards/One/base/ (Discontinued)
 #elif defined(ARDUINO_SODAQ_ONE_BETA)
@@ -138,10 +134,7 @@
 #define BATTERY_MULTIPLIER 2  // for version v0.1
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
-// Use the processor as an RTC
-#ifndef MS_USE_RTC_ZERO
-#define MS_USE_RTC_ZERO
-#endif
+// The processor can be used as an RTC, but the user must manually select it
 
 // https://learn.sodaq.com/Boards/One/base/ (Discontinued)
 #elif defined(ARDUINO_SODAQ_ONE)
@@ -151,10 +144,7 @@
 #define BATTERY_MULTIPLIER 2  // for version v0.1
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
-// Use the processor as an RTC
-#ifndef MS_USE_RTC_ZERO
-#define MS_USE_RTC_ZERO
-#endif
+// The processor can be used as an RTC, but the user must manually select it
 
 // https://learn.sodaq.com/Boards/Mbili/ (Discontinued)
 #elif defined(ARDUINO_AVR_SODAQ_MBILI)
@@ -165,7 +155,8 @@
 // Use ADC defaults for an AVR processor
 // Use log buffer size defaults
 // Built in DS3231 RTC
-#ifndef MS_USE_DS3231
+#if (defined(MS_USE_RV8803) + defined(MS_USE_DS3231) + \
+     defined(MS_USE_RTC_ZERO)) == 0
 #define MS_USE_DS3231
 #endif
 
@@ -233,10 +224,7 @@
 #define BATTERY_MULTIPLIER 2
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
-// Use the processor as an RTC
-#ifndef MS_USE_RTC_ZERO
-#define MS_USE_RTC_ZERO
-#endif
+// The processor can be used as an RTC, but the user must manually select it
 
 // https://www.adafruit.com/product/2772
 #elif defined(ARDUINO_SAMD_FEATHER_M0) || defined(ADAFRUIT_FEATHER_M0)
@@ -246,10 +234,7 @@
 #define BATTERY_MULTIPLIER 2
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
-// Use the processor as an RTC
-#ifndef MS_USE_RTC_ZERO
-#define MS_USE_RTC_ZERO
-#endif
+// The processor can be used as an RTC, but the user must manually select it
 
 // https://www.adafruit.com/product/2796
 #elif defined(ADAFRUIT_FEATHER_M0_ADALOGGER)
@@ -259,10 +244,7 @@
 #define BATTERY_MULTIPLIER 2
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
-// Use the processor as an RTC
-#ifndef MS_USE_RTC_ZERO
-#define MS_USE_RTC_ZERO
-#endif
+// The processor can be used as an RTC, but the user must manually select it
 
 // https://www.adafruit.com/product/3857
 #elif defined(ARDUINO_FEATHER_M4) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
@@ -460,10 +442,7 @@
 #define BATTERY_MULTIPLIER -1
 // Use ADC defaults for a SAMD processor
 // Use log buffer size defaults
-// Use the processor as an RTC
-#ifndef MS_USE_RTC_ZERO
-#define MS_USE_RTC_ZERO
-#endif
+// The processor can be used as an RTC, but the user must manually select it
 
 
 #endif
