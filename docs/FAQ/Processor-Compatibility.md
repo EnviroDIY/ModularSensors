@@ -13,26 +13,26 @@
     - [Board-Specific Parameters](#board-specific-parameters)
     - [Configuration Override](#configuration-override)
   - [AtMega1284p (EnviroDIY Mayfly, Sodaq Mbili, Mighty 1284)](#atmega1284p-envirodiy-mayfly-sodaq-mbili-mighty-1284)
-    - [Specific Supported Boards](#specific-supported-boards)
-    - [Processor Information](#processor-information)
+    - [Specific Supported AtMega1284p Boards](#specific-supported-atmega1284p-boards)
+    - [AtMega1284p Processor Information](#atmega1284p-processor-information)
   - [AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)](#atsamd21-arduino-zero-adafruit-feather-m0-sodaq-autonomo)
-    - [Specific Supported Boards](#specific-supported-boards-1)
-    - [Processor Information](#processor-information-1)
+    - [Specific Supported AtSAMD21 Boards](#specific-supported-atsamd21-boards)
+    - [AtSAMD21 Processor Information](#atsamd21-processor-information)
   - [AtSAMD51 (Adafruit Feather M4, EnviroDIY Stonefly)](#atsamd51-adafruit-feather-m4-envirodiy-stonefly)
-    - [Specific Supported Boards](#specific-supported-boards-2)
-    - [Processor Information](#processor-information-2)
+    - [Specific Supported AtSAMD51 Boards](#specific-supported-atsamd51-boards)
+    - [AtSAMD51 Processor Information](#atsamd51-processor-information)
   - [AtMega2560 (Arduino Mega)](#atmega2560-arduino-mega)
-    - [Specific Supported Boards](#specific-supported-boards-3)
-    - [Processor Information](#processor-information-3)
+    - [Specific Supported AtMega2560 Boards](#specific-supported-atmega2560-boards)
+    - [AtMega2560 Processor Information](#atmega2560-processor-information)
   - [AtMega644p (Sanguino)](#atmega644p-sanguino)
-    - [Specific Supported Boards](#specific-supported-boards-4)
-    - [Processor Information](#processor-information-4)
+    - [Specific Supported AtMega644p Boards](#specific-supported-atmega644p-boards)
+    - [AtMega644p Processor Information](#atmega644p-processor-information)
   - [AtMega328p (Arduino Uno, Duemilanove, LilyPad, Mini, Seeeduino Stalker, etc)](#atmega328p-arduino-uno-duemilanove-lilypad-mini-seeeduino-stalker-etc)
-    - [Specific Supported Boards](#specific-supported-boards-5)
-    - [Processor Information](#processor-information-5)
+    - [Specific Supported AtMega328p Boards](#specific-supported-atmega328p-boards)
+    - [AtMega328p Processor Information](#atmega328p-processor-information)
   - [AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)](#atmega32u4-arduino-leonardomicro-adafruit-florafeather-etc)
-    - [Specific Supported Boards](#specific-supported-boards-6)
-    - [Processor Information](#processor-information-6)
+    - [Specific Supported AtMega32u4 Boards](#specific-supported-atmega32u4-boards)
+    - [AtMega32u4 Processor Information](#atmega32u4-processor-information)
   - [Unsupported Processors](#unsupported-processors)
 
 <!--! @endif -->
@@ -82,31 +82,31 @@ To add support for a new board of a supported processor type:
 
 3. **Add to KnownProcessors.h**: Add a new `#elif defined()` section with your board's define and set the appropriate parameters:
 
-   ```cpp
-   #elif defined(YOUR_BOARD_DEFINE)
-   #define LOGGER_BOARD "Your Board Name"
-   #define OPERATING_VOLTAGE 3.3  // or 5.0
-   #define BATTERY_PIN A0         // or -1 if not available
-   #define BATTERY_MULTIPLIER 2.0 // or -1 if not available
+```cpp
+#elif defined(YOUR_BOARD_DEFINE)
+#define LOGGER_BOARD "Your Board Name"
+#define OPERATING_VOLTAGE 3.3  // or 5.0
+#define BATTERY_PIN A0         // or -1 if not available
+#define BATTERY_MULTIPLIER 2.0 // or -1 if not available
 
-   // ADC defaults; if and only if needed
-   #ifndef MS_PROCESSOR_ADC_RESOLUTION
-   #define MS_PROCESSOR_ADC_RESOLUTION 10  // 10 for AVR, 12 for SAMD
-   #endif
-   #ifndef MS_PROCESSOR_ADC_REFERENCE_MODE
-   #define MS_PROCESSOR_ADC_REFERENCE_MODE DEFAULT  // or AR_DEFAULT for SAMD
-   #endif
+// ADC defaults; if and only if needed
+#ifndef MS_PROCESSOR_ADC_RESOLUTION
+#define MS_PROCESSOR_ADC_RESOLUTION 10  // 10 for AVR, 12 for SAMD
+#endif
+#ifndef MS_PROCESSOR_ADC_REFERENCE_MODE
+#define MS_PROCESSOR_ADC_REFERENCE_MODE DEFAULT  // or AR_DEFAULT for SAMD
+#endif
 
-   // Log buffer size - adjust for board's memory capacity; if and only if needed
-   #ifndef MS_LOG_DATA_BUFFER_SIZE
-   #define MS_LOG_DATA_BUFFER_SIZE 1024  // Adjust based on available RAM
-   #endif
+// Log buffer size - adjust for board's memory capacity; if and only if needed
+#ifndef MS_LOG_DATA_BUFFER_SIZE
+#define MS_LOG_DATA_BUFFER_SIZE 1024  // Adjust based on available RAM
+#endif
 
-   // Built in clock; if and only if integrated into the board
-   #ifndef MS_USE_DS3231  // Choose appropriate RTC for your board
-   #define MS_USE_DS3231
-   #endif
-   ```
+// Built in clock; if and only if integrated into the board
+#ifndef MS_USE_DS3231  // Choose appropriate RTC for your board
+#define MS_USE_DS3231
+#endif
+```
 
 4. **Submit contribution**: Create a pull request with your additions to help other users with the same board.
 
@@ -137,12 +137,12 @@ ___
 The [EnviroDIY Mayfly](https://envirodiy.org/mayfly/) _is_ the test board for this library.
 _Everything_ is designed to work with this processor.
 
-### Specific Supported Boards
+### Specific Supported AtMega1284p Boards
 
 - **EnviroDIY Mayfly** (`ARDUINO_AVR_ENVIRODIY_MAYFLY`)
 - **SODAQ Mbili** (`ARDUINO_AVR_SODAQ_MBILI`)
 
-### Processor Information
+### AtMega1284p Processor Information
 
 [Datasheet Summary](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega1284P-Datasheet-Summary.pdf)
 
@@ -170,7 +170,7 @@ ___
 
 Fully supported
 
-### Specific Supported Boards
+### Specific Supported AtSAMD21 Boards
 
 - **SODAQ ExpLoRer** (`ARDUINO_SODAQ_EXPLORER`)
 - **SODAQ Autonomo** (`ARDUINO_SODAQ_AUTONOMO`)
@@ -180,7 +180,7 @@ Fully supported
 - **Adafruit Feather M0** (`ARDUINO_SAMD_FEATHER_M0`)
 - **Arduino Zero** (`ARDUINO_SAMD_ZERO`)
 
-### Processor Information
+### AtSAMD21 Processor Information
 
 [Datasheet Summary](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-SAMD21-Datasheet-Summary.pdf)
 
@@ -219,7 +219,7 @@ ___
 
 Fully supported with similar characteristics to AtSAMD21 but with enhanced performance.
 
-### Specific Supported Boards
+### Specific Supported AtSAMD51 Boards
 
 - **EnviroDIY Stonefly** (`ENVIRODIY_STONEFLY_M4`)
 - **Adafruit Feather M4** (`ARDUINO_FEATHER_M4`)
@@ -227,7 +227,7 @@ Fully supported with similar characteristics to AtSAMD21 but with enhanced perfo
 - **Adafruit Feather M4 Adalogger** (`ADAFRUIT_FEATHER_M4_ADALOGGER`)
 - **Adafruit Grand Central** (`ADAFRUIT_GRAND_CENTRAL_M4`)
 
-### Processor Information
+### AtSAMD51 Processor Information
 
 These boards share similar capabilities with the AtSAMD21 processor boards including built-in USB, internal RTC, and multiple hardware serial ports, but with increased processing power and memory.
 
@@ -237,13 +237,13 @@ ___
 
 Should be fully functional, but untested.
 
-### Specific Supported Boards
+### Specific Supported AtMega2560 Boards
 
 - **Arduino Mega ADK** (`ARDUINO_AVR_ADK`)
 - **Arduino Mega** (`ARDUINO_AVR_MEGA`)
 - **Arduino Mega 2560** (`ARDUINO_AVR_MEGA2560`)
 
-### Processor Information
+### AtMega2560 Processor Information
 
 - An external RTC (DS3231, DS3232, or RV8803) is required.
 - There is a single SPI port on pins 50 (MISO), 52 (SCK), and 51 (MOSI).
@@ -260,13 +260,13 @@ ___
 
 Should be fully functional, but untested.
 
-### Specific Supported Boards
+### Specific Supported AtMega644p Boards
 
 - **SODAQ Ndogo** (`ARDUINO_AVR_SODAQ_NDOGO`)
 - **SODAQ Tatu** (`ARDUINO_AVR_SODAQ_TATU`)
 - **SODAQ Moja** (`ARDUINO_AVR_SODAQ_MOJA`)
 
-### Processor Information
+### AtMega644p Processor Information
 
 - An external RTC (DS3231, DS3232, or RV8803) is required.
 - This processor has two built-in hardware serial ports, Serial and Serial1.
@@ -285,7 +285,7 @@ ___
 All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
 You will only be able to use a small number of sensors at one time and may not be able to log data.
 
-### Specific Supported Boards
+### Specific Supported AtMega328p Boards
 
 - **Adafruit Feather 328p** (`ARDUINO_AVR_FEATHER328P`)
 - **Arduino BT** (`ARDUINO_AVR_BT`)
@@ -299,7 +299,7 @@ You will only be able to use a small number of sensors at one time and may not b
 - **Arduino Pro** (`ARDUINO_AVR_PRO`)
 - **Arduino Uno** (`ARDUINO_AVR_UNO`)
 
-### Processor Information
+### AtMega328p Processor Information
 
 - An external RTC (DS3231, DS3232, or RV8803) is required.
 - There is a singe SPI ports on pins 12 (MISO), 13 (SCK), and 11 (MOSI).
@@ -318,7 +318,7 @@ ___
 All functions are supported, but processor doesn't have sufficient power to use all of the functionality of the library.
 You will only be able to use a small number of sensors at one time and may not be able to log data.
 
-### Specific Supported Boards
+### Specific Supported AtMega32u4 Boards
 
 - **Adafruit Feather 32u4** (`ARDUINO_AVR_FEATHER32U4`)
 - **Arduino Esplora** (`ARDUINO_AVR_ESPLORA`)
@@ -328,7 +328,7 @@ You will only be able to use a small number of sensors at one time and may not b
 - **Arduino Micro** (`ARDUINO_AVR_MICRO`)
 - **Arduino Yun** (`ARDUINO_AVR_YUN`)
 
-### Processor Information
+### AtMega32u4 Processor Information
 
 [Datasheet Summary](https://github.com/EnviroDIY/ModularSensors/wiki/Processor-Datasheets/Atmel-ATmega16U4-32U4-Datasheet-Summary.pdf)
 

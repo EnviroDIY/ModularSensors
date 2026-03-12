@@ -211,7 +211,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Added a configuration define for MS_INVALID_VALUE and replaced all occurrences of the standard -9999 with this define.
 - Added KnownProcessors.h and moved define values for supported built-in sensors on known processors to that file.
-  - This affects ProcessorStats and the Everlight ALS PT-19.
+  - This affects defines for the built in clocks, ADC defaults, logging buffer, and on-board ALS settings
 - Added a new example specific to the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 - Added a variety of private and protected helper functions to simplify code.
 

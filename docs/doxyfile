@@ -1116,7 +1116,10 @@ EXCLUDE_PATTERNS       = */aws_iot_config*.h
 
 EXCLUDE_SYMBOLS        = MS_*_DEBUG \
                          MS_DEBUGGING_STD \
-                         MS_DEBUGGING_DEEP
+                         MS_DEBUGGING_DEEP \
+                         MS_USE_RV8803 \
+                         MS_USE_DS3231 \
+                         MS_USE_RTC_ZERO
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

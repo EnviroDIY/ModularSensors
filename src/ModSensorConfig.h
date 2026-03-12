@@ -47,15 +47,17 @@
 //==============================================================
 // Time-stamp configurations
 //==============================================================
-#ifndef MS_LOGGER_EPOCH
+#if !defined(MS_LOGGER_EPOCH) || defined(DOXYGEN)
 /**
+ * @def MS_LOGGER_EPOCH
  * @brief The epoch start to use for the logger
  */
 #define MS_LOGGER_EPOCH epochStart::unix_epoch
 #endif
 
-#ifndef EARLIEST_SANE_UNIX_TIMESTAMP
+#if !defined(EARLIEST_SANE_UNIX_TIMESTAMP) || defined(DOXYGEN)
 /**
+ * @def EARLIEST_SANE_UNIX_TIMESTAMP
  * @brief The earliest unix timestamp that can be considered sane.
  *
  * January 1, 2025
@@ -63,8 +65,9 @@
 #define EARLIEST_SANE_UNIX_TIMESTAMP 1735689600
 #endif
 
-#ifndef LATEST_SANE_UNIX_TIMESTAMP
+#if !defined(LATEST_SANE_UNIX_TIMESTAMP) || defined(DOXYGEN)
 /**
+ * @def LATEST_SANE_UNIX_TIMESTAMP
  * @brief The latest unix timestamp that can be considered sane.
  *
  * January 1, 2035
@@ -77,8 +80,9 @@
 //==============================================================
 // Variable configurations
 //==============================================================
-#ifndef MS_INVALID_VALUE
+#if !defined(MS_INVALID_VALUE) || defined(DOXYGEN)
 /**
+ * @def MS_INVALID_VALUE
  * @brief The value used to represent an invalid or missing measurement.
  *
  * Every sensor will use this value to indicate that a measurement is invalid
@@ -87,8 +91,9 @@
 #define MS_INVALID_VALUE -9999
 #endif
 
-#ifndef MAX_NUMBER_VARS
+#if !defined(MAX_NUMBER_VARS) || defined(DOXYGEN)
 /**
+ * @def MAX_NUMBER_VARS
  * @brief The largest number of variables from a single sensor.
  *
  * Every sensor will create a buffer of this length for holding variable values.
@@ -105,8 +110,9 @@
 static_assert(MAX_NUMBER_VARS > 0 && MAX_NUMBER_VARS <= 21,
               "MAX_NUMBER_VARS must be between 1 and 21");
 
-#ifndef MAX_NUMBER_SENSORS
+#if !defined(MAX_NUMBER_SENSORS) || defined(DOXYGEN)
 /**
+ * @def MAX_NUMBER_SENSORS
  * @brief The largest number of sensors in a single variable array.
  *
  * @note This is **not** the same as the maximum number of variables in a
@@ -127,8 +133,9 @@ static_assert(MAX_NUMBER_SENSORS > 0 && MAX_NUMBER_SENSORS <= 50,
 //==============================================================
 // User button functionality
 //==============================================================
-#ifndef MS_LOGGERBASE_BUTTON_BENCH_TEST
+#if !defined(MS_LOGGERBASE_BUTTON_BENCH_TEST) || defined(DOXYGEN)
 /**
+ * @def MS_LOGGERBASE_BUTTON_BENCH_TEST
  * @brief Enable bench testing mode for the testing button.
  *
  * When enabled, the testing button uses the benchTestingMode() function to
@@ -144,8 +151,9 @@ static_assert(MAX_NUMBER_SENSORS > 0 && MAX_NUMBER_SENSORS <= 50,
 //==============================================================
 // SPI Configuration, iff needed
 //==============================================================
-#if !defined(SDCARD_SPI)
+#if !defined(SDCARD_SPI) || defined(DOXYGEN)
 /**
+ * @def SDCARD_SPI
  * @brief The SPI port to use for the SD card.
  *
  * This is typically defined in the board variant file.
@@ -158,8 +166,9 @@ static_assert(MAX_NUMBER_SENSORS > 0 && MAX_NUMBER_SENSORS <= 50,
 //==============================================================
 // Processor ADC configuration
 //==============================================================
-#ifndef MS_PROCESSOR_ADC_RESOLUTION
+#if !defined(MS_PROCESSOR_ADC_RESOLUTION) || defined(DOXYGEN)
 /**
+ * @def MS_PROCESSOR_ADC_RESOLUTION
  * @brief Select or adjust the processor analog resolution.
  *
  * This is the resolution of the **built-in** processor ADC and it cannot be set
@@ -191,8 +200,9 @@ static_assert(MS_PROCESSOR_ADC_RESOLUTION >= 8 &&
 /// @brief The maximum possible range of the ADC - the resolution shifted up one
 /// bit.
 #define PROCESSOR_ADC_RANGE (1 << MS_PROCESSOR_ADC_RESOLUTION)
-#ifndef MS_PROCESSOR_ANALOG_MAX_CHANNEL
+#if !defined(MS_PROCESSOR_ANALOG_MAX_CHANNEL) || defined(DOXYGEN)
 /**
+ * @def MS_PROCESSOR_ANALOG_MAX_CHANNEL
  * @brief Upper bound used to sanity-check analog channel numbers at runtime.
  *
  * This is not a hardware limit but a validation ceiling that exceeds the
@@ -208,6 +218,7 @@ static_assert(MS_PROCESSOR_ANALOG_MAX_CHANNEL > 0 &&
 
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
 /**
+ * @def MS_PROCESSOR_ADC_REFERENCE_MODE
  * @brief The voltage reference mode for the processor's ADC.
  *
  * For supported boards, appropriate defaults are set in KnownProcessors.h.
@@ -330,8 +341,9 @@ static_assert(MS_SEA_LEVEL_PRESSURE_HPA >= 800.0f &&
 //==============================================================
 // Publisher configuration
 //==============================================================
-#ifndef MAX_NUMBER_SENDERS
+#if !defined(MAX_NUMBER_SENDERS) || defined(DOXYGEN)
 /**
+ * @def MAX_NUMBER_SENDERS
  * @brief The largest number of publishers that can be attached to a logger
  */
 #define MAX_NUMBER_SENDERS 4
@@ -341,8 +353,9 @@ static_assert(MS_SEA_LEVEL_PRESSURE_HPA >= 800.0f &&
 static_assert(MAX_NUMBER_SENDERS >= 0 && MAX_NUMBER_SENDERS <= 16,
               "MAX_NUMBER_SENDERS must be between 0 and 16");
 
-#ifndef MS_ALWAYS_FLUSH_PUBLISHERS
+#if !defined(MS_ALWAYS_FLUSH_PUBLISHERS) || defined(DOXYGEN)
 /**
+ * @def MS_ALWAYS_FLUSH_PUBLISHERS
  * @brief Set this to true to always force publishers to attempt to transmit
  * data.  If false, publishers will only transmit data at the sendEveryX
  * interval or when the buffer fills.
@@ -350,8 +363,9 @@ static_assert(MAX_NUMBER_SENDERS >= 0 && MAX_NUMBER_SENDERS <= 16,
 #define MS_ALWAYS_FLUSH_PUBLISHERS false
 #endif
 
-#ifndef MS_LOG_DATA_BUFFER_SIZE
+#if !defined(MS_LOG_DATA_BUFFER_SIZE) || defined(DOXYGEN)
 /**
+ * @def MS_LOG_DATA_BUFFER_SIZE
  * @brief Log Data Buffer
  *
  * This determines how much RAM is reserved to buffer log records before
@@ -377,8 +391,9 @@ static_assert(MS_LOG_DATA_BUFFER_SIZE >= 64 && MS_LOG_DATA_BUFFER_SIZE <= 16384,
               "MS_LOG_DATA_BUFFER_SIZE must be between 64 and 16384 bytes");
 
 
-#ifndef MS_SEND_BUFFER_SIZE
+#if !defined(MS_SEND_BUFFER_SIZE) || defined(DOXYGEN)
 /**
+ * @def MS_SEND_BUFFER_SIZE
  * @brief Send Buffer
  *
  * This determines how many characters to set out at once over the TCP
@@ -398,8 +413,9 @@ static_assert(MS_LOG_DATA_BUFFER_SIZE >= 64 && MS_LOG_DATA_BUFFER_SIZE <= 16384,
 static_assert(MS_SEND_BUFFER_SIZE >= 32 && MS_SEND_BUFFER_SIZE <= 2048,
               "MS_SEND_BUFFER_SIZE must be between 32 and 2048 bytes");
 
-#ifndef TINY_GSM_RX_BUFFER
+#if !defined(TINY_GSM_RX_BUFFER) || defined(DOXYGEN)
 /**
+ * @def TINY_GSM_RX_BUFFER
  * @brief The size of the buffer for incoming data.
  *
  * If using a module that buffers data internally, this can be 64 or lower.  If
@@ -413,8 +429,9 @@ static_assert(TINY_GSM_RX_BUFFER >= 16 && TINY_GSM_RX_BUFFER <= 2048,
               "TINY_GSM_RX_BUFFER must be between 16 and 2048 bytes");
 
 
-#ifndef TINY_GSM_YIELD_MS
+#if !defined(TINY_GSM_YIELD_MS) || defined(DOXYGEN)
 /**
+ * @def TINY_GSM_YIELD_MS
  * @brief The number of milliseconds to yield to the GSM module when using
  * TinyGSM.
  *
@@ -428,8 +445,9 @@ static_assert(TINY_GSM_RX_BUFFER >= 16 && TINY_GSM_RX_BUFFER <= 2048,
 static_assert(TINY_GSM_YIELD_MS >= 0 && TINY_GSM_YIELD_MS <= 1000,
               "TINY_GSM_YIELD_MS must be between 0 and 1000 milliseconds");
 
-#ifndef MS_MQTT_MAX_PACKET_SIZE
+#if !defined(MS_MQTT_MAX_PACKET_SIZE) || defined(DOXYGEN)
 /**
+ * @def MS_MQTT_MAX_PACKET_SIZE
  * @brief Configure the size of the PubSubClient buffer for MQTT publishers.
  *
  * This is the maximum size of any single MQTT message - incoming or outgoing.
@@ -452,8 +470,9 @@ static_assert(MS_MQTT_MAX_PACKET_SIZE >= 128 && MS_MQTT_MAX_PACKET_SIZE <= 4096,
 //==============================================================
 // Special configurations for the AWS IoT Core publisher
 //==============================================================
-#ifndef MS_AWS_IOT_PUBLISHER_SUB_COUNT
+#if !defined(MS_AWS_IOT_PUBLISHER_SUB_COUNT) || defined(DOXYGEN)
 /**
+ * @def MS_AWS_IOT_PUBLISHER_SUB_COUNT
  * @brief The maximum number of extra subscriptions that can be added to the AWS
  * IoT Core publisher.
  *
@@ -461,8 +480,9 @@ static_assert(MS_MQTT_MAX_PACKET_SIZE >= 128 && MS_MQTT_MAX_PACKET_SIZE <= 4096,
  */
 #define MS_AWS_IOT_PUBLISHER_SUB_COUNT 4
 #endif
-#ifndef MS_AWS_IOT_PUBLISHER_PUB_COUNT
+#if !defined(MS_AWS_IOT_PUBLISHER_PUB_COUNT) || defined(DOXYGEN)
 /**
+ * @def MS_AWS_IOT_PUBLISHER_PUB_COUNT
  * @brief The maximum number of extra publish messages that can be added to the
  * AWS IoT Core publisher.
  */
@@ -476,8 +496,9 @@ static_assert(MS_AWS_IOT_PUBLISHER_PUB_COUNT >= 0 &&
                   MS_AWS_IOT_PUBLISHER_PUB_COUNT <= 16,
               "MS_AWS_IOT_PUBLISHER_PUB_COUNT must be between 0 and 16");
 
-#ifndef MS_AWS_IOT_MAX_CONNECTION_TIME
+#if !defined(MS_AWS_IOT_MAX_CONNECTION_TIME) || defined(DOXYGEN)
 /**
+ * @def MS_AWS_IOT_MAX_CONNECTION_TIME
  * @brief The maximum time to wait for subscriptions after publishing data to
  * AWS IoT Core.
  *
@@ -491,8 +512,9 @@ static_assert(MS_AWS_IOT_PUBLISHER_PUB_COUNT >= 0 &&
 //==============================================================
 // Special configurations for the S3 publisher
 //==============================================================
-#ifndef S3_DEFAULT_FILE_EXTENSION
+#if !defined(S3_DEFAULT_FILE_EXTENSION) || defined(DOXYGEN)
 /**
+ * @def S3_DEFAULT_FILE_EXTENSION
  * @brief The default file extension to use to send to S3: ".jpg"
  *
  * This assumes you are using S3 to send images. If you want to put your basic
