@@ -147,8 +147,6 @@ There are [video instructions](https://www.envirodiy.org/videos/) on the EnviroD
 
 <!--! @section page_getting_started_other Other Helpful Pages to Get Started -->
 
-<!--! @subpage page_library_dependencies -->
-
 <!--! @subpage page_physical_dependencies -->
 
 <!--! @subpage page_library_terminology -->
