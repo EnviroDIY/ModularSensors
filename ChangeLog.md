@@ -400,7 +400,7 @@ It also allows PlatformIO users to avoid the time-consuming re-compile of all th
 ### Changed
 
 - **BREAKING** Switched default clock for SAMD21 from the built-in 32bit RTC to the DS3231.
-  *This is not be a permanent change.*
+  *This is not a permanent change.*
 - Switched to reusable workflows for CI
 
 ### Fixed
@@ -458,7 +458,7 @@ Fixed clock configuration for SAMD21
 
 - Added the ability to enable or disable polling of modem attached variables.
   By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem.
-  This functionality is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
+  This functionality is inspired by [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
 
 ### Fixed
 

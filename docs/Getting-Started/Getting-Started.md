@@ -69,7 +69,7 @@ NOTE:  These steps are only for AVR boards, for those of you using a SAMD board,
 - Attach the DS3231 to your main board - they'll talk over I2C.
   If you're using a Mayfly, the DS3231 is built into the board and you don't need to do anything.
 - Put a coin battery in the supplemental power slot for the DS3231 (or you'll lose the time as soon as you unplug).
-  The Mayfly has this battery shot right next to the clock chip.
+  The Mayfly has this battery slot right next to the clock chip.
   Every other DS3231 breakout I've seen has a similar way to power the chip.
   On the Mayfly, the (+) side of the battery (with the words on it) goes up.
 - Create a new PlatformIO project from the PlatformIO menu or home page.

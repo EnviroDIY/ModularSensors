@@ -1564,10 +1564,8 @@ Every time the logger wakes we check the battery voltage and do 1 of three thing
 
 1. If the battery is very low, go immediately back to sleep and hope the sun comes back out
 2. If the battery is at a moderate level, attempt to collect data from sensors, but do not attempt to publish data.
-   The modem the biggest power user of the whole system.
-3.
-
-At full power, do everything.
+   The modem is the biggest power user of the whole system.
+3. At full power, do everything.
 
 <!--! @menusnip{simple_loop} -->
 
@@ -1579,7 +1577,7 @@ Here are some guidelines for writing a loop function:
 
 - If you want to log on an even interval, use `if (checkInterval())` or `if (checkMarkedInterval())` to verify that the current or marked time is an even interval of the logging interval..
 - Call the `markTime()` function if you want associate with a two iterations of sensor updates with the same timestamp.
-  This allows you to use `checkMarkedInterval()` to check if an action should be preformed based on the exact time when the logger woke rather than up to several seconds later when iterating through sensors.
+  This allows you to use `checkMarkedInterval()` to check if an action should be performed based on the exact time when the logger woke rather than up to several seconds later when iterating through sensors.
 - Either:
   - Power up all of your sensors with `sensorsPowerUp()`.
   - Wake up all your sensors with `sensorsWake()`.

@@ -46,7 +46,7 @@ All boards start their bedtime routine with these steps.
   - **WARNING:** Any calls to the I2C/Wire library when pins are forced low will cause an endless board hang.
 - Disable the watch-dog timer
   - If it is enabled the watchdog timer will wake the board every ~8 seconds checking if the board has been inactive too long and needs to be reset.
-  - We have to chose between allowing the watchdog to save us in a hand during sleep and saving power.
+  - We have to choose between allowing the watchdog to save us in a hand during sleep and saving power.
     We've chosen to save power.
 
 After this, the different processor types have different steps to finish preparing and finally falling asleep.
@@ -59,9 +59,9 @@ But all processors finish their wake routine with these steps
 - Re-enable the watch-dog timer
 - Restart the I2C (Wire) interface
 - Disable any unnecessary timeouts in the Wire library
-  - These waits would be caused by a readBytes or parseX being called on wire after the Wire buffer has emptied.
-    The default stream functions - used by wire - wait a timeout period after reading the end of the buffer to see if an interrupt puts something into the buffer.
-In the case of the Wire library, that will never happen and the timeout period is a useless delay.
+  - These waits would be caused by a readBytes or parseX being called on Wire after the Wire buffer has emptied.
+    The default stream functions - used by Wire - wait a timeout period after reading the end of the buffer to see if an interrupt puts something into the buffer.
+    In the case of the Wire library, that will never happen and the timeout period is a useless delay.
 - Detach RTC interrupt the from the wake pin
 - Disable the RTC interrupt
 
@@ -98,7 +98,7 @@ After completing the [steps for putting all boards to sleep](#steps-for-putting-
 - Disable all power-reduction modules (i.e., the processor module clocks).
   - NOTE:  This only shuts down the various clocks on the processor via the power reduction register!
     It does NOT actually disable the modules themselves or set the pins to any particular state!
-This means that the I2C/Serial/Timer/etc pins will still be active and powered unless they are turned off prior to calling this function.
+    This means that the I2C/Serial/Timer/etc pins will still be active and powered unless they are turned off prior to calling this function.
 - Set the sleep enable bit.
 - Wait until the serial ports have finished transmitting.
   - This isn't very important on AVR boards, but it's good practice.
@@ -148,7 +148,7 @@ The watchdog timer also does not run in any sleep setting deeper than STANDBY.
   - PM_SLEEPCFG_SLEEPMODE_HIBERNATE_Val = 0x5
   - PDCORESW power domain is turned OFF.
     The backup power domain is kept powered to allow few features to run (RTC, 32KHz clock sources, and wake-up from external pins).
-The PDSYSRAM power domain can be retained according to software configuration.
+    The PDSYSRAM power domain can be retained according to software configuration.
   - Wake-Up Sources:
     - Hibernate reset detected by the RSTC
 - Backup
