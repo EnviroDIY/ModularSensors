@@ -8,8 +8,8 @@
  */
 
 // Header Guards
-#ifndef SRC_SENSORS_KNOWN_PROCESSORS_H_
-#define SRC_SENSORS_KNOWN_PROCESSORS_H_
+#ifndef SRC_KNOWN_PROCESSORS_H_
+#define SRC_KNOWN_PROCESSORS_H_
 
 /**
  * @def LOGGER_BOARD
