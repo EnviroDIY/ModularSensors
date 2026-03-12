@@ -167,8 +167,7 @@ bool PaleoTerraRedox::addSingleMeasurementResult() {
     MS_DBG(F("Config byte:"), config);
     MS_DBG(F("Calculated voltage in uV:"), res);
 
-    success = (!isnan(res)) &&
-        !(adcValue == 0 && i2c_status == 0 && config == 0);
+    success = (!isnan(res)) && !(adcValue == 0 && config == 0);
     if (success) {
         // Store the results in the sensorValues array
         verifyAndAddMeasurementResult(PTR_VOLTAGE_VAR_NUM, res);
