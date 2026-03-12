@@ -13,25 +13,25 @@
 
 
 // ============================================================================
-// ProcessorAnalogBase Constructor
+// ProcessorAnalogReader Constructor
 // ============================================================================
 
-ProcessorAnalogBase::ProcessorAnalogBase(float voltageMultiplier,
+ProcessorAnalogReader::ProcessorAnalogReader(float voltageMultiplier,
                                          float operatingVoltage)
-    : AnalogVoltageBase(voltageMultiplier, operatingVoltage) {}
+    : AnalogVoltageReader(voltageMultiplier, operatingVoltage) {}
 
 
 // ============================================================================
-// ProcessorAnalogBase Functions
+// ProcessorAnalogReader Functions
 // ============================================================================
 
-bool ProcessorAnalogBase::begin() {
+bool ProcessorAnalogReader::begin() {
     // For processor analog systems, no special initialization is required
     // beyond what is done in the constructor
     return true;
 }
 
-bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
+bool ProcessorAnalogReader::readVoltageSingleEnded(int8_t analogChannel,
                                                  float& resultValue) {
     // Compile-time validation of ADC configuration
     static_assert(PROCESSOR_ADC_MAX > 0,
@@ -68,7 +68,7 @@ bool ProcessorAnalogBase::readVoltageSingleEnded(int8_t analogChannel,
     return true;
 }
 
-String ProcessorAnalogBase::getAnalogLocation(
+String ProcessorAnalogReader::getAnalogLocation(
     int8_t analogChannel, int8_t /*analogReferenceChannel*/) {
     String sensorLocation;
     sensorLocation += F("ProcessorAnalog_Pin");
@@ -76,7 +76,7 @@ String ProcessorAnalogBase::getAnalogLocation(
     return sensorLocation;
 }
 
-bool ProcessorAnalogBase::readVoltageDifferential(
+bool ProcessorAnalogReader::readVoltageDifferential(
     int8_t /*analogChannel*/, int8_t /*analogReferenceChannel*/,
     float& resultValue) {
     // ProcessorAnalog does not support differential measurements
@@ -85,7 +85,7 @@ bool ProcessorAnalogBase::readVoltageDifferential(
     return false;
 }
 
-float ProcessorAnalogBase::calculateAnalogResolutionVolts() {
+float ProcessorAnalogReader::calculateAnalogResolutionVolts() {
     // Use the configured processor ADC resolution
     uint8_t resolutionBits = MS_PROCESSOR_ADC_RESOLUTION;
 
@@ -125,7 +125,7 @@ float ProcessorAnalogBase::calculateAnalogResolutionVolts() {
 // measurements to average, with an optional external analog reader
 ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
                                  uint8_t              measurementsToAverage,
-                                 ProcessorAnalogBase* analogVoltageReader)
+                                 ProcessorAnalogReader* analogVoltageReader)
     : Sensor("ProcessorAnalog", PROCESSOR_ANALOG_NUM_VARIABLES,
              PROCESSOR_ANALOG_WARM_UP_TIME_MS,
              PROCESSOR_ANALOG_STABILIZATION_TIME_MS,
@@ -133,7 +133,7 @@ ProcessorAnalog::ProcessorAnalog(int8_t powerPin, int8_t dataPin,
              measurementsToAverage, PROCESSOR_ANALOG_INC_CALC_VARIABLES),
       // If no analog base provided, create one with default settings
       _analogVoltageReader(analogVoltageReader == nullptr
-                               ? new ProcessorAnalogBase()
+                               ? new ProcessorAnalogReader()
                                : analogVoltageReader),
       _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 

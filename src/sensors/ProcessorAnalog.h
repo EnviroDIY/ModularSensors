@@ -76,7 +76,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include "AnalogVoltageBase.h"
+#include "AnalogVoltageReader.h"
 
 /** @ingroup sensor_processor_analog */
 /**@{*/
@@ -157,16 +157,16 @@
 /**@}*/
 
 /**
- * @brief Processor analog base class that inherits from AnalogVoltageBase
+ * @brief Processor analog base class that inherits from AnalogVoltageReader
  *
  * This class provides processor-specific analog functionality on top of the
- * generic AnalogVoltageBase class. It handles processor ADC configuration and
+ * generic AnalogVoltageReader class. It handles processor ADC configuration and
  * processor-based analog voltage reads for requested channels.
  */
-class ProcessorAnalogBase : public AnalogVoltageBase {
+class ProcessorAnalogReader : public AnalogVoltageReader {
  public:
     /**
-     * @brief Construct a new ProcessorAnalogBase object
+     * @brief Construct a new ProcessorAnalogReader object
      *
      * @param voltageMultiplier Any multiplier needed to convert raw battery
      * readings from `analogRead()` into true battery values based on any
@@ -174,13 +174,13 @@ class ProcessorAnalogBase : public AnalogVoltageBase {
      * @param operatingVoltage The processor's operating voltage; most
      * likely 3.3 or 5.
      */
-    ProcessorAnalogBase(float voltageMultiplier = 1.0f,
+    ProcessorAnalogReader(float voltageMultiplier = 1.0f,
                         float operatingVoltage  = OPERATING_VOLTAGE);
 
     /**
-     * @brief Destroy the ProcessorAnalogBase object
+     * @brief Destroy the ProcessorAnalogReader object
      */
-    ~ProcessorAnalogBase() override = default;
+    ~ProcessorAnalogReader() override = default;
 
     /**
      * @brief Initialize the processor analog system
@@ -260,13 +260,13 @@ class ProcessorAnalog : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @param analogVoltageReader Pointer to ProcessorAnalogBase object for
+     * @param analogVoltageReader Pointer to ProcessorAnalogReader object for
      * analog functionality. If nullptr (default), creates a new
-     * ProcessorAnalogBase with default settings.
+     * ProcessorAnalogReader with default settings.
      */
     ProcessorAnalog(int8_t powerPin, int8_t dataPin,
-                    uint8_t              measurementsToAverage = 1,
-                    ProcessorAnalogBase* analogVoltageReader   = nullptr);
+                    uint8_t               measurementsToAverage = 1,
+                    ProcessorAnalogReader* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Processor Analog object
      */
@@ -287,10 +287,10 @@ class ProcessorAnalog : public Sensor {
 
  private:
     /**
-     * @brief Pointer to the ProcessorAnalogBase object providing analog
+     * @brief Pointer to the ProcessorAnalogReader object providing analog
      * functionality
      */
-    ProcessorAnalogBase* _analogVoltageReader = nullptr;
+    ProcessorAnalogReader* _analogVoltageReader = nullptr;
 
     /**
      * @brief Whether this object owns the _analogVoltageReader pointer and

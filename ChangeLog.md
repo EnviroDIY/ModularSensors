@@ -100,7 +100,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
     For users who used the default values, this will have no effect.
     For users who provided both a custom I2C address and a custom number of measurements, this will cause a compiler error.
     For users who provided a custom I2C address *but not a custom number of measurements* this will cause a *silent failure* because the custom I2C address will be used as the measurement count and the default I2C address will be used.
-    Users who need a custom I2C address for the ADS1x15 must construct a TIADS1x15Base object with the correct address and pass a pointer to that object to the constructor.
+    Users who need a custom I2C address for the ADS1x15 must construct a TIADS1x15Reader object with the correct address and pass a pointer to that object to the constructor.
 - **AnalogElecConductivity**
   - *Renamed* configuration defines to have the prefix `ANALOGELECCONDUCTIVITY` and moved other defaults to defines.
     This affects the following defines:
@@ -191,9 +191,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `setMeasurementTime(uint32_t measurementTime_ms)`
   - `getMeasurementTime()`
 - Added the functions `Sensor::clearStatus()`,`Sensor::clearPowerStatus()`,`Sensor::clearWakeStatus()`,and `Sensor::clearMeasurementStatus()` which reset some or all of the sensor status bits and related timing variables.
-- Added an abstract AnalogVoltageBase class with two concrete classes for analog voltage measurements: ProcessorAnalogBase and TIADS1x15Base.
-  All supported analog sensors can now accept a pointer to an object of any concrete subclass of the AnalogVoltageBase class to use for raw voltage measurements.
-  By default, existing analog sensors will create an internal concrete AnalogVoltageBase subclass instance for whichever ADC type (processor or ADS1x15) the sensor was originally coded to use.
+- Added an abstract AnalogVoltageReader class with two concrete classes for analog voltage measurements: ProcessorAnalogReader and TIADS1x15Reader.
+  All supported analog sensors can now accept a pointer to an object of any concrete subclass of the AnalogVoltageReader class to use for raw voltage measurements.
+  By default, existing analog sensors will create an internal concrete AnalogVoltageReader subclass instance for whichever ADC type (processor or ADS1x15) the sensor was originally coded to use.
   This affects the following classes:
   - AlphasenseCO2
   - AnalogElecConductivity

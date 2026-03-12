@@ -18,7 +18,8 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
     // Match UUIDs first, before populating sensor list
-    if (uuids) matchUUIDs(uuids);
+    if (uuids && arrayOfVars != nullptr && _variableCount > 0)
+        matchUUIDs(uuids);
     populateSensorList();
 }
 

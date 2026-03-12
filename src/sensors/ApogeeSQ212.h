@@ -93,7 +93,7 @@
 #include "SensorBase.h"
 
 // Forward declaration
-class AnalogVoltageBase;
+class AnalogVoltageReader;
 
 /** @ingroup sensor_sq212 */
 /**@{*/
@@ -244,22 +244,22 @@ class ApogeeSQ212 : public Sensor {
      * analog data channel.
      *
      * By default, this constructor will internally create a default
-     * AnalogVoltageBase implementation for voltage readings, but a pointer to
-     * a custom AnalogVoltageBase object can be passed in if desired.
+     * AnalogVoltageReader implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageReader object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the Apogee
      * SQ-212.  Use -1 if it is continuously powered.
      * - The SQ-212 requires 3.3 to 24 V DC; current draw 10 µA
      * @param analogChannel The analog data channel or processor pin for voltage
      * measurements.  The significance of the channel number depends on the
-     * specific AnalogVoltageBase implementation used for voltage readings. For
+     * specific AnalogVoltageReader implementation used for voltage readings. For
      * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
      * the sensor is connected to.  Negative or invalid channel numbers are not
      * clamped and will cause the reading to fail and emit a warning.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * @param analogVoltageReader Pointer to an AnalogVoltageReader object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
      * internally create and own an analog voltage reader.  For backward
      * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
@@ -276,7 +276,7 @@ class ApogeeSQ212 : public Sensor {
      */
     ApogeeSQ212(int8_t powerPin, int8_t analogChannel,
                 uint8_t            measurementsToAverage = 1,
-                AnalogVoltageBase* analogVoltageReader   = nullptr);
+                AnalogVoltageReader* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the ApogeeSQ212 object
      *
@@ -302,7 +302,7 @@ class ApogeeSQ212 : public Sensor {
 
  private:
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    AnalogVoltageReader* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
     bool _ownsAnalogVoltageReader = false;

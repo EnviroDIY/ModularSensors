@@ -19,7 +19,7 @@
 AlphasenseCO2::AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
                              int8_t             analogReferenceChannel,
                              uint8_t            measurementsToAverage,
-                             AnalogVoltageBase* analogVoltageReader)
+                             AnalogVoltageReader* analogVoltageReader)
     : Sensor("AlphasenseCO2", ALPHASENSE_CO2_NUM_VARIABLES,
              ALPHASENSE_CO2_WARM_UP_TIME_MS,
              ALPHASENSE_CO2_STABILIZATION_TIME_MS,
@@ -30,7 +30,7 @@ AlphasenseCO2::AlphasenseCO2(int8_t powerPin, int8_t analogChannel,
       // If no analog voltage reader was provided, create a default one
       _analogVoltageReader(
           analogVoltageReader == nullptr
-              ? new TIADS1x15Base(ALPHASENSE_CO2_VOLTAGE_MULTIPLIER)
+              ? new TIADS1x15Reader(ALPHASENSE_CO2_VOLTAGE_MULTIPLIER)
               : analogVoltageReader),
       _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
@@ -89,7 +89,7 @@ bool AlphasenseCO2::addSingleMeasurementResult() {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // Read differential voltage using the AnalogVoltageBase interface
+    // Read differential voltage using the AnalogVoltageReader interface
     bool success = _analogVoltageReader->readVoltageDifferential(
         _dataPin, _analogReferenceChannel, adcVoltage);
 

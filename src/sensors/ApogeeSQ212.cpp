@@ -19,13 +19,13 @@
 // The constructor - need the power pin and the data pin
 ApogeeSQ212::ApogeeSQ212(int8_t powerPin, int8_t analogChannel,
                          uint8_t            measurementsToAverage,
-                         AnalogVoltageBase* analogVoltageReader)
+                         AnalogVoltageReader* analogVoltageReader)
     : Sensor("ApogeeSQ212", SQ212_NUM_VARIABLES, SQ212_WARM_UP_TIME_MS,
              SQ212_STABILIZATION_TIME_MS, SQ212_MEASUREMENT_TIME_MS, powerPin,
              analogChannel, measurementsToAverage, SQ212_INC_CALC_VARIABLES),
       // If no analog voltage reader was provided, create a default one
       _analogVoltageReader(analogVoltageReader == nullptr
-                               ? new TIADS1x15Base()
+                               ? new TIADS1x15Reader()
                                : analogVoltageReader),
       _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
@@ -83,9 +83,9 @@ bool ApogeeSQ212::addSingleMeasurementResult() {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // Read the single-ended analog voltage using the AnalogVoltageBase
+    // Read the single-ended analog voltage using the AnalogVoltageReader
     // interface.
-    // NOTE: All implementations of the AnalogVoltageBase class validate both
+    // NOTE: All implementations of the AnalogVoltageReader class validate both
     // the input channel and the resulting voltage, so we can trust that a
     // successful read will give us a valid voltage value to work with.
     bool success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,

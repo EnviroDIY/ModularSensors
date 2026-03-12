@@ -17,14 +17,14 @@
 
 
 // ============================================================================
-// TIADS1x15Base Constructors
+// TIADS1x15Reader Constructors
 // ============================================================================
 
 // Constructor with TwoWire instance
-TIADS1x15Base::TIADS1x15Base(TwoWire* theI2C, float voltageMultiplier,
+TIADS1x15Reader::TIADS1x15Reader(TwoWire* theI2C, float voltageMultiplier,
                              adsGain_t adsGain, uint8_t i2cAddress,
                              float adsSupplyVoltage, uint16_t adsDataRate)
-    : AnalogVoltageBase(voltageMultiplier, adsSupplyVoltage),
+    : AnalogVoltageReader(voltageMultiplier, adsSupplyVoltage),
       _wire(theI2C != nullptr ? theI2C : &Wire),
       _i2cAddress(i2cAddress),
       _adsGain(adsGain),
@@ -43,18 +43,18 @@ TIADS1x15Base::TIADS1x15Base(TwoWire* theI2C, float voltageMultiplier,
 }
 
 // Constructor using default Wire instance
-TIADS1x15Base::TIADS1x15Base(float voltageMultiplier, adsGain_t adsGain,
+TIADS1x15Reader::TIADS1x15Reader(float voltageMultiplier, adsGain_t adsGain,
                              uint8_t i2cAddress, float adsSupplyVoltage,
                              uint16_t adsDataRate)
-    : TIADS1x15Base(&Wire, voltageMultiplier, adsGain, i2cAddress,
+    : TIADS1x15Reader(&Wire, voltageMultiplier, adsGain, i2cAddress,
                     adsSupplyVoltage, adsDataRate) {}
 
 
 // ============================================================================
-// TIADS1x15Base Functions
+// TIADS1x15Reader Functions
 // ============================================================================
 
-bool TIADS1x15Base::begin() {
+bool TIADS1x15Reader::begin() {
     // Initialize the per-instance ADS driver with stored configuration
     // ADS Library default settings:
     //  - TI ADS1115 (16 bit)
@@ -84,7 +84,7 @@ bool TIADS1x15Base::begin() {
     return success;
 }
 
-String TIADS1x15Base::getAnalogLocation(int8_t analogChannel,
+String TIADS1x15Reader::getAnalogLocation(int8_t analogChannel,
                                         int8_t analogReferenceChannel) {
     String sensorLocation;
 #ifndef MS_USE_ADS1015
@@ -105,7 +105,7 @@ String TIADS1x15Base::getAnalogLocation(int8_t analogChannel,
     return sensorLocation;
 }
 
-bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
+bool TIADS1x15Reader::readVoltageSingleEnded(int8_t analogChannel,
                                            float& resultValue) {
     bool    success      = false;
     int16_t adcCounts    = MS_INVALID_VALUE;
@@ -168,7 +168,7 @@ bool TIADS1x15Base::readVoltageSingleEnded(int8_t analogChannel,
     return success;
 }
 
-bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
+bool TIADS1x15Reader::readVoltageDifferential(int8_t analogChannel,
                                             int8_t analogReferenceChannel,
                                             float& resultValue) {
     bool    success      = false;
@@ -237,7 +237,7 @@ bool TIADS1x15Base::readVoltageDifferential(int8_t analogChannel,
 }
 
 // Validation function for differential channel pairs
-bool TIADS1x15Base::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
+bool TIADS1x15Reader::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
     // Only canonical ordered pairs are valid (lower channel number first)
     // This ensures consistent polarity: channel1 is positive, channel2 is
     // negative Valid combinations are: 0-1, 0-3, 1-3, or 2-3 (in that order
@@ -249,31 +249,31 @@ bool TIADS1x15Base::isValidDifferentialPair(int8_t channel1, int8_t channel2) {
 }
 
 // Setter and getter methods for ADS gain
-void TIADS1x15Base::setADSGain(adsGain_t adsGain) {
+void TIADS1x15Reader::setADSGain(adsGain_t adsGain) {
     // Update the per-instance driver with new gain setting
     _ads.setGain(adsGain);
     // Keep cached value in sync
     _adsGain = adsGain;
 }
 
-adsGain_t TIADS1x15Base::getADSGain() {
+adsGain_t TIADS1x15Reader::getADSGain() {
     return _ads.getGain();
 }
 
 // Setter and getter methods for ADS data rate
-void TIADS1x15Base::setADSDataRate(uint16_t adsDataRate) {
+void TIADS1x15Reader::setADSDataRate(uint16_t adsDataRate) {
     // Update the per-instance driver with new data rate setting
     _ads.setDataRate(adsDataRate);
     // Keep cached value in sync
     _adsDataRate = adsDataRate;
 }
 
-uint16_t TIADS1x15Base::getADSDataRate() {
+uint16_t TIADS1x15Reader::getADSDataRate() {
     return _ads.getDataRate();
 }
 
-// Override setSupplyVoltage in TIADS1x15Base to validate ADS range
-void TIADS1x15Base::setSupplyVoltage(float supplyVoltage) {
+// Override setSupplyVoltage in TIADS1x15Reader to validate ADS range
+void TIADS1x15Reader::setSupplyVoltage(float supplyVoltage) {
     // Validate supply voltage range: 0.0V to 5.5V per datasheet
     if (supplyVoltage < 0.0f) {
         MS_DBG(F("ADS supply voltage "), supplyVoltage,
@@ -288,7 +288,7 @@ void TIADS1x15Base::setSupplyVoltage(float supplyVoltage) {
     }
 }
 
-float TIADS1x15Base::calculateAnalogResolutionVolts() {
+float TIADS1x15Reader::calculateAnalogResolutionVolts() {
     // Determine ADC resolution based on model
 #ifndef MS_USE_ADS1015
     uint8_t resolutionBits = 16;  // ADS1115 is 16-bit
@@ -334,7 +334,7 @@ float TIADS1x15Base::calculateAnalogResolutionVolts() {
     return resolutionVolts;
 }
 
-bool TIADS1x15Base::probeI2C() {
+bool TIADS1x15Reader::probeI2C() {
     _wire->beginTransmission(_i2cAddress);
     if (_wire->endTransmission() != 0) {
         MS_DBG(F("  I2C communication failed at 0x"), String(_i2cAddress, HEX));
@@ -352,7 +352,7 @@ bool TIADS1x15Base::probeI2C() {
 TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
                      int8_t         analogReferenceChannel,
                      uint8_t        measurementsToAverage,
-                     TIADS1x15Base* analogVoltageReader)
+                     TIADS1x15Reader* analogVoltageReader)
     : Sensor("TIADS1x15", TIADS1X15_NUM_VARIABLES, TIADS1X15_WARM_UP_TIME_MS,
              TIADS1X15_STABILIZATION_TIME_MS, TIADS1X15_MEASUREMENT_TIME_MS,
              powerPin, adsChannel, measurementsToAverage,
@@ -360,7 +360,7 @@ TIADS1x15::TIADS1x15(int8_t powerPin, int8_t adsChannel,
       _analogReferenceChannel(analogReferenceChannel),
       // If no analog voltage reader was provided, create a default one
       _analogVoltageReader(analogVoltageReader == nullptr
-                               ? new TIADS1x15Base()
+                               ? new TIADS1x15Reader()
                                : analogVoltageReader),
       _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {
     // NOTE: We DO NOT validate the channel numbers and pairings in this

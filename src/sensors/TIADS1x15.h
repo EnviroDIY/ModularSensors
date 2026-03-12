@@ -170,7 +170,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include "AnalogVoltageBase.h"
+#include "AnalogVoltageReader.h"
 #include <Adafruit_ADS1X15.h>
 
 /** @ingroup sensor_ads1x15 */
@@ -256,17 +256,17 @@
 /**@}*/
 
 /**
- * @brief TI ADS1x15 base class that inherits from AnalogVoltageBase
+ * @brief TI ADS1x15 base class that inherits from AnalogVoltageReader
  *
  * This class provides ADS1x15-specific analog functionality on top of
- * the generic AnalogVoltageBase class. It handles ADS configuration,
+ * the generic AnalogVoltageReader class. It handles ADS configuration,
  * I2C communication, and differential/single-ended measurement modes.
  */
-class TIADS1x15Base : public AnalogVoltageBase {
+class TIADS1x15Reader : public AnalogVoltageReader {
  public:
 
     /**
-     * @brief Construct a new TIADS1x15Base object
+     * @brief Construct a new TIADS1x15Reader object
      *
      * @param theI2C A TwoWire instance for I2C communication.  Due to the
      * speed and sensitivity requirements of the ADS1x15, only hardware I2C is
@@ -278,7 +278,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
      * @param adsDataRate The data rate for the ADS1x15 (samples per second)
      */
-    explicit TIADS1x15Base(TwoWire* theI2C, float voltageMultiplier = 1.0f,
+    explicit TIADS1x15Reader(TwoWire* theI2C, float voltageMultiplier = 1.0f,
                            adsGain_t adsGain    = GAIN_ONE,
                            uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
                            float     adsSupplyVoltage = OPERATING_VOLTAGE,
@@ -290,7 +290,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
     );
 
     /**
-     * @brief Construct a new TIADS1x15Base object using the default hardware
+     * @brief Construct a new TIADS1x15Reader object using the default hardware
      * Wire instance.
      *
      * @param voltageMultiplier The voltage multiplier for any voltage dividers
@@ -299,7 +299,7 @@ class TIADS1x15Base : public AnalogVoltageBase {
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
      * @param adsDataRate The data rate for the ADS1x15 (samples per second)
      */
-    explicit TIADS1x15Base(float     voltageMultiplier = 1.0f,
+    explicit TIADS1x15Reader(float     voltageMultiplier = 1.0f,
                            adsGain_t adsGain           = GAIN_ONE,
                            uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
                            float     adsSupplyVoltage = OPERATING_VOLTAGE,
@@ -311,9 +311,9 @@ class TIADS1x15Base : public AnalogVoltageBase {
     );
 
     /**
-     * @brief Destroy the TIADS1x15Base object
+     * @brief Destroy the TIADS1x15Reader object
      */
-    ~TIADS1x15Base() override = default;
+    ~TIADS1x15Reader() override = default;
 
     /**
      * @brief Initialize the ADS1x15 analog voltage reading system
@@ -495,14 +495,14 @@ class TIADS1x15 : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @param analogVoltageReader Pointer to TIADS1x15Base object for ADS
-     * functionality. If nullptr (default), creates a new TIADS1x15Base with
+     * @param analogVoltageReader Pointer to TIADS1x15Reader object for ADS
+     * functionality. If nullptr (default), creates a new TIADS1x15Reader with
      * default settings.
      */
     TIADS1x15(int8_t powerPin, int8_t adsChannel,
-              int8_t         analogReferenceChannel = -1,
-              uint8_t        measurementsToAverage  = 1,
-              TIADS1x15Base* analogVoltageReader    = nullptr);
+              int8_t        analogReferenceChannel = -1,
+              uint8_t       measurementsToAverage  = 1,
+              TIADS1x15Reader* analogVoltageReader    = nullptr);
     /**
      * @brief Destroy the TIADS1x15 object
      */
@@ -535,9 +535,9 @@ class TIADS1x15 : public Sensor {
     int8_t _analogReferenceChannel = -1;
 
     /**
-     * @brief Pointer to the TIADS1x15Base object providing ADS functionality
+     * @brief Pointer to the TIADS1x15Reader object providing ADS functionality
      */
-    TIADS1x15Base* _analogVoltageReader = nullptr;
+    TIADS1x15Reader* _analogVoltageReader = nullptr;
 
     /**
      * @brief Whether this object owns the _analogVoltageReader pointer and

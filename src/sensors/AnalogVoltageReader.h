@@ -1,12 +1,12 @@
 /**
- * @file AnalogVoltageBase.h
+ * @file AnalogVoltageReader.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the AnalogVoltageBase abstract class for providing a unified
- * interface for analog voltage reading sensors.
+ * @brief Contains the AnalogVoltageReader abstract class for providing a
+ * unified interface for analog voltage reading sensors.
  *
  * This abstract base class provides a common interface for sensors that can
  * read single-ended analog voltages, either through external ADCs (like TI
@@ -14,8 +14,8 @@
  */
 
 // Header Guards
-#ifndef SRC_SENSORS_ANALOGVOLTAGEBASE_H_
-#define SRC_SENSORS_ANALOGVOLTAGEBASE_H_
+#ifndef SRC_SENSORS_ANALOGVOLTAGEREADER_H_
+#define SRC_SENSORS_ANALOGVOLTAGEREADER_H_
 
 // Include the library config before anything else
 #include "ModSensorConfig.h"
@@ -27,8 +27,8 @@
 #include "KnownProcessors.h"
 
 // Define the print label[s] for the debugger
-#ifdef MS_ANALOGVOLTAGEBASE_DEBUG
-#define MS_DEBUGGING_STD "AnalogVoltageBase"
+#ifdef MS_ANALOGVOLTAGEREADER_DEBUG
+#define MS_DEBUGGING_STD "AnalogVoltageReader"
 #endif
 
 // Include the debugger
@@ -49,16 +49,16 @@
  * - getAnalogLocation() to provide sensor location identification, and
  * - calculateAnalogResolutionVolts() to compute voltage resolution.
  */
-class AnalogVoltageBase {
+class AnalogVoltageReader {
  public:
     /**
-     * @brief Construct a new AnalogVoltageBase object
+     * @brief Construct a new AnalogVoltageReader object
      *
      * @param voltageMultiplier The voltage multiplier for any voltage dividers
      * @param supplyVoltage The supply/operating voltage for the analog system
      */
-    explicit AnalogVoltageBase(float voltageMultiplier = 1.0f,
-                               float supplyVoltage     = OPERATING_VOLTAGE)
+    explicit AnalogVoltageReader(float voltageMultiplier = 1.0f,
+                                 float supplyVoltage     = OPERATING_VOLTAGE)
         :  // NOTE: These clamps are intentionally silent — Serial/MS_DBG is NOT
            // safe to call during construction (the Serial object may not be
            // initialized yet on Arduino targets). Use setSupplyVoltage() at
@@ -68,9 +68,9 @@ class AnalogVoltageBase {
           _supplyVoltage((supplyVoltage > 0.0f) ? supplyVoltage
                                                 : OPERATING_VOLTAGE) {}
     /**
-     * @brief Destroy the AnalogVoltageBase object
+     * @brief Destroy the AnalogVoltageReader object
      */
-    virtual ~AnalogVoltageBase() = default;
+    virtual ~AnalogVoltageReader() = default;
 
     /**
      * @brief Initialize the analog voltage reading system
@@ -227,4 +227,4 @@ class AnalogVoltageBase {
     float _supplyVoltage;
 };
 
-#endif  // SRC_SENSORS_ANALOGVOLTAGEBASE_H_
+#endif  // SRC_SENSORS_ANALOGVOLTAGEREADER_H_

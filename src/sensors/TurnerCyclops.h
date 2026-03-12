@@ -167,7 +167,7 @@
 #include "SensorBase.h"
 
 // Forward declaration
-class AnalogVoltageBase;
+class AnalogVoltageReader;
 
 // Sensor Specific Defines
 /** @ingroup sensor_cyclops */
@@ -319,8 +319,8 @@ class TurnerCyclops : public Sensor {
      * analog data channel, and the calibration info.
      *
      * By default, this constructor will internally create a default
-     * AnalogVoltageBase implementation for voltage readings, but a pointer to
-     * a custom AnalogVoltageBase object can be passed in if desired.
+     * AnalogVoltageReader implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageReader object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the Cyclops-7F
      * Use -1 if it is continuously powered.
@@ -328,7 +328,7 @@ class TurnerCyclops : public Sensor {
      * turned off between measurements.
      * @param analogChannel The analog data channel or processor pin for voltage
      * measurements.  The significance of the channel number depends on the
-     * specific AnalogVoltageBase implementation used for voltage readings. For
+     * specific AnalogVoltageReader implementation used for voltage readings. For
      * example, with the TI ADS1x15, this would be the ADC channel (0-3) that
      * the sensor is connected to.  Negative or invalid channel numbers are not
      * clamped and will cause the reading to fail and emit a warning.
@@ -344,7 +344,7 @@ class TurnerCyclops : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * @param analogVoltageReader Pointer to an AnalogVoltageReader object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
      * internally create and own an analog voltage reader.  For backward
      * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
@@ -362,7 +362,7 @@ class TurnerCyclops : public Sensor {
     TurnerCyclops(int8_t powerPin, int8_t analogChannel, float conc_std,
                   float volt_std, float volt_blank,
                   uint8_t            measurementsToAverage = 1,
-                  AnalogVoltageBase* analogVoltageReader   = nullptr);
+                  AnalogVoltageReader* analogVoltageReader   = nullptr);
     /**
      * @brief Destroy the Turner Cyclops object
      */
@@ -403,7 +403,7 @@ class TurnerCyclops : public Sensor {
      */
     float _volt_blank;
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    AnalogVoltageReader* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
     bool _ownsAnalogVoltageReader = false;

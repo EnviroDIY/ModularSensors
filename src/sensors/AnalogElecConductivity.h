@@ -288,7 +288,7 @@ static_assert(
 /**@}*/
 
 // Forward declaration
-class AnalogVoltageBase;
+class AnalogVoltageReader;
 
 /**
  * @brief Class for the analog [Electrical Conductivity monitor](@ref
@@ -315,7 +315,7 @@ class AnalogElecConductivity : public Sensor {
      * be calibrated for each specific sensing setup.
      * @param measurementsToAverage The number of measurements to average;
      * optional with default value of 1.
-     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * @param analogVoltageReader Pointer to an AnalogVoltageReader object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
      * internally create and own an analog voltage reader.  For backward
      * compatibility, the default reader uses the processor's internal ADC. If a
@@ -327,7 +327,7 @@ class AnalogElecConductivity : public Sensor {
         float              Rseries_ohms   = ANALOGELECCONDUCTIVITY_RSERIES_OHMS,
         float              sensorEC_Konst = ANALOGELECCONDUCTIVITY_KONST,
         uint8_t            measurementsToAverage = 1,
-        AnalogVoltageBase* analogVoltageReader   = nullptr);
+        AnalogVoltageReader* analogVoltageReader   = nullptr);
 
     /**
      * @brief Destroy the AnalogElecConductivity object.
@@ -386,7 +386,7 @@ class AnalogElecConductivity : public Sensor {
     /// @brief the cell constant for the circuit
     float _sensorEC_Konst = ANALOGELECCONDUCTIVITY_KONST;
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    AnalogVoltageReader* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
     bool _ownsAnalogVoltageReader = false;

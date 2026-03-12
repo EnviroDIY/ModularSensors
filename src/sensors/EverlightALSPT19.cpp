@@ -15,7 +15,7 @@
 EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
                                    float alsSupplyVoltage, float loadResistor,
                                    uint8_t            measurementsToAverage,
-                                   AnalogVoltageBase* analogVoltageReader)
+                                   AnalogVoltageReader* analogVoltageReader)
     : Sensor("Everlight ALS-PT19", ALSPT19_NUM_VARIABLES,
              ALSPT19_WARM_UP_TIME_MS, ALSPT19_STABILIZATION_TIME_MS,
              ALSPT19_MEASUREMENT_TIME_MS, powerPin, dataPin,
@@ -25,7 +25,7 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
       // If no analog voltage reader was provided, create a default one
       _loadResistor(loadResistor),
       _analogVoltageReader(analogVoltageReader == nullptr
-                               ? new ProcessorAnalogBase()
+                               ? new ProcessorAnalogReader()
                                : analogVoltageReader),
       _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
@@ -34,7 +34,7 @@ EverlightALSPT19::EverlightALSPT19(int8_t powerPin, int8_t dataPin,
      defined(BUILT_IN_ALS_LOADING_RESISTANCE)) ||                         \
     defined(DOXYGEN)
 EverlightALSPT19::EverlightALSPT19(uint8_t            measurementsToAverage,
-                                   AnalogVoltageBase* analogVoltageReader)
+                                   AnalogVoltageReader* analogVoltageReader)
     : EverlightALSPT19(BUILT_IN_ALS_POWER_PIN, BUILT_IN_ALS_DATA_PIN,
                        BUILT_IN_ALS_SUPPLY_VOLTAGE,
                        BUILT_IN_ALS_LOADING_RESISTANCE, measurementsToAverage,
@@ -100,9 +100,9 @@ bool EverlightALSPT19::addSingleMeasurementResult() {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // Read the single-ended analog voltage using the AnalogVoltageBase
+    // Read the single-ended analog voltage using the AnalogVoltageReader
     // interface.
-    // NOTE: All implementations of the AnalogVoltageBase class validate both
+    // NOTE: All implementations of the AnalogVoltageReader class validate both
     // the input channel and the resulting voltage, so we can trust that a
     // successful read will give us a valid voltage value to work with.
     bool success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,

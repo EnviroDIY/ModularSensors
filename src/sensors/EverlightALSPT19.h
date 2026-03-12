@@ -34,8 +34,8 @@
  *        lux from the sensor
  *
  * @section sensor_alspt19_ctor Sensor Constructors
- * {{ @ref EverlightALSPT19::EverlightALSPT19(uint8_t, AnalogVoltageBase*) }}
- * {{ @ref EverlightALSPT19::EverlightALSPT19(int8_t, int8_t, float, float, uint8_t, AnalogVoltageBase*) }}
+ * {{ @ref EverlightALSPT19::EverlightALSPT19(uint8_t, AnalogVoltageReader*) }}
+ * {{ @ref EverlightALSPT19::EverlightALSPT19(int8_t, int8_t, float, float, uint8_t, AnalogVoltageReader*) }}
  *
  * @section sensor_alspt19_examples Example Code
  *
@@ -233,7 +233,7 @@ static_assert(ALSPT19_UA_PER_1000LUX > 0,
 /**@}*/
 
 // Forward declaration
-class AnalogVoltageBase;
+class AnalogVoltageReader;
 
 /* clang-format off */
 /**
@@ -255,13 +255,13 @@ class EverlightALSPT19 : public Sensor {
      * - i.e., A1.
      * @param alsSupplyVoltage The power supply voltage (in volts) of the
      * ALS-PT19. This does not have to be the same as the board operating
-     * voltage or the supply voltage of the AnalogVoltageBase reader.
+     * voltage or the supply voltage of the AnalogVoltageReader reader.
      * This is used to clamp the light values when the sensor is over-saturated.
      * @param loadResistor The size of the loading resistor, in kiloohms (kΩ).
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 10.
-     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * @param analogVoltageReader Pointer to an AnalogVoltageReader object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
      * internally create and own an analog voltage reader.  For backward
      * compatibility, the default reader uses the processor's internal ADC. If a
@@ -270,7 +270,7 @@ class EverlightALSPT19 : public Sensor {
      */
     EverlightALSPT19(int8_t powerPin, int8_t dataPin, float alsSupplyVoltage,
                      float loadResistor, uint8_t measurementsToAverage = 10,
-                     AnalogVoltageBase* analogVoltageReader = nullptr);
+                     AnalogVoltageReader* analogVoltageReader = nullptr);
 
 #if (defined(BUILT_IN_ALS_POWER_PIN) && defined(BUILT_IN_ALS_DATA_PIN) && \
      defined(BUILT_IN_ALS_SUPPLY_VOLTAGE) &&                              \
@@ -287,7 +287,7 @@ class EverlightALSPT19 : public Sensor {
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 10.
-     * @param analogVoltageReader Pointer to an AnalogVoltageBase object for
+     * @param analogVoltageReader Pointer to an AnalogVoltageReader object for
      * voltage measurements.  Pass nullptr (the default) to have the constructor
      * internally create and own an analog voltage reader.  For backward
      * compatibility, the default reader uses the processor's internal ADC. If a
@@ -295,7 +295,7 @@ class EverlightALSPT19 : public Sensor {
      * ensure its lifetime exceeds that of this object.
      */
     explicit EverlightALSPT19(uint8_t            measurementsToAverage = 10,
-                              AnalogVoltageBase* analogVoltageReader = nullptr);
+                              AnalogVoltageReader* analogVoltageReader = nullptr);
 #endif
     /**
      * @brief Destroy the EverlightALSPT19 object.
@@ -326,7 +326,7 @@ class EverlightALSPT19 : public Sensor {
     /// @brief The loading resistance
     float _loadResistor = 0.0f;
     /// @brief Pointer to analog voltage reader
-    AnalogVoltageBase* _analogVoltageReader = nullptr;
+    AnalogVoltageReader* _analogVoltageReader = nullptr;
     /// @brief Flag to track if this object owns the analog voltage reader and
     /// should delete it in the destructor
     bool _ownsAnalogVoltageReader = false;

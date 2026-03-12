@@ -1021,10 +1021,10 @@ float         AsCO2Multiplier = 1.0f;      // factor for a voltage divider
 adsGain_t     AsCO2AdsGain    = GAIN_ONE;  // gain of the ADS1115
 float         AsCO2adsSupply  = 3.3f;      // supply voltage of the ADS1115
 const uint8_t AsCO2i2c_addr   = 0x48;      // The I2C address of the ADS1115 ADC
-TIADS1x15Base AsCO2ADS(AsCO2Multiplier, AsCO2AdsGain, AsCO2i2c_addr,
+TIADS1x15Reader AsCO2ADS(AsCO2Multiplier, AsCO2AdsGain, AsCO2i2c_addr,
                        AsCO2adsSupply);
 
-// Create an Alphasense CO2 sensor object with the custom TIADS1x15Base
+// Create an Alphasense CO2 sensor object with the custom TIADS1x15Reader
 AlphasenseCO2 alphasenseCO2_c(asCO2Power, asCO2Channel1, asCO2Channel2,
                               asCO2Meas, &AsCO2ADS);
 /** End [alphasense_co2] */
@@ -1153,10 +1153,10 @@ float         sq212Multiplier = 1.0f;      // factor for a voltage divider
 adsGain_t     sq212AdsGain    = GAIN_ONE;  // gain of the ADS1115
 float         sq212adsSupply  = 3.3f;      // supply voltage of the ADS1115
 const uint8_t sq212i2c_addr   = 0x48;      // The I2C address of the ADS1115 ADC
-TIADS1x15Base sq212ADS(sq212Multiplier, sq212AdsGain, sq212i2c_addr,
+TIADS1x15Reader sq212ADS(sq212Multiplier, sq212AdsGain, sq212i2c_addr,
                        sq212adsSupply);
 
-// Create an Apogee SQ212 sensor object with the custom TIADS1x15Base
+// Create an Apogee SQ212 sensor object with the custom TIADS1x15Reader
 ApogeeSQ212 sq212_c(sq212Power, sq212ADSChannel, sq212Readings, &sq212ADS);
 /** End [apogee_sq212] */
 #endif
@@ -1506,16 +1506,16 @@ float         OBS3Multiplier       = 1.0f;      // factor for a voltage divider
 adsGain_t     OBS3AdsGain          = GAIN_ONE;  // gain of the ADS1115
 float         OBS3AdsSupplyVoltage = 3.3f;      // supply voltage of the ADS1115
 const uint8_t OBS3AdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
-TIADS1x15Base OBSADS(OBS3Multiplier, OBS3AdsGain, OBS3AdsI2C_addr,
+TIADS1x15Reader OBSADS(OBS3Multiplier, OBS3AdsGain, OBS3AdsI2C_addr,
                      OBS3AdsSupplyVoltage);
 
 // Create a Campbell OBS3+ *low* range sensor object with the custom
-// TIADS1x15Base
+// TIADS1x15Reader
 CampbellOBS3 osb3low_c(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B,
                        OBSLow_C, OBS3NReadings, &OBSADS);
 
 // Create a Campbell OBS3+ *high* range sensor object with the custom
-// TIADS1x15Base
+// TIADS1x15Reader
 CampbellOBS3 osb3high_c(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
                         OBSHigh_C, OBS3NReadings, &OBSADS);
 /** End [campbell_obs3] */
@@ -1641,10 +1641,10 @@ Variable* alsPt19Lux = new EverlightALSPT19_Illuminance(
 // create a custom analog reader based on the Processor ADC (optional)
 float               alsMultiplier = 1.0f;  // factor for a voltage divider
 float               alsAdsSupply = 3.3f;  // supply voltage of the Processor ADC
-ProcessorAnalogBase alsADS(alsMultiplier, alsAdsSupply);
+ProcessorAnalogReader alsADS(alsMultiplier, alsAdsSupply);
 
 // Create an Everlight ALS-PT19 sensor object with the custom
-// ProcessorAnalogBase
+// ProcessorAnalogReader
 EverlightALSPT19 alsPt19_c(alsPower, alsData, alsSupply, alsResistance,
                            alsNReadings, &alsADS);
 /** End [everlight_alspt19] */
@@ -1668,10 +1668,10 @@ const int8_t evADSChannel2 =
 const uint8_t evReadsToAvg = 1;  // Only read one sample
 
 // Create a single-ended External Voltage sensor object with the default
-// TIADS1x15Base
+// TIADS1x15Reader
 TIADS1x15 ads1x15(evADSPower, evADSChannel1);
 // Create a differential External Voltage sensor object with the default
-// TIADS1x15Base
+// TIADS1x15Reader
 TIADS1x15 ads1x15_d(evADSPower, evADSChannel1, evADSChannel2);
 
 // create a custom ADS instance (optional)
@@ -1679,11 +1679,11 @@ float         evVoltageMultiplier = 1.0f;      // factor for a voltage divider
 adsGain_t     evAdsGain           = GAIN_ONE;  // gain of the ADS1115
 float         evAdsSupplyVoltage  = 3.3f;      // supply voltage of the ADS1115
 const uint8_t evAdsI2C_addr       = 0x48;  // The I2C address of the ADS1115 ADC
-TIADS1x15Base evADS(evVoltageMultiplier, evAdsGain, evAdsI2C_addr,
+TIADS1x15Reader evADS(evVoltageMultiplier, evAdsGain, evAdsI2C_addr,
                     evAdsSupplyVoltage);
 
 // Create a single ended External Voltage sensor object with the custom
-// TIADS1x15Base
+// TIADS1x15Reader
 TIADS1x15 ads1x15_c(evADSPower, evADSChannel1, -1, evReadsToAvg, &evADS);
 
 // Create a voltage variable pointer
@@ -1705,21 +1705,21 @@ const int8_t  processorAnalogPowerPin = sensorPowerPin;  // Power pin
 const int8_t  processorAnalogDataPin  = A0;  // Analog input pin (processor ADC)
 const uint8_t processorAnalogNReadings = 1;  // Only read one sample
 
-// Create a Processor Analog sensor object with the default ProcessorAnalogBase
+// Create a Processor Analog sensor object with the default ProcessorAnalogReader
 ProcessorAnalog processorAnalog(processorAnalogPowerPin, processorAnalogDataPin,
                                 processorAnalogNReadings);
 
 // create a custom analog reader based on the Processor ADC (optional)
 float processorAnalogMultiplier = 1.0f;  // factor for a voltage divider
 float processorAnalogSupply     = 3.3f;  // supply voltage of the Processor ADC
-ProcessorAnalogBase processorAnalogBaseCustom(processorAnalogMultiplier,
+ProcessorAnalogReader processorAnalogReaderCustom(processorAnalogMultiplier,
                                               processorAnalogSupply);
 
-// Create a Processor Analog sensor object with the custom ProcessorAnalogBase
+// Create a Processor Analog sensor object with the custom ProcessorAnalogReader
 ProcessorAnalog processorAnalog_c(processorAnalogPowerPin,
                                   processorAnalogDataPin,
                                   processorAnalogNReadings,
-                                  &processorAnalogBaseCustom);
+                                  &processorAnalogReaderCustom);
 
 // Create a voltage variable pointer
 Variable* processorAnalogVolts = new ProcessorAnalog_Voltage(
@@ -2401,7 +2401,7 @@ float         cyclopsMultiplier       = 1.0f;  // factor for a voltage divider
 adsGain_t     cyclopsAdsGain          = GAIN_ONE;  // gain of the ADS1115
 float         cyclopsAdsSupplyVoltage = 3.3f;  // supply voltage of the ADS1115
 const uint8_t cyclopsAdsI2C_addr = 0x48;  // The I2C address of the ADS1115 ADC
-TIADS1x15Base cyclopsADS(cyclopsMultiplier, cyclopsAdsGain, cyclopsAdsI2C_addr,
+TIADS1x15Reader cyclopsADS(cyclopsMultiplier, cyclopsAdsGain, cyclopsAdsI2C_addr,
                          cyclopsAdsSupplyVoltage);
 
 // Create a Turner Cyclops sensor object with the custom ADS instance
@@ -2412,7 +2412,7 @@ TurnerCyclops cyclops_c(cyclopsPower, cyclopsADSChannel, cyclopsStdConc,
 // create a custom analog reader based on the Processor ADC (optional)
 float cyclopsMultiplier2 = 1.0f;  // factor for a voltage divider
 float cyclopsSupply2     = 3.3f;  // supply voltage of the Processor ADC
-ProcessorAnalogBase cyclopsADS2(cyclopsMultiplier2, cyclopsSupply2);
+ProcessorAnalogReader cyclopsADS2(cyclopsMultiplier2, cyclopsSupply2);
 
 // Create a Turner Cyclops sensor object with the custom ADS instance
 TurnerCyclops cyclops_c2(cyclopsPower, cyclopsADSChannel, cyclopsStdConc,
@@ -2461,10 +2461,10 @@ float         ttPlusMultiplier = 1.0f;      // factor for a voltage divider
 adsGain_t     ttPlusAdsGain    = GAIN_ONE;  // gain of the ADS1115
 float         ttPlusAdsSupply  = 3.3f;      // supply voltage of the ADS1115
 const uint8_t ttPlusI2C_addr   = 0x48;  // The I2C address of the ADS1115 ADC
-TIADS1x15Base ttPlusADS(ttPlusMultiplier, ttPlusAdsGain, ttPlusI2C_addr,
+TIADS1x15Reader ttPlusADS(ttPlusMultiplier, ttPlusAdsGain, ttPlusI2C_addr,
                         ttPlusAdsSupply);
 
-// Create a Turner Turbidity Plus sensor object with the custom TIADS1x15Base
+// Create a Turner Turbidity Plus sensor object with the custom TIADS1x15Reader
 TurnerTurbidityPlus turbidityPlus_c(ttPlusPower, ttPlusWiper, ttPlusChannel1,
                                     ttPlusChannel2, ttPlusStdConc,
                                     ttPlusStdVolt, ttPlusBlankVolt,
@@ -2537,7 +2537,7 @@ Variable* analogEc_spcond = new Variable(
 // create a custom analog reader based on the Processor ADC (optional)
 float analogECMultiplier = 1.0f;  // factor for a voltage divider
 float analogECSupply     = 3.3f;  // supply voltage of the Processor ADC
-ProcessorAnalogBase analogECADS(analogECMultiplier, analogECSupply);
+ProcessorAnalogReader analogECADS(analogECMultiplier, analogECSupply);
 
 // Create an AnalogElecConductivity sensor object with the custom ADS instance
 AnalogElecConductivity analogEC_c(analogECPower, analogECData,

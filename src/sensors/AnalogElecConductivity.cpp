@@ -16,7 +16,7 @@
 // For Mayfly version; the battery resistor depends on it
 AnalogElecConductivity::AnalogElecConductivity(
     int8_t powerPin, int8_t dataPin, float Rseries_ohms, float sensorEC_Konst,
-    uint8_t measurementsToAverage, AnalogVoltageBase* analogVoltageReader)
+    uint8_t measurementsToAverage, AnalogVoltageReader* analogVoltageReader)
     : Sensor("AnalogElecConductivity", ANALOGELECCONDUCTIVITY_NUM_VARIABLES,
              ANALOGELECCONDUCTIVITY_WARM_UP_TIME_MS,
              ANALOGELECCONDUCTIVITY_STABILIZATION_TIME_MS,
@@ -26,7 +26,7 @@ AnalogElecConductivity::AnalogElecConductivity(
       _sensorEC_Konst(sensorEC_Konst),
       // If no analog voltage reader was provided, create a default one
       _analogVoltageReader(analogVoltageReader == nullptr
-                               ? new ProcessorAnalogBase()
+                               ? new ProcessorAnalogReader()
                                : analogVoltageReader),
       _ownsAnalogVoltageReader(analogVoltageReader == nullptr) {}
 
@@ -96,7 +96,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult() {
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
-    // Read the analog voltage using the AnalogVoltageBase interface
+    // Read the analog voltage using the AnalogVoltageReader interface
     bool success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
                                                                 adcVoltage);
 
