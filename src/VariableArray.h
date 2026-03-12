@@ -138,7 +138,7 @@ class VariableArray {
     void begin(uint8_t variableCount, Variable* variableList[],
                const char* uuids[]);
     /**
-     * @brief Begins the VariableArray.  Checks the validity of all UUID and
+     * @brief Begins the VariableArray.  Checks the validity of all UUIDs and
      * outputs the results.
      */
     void begin();

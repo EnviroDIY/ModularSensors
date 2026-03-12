@@ -243,14 +243,18 @@ class Logger {
         return _startupMeasurements;
     }
     // Backwards-compatibility shims
-    /// @brief Deprecated alias for setStartupMeasurements
-    /// @param initialShortIntervals The number of startup measurements
-    /// @m_deprecated_since{0,38,0} use setStartupMeasurements
+    /**
+     * @brief Deprecated alias for setStartupMeasurements
+     * @param initialShortIntervals The number of startup measurements
+     * @m_deprecated_since{0,38,0} use setStartupMeasurements
+     */
     void setinitialShortIntervals(int16_t initialShortIntervals) {
         setStartupMeasurements(initialShortIntervals);
     }
-    /// @copydoc getStartupMeasurements
-    /// @m_deprecated_since{0,38,0} use getStartupMeasurements
+    /**
+     * @brief Deprecated alias for getStartupMeasurements
+     * @m_deprecated_since{0,38,0} use getStartupMeasurements
+     */
     int16_t getinitialShortIntervals() {
         return getStartupMeasurements();
     }
