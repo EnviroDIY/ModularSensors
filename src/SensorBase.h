@@ -520,6 +520,22 @@ class Sensor {
     float sensorValues[MAX_NUMBER_VARS];
 
     /**
+     * @brief Clear only the values array.
+     *
+     * This clears the values array by setting all values to #MS_INVALID_VALUE.
+     */
+    void clearValueArray();
+    
+    /**
+     * @brief Reset all measurement counts.
+     *
+     * Sets all values in numberGoodMeasurementsMade to 0, and resets the
+     * attempt (#_completedMeasurements) and retry (#_currentRetries)
+     * counts.
+     */
+    void resetMeasurementCounts();
+    
+    /**
      * @brief Clear the values array and reset retry counts.
      *
      * This clears the values array by setting all values to #MS_INVALID_VALUE,

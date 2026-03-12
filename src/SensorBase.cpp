@@ -363,17 +363,31 @@ void Sensor::notifyVariables() {
 }
 
 
-// This function empties the value array and resets the measurement counts.
-void Sensor::clearValues() {
+// This function empties the value array by setting all values to invalid.
+void Sensor::clearValueArray() {
     MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
-        sensorValues[i]               = MS_INVALID_VALUE;
+        sensorValues[i] = MS_INVALID_VALUE;
+    }
+}
+
+// This function resets all measurement counts.
+void Sensor::resetMeasurementCounts() {
+    MS_DBG(F("Resetting measurement counts for"), getSensorNameAndLocation());
+    for (uint8_t i = 0; i < _numReturnedValues; i++) {
         numberGoodMeasurementsMade[i] = 0;
     }
     // Reset measurement attempt counters
     _completedMeasurements = 0;
     _currentRetries        = 0;
 }
+
+// This function empties the value array and resets the measurement counts.
+void Sensor::clearValues() {
+    clearValueArray();
+    resetMeasurementCounts();
+}
+
 // This clears power-related status bits and resets power timing.
 void Sensor::clearPowerStatus() {
     // Reset power timing value
