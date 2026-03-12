@@ -60,7 +60,12 @@
  * undefined* when no built-in ALS is available on the board.
  */
 
+
+//==============================================================
 // EnviroDIY boards
+//==============================================================
+
+// https://envirodiy.org/mayfly/
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
 #define LOGGER_BOARD "EnviroDIY Mayfly"
 #define OPERATING_VOLTAGE 3.3
@@ -70,6 +75,14 @@
 #define BUILT_IN_ALS_DATA_PIN A4
 #define BUILT_IN_ALS_SUPPLY_VOLTAGE 3.3
 #define BUILT_IN_ALS_LOADING_RESISTANCE 10
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// Built in DS3231 RTC
+#ifndef MS_USE_DS3231
+#define MS_USE_DS3231
+#endif
+
+// https://envirodiy.org/stonefly/
 #elif defined(ENVIRODIY_STONEFLY_M4)
 #define LOGGER_BOARD "EnviroDIY Stonefly"
 #define OPERATING_VOLTAGE 3.3
@@ -79,197 +92,464 @@
 #define BUILT_IN_ALS_DATA_PIN A8
 #define BUILT_IN_ALS_SUPPLY_VOLTAGE 3.3
 #define BUILT_IN_ALS_LOADING_RESISTANCE 10
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Built in RV-8803 RTC
+#ifndef MS_USE_RV8803
+#define MS_USE_RV8803
+#endif
 
+
+//==============================================================
 // Sodaq boards
+//==============================================================
+
+// https://learn.sodaq.com/Boards/ExpLoRer/ (Discontinued)
 #elif defined(ARDUINO_SODAQ_EXPLORER)
 #define LOGGER_BOARD "SODAQ ExpLoRer"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Use the processor as an RTC
+#ifndef MS_USE_RTC_ZERO
+#define MS_USE_RTC_ZERO
+#endif
+
+// https://learn.sodaq.com/Boards/Autonomo/ (Discontinued)
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
 #define LOGGER_BOARD "SODAQ Autonomo"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 48  // for version v0.1
 #define BATTERY_MULTIPLIER 1.47
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Use the processor as an RTC
+#ifndef MS_USE_RTC_ZERO
+#define MS_USE_RTC_ZERO
+#endif
+
+// https://learn.sodaq.com/Boards/One/base/ (Discontinued)
 #elif defined(ARDUINO_SODAQ_ONE_BETA)
 #define LOGGER_BOARD "SODAQ ONE Beta"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 10
 #define BATTERY_MULTIPLIER 2  // for version v0.1
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Use the processor as an RTC
+#ifndef MS_USE_RTC_ZERO
+#define MS_USE_RTC_ZERO
+#endif
+
+// https://learn.sodaq.com/Boards/One/base/ (Discontinued)
 #elif defined(ARDUINO_SODAQ_ONE)
 #define LOGGER_BOARD "SODAQ ONE"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 10
 #define BATTERY_MULTIPLIER 2  // for version v0.1
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Use the processor as an RTC
+#ifndef MS_USE_RTC_ZERO
+#define MS_USE_RTC_ZERO
+#endif
+
+// https://learn.sodaq.com/Boards/Mbili/ (Discontinued)
 #elif defined(ARDUINO_AVR_SODAQ_MBILI)
 #define LOGGER_BOARD "SODAQ Mbili"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN A6
 #define BATTERY_MULTIPLIER 1.47
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// Built in DS3231 RTC
+#ifndef MS_USE_DS3231
+#define MS_USE_DS3231
+#endif
+
+// https://support.sodaq.com/Boards/NDOGO (Discontinued)
 #elif defined(ARDUINO_AVR_SODAQ_NDOGO)
 #define LOGGER_BOARD "SODAQ Ndogo"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 10
 #define BATTERY_MULTIPLIER 1.47
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://support.sodaq.com/Boards/TATU (Discontinued)
 #elif defined(ARDUINO_AVR_SODAQ_TATU)
 #define LOGGER_BOARD "SODAQ Tatu"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://support.sodaq.com/Boards/MOJA (Discontinued)
 #elif defined(ARDUINO_AVR_SODAQ_MOJA)
 #define LOGGER_BOARD "SODAQ Moja"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
 
+
+//==============================================================
 // Adafruit boards
+//==============================================================
+
+// https://www.adafruit.com/product/3458
 #elif defined(ARDUINO_AVR_FEATHER328P)
 #define LOGGER_BOARD "Adafruit Feather 328p"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 9
 #define BATTERY_MULTIPLIER 2
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://www.adafruit.com/product/2771
 #elif defined(ARDUINO_AVR_FEATHER32U4)
 #define LOGGER_BOARD "Adafruit Feather 32u4"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 9
 #define BATTERY_MULTIPLIER 2
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://www.adafruit.com/product/3403
 #elif defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) || \
     defined(ADAFRUIT_FEATHER_M0_EXPRESS)
 #define LOGGER_BOARD "Adafruit Feather M0 Express"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 9
 #define BATTERY_MULTIPLIER 2
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Use the processor as an RTC
+#ifndef MS_USE_RTC_ZERO
+#define MS_USE_RTC_ZERO
+#endif
+
+// https://www.adafruit.com/product/2772
 #elif defined(ARDUINO_SAMD_FEATHER_M0) || defined(ADAFRUIT_FEATHER_M0)
 #define LOGGER_BOARD "Adafruit Feather M0"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 9
 #define BATTERY_MULTIPLIER 2
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Use the processor as an RTC
+#ifndef MS_USE_RTC_ZERO
+#define MS_USE_RTC_ZERO
+#endif
+
+// https://www.adafruit.com/product/2796
+#elif defined(ADAFRUIT_FEATHER_M0_ADALOGGER)
+#define LOGGER_BOARD "Adafruit Feather M0 Adalogger"
+#define OPERATING_VOLTAGE 3.3
+#define BATTERY_PIN 9
+#define BATTERY_MULTIPLIER 2
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Use the processor as an RTC
+#ifndef MS_USE_RTC_ZERO
+#define MS_USE_RTC_ZERO
+#endif
+
+// https://www.adafruit.com/product/3857
 #elif defined(ARDUINO_FEATHER_M4) || defined(ADAFRUIT_FEATHER_M4_EXPRESS)
 #define LOGGER_BOARD "Adafruit Feather M4"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 9
 #define BATTERY_MULTIPLIER 2
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://www.adafruit.com/product/4759
 #elif defined(ARDUINO_FEATHER_M4_CAN) || defined(ADAFRUIT_FEATHER_M4_CAN)
 #define LOGGER_BOARD "Feather M4 CAN"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN 9
 #define BATTERY_MULTIPLIER 2
-#elif defined(ADAFRUIT_FEATHER_M4_ADALOGGER)
-#define LOGGER_BOARD "Adafruit Feather M4 Adalogger"
-#define OPERATING_VOLTAGE 3.3
-#define BATTERY_PIN 9
-#define BATTERY_MULTIPLIER 2
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://www.adafruit.com/product/4064
 #elif defined(ADAFRUIT_GRAND_CENTRAL_M4)
 #define LOGGER_BOARD "Adafruit Grand Central"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// An external RTC is required
 
-// Arduino boards
+
+//==============================================================
+// Official Arduino boards
+//==============================================================
+
+// https://docs.arduino.cc/retired/boards/arduino-mega-adk-rev3/ (Retired)
 #elif defined(ARDUINO_AVR_ADK)
 #define LOGGER_BOARD "Arduino Mega ADK"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
-// Bluetooth
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-mega/ (Retired)
+#elif defined(ARDUINO_AVR_MEGA)
+#define LOGGER_BOARD "Arduino Mega"
+#define OPERATING_VOLTAGE 5
+#define BATTERY_PIN -1
+#define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://store-usa.arduino.cc/products/arduino-mega-2560-rev3
+#elif defined(ARDUINO_AVR_MEGA2560)
+#define LOGGER_BOARD "Arduino Mega 2560"
+#define OPERATING_VOLTAGE 5
+#define BATTERY_PIN -1
+#define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/getting-started-guides/ArduinoBT/ (Retired)
 #elif defined(ARDUINO_AVR_BT)
 #define LOGGER_BOARD "Arduino BT"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-duemilanove/ (Retired)
 #elif defined(ARDUINO_AVR_DUEMILANOVE)
 #define LOGGER_BOARD "Arduino Duemilanove"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-esplora/ (Retired)
 #elif defined(ARDUINO_AVR_ESPLORA)
 #define LOGGER_BOARD "Arduino Esplora"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-ethernet-rev3-without-poe/ (Retired)
 #elif defined(ARDUINO_AVR_ETHERNET)
 #define LOGGER_BOARD "Arduino Ethernet"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-fio/ (Retired)
 #elif defined(ARDUINO_AVR_FIO)
 #define LOGGER_BOARD "Arduino Fio"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// Arduino version: https://docs.arduino.cc/retired/boards/arduino-gemma/ (Retired)
+// Adafruit version: https://www.adafruit.com/product/1222
 #elif defined(ARDUINO_AVR_GEMMA)
 #define LOGGER_BOARD "Arduino Gemma"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/hardware/leonardo/ (Retired)
 #elif defined(ARDUINO_AVR_LEONARDO)
 #define LOGGER_BOARD "Arduino Leonardo"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/getting-started-guides/ArduinoLilyPad/
+// (Retired)
 #elif defined(ARDUINO_AVR_LILYPAD)
 #define LOGGER_BOARD "Arduino Lilypad"
 // NOTE: The operating voltage is 2.7-5.5V
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/getting-started-guides/ArduinoLilyPadUSB/
+// (Retired)
 #elif defined(ARDUINO_AVR_LILYPAD_USB)
 #define LOGGER_BOARD "Arduino Lilypad USB"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
-#elif defined(ARDUINO_AVR_MEGA)
-#define LOGGER_BOARD "Arduino Mega"
-#define OPERATING_VOLTAGE 5
-#define BATTERY_PIN -1
-#define BATTERY_MULTIPLIER -1
-#elif defined(ARDUINO_AVR_MEGA2560)
-#define LOGGER_BOARD "Arduino Mega 2560"
-#define OPERATING_VOLTAGE 5
-#define BATTERY_PIN -1
-#define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://store-usa.arduino.cc/products/arduino-micro
 #elif defined(ARDUINO_AVR_MICRO)
 #define LOGGER_BOARD "Arduino Micro"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-mini-05/ (Retired)
 #elif defined(ARDUINO_AVR_MINI)
 #define LOGGER_BOARD "Arduino Mini 05"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://store-usa.arduino.cc/products/arduino-nano
 #elif defined(ARDUINO_AVR_NANO)
 #define LOGGER_BOARD "Arduino Nano"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-ng/ (Retired)
 #elif defined(ARDUINO_AVR_NG)
 #define LOGGER_BOARD "Arduino NG"
 // WARNING: I can't find confirmation of the operating voltage online!
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-pro/ (Retired)
 #elif defined(ARDUINO_AVR_PRO)
 #define LOGGER_BOARD "Arduino Pro"
 // NOTE: The operating voltage is 3.3V or 5V depending on the model
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://store-usa.arduino.cc/products/arduino-uno-rev3
 #elif defined(ARDUINO_AVR_UNO)
 #define LOGGER_BOARD "Arduino Uno"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/retired/boards/arduino-yun/ (Retired)
 #elif defined(ARDUINO_AVR_YUN)
 #define LOGGER_BOARD "Arduino Yun"
 #define OPERATING_VOLTAGE 5
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for an AVR processor
+// Use log buffer size defaults
+// An external RTC is required
+
+// https://docs.arduino.cc/hardware/zero/
 #elif defined(ARDUINO_SAMD_ZERO)
 #define LOGGER_BOARD "Arduino Zero"
 #define OPERATING_VOLTAGE 3.3
 #define BATTERY_PIN -1
 #define BATTERY_MULTIPLIER -1
+// Use ADC defaults for a SAMD processor
+// Use log buffer size defaults
+// Use the processor as an RTC
+#ifndef MS_USE_RTC_ZERO
+#define MS_USE_RTC_ZERO
+#endif
+
+
+#endif
+
+// Default ADC settings for unknown processors
+// These provide fallbacks when board-specific settings aren't available
+#ifndef MS_PROCESSOR_ADC_RESOLUTION
+// Fallback ADC resolution based on processor architecture
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
+#define MS_PROCESSOR_ADC_RESOLUTION 10
+#elif defined(ARDUINO_ARCH_SAMD)
+#define MS_PROCESSOR_ADC_RESOLUTION 12
+#else
+#define MS_PROCESSOR_ADC_RESOLUTION 10  // Conservative default
+#endif
+#endif
+
+#ifndef MS_PROCESSOR_ADC_REFERENCE_MODE
+// Fallback ADC reference mode based on processor architecture
+#if defined(ARDUINO_ARCH_AVR)
+#define MS_PROCESSOR_ADC_REFERENCE_MODE DEFAULT
+#elif defined(ARDUINO_ARCH_SAMD)
+#define MS_PROCESSOR_ADC_REFERENCE_MODE AR_DEFAULT
+#else
+#define MS_PROCESSOR_ADC_REFERENCE_MODE DEFAULT  // Conservative default
+#endif
+#endif
+
+#ifndef MS_LOG_DATA_BUFFER_SIZE
+// Fallback log buffer size based on processor type
+#if defined(__SAMD51__)
+#define MS_LOG_DATA_BUFFER_SIZE 8192
+#elif defined(ARDUINO_ARCH_SAMD)
+#define MS_LOG_DATA_BUFFER_SIZE 4096
+#elif defined(__AVR_ATmega1284P__)
+#define MS_LOG_DATA_BUFFER_SIZE 1024  // 1284p has good memory
+#elif defined(__AVR_ATmega2560__)
+#define MS_LOG_DATA_BUFFER_SIZE 512  // Mega has moderate memory
+#elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
+#define MS_LOG_DATA_BUFFER_SIZE 256  // 328p has limited memory
+#else
+#define MS_LOG_DATA_BUFFER_SIZE 1024  // Conservative default
+#endif
 #endif
 
 // Print warnings if expected processor defines are missing

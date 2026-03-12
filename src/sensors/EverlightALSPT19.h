@@ -52,9 +52,6 @@
 // Include the library config before anything else
 #include "ModSensorConfig.h"
 
-// Include the known processors for default values
-#include "KnownProcessors.h"
-
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
 

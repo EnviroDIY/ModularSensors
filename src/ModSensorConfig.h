@@ -29,10 +29,15 @@
 // Include Arduino.h to ensure variants file is pulled first
 #include <Arduino.h>
 
+// Include the known processors for default values
+#include "KnownProcessors.h"
+
 //==============================================================
 // Select the Real Time Clock to use by uncommenting one of the options below.
-// NOTE: This is optional for a EnviroDIY Mayfly or Stonefly but **REQUIRED**
-// for all other boards!
+// NOTE: For supported boards (EnviroDIY Mayfly, Stonefly, SAMD21 boards),
+// appropriate RTC defaults are automatically selected in KnownProcessors.h.
+// Only uncomment these options to OVERRIDE the automatic selection.
+// For unsupported boards, you MUST uncomment one option.
 // #define MS_USE_RV8803
 // #define MS_USE_DS3231
 // #define MS_USE_RTC_ZERO
@@ -161,20 +166,20 @@ static_assert(MAX_NUMBER_SENSORS > 0 && MAX_NUMBER_SENSORS <= 50,
  * higher than what your processor actually supports. This does **not** apply to
  * the TI ADS1115 or ADS1015 external ADS.
  *
- * The default for AVR boards is 10 and for SAMD boards is 12.  The library
- * currently only supports AVR and SAMD platforms.
+ * For supported boards, appropriate defaults are set in KnownProcessors.h:
+ * - AVR boards: 10 bits
+ * - SAMD boards: 12 bits
+ *
+ * Uncomment the line below only to OVERRIDE the automatic selection.
+ * The library currently only supports AVR and SAMD platforms.
  *
  * Future note: The ESP32 has a 12 bit ADC and the ESP8266 has a 10 bit ADC.
  */
-#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
-#define MS_PROCESSOR_ADC_RESOLUTION 10
-#elif defined(ARDUINO_ARCH_SAMD)
-#define MS_PROCESSOR_ADC_RESOLUTION 12
+// #define MS_PROCESSOR_ADC_RESOLUTION 12
 #endif
 #if !defined(MS_PROCESSOR_ADC_RESOLUTION)
 #error The processor ADC resolution must be defined!
 #endif  // MS_PROCESSOR_ADC_RESOLUTION
-#endif
 // Static assert to validate ADC resolution is reasonable
 static_assert(MS_PROCESSOR_ADC_RESOLUTION >= 8 &&
                   MS_PROCESSOR_ADC_RESOLUTION <= 16,
@@ -202,62 +207,40 @@ static_assert(MS_PROCESSOR_ANALOG_MAX_CHANNEL > 0 &&
               "MS_PROCESSOR_ANALOG_MAX_CHANNEL must be between 1 and 255");
 
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE) || defined(DOXYGEN)
-#if defined(ARDUINO_ARCH_AVR) || defined(DOXYGEN)
 /**
  * @brief The voltage reference mode for the processor's ADC.
  *
- * For an AVR board, this must be one of:
- * - `DEFAULT`: the default built-in analog reference of 5 volts (on 5V Arduino
- * boards) or 3.3 volts (on 3.3V Arduino boards)
- * - `INTERNAL`: a built-in reference, equal to 1.1 volts on the ATmega168 or
- * ATmega328P and 2.56 volts on the ATmega32U4 and ATmega8 (not available on the
- * Arduino Mega)
- * - `INTERNAL1V1`: a built-in 1.1V reference (Arduino Mega only)
- * - `INTERNAL2V56`: a built-in 2.56V reference (Arduino Mega only)
- * - `EXTERNAL`: the voltage applied to the AREF pin (0 to 5V only) is used as
- * the reference.
+ * For supported boards, appropriate defaults are set in KnownProcessors.h.
+ * Uncomment one of the options below only to OVERRIDE the automatic selection.
  *
- * If not set on an AVR board `DEFAULT` is used.
+ * For AVR boards, valid options are:
+ * - `DEFAULT`: default built-in analog reference (5V or 3.3V depending on
+ * board)
+ * - `INTERNAL`: built-in reference (1.1V on ATmega168/328P, 2.56V on
+ * ATmega32U4)
+ * - `INTERNAL1V1`: built-in 1.1V reference (Arduino Mega only)
+ * - `INTERNAL2V56`: built-in 2.56V reference (Arduino Mega only)
+ * - `EXTERNAL`: voltage applied to AREF pin (0 to 5V)
  *
- * For the best accuracy, use an `EXTERNAL` reference with the AREF pin
- * connected to the power supply for the EC sensor.
- */
-#define MS_PROCESSOR_ADC_REFERENCE_MODE DEFAULT
-#endif
-#if defined(ARDUINO_ARCH_SAMD) || defined(DOXYGEN)
-/**
- * @brief The voltage reference mode for the processor's ADC.
+ * For SAMD boards, valid options are:
+ * - `AR_DEFAULT`: default built-in analog reference (3.3V)
+ * - `AR_INTERNAL`: built-in 2.23V reference
+ * - `AR_INTERNAL1V0`: built-in 1.0V reference
+ * - `AR_INTERNAL1V65`: built-in 1.65V reference
+ * - `AR_INTERNAL2V23`: built-in 2.23V reference
+ * - `AR_EXTERNAL`: voltage applied to AREF pin
  *
- * For a SAMD board, this must be one of:
- * - `AR_DEFAULT`: the default built-in analog reference of 3.3V
- * - `AR_INTERNAL`: a built-in 2.23V reference
- * - `AR_INTERNAL1V0`: a built-in 1.0V reference
- * - `AR_INTERNAL1V65`: a built-in 1.65V reference
- * - `AR_INTERNAL2V23`: a built-in 2.23V reference
- * - `AR_EXTERNAL`: the voltage applied to the AREF pin is used as the reference
- *
- * If not set on an SAMD board `AR_DEFAULT` is used.
- *
- * For the best accuracy, use an `AR_EXTERNAL` reference with the AREF pin
- * connected to the power supply for the EC sensor.  On most Adafruit SAMD51
- * boards, there is an optional solder jumper to connect the AREF pin to
- * the 3.3V supply. I suggest you close the jumper! On an EnviroDIY Stonefly,
- * there is also a solder jumper, but on the Stonefly the jumper is *closed by
- * default.*
+ * For best accuracy, use EXTERNAL/AR_EXTERNAL with AREF connected to sensor
+ * supply.
  *
  * @see
  * https://www.arduino.cc/reference/en/language/functions/analog-io/analogreference/
  */
-#if defined(ENVIRODIY_STONEFLY_M4)
-#define MS_PROCESSOR_ADC_REFERENCE_MODE AR_EXTERNAL
-#else
-#define MS_PROCESSOR_ADC_REFERENCE_MODE AR_DEFAULT
-#endif
+// #define MS_PROCESSOR_ADC_REFERENCE_MODE AR_EXTERNAL
 #endif
 #if !defined(MS_PROCESSOR_ADC_REFERENCE_MODE)
 #error The processor ADC reference type must be defined!
 #endif  // MS_PROCESSOR_ADC_REFERENCE_MODE
-#endif
 //==============================================================
 
 
@@ -357,6 +340,7 @@ static_assert(MS_SEA_LEVEL_PRESSURE_HPA >= 800.0f &&
 // Upper limit of 16 is set to constrain memory usage and array sizing
 static_assert(MAX_NUMBER_SENDERS >= 0 && MAX_NUMBER_SENDERS <= 16,
               "MAX_NUMBER_SENDERS must be between 0 and 16");
+
 #ifndef MS_ALWAYS_FLUSH_PUBLISHERS
 /**
  * @brief Set this to true to always force publishers to attempt to transmit
@@ -365,6 +349,33 @@ static_assert(MAX_NUMBER_SENDERS >= 0 && MAX_NUMBER_SENDERS <= 16,
  */
 #define MS_ALWAYS_FLUSH_PUBLISHERS false
 #endif
+
+#ifndef MS_LOG_DATA_BUFFER_SIZE
+/**
+ * @brief Log Data Buffer
+ *
+ * This determines how much RAM is reserved to buffer log records before
+ * transmission. Each record consumes 4 bytes for the timestamp plus 4 bytes
+ * for each logged variable. Increasing this value too far can crash the
+ * device! The number of log records buffered is controlled by sendEveryX.
+ *
+ * For supported boards, appropriate defaults are set in KnownProcessors.h:
+ * - ATmega1284p (Mayfly): 8192 bytes
+ * - ATmega2560 (Mega): 512 bytes
+ * - ATmega328p (Uno/Nano): 256 bytes
+ * - SAMD21/SAMD51: 1024 bytes (default)
+ *
+ * Uncomment the line below only to OVERRIDE the automatic selection.
+ * This can also be changed by setting the build flag MS_LOG_DATA_BUFFER_SIZE
+ * when compiling. 8192 bytes is a safe value for the Mayfly 1.1 with six
+ * variables.
+ */
+// #define MS_LOG_DATA_BUFFER_SIZE 1024
+#endif
+// Static assert to validate log buffer size is reasonable
+static_assert(MS_LOG_DATA_BUFFER_SIZE >= 64 && MS_LOG_DATA_BUFFER_SIZE <= 16384,
+              "MS_LOG_DATA_BUFFER_SIZE must be between 64 and 16384 bytes");
+
 
 #ifndef MS_SEND_BUFFER_SIZE
 /**

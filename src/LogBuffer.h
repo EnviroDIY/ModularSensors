@@ -13,28 +13,9 @@
 #ifndef SRC_LOGBUFFER_H_
 #define SRC_LOGBUFFER_H_
 
-#ifndef MS_LOG_DATA_BUFFER_SIZE
-#ifdef ARDUINO_AVR_MEGA2560
-#define MS_LOG_DATA_BUFFER_SIZE 512
-#elif defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_NANO)
-#define MS_LOG_DATA_BUFFER_SIZE 256
-#elif defined(__AVR_ATmega1284P__)
-#define MS_LOG_DATA_BUFFER_SIZE 2048
-#else
-/**
- * @brief Log Data Buffer
- *
- * This determines how much RAM is reserved to buffer log records before
- * transmission. Each record consumes 4 bytes for the timestamp plus 4 bytes
- * for each logged variable. Increasing this value too far can crash the
- * device! The number of log records buffered is controlled by sendEveryX.
- *
- * This can be changed by setting the build flag MS_LOG_DATA_BUFFER_SIZE when
- * compiling. 8192 bytes is a safe value for the Mayfly 1.1 with six variables.
- */
-#define MS_LOG_DATA_BUFFER_SIZE 8192
-#endif
-#endif
+// Include ModSensorConfig.h which defines MS_LOG_DATA_BUFFER_SIZE
+// (set automatically in KnownProcessors.h for supported boards)
+#include "ModSensorConfig.h"
 
 #include <stddef.h>
 #include <inttypes.h>

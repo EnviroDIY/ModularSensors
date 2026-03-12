@@ -37,36 +37,17 @@
 #include <Arduino.h>
 #include <time.h>
 
-// Where possible, use the board's built in clock
-#if defined(ENVIRODIY_STONEFLY_M4) && not defined(MS_USE_RV8803)
-/**
- * @brief Select RV-8803 as the RTC for the EnviroDIY Stonefly.
- */
-#define MS_USE_RV8803
-#undef MS_USE_DS3231
-#undef MS_USE_RTC_ZERO
-#elif defined(ARDUINO_AVR_ENVIRODIY_MAYFLY) && not defined(MS_USE_DS3231)
-/**
- * @brief Select DS3231 as the RTC for the EnviroDIY Mayfly.
- */
-#define MS_USE_DS3231
-#undef MS_USE_RV8803
-#undef MS_USE_RTC_ZERO
-#elif (defined(ARDUINO_ARCH_SAMD) && !defined(__SAMD51__)) && \
-    !defined(MS_USE_DS3231) && !defined(MS_USE_RV8803) &&     \
+// Validate that exactly one clock has been selected (should be set by
+// KnownProcessors.h)
+#if defined(MS_USE_RV8803) && defined(MS_USE_DS3231)
+#error Multiple clocks defined! Only one of MS_USE_RV8803, MS_USE_DS3231, or MS_USE_RTC_ZERO can be selected at a time.
+#elif defined(MS_USE_RV8803) && defined(MS_USE_RTC_ZERO)
+#error Multiple clocks defined! Only one of MS_USE_RV8803, MS_USE_DS3231, or MS_USE_RTC_ZERO can be selected at a time.
+#elif defined(MS_USE_DS3231) && defined(MS_USE_RTC_ZERO)
+#error Multiple clocks defined! Only one of MS_USE_RV8803, MS_USE_DS3231, or MS_USE_RTC_ZERO can be selected at a time.
+#elif !defined(MS_USE_RV8803) && !defined(MS_USE_DS3231) && \
     !defined(MS_USE_RTC_ZERO)
-/**
- * @brief Select the SAMD21's internal clock (via RTC Zero) if no other RTC is
- * specified.
- */
-#define MS_USE_RTC_ZERO
-#undef MS_USE_RV8803
-#undef MS_USE_DS3231
-#endif
-
-#if !defined(MS_USE_RV8803) && !defined(MS_USE_DS3231) && \
-    !defined(MS_USE_RTC_ZERO)
-#error Define a clock to use for the RTC for Modular Sensors!
+#error No clock defined! Define exactly one of MS_USE_RV8803, MS_USE_DS3231, or MS_USE_RTC_ZERO for the RTC. Check that KnownProcessors.h is properly setting defaults for your board, or select a clock in ModSensorConfig.h for other processors.
 #endif
 
 /**

@@ -23,9 +23,6 @@
 // Include the debugging config
 #include "ModSensorDebugConfig.h"
 
-// Include the known processors for default values
-#include "KnownProcessors.h"
-
 // Define the print label[s] for the debugger
 #ifdef MS_ANALOGVOLTAGEREADER_DEBUG
 #define MS_DEBUGGING_STD "AnalogVoltageReader"
