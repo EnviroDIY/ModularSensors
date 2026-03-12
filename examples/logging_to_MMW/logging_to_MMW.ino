@@ -28,7 +28,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "logging_to MMW.ino";
+const char* sketchName = "logging_to_MMW.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data

@@ -1,6 +1,9 @@
 # DRWI Digi LTE Sites<!--! {#example_drwi_digilte} -->
 
-This example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center. It includes a Meter Hydros21 CTD (formerly know as a Decagon), a Campbell OBS3+ (Turbidity), and a Digi XBee3 LTE-M cellular board for communication.  The Digi LTE module also required the use of a EnviroDIY LTEBee Adapter board (discontinued in 2021).  The Digi LTE modules are no longer recommended for use and have been replace by the EnviroDIY LTEBee in all DRWI-SWRC-managed stations.
+This example uses the sensors and equipment common to older stations (2016-2020) deployed by groups participating in the DRWI Citizen Science project with the Stroud Water Research Center.
+It includes a Meter Hydros21 CTD (formerly known as a Decagon), a Campbell OBS3+ (Turbidity), and a Digi XBee3 LTE-M cellular board for communication.
+The Digi LTE module also required the use of an EnviroDIY LTE Bee Adapter board (discontinued in 2021).
+The Digi LTE modules are no longer recommended for use and have been replaced by the EnviroDIY LTE Bee in all DRWI-SWRC-managed stations.
 
 The exact hardware configuration used in this example:
 
@@ -53,8 +56,8 @@ _______
 
 ### Set the logger ID<!--! {#example_drwi_digilte_logger_id} -->
 
-- Change the text `YourLoggerID` in this section of code to your loggerID.
-For most DRWI installations, the logger ID was assigned by the Stroud Water Research Center before the station was built.
+- Change the text `YourLoggerID` in this section of code to your logger ID.
+  For most DRWI installations, the logger ID was assigned by the Stroud Water Research Center before the station was built.
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -66,7 +69,7 @@ const char *LoggerID = "YourLoggerID";
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 
 - Change _**all**_ of the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
-Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
+  Use numbers from the side of the calibration sheet that shows the calibration in _**volts**_.
   - The sketch will not compile if these values are not entered properly.
   - Do not change any values except those that are `0.000E+00` and `1.000E+00`!
 
@@ -106,7 +109,7 @@ Variable* variableList[] = {
 ```
 
 - If any of the variables are in a different order on the web page than in your code **reorder the variables in your code to match the website**.
-- After you are completely certain that you have the order right in the variable section of your code use the teal "Copy" button on the website to copy the section of code containing all the UUIDs.
+- After you are completely certain that you have the order right in the variable section of your code, use the teal "Copy" button on the website to copy the section of code containing all the UUIDs.
 - Paste the code from the website into your program in this section below the variable array
 
 ```cpp

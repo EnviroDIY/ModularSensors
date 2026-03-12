@@ -40,8 +40,7 @@
 
 ## Terms
 
-Essentially every microprocessor or computer needs a consistent way of their own speed of operation so they can communicate with internal components and external devices.
-
+Essentially every microprocessor or computer needs a consistent way to track its own speed of operation so it can communicate with internal components and external devices.
 An *[oscillator](https://en.wikipedia.org/wiki/Electronic_oscillator)* is a circuit that makes an oscillating signal - i.e., it switches back and forth between two states at a consistent rate.
 The oscillator works like a metronome.
 An oscillator alone does not keep track of time; it ticks, but it doesn't count how many ticks have passed.
@@ -49,7 +48,7 @@ An oscillator alone does not keep track of time; it ticks, but it doesn't count 
 SAMD processors use these types of oscillators:
 
 - [crystal oscillators](https://en.wikipedia.org/wiki/Crystal_oscillator) - which are tiny pieces of quartz that vibrate under current.
-This is just like the crystals in a quartz watch.
+  This is just like the crystals in a quartz watch.
 - Digital frequency locked loops (DFLL) and fractional digital phase locked loops (FDPLL) - these [phase locked loops (PLL)](https://wirelesspi.com/how-a-frequency-locked-loop-fll-works/) use a reference clock (like the external crystal) to create a consistent (faster) output frequency.
 - Ultra-low-power oscillators - circuits which generate the same frequency vibrations as a crystal power but using lower power consumption to get a less consistent signal.
 
@@ -430,6 +429,7 @@ void NVIC_DisableIRQ (IRQn_Type IRQn)
 Functions are implemented as inline code.
 
 From the SAMD51 datasheet, here are the interrupt line mapping numbers for interrupts in the NVIC
+
 ### [Datasheet Table 10-1 Interrupt Line Mapping](https://onlinedocs.microchip.com/oxy/GUID-F5813793-E016-46F5-A9E2-718D8BCED496-en-US-14/GUID-DA8CB38A-18D7-4512-965B-BB439142B281.html?hl=icpr#GUID-DA8CB38A-18D7-4512-965B-BB439142B281__TABLE_CYS_KLX_S5)
 
 <table data-ofb data-cols="3">
@@ -883,7 +883,6 @@ From the SAMD51 datasheet, here are the interrupt line mapping numbers for inter
     <tr><td>SDHC1 - SD/MMC Host Controller 1</td><td>All SDHC1 Interrupts</td><td>136</td><td>disabled</td></tr>
 </table>
 
-
 ## Exception and Interrupt Handlers
 
 Default exception handler functions are defined in startup_samd21.c.
@@ -929,7 +928,6 @@ They're defined as “weak” functions, so you can override the default impleme
   - `DMAC_IRQn` - priority of 3
 
 ## NVIC Interrupts Defined in Other Popular Libraries
-
 
 <!-- cspell: ignore EVSYS CKRDY DFLLCKC DFLLOOB DFLLRCS DFLLCKC DFLLRDY LCKF LCKR DFLLLCKC DFLLLCKF -->
 <!-- cspell: ignore LDRTO DATARDY QSPI KAFIL VCORERDY KFAIL ADDRE ECCSE PROGE ECCDE NVME SUSPE -->

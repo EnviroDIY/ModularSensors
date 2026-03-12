@@ -78,13 +78,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **ANBpH**
   - **BREAKING** The constructor has changed!
-The logging interval has been added as a required parameter for the constructor!
+    The logging interval has been added as a required parameter for the constructor!
   - Changed timing slightly and simplified timing logic.
 - **AlphasenseCO2** and **TurnerTurbidityPlus**
   - **BREAKING**  The constructors for both of these analog-based classes have changed!
-Previously the constructor required an enum object for the supported differential channels.
-The new constructor requires two different analog channel numbers as inputs for the differential voltage measurement.
-If you are using code from a previous version of the library, make sure to update your code to use the new constructor and provide the correct analog channel inputs for the differential voltage measurement.
+    Previously the constructor required an enum object for the supported differential channels.
+    The new constructor requires two different analog channel numbers as inputs for the differential voltage measurement.
+    If you are using code from a previous version of the library, make sure to update your code to use the new constructor and provide the correct analog channel inputs for the differential voltage measurement.
   - Moved resistor settings and calibration values into the following preprocessor defines that can be modified to tweak the library if necessary:
     - `ALPHASENSE_CO2_SENSE_RESISTOR_OHM` (defaults to `250.0f`)
     - `ALPHASENSE_CO2_MFG_SCALE` (defaults to `312.5f`)
@@ -95,15 +95,15 @@ If you are using code from a previous version of the library, make sure to updat
     - `TURBIDITY_PLUS_CALIBRATION_EPSILON` (defaults to `1e-4f`)
 - **ApogeeSQ212**, **TIADS1x15**, **CampbellOBS3**, and **TurnerCyclops**
   - *Potentially breaking* The constructors for all of these analog-based classes have changed!
-Previously the I2C address of the ADS1x15 was an optional input parameter which came *before* the optional input parameter for the number of measurements to average.
-The input parameter for the I2C address has been *removed* and the input for the number of measurements to average has been moved up in the order!
-For users who used the default values, this will have no effect.
-For users who provided both a custom I2C address and a custom number of measurements, this will cause a compiler error.
-For users who provided a custom I2C address *but not a custom number of measurements* this will cause a *silent failure* because the custom I2C address will be used as the measurement count and the default I2C address will be used.
-Users who need a custom I2C address for the ADS1x15 must construct a TIADS1x15Base object with the correct address and pass a pointer to that object to the constructor.
+    Previously the I2C address of the ADS1x15 was an optional input parameter which came *before* the optional input parameter for the number of measurements to average.
+    The input parameter for the I2C address has been *removed* and the input for the number of measurements to average has been moved up in the order!
+    For users who used the default values, this will have no effect.
+    For users who provided both a custom I2C address and a custom number of measurements, this will cause a compiler error.
+    For users who provided a custom I2C address *but not a custom number of measurements* this will cause a *silent failure* because the custom I2C address will be used as the measurement count and the default I2C address will be used.
+    Users who need a custom I2C address for the ADS1x15 must construct a TIADS1x15Base object with the correct address and pass a pointer to that object to the constructor.
 - **AnalogElecConductivity**
   - *Renamed* configuration defines to have the prefix `ANALOGELECCONDUCTIVITY` and moved other defaults to defines.
-This affects the following defines:
+    This affects the following defines:
     - `ANALOGELECCONDUCTIVITY_RSERIES_OHMS` (formerly `RSERIES_OHMS_DEF`)
     - `ANALOGELECCONDUCTIVITY_KONST` (formerly `SENSOREC_KONST_DEF`)
     - `ANALOGELECCONDUCTIVITY_ADC_MAX_RATIO` (formerly a hardcoded value of `0.999f`)
@@ -117,16 +117,16 @@ This affects the following defines:
 - Simplified the `addSingleMeasurementResult()` function of all sensors to use an internal function to help set the bits and timing values and to quit sooner if the measurement was not started successfully.
   - The `verifyAndAddMeasurementResult()` is now consistently used in all sensors and is only called when the sensor successfully returned a measurement response.
   - Also removed all places where sensor values were re-set to -9999 after a measurement failed and then that -9999 was sent to the `verifyAndAddMeasurementResult()` function.
-These resets were an awkward attempt to deal with bad values before feeding any bad values to the `verifyAndAddMeasurementResult()` function which was previously always called even if the sensor returned junk.
-This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
+    These resets were an awkward attempt to deal with bad values before feeding any bad values to the `verifyAndAddMeasurementResult()` function which was previously always called even if the sensor returned junk.
+    This was probably a hold-over from incorrect implementation and calling of the clearValues function deep in the library history.
   - Also made the return from the `addSingleMeasurementResult()` function consistently false for a bad sensor response and true for a good one - where it's possible to tell the difference.
 - The Sensor::clearValues() function now resets the attempt and retry counts in addition to setting all values in the value array to MS_INVALID_VALUE.
 
 #### Individual Publishers
 
 - *Renamed* the EnviroDIYPublisher to MonitorMyWatershedPublisher.
-This reflects changes to the website from years ago.
-There is a shell file and typedef to maintain backwards compatibility.
+  This reflects changes to the website from years ago.
+  There is a shell file and typedef to maintain backwards compatibility.
 
 #### All Publishers
 
@@ -138,12 +138,12 @@ There is a shell file and typedef to maintain backwards compatibility.
 - Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
 - Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
 - Re-wrote some of the logic of the `completeUpdate()` function.
-Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
+  Also added optional arguments to the `completeUpdate()` function to allow users to specify if the sensors should be powered/woken.
   - The `updateAllSensors()` function is now deprecated.
-Use `completeUpdate(false, false, false, false)` instead.
+    Use `completeUpdate(false, false, false, false)` instead.
     - Previously the `updateAllSensors()` function asked all sensors to update their values, skipping all power, wake, and sleep steps while the `completeUpdate()` function duplicated that functionality and added the power, wake, and sleep.
-The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
-To achieve the same functionality as the old `updateAllSensors()` function (i.e., only updating values), set all the arguments to false.
+      The two functions have been consolidated into one function with four arguments, one each for power on, wake, sleep, and power off.
+      To achieve the same functionality as the old `updateAllSensors()` function (i.e., only updating values), set all the arguments to false.
 
 #### Library-Wide
 
@@ -153,7 +153,7 @@ To achieve the same functionality as the old `updateAllSensors()` function (i.e.
 - When importing TinyGSM for the modem objects, the specific modem client headers are now imported directly rather than importing the TinyGsmClient.h header which defines typedefs for the sub-types.
 - Moved the define for the default address used for a TI ADS from multiple individual files to the ModSensorConfig and renamed to `MS_DEFAULT_ADS1X15_ADDRESS`.
 - Within ModSensorConfig removed the default `MS_PROCESSOR_ADC_RESOLUTION` for all processors and clarified that the 12-bit default only applies to SAMD processors.
-This is *not* breaking because only AVR and SAMD processors were supported anyway.
+  This is *not* breaking because only AVR and SAMD processors were supported anyway.
 - Converted as many duplicated constructors as possible into delegating constructors.
 
 ### Added
@@ -173,17 +173,17 @@ This is *not* breaking because only AVR and SAMD processors were supported anywa
 
 - **Added support for retrying measurements for all sensors**.
   - Each sensor now supports a number of possible retry attempts for when the sensor returns a bad or no value.
-The number of retry attempts can be set using the `setMaxRetries(uint8_t)` function.
+    The number of retry attempts can be set using the `setMaxRetries(uint8_t)` function.
   - The number of retries is independent of the number of measurements to average.
-A retry is performed when a sensor doesn't report a value or reports an error value.
-If multiple retries are needed, only the result of the final (successful) retry is stored.
-When multiple 'measurements to average' are requested, the values of each successful measurement is stored and averaged.
-Measurements that return bad values even after retries are still not included in averaging.
+    A retry is performed when a sensor doesn't report a value or reports an error value.
+    If multiple retries are needed, only the result of the final (successful) retry is stored.
+    When multiple 'measurements to average' are requested, the values of each successful measurement is stored and averaged.
+    Measurements that return bad values even after retries are still not included in averaging.
   - The default number of retry attempts for most sensors is 1.
 - Made a secondary power pin a property of all sensors.
 - Added internal function to run the steps of setting the timing and bits after a measurement.
 - Added setter and getter functions for sensor timing variables.
-These values should generally be set in the specific sensor constructors and only changed if you know what you're doing.
+  These values should generally be set in the specific sensor constructors and only changed if you know what you're doing.
   - `setWarmUpTime(uint32_t warmUpTime_ms)`
   - `getWarmUpTime()`
   - `setStabilizationTime(uint32_t stabilizationTime_ms)`
@@ -192,9 +192,9 @@ These values should generally be set in the specific sensor constructors and onl
   - `getMeasurementTime()`
 - Added the functions `Sensor::clearStatus()`,`Sensor::clearPowerStatus()`,`Sensor::clearWakeStatus()`,and `Sensor::clearMeasurementStatus()` which reset some or all of the sensor status bits and related timing variables.
 - Added an abstract AnalogVoltageBase class with two concrete classes for analog voltage measurements: ProcessorAnalogBase and TIADS1x15Base.
-All supported analog sensors can now accept a pointer to an object of any concrete subclass of the AnalogVoltageBase class to use for raw voltage measurements.
-By default, existing analog sensors will create an internal concrete AnalogVoltageBase subclass instance for whichever ADC type (processor or ADS1x15) the sensor was originally coded to use.
-This affects the following classes:
+  All supported analog sensors can now accept a pointer to an object of any concrete subclass of the AnalogVoltageBase class to use for raw voltage measurements.
+  By default, existing analog sensors will create an internal concrete AnalogVoltageBase subclass instance for whichever ADC type (processor or ADS1x15) the sensor was originally coded to use.
+  This affects the following classes:
   - AlphasenseCO2
   - AnalogElecConductivity
   - ApogeeSQ212
@@ -218,10 +218,10 @@ This affects the following classes:
 ### Removed
 
 - **BREAKING** Constructors for sensor-associated variables that don't include a pointer to the sensor.
-You now *must* create the sensor instance before creating the variable and tie the variable to the sensor when creating the variable.
+  You now *must* create the sensor instance before creating the variable and tie the variable to the sensor when creating the variable.
 - **BREAKING** All flavors of the variable.begin() functions.
-These were not needed since all arguments should be set in the constructor or setters for individual parameters.
-There was no functionality needed in a typical Arduino "begin" function - that is, nothing that needed to be performed after the hardware was active.
+  These were not needed since all arguments should be set in the constructor or setters for individual parameters.
+  There was no functionality needed in a typical Arduino "begin" function - that is, nothing that needed to be performed after the hardware was active.
 - Unused `_maxSamplesToAverage` parameter of the VariableArray and the `countMaxToAverage()` function.
 - Unnecessary copy doc calls for inherited functions and properties.
 - All overrides of the powerUp and powerDown functions that are no longer needed since all sensors have two power pins built in.
@@ -253,12 +253,12 @@ There was no functionality needed in a typical Arduino "begin" function - that i
 - **BREAKING** Renamed `markedUTCEpochTime` to `markedUTCUnixTime` to clarify the start of the epoch that we're marking down.
 - **Potentially BREAKING:** Changed the requirements for a "sane" timestamp to between 2025 and 2035.
   - Moved the value for the sane range into two defines: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` so they can be more easily modified and tracked.
-These defines can be set in the ModSensorConfig.h file.
+    These defines can be set in the ModSensorConfig.h file.
 - **Potentially BREAKING:** For calculated variables, the calculation function will only be called if `getValue(true)` or `getValueString(true)` is called - that is, the boolean for 'update value' must explicitly be set to true to rerun the calculation function.
   - Previously, the calculation function was re-run every time `getValue()` or `getValueString()` was called, regardless of the update value parameter.
-For calculations that were based on the results of other variables that didn't change, this was fine.
-But, for calculations based on new raw readings (i.e., calling `analogRead()`) a new value would be returned each time the function was called.
-I realized this was a problem for analog values I tried to read that reported correctly in the first round, but were saved as junk in the csv and publishers because a new analog reading was being attempted when the thing I was attempting to read was now powered down.
+    For calculations that were based on the results of other variables that didn't change, this was fine.
+    But, for calculations based on new raw readings (i.e., calling `analogRead()`) a new value would be returned each time the function was called.
+    I realized this was a problem for analog values I tried to read that reported correctly in the first round, but were saved as junk in the csv and publishers because a new analog reading was being attempted when the thing I was attempting to read was now powered down.
   - The variable array update functions have been modified accordingly.
   - Verify you have the functionality you expect if you use calculated variables.
 - Removed the enable/disable wake pin interrupt at every sleep interval in favor of a single attachment during the begin.
@@ -273,7 +273,7 @@ I realized this was a problem for analog values I tried to read that reported co
   - The size of a uint32_t is always 32 bits, but the size of the time_t object varies by processor - for some it is 32 bits, for other 64.
 - Changed the watchdog from a fixed 15 minute reset timer to 2x the logging interval (or at least 5 minutes).
 - Modified all examples which define a sercom serial port for SAMD21 processors to require the defines for the supported processors.
-This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
+  This should only make a difference for my compilation tests, real users should pick out only the chunks of code they want rather than leave conditional code in place.
 - Changed some fill-in-the-blank spots in the menu example to only set the value in a single spot in the code.
 - Unified all defines related to the resolution of the processor ADC and moved them to the new configuration file.
   - Applies only to sensors using the built-in processor ADC:
@@ -296,21 +296,23 @@ This should only make a difference for my compilation tests, real users should p
 ### Added
 
 - **CONFIGURATION** Added two configuration files (ModSensorConfig.h and ModSensorDebugConfig.h) that all files read from to check for configuration-related defines.
-This allows Arduino IDE users who are unable to use build flags to more easily configure the library or enable debugging.
+  This allows Arduino IDE users who are unable to use build flags to more easily configure the library or enable debugging.
 It also allows PlatformIO users to avoid the time-consuming re-compile of all their libraries required when changing build flags.
   - **ALL** library configuration build flags previously in any other header file for the library have been moved into the ModSensorConfig.h file, including ADC, SDI-12, and variable array options.
 - Added support for caching readings in RAM and sending in batches.
-This currently only works on the EnviroDIY/Monitor My Watershed Publisher.
-Thank you to [Thomas Watson](https://github.com/tpwrules) for this work.
+  This currently only works on the EnviroDIY/Monitor My Watershed Publisher.
+  Thank you to [Thomas Watson](https://github.com/tpwrules) for this work.
 - Created a new ClockSupport module with the loggerClock and epochStart static classes.
 - Added support for the Micro Crystal RV-8803-C7 high accuracy, ultra low power Real-Time-Clock Module.
 - Added support for multiple 'epoch' types starting at January 1, 1970 (UNIX), January 1, 2000 (Arduino and others), January 5, 1980 (GPST), and January 1, 1900 (NIST time and NTP protocols).
   - This allows you to input the epoch you're using in every single function that deals with a uint32_t or epoch type timestamp.
-If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
+    If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
   - The supported epochs are given in the enum epochStart.
 - Storing _buttonPinMode internally.
 - Added a single define (`MS_OUTPUT`) to use for all outputs from ModularSensors.
-- Added support for sending printouts and debugging to two different serial ports. This is useful for devices (like SAMD) that use a built-in USB serial port which is turned off when the device sleeps.  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
+- Added support for sending printouts and debugging to two different serial ports.
+  This is useful for devices (like SAMD) that use a built-in USB serial port which is turned off when the device sleeps.
+  If `MS_2ND_OUTPUT` is defined, output will go to *both* `MS_2ND_OUTPUT` and to `MS_OUTPUT`.
 - Added example code for flashing boards with a neo-pixel in the menu example.
 - **NEW SENSOR** Added support for [Geolux HydroCam](https://www.geolux-radars.com/hydrocam)
 - **NEW SENSOR** Added support for [ANB Sensors pH Sensors](https://www.anbsensors.com/)
@@ -341,9 +343,9 @@ If no epoch start is given, it is assumed to be UNIX (January 1, 1970).
 - **Potentially BREAKING:** Removed support for any functions using the Sodaq "DateTime" class.
 - **Potentially BREAKING:** Removed ability to have `PRINTOUT`, `MS_DBG`, and `MS_DEEP_DBG` output going to different serial ports
   - Defines for `STANDARD_SERIAL_OUTPUT`, `DEBUGGING_SERIAL_OUTPUT`, and `DEEP_DEBUGGING_SERIAL_OUTPUT` are all ignored.
-Use the single define `MS_OUTPUT` for all outputs.
-If `MS_OUTPUT` is not defined, a default will be used (generally Serial or USBSerial).
-If you do not want any output, define `MS_SILENT`.
+    Use the single define `MS_OUTPUT` for all outputs.
+    If `MS_OUTPUT` is not defined, a default will be used (generally Serial or USBSerial).
+    If you do not want any output, define `MS_SILENT`.
 - Removed internal functions for setting file times; replaced with SdFat's dateTimeCallback.
 - Added python script to run clang-format on all source files.
 
@@ -360,7 +362,7 @@ If you do not want any output, define `MS_SILENT`.
 
 - **SEVERE** Sensors that require two or more power pins are treated as only requiring the first one within the variableArray and if the second or further power pin is a primary power pin with any other sensor, then the secondary pin will be turned off with the other sensor completes even if the sensor where that pin is secondary is not finished.
   - This is a serious issue for sensors that are both slow and require powered secondary communication adapters or relays - like the Geolux HydroCam or the ANB Sensors pH sensors.
-  - *Possible work-arounds*
+  - *Possible workarounds*
     - Wire required adapters to the same pin as that providing primary power.
     - Wire required adapters such that they are continuously powered.
     - If you must switch the power to both the sensor and an adapter and either the sensor power or the adapter power are shared with a pin that provides power to any other sensor, call the shared power pin the "sensor" power and the other the "adapter."
@@ -398,7 +400,7 @@ If you do not want any output, define `MS_SILENT`.
 ### Changed
 
 - **BREAKING** Switched default clock for SAMD21 from the built-in 32bit RTC to the DS3231.
-*This is not be a permanent change.*
+  *This is not be a permanent change.*
 - Switched to reusable workflows for CI
 
 ### Fixed
@@ -420,7 +422,7 @@ Fixed clock configuration for SAMD21
 - Only polling modem for enabled parameters
 - INCREASED THE MAXIMUM NUMBER OF VARIABLES FROM A SINGLE SENSOR and implemented an option to set this by build flag.
   - This will increase memory use for the entire library.
-If you are not using the GroPoint sensors which require many variables, I recommend you change this value via the build flag `-D MAX_NUMBER_VARS=8`
+    If you are not using the GroPoint sensors which require many variables, I recommend you change this value via the build flag `-D MAX_NUMBER_VARS=8`
 - Allow all WiFi modems to first attempt to connect using existing on-modem saved credentials rather than immediately sending new credentials.
 - Add further debug printouts to the processor stats
 
@@ -436,7 +438,7 @@ If you are not using the GroPoint sensors which require many variables, I recomm
 
 ### Fixed
 
-- Minor bug fixes for XBee Wifi
+- Minor bug fixes for XBee WiFi
 - Handle no SIM card response from SIM7080G (EnviroDIY LTE Bee)
 - Fixed Keller debugging output.
 - Fixed file reference for SDFat 2.2.3
@@ -449,14 +451,14 @@ If you are not using the GroPoint sensors which require many variables, I recomm
 
 ### Changed
 
-- Incorporated improvements to the XBee Wifi - from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10)
+- Incorporated improvements to the XBee WiFi - from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10)
   - #347 -WiFi S6B stability - tears down TCP/IP before going to sleep, doesn't automatically poll for meta data
 
 ### Added
 
 - Added the ability to enable or disable polling of modem attached variables.
-By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem.
-This functionality is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
+  By default, all polling is off, but polling is enabled for a modem sensor when a sensor is created and attached to a modem.
+  This functionality is inspired from [neilh10](https://github.com/EnviroDIY/ModularSensors/commits?author=neilh10).
 
 ### Fixed
 
@@ -467,7 +469,7 @@ This functionality is inspired from [neilh10](https://github.com/EnviroDIY/Modul
 ### Changed
 
 - **BREAKING** - Removed support for light sleep on Espressif modules.
-**This changes the order of the constructor for the ESP32 and ESP8266!**
+  **This changes the order of the constructor for the ESP32 and ESP8266!**
   - The light sleep mode is non-functional anyway, and confusion over the sleep request pin was putting the board in a position not to sleep at all.
 - Minor tweak to clang-format
 - Moved all variable initialization to default header values and initializer lists
@@ -539,23 +541,23 @@ This functionality is inspired from [neilh10](https://github.com/EnviroDIY/Modul
 - **Breaking:** Renamed the static `markedEpochTime` variable to `markedLocalEpochTime`.
   - This was sometimes used in "complex" loops.  Code utilizing it will have to be changed.
   - This is part of the effort to clarify where localized and UTC time are being used.
-We recommend a logger's real time clock always be set in UTC and then localized for printing and storing data.
+    We recommend a logger's real time clock always be set in UTC and then localized for printing and storing data.
 - **Breaking:** Renamed the function `setNowEpoch(uint32_t)` to `setNowUTCEpoch(uint32_t)`.
   - Although public, this was never intended to be used externally.
 - **Breaking:** Renamed the YosemiTech Y550 COD sensor as Y551. See below.
 - **Potentially Breaking:** Changed the default "button" interrupt pin mode from `INPUT_PULLUP` to `INPUT` and created optional arguments to the `setTestingModePin` and `setLoggerPins` functions to specify the pin mode and pull-up resistor state.
   - `INPUT` is the proper mode for the Mayfly.
-The Mayfly has an external pull *down* on the button pin with the button being active high.
-This means having the pull-up resistors on negates the button signal.
-The pin mode had been set as `INPUT_PULLUP` for the button, backwards for the Mayfly, since  [July of 2017](https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6).
-By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorrectly activated pull-up resistors and an interrupt was still registered when the button was pressed.
-With a different pull-down resistor on the Mayfly 1.x, the button no longer registers with the pull-up resistors active.
-So, for most of our users with Mayflies, this will be a ***fix***.
-But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the `setTestingModePin` or `setLoggerPins` function to return to the previous behavior.
+    The Mayfly has an external pull *down* on the button pin with the button being active high.
+    This means having the pull-up resistors on negates the button signal.
+    The pin mode had been set as `INPUT_PULLUP` for the button, backwards for the Mayfly, since  [July of 2017](https://github.com/EnviroDIY/ModularSensors/commit/6bafb0fd149589f71ca6f46b761fe72b1f9523a6).
+    By some electrical luck, with the 0.x versions of the Mayfly, the external pull-down on the button pin was strong enough to out-weigh the incorrectly activated pull-up resistors and an interrupt was still registered when the button was pressed.
+    With a different pull-down resistor on the Mayfly 1.x, the button no longer registers with the pull-up resistors active.
+    So, for most of our users with Mayflies, this will be a ***fix***.
+    But for anyone using a different board/processor/button configuration that depended on the processor pull-up resistors, this will be a breaking change and they will need to specify the button mode in the `setTestingModePin` or `setLoggerPins` function to return to the previous behavior.
 - Added a longer warm up time and removed some of the modem set-up to work with the ESP-IDF AT firmware versions >2.0
 - Made sure that all example clock synchronization happens at noon instead of midnight.
 - **Renamed Classes:** Renamed several classes for internal consistency.
-These are *not* breaking changes at this time; the old class names are still usable.
+  These are *not* breaking changes at this time; the old class names are still usable.
   - Rename class `MPL115A2` to `FreescaleMPL115A2`
   - Rename class `MPL115A2_Pressure` to `FreescaleMPL115A2_Pressure`
   - Rename class `MPL115A2_Temp` to `FreescaleMPL115A2_Temp`
@@ -590,7 +592,7 @@ These are *not* breaking changes at this time; the old class names are still usa
 
 - Restructured SDI-12 slightly to break out the start measurement functionality into a new function.
 - Modified Decagon 5-TM and Meter Teros 11 to use the SDI-12 get results function rather than addSingleMeasurementResult.
-This will allow both sensors to honor the 'non-concurrent' flag, if that is set.
+  This will allow both sensors to honor the 'non-concurrent' flag, if that is set.
 Previously, they would not have.
 - **Documentation:** Migrated to latest version of Doxygen (1.9.2).
   This required some changes with m.css to properly ignore the doxyfile.xml the current version generates.
@@ -599,7 +601,7 @@ Previously, they would not have.
 
 - **Board:** Adds 1.0 and 1.1 as valid version numbers for the Mayfly. Does not yet support any new features of those boards.
 - Add a new parameter (internal variable) to the sensor base class for the number of internally calculated variables.
-These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor.
+  These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor.
 This is separate from any calculated variables that are created on-the-fly and depend on multiple other sensors.
 In many cases, this is 0 and in most of the other cases the value is informational only.
 For the SDI-12 sensors, I'm actually using this to make sure I'm getting the number of values expected.
@@ -665,8 +667,8 @@ Remove support for SoftwareWire for Atlas sensors
 
 - **Breaking:** Removed support for SoftwareWire for Atlas sensors.
   - The only supported version of a bit-banged (software) version of I2C removed inheritance from the core Wire library.
-Without inheritance, the parseFloat functions used by the Atlas sensors will not work.
-As I think this feature was completely unused for the Atlas sensors and I see no reason to use it with sensors that have completely flexible addressing, I removed it.
+    Without inheritance, the parseFloat functions used by the Atlas sensors will not work.
+    As I think this feature was completely unused for the Atlas sensors and I see no reason to use it with sensors that have completely flexible addressing, I removed it.
 
 ### Fixed
 
@@ -695,7 +697,7 @@ Create a ModularSensors.h
 ### Added
 
 - Created a ModularSensors.h file to include.
-This makes it much easier to install and use the library from the Arduino CLI.
+  This makes it much easier to install and use the library from the Arduino CLI.
   - Modified examples to include the ModularSensors.h file
 - Added continuous integration testing with the Arduino CLI
 
@@ -708,11 +710,11 @@ Duplicate and Rename Hydros 21
 ### Added
 
 - **Sensor:** Created a new module for the Meter Hydros 21.
-This is exactly identical to the Decagon CTD in everything but the name.
-The Decagon CTD module still exists and can be used.
-No old code needs to be adjusted for this change.
-Moving forward, the two can be used interchangeably.
-The addition was only made to stop complaints about typing in an older name.
+  This is exactly identical to the Decagon CTD in everything but the name.
+  The Decagon CTD module still exists and can be used.
+  No old code needs to be adjusted for this change.
+  Moving forward, the two can be used interchangeably.
+  The addition was only made to stop complaints about typing in an older name.
 
 ***
 
@@ -724,8 +726,8 @@ SDI-12 Timing Sensor Customization
 
 - Allow each SDI-12 sensor to set the necessary command delay for that sensor.
   - Per protocol, sensors are allowed to take up to 100ms after receiving a break before being ready to receive a command.
-This allows each sensor to specify what delay it needs.
-This was added to support conflicting delay needs; the RDO needed a short delay, the newest Meter sensors do not respond properly if the delay is added.
+    This allows each sensor to specify what delay it needs.
+    This was added to support conflicting delay needs; the RDO needed a short delay, the newest Meter sensors do not respond properly if the delay is added.
 - For SDI-12 sensors, add repeated attempts to start a measurement if the first attempt unexpectedly fails.
 
 ***
@@ -951,7 +953,7 @@ Modem Simplification
     - Digi XBee and XBee3 cellular modems of all types running in transparent mode
     - Digi XBee3 cellular LTE-M modems in bypass mode (this is *in addition* to transparent mode)
     - Digi XBee cellular 3G global modems in bypass mode (this is *in addition* to transparent mode)
-    - Digi XBee Wifi S6B modules
+    - Digi XBee WiFi S6B modules
     - Sodaq UBee LTE-M (SARA R410M)
     - Sodaq UBee 3G (SARA U201)
     - Sodaq 2GBee R6/R7
@@ -1042,7 +1044,11 @@ Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
   - RTD (temperature
 - Created empty constructors for the logger, publisher, variable array, and variable classes and all of their subclasses.  For all classes created a corresponding "begin" function to set internal class object values.
   - See note for more details: <https://github.com/EnviroDIY/ModularSensors/commit/b1a619ed74bc790743bce35b3a4e78a2d2237b22>
-  - The order of input arguments for all variable objects has changed.  For variable subclasses (i.e., variables from sensors), there is no change to the user.  ****For calculated variable objects, all code must be updated!**** Please check the structure in the examples!  Older code will compile without error but the variable metadata fields will be incorrectly populated.
+  - The order of input arguments for all variable objects has changed.
+    For variable subclasses (i.e., variables from sensors), there is no change to the user.
+    **For calculated variable objects, all code must be updated!**
+    Please check the structure in the examples!
+    Older code will compile without error but the variable metadata fields will be incorrectly populated.
 - Very preliminary support for SD cards with switchable power
 
 ### Removed
@@ -1056,7 +1062,8 @@ Support for all Atlas Scientific I2C sensors, compiler-safe begin functions
 
 ### Known Issues
 
-- Running some I2C sensors on switched power will cause unrecoverable hangs at the first call to any other I2C peripheral (i.e., the DS3231 RTC) after sensor power is turned off.  This is a hardware problem and is un-fixable within this library.
+- Running some I2C sensors on switched power will cause unrecoverable hangs at the first call to any other I2C peripheral (i.e., the DS3231 RTC) after sensor power is turned off.
+  This is a hardware problem and is un-fixable within this library.
 - The sensor class and all of its subclasses still require input arguments in the constructor.
 
 ***

@@ -40,7 +40,8 @@ _______
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging_LearnEnviroDIY/platformio.ini) file in the examples/simple_logging_LearnEnviroDIY folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
   - Without this, the program won't compile.
-- Open [simple_logging_LearnEnviroDIY.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging_LearnEnviroDIY/simple_logging_LearnEnviroDIY.ino) and save it to your computer.  Put it into the src directory of your project.
+- Open [simple_logging_LearnEnviroDIY.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging_LearnEnviroDIY/simple_logging_LearnEnviroDIY.ino) and save it to your computer.
+  Put it into the src directory of your project.
   - Delete main.cpp in that folder.
 
 ### Set the logger ID<!--! {#example_learn_envirodiy_logger_id} -->

@@ -65,7 +65,7 @@ String Sensor::getSensorNameAndLocation() {
 int8_t Sensor::getPowerPin() {
     return _powerPin;
 }
-// This sets the  power pin
+// This sets the power pin
 void Sensor::setPowerPin(int8_t pin) {
     _powerPin = pin;
 }

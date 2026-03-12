@@ -3,7 +3,7 @@
 Example sketch to be used with the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
 
 This example uses the sensors and equipment included with (or recommended for) the [EnviroDIY Monitoring Station Kit](https://www.envirodiy.org/product/envirodiy-monitoring-station-kit/).
-It includes code for a Mayfly 1.x, a [Meter Hydros 21](https://metergroup.com/products/hydros-21/) and either a [SIM7080G-based EnviroDIY LTEbee](https://www.envirodiy.org/product/envirodiy-lte-bee/) or an [EnviroDIY ESP32 Bee](https://www.envirodiy.org/product/envirodiy-esp32-bee-wifi-bluetooth/) for communication.
+It includes code for a Mayfly 1.x, a [Meter Hydros 21](https://metergroup.com/products/hydros-21/) and either a [SIM7080G-based EnviroDIY LTE Bee](https://www.envirodiy.org/product/envirodiy-lte-bee/) or an [EnviroDIY ESP32 Bee](https://www.envirodiy.org/product/envirodiy-esp32-bee-wifi-bluetooth/) for communication.
 This example also makes use of the on-board light, temperature, and humidity sensors on the Mayfly 1.x.
 The results are saved to the SD card and posted to Monitor My Watershed.
 
@@ -16,12 +16,16 @@ The exact hardware configuration used in this example:
 - [EnviroDIY SIM7080 LTE Bee](https://www.envirodiy.org/product/envirodiy-lte-bee/) (with Hologram SIM card) **OR** [EnviroDIY ESP32 Bee](https://www.envirodiy.org/product/envirodiy-esp32-bee-wifi-bluetooth/)
 - Hydros21 CTD sensor
 
-The EnviroDIY LTE SIM7080 module includes 2 antennas in the package.  The small thin one is the cellular antenna, and should be connected to the socket labeled "CELL".  The thicker block is the GPS antenna, and should be connected to the "GPS" socket, but only if you intend to use the GPS functionality of the module.  ModularSensors does not currently support GPS functionality, but other libraries such as TinyGPS can work with the SIM7080 module.
+The SIM7080-based EnviroDIY LTE Bee module includes two antennas in the package.
+The small, thin one is the cellular antenna, and should be connected to the socket labeled "CELL".
+The thicker block is the GPS antenna, and should be connected to the "GPS" socket, but only if you intend to use the GPS functionality of the module.
+ModularSensors does not currently support GPS functionality, but other libraries such as TinyGPS can work with the SIM7080 module.
 
-The included cell antenna works best in high-signal-strength areas.  For most remote areas and logger deployments, we suggest a larger LTE antenna, like the W3907B0100
-from PulseLarsen (Digikey 1837-1003-ND or Mouser 673-W3907B0100)
+The included cell antenna works best in high-signal-strength areas.
+For most remote areas and logger deployments, we suggest a larger LTE antenna, like the W3907B0100 from PulseLarsen (Digikey 1837-1003-ND or Mouser 673-W3907B0100).
 
-Users purchasing a new Hydros21 CTD sensor will need to change the SDI-12 address of the sensor in order to use this sketch.  Full instructions for using this sketch as part of a monitoring station can be found in the EnviroDIY Monitoring Station Manual.
+Users purchasing a new Hydros21 CTD sensor will need to change the SDI-12 address of the sensor in order to use this sketch.
+Full instructions for using this sketch as part of a monitoring station can be found in the EnviroDIY Monitoring Station Manual.
 _______
 
 <!--! @tableofcontents -->
@@ -76,7 +80,7 @@ Customize the sketch for the version of the kit that you have: cellular, wifi, o
 In the configuration section, select no more than one of the "bee" types that you will be using.
 
 - Activate the modem you wish to use by _removing_ any slashes (`//`) before the bee module you will use.
-  - The line should start with `#define`
+  - The line should start with `#define`.
 - Add two slashes (`//`) in front of the modem you are NOT using.
 - If you are not using any internet connection, put two slashes (`//`) in front of both lines.
 
@@ -90,7 +94,7 @@ In the configuration section, select no more than one of the "bee" types that yo
 Replace `YourAPN` or both `YourWiFiSSID` and `YourWiFiPassword` with the appropriate APN or SSID and password for your network.
 
 Your APN is assigned by your SIM card provider.
-If you are using a Hologram SIM card (recommended with the kit) the APN is `hologram`.
+If you are using a Hologram SIM card (recommended with the kit), the APN is `hologram`.
 
 The SSID is the name of the wifi network.
 
@@ -111,7 +115,7 @@ You can leave the configuration for the connection type you're not using as is.
 
 ### Set Data Logging Options<!--! {#example_envirodiy_monitoring_kit_logging_options} -->
 
-Customize your data logging options in `Data Logging Options` section of the example.
+Customize your data logging options in the `Data Logging Options` section of the example.
 
 #### Set the logger ID<!--! {#example_envirodiy_monitoring_kit_logger_id} -->
 
@@ -174,7 +178,7 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 ```
 
 - VERY CAREFULLY check the order of the UUIDs that you have copied in.
-The UUIDs _**MUST**_ be in the following order:
+  The UUIDs _**MUST**_ be in the following order:
   - Specific conductance (Meter_Hydros21_Cond)
   - Water depth (Meter_Hydros21_Depth)
   - Temperature (Meter_Hydros21_Temp)

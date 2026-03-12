@@ -27,6 +27,12 @@ reviews:
     - '!**/cspell.json'
     - '!**/platformio.ini'
   path_instructions:
+    - path: '**/*.md'
+      instructions: >-
+        Review for grammar, spelling, and clarity.
+        Each sentence should be on a new line.
+        Markdown files should follow rules of markdownlint.
+        Check c++ code snippets as c++ code.
     - path: '**/*.h'
       instructions: >-
         Review the C++ code, point out issues relative to principles of clean

@@ -11,8 +11,9 @@ The exact hardware configuration used in this example:
 
 Before using this example, you must register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org).
 After you have registered the site and sensors, the portal will generate a registration token and universally unique identifier (UUID) for each site and further UUIDs for each variable.
-You will need to copy all of those UUID values into your sketch to replace the `12345678-abcd-1234-ef00-1234567890ab` place holders in this example.
-__You should register even if your logger will not be sending live data.__  This ensures that the data file your logger writes will be ready to immediately upload to the portal.
+You will need to copy all of those UUID values into your sketch to replace the `12345678-abcd-1234-ef00-1234567890ab` placeholders in this example.
+__You should register even if your logger will not be sending live data.__
+This ensures that the data file your logger writes will be ready to immediately upload to the portal.
 
 _______
 
@@ -56,8 +57,8 @@ _______
 
 ### Set the logger ID<!--! {#example_drwi_no_cell_logger_id} -->
 
-- Change the text `YourLoggerID` in this section of code to your loggerID.
-For most DRWI installations, the logger ID was assigned by the Stroud Water Research Center before the station was built.
+- Change the text `YourLoggerID` in this section of code to your logger ID.
+  For most DRWI installations, the logger ID was assigned by the Stroud Water Research Center before the station was built.
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
@@ -68,7 +69,7 @@ const char *LoggerID = "YourLoggerID";
 
 - The OBS3+ ships with a calibration certificate; you need this sheet!
 - Change *__all__* of the `0.000E+00` and `1.000E+00` values in this section of code to the values on that calibration sheet.
-Use numbers from the side of the calibration sheet that shows the calibration in *__volts__*.
+  Use numbers from the side of the calibration sheet that shows the calibration in *__volts__*.
   - The sketch will not compile if these values are not entered properly.
   - Do not change any values except those that are `0.000E+00` and `1.000E+00`!
 
@@ -107,7 +108,7 @@ Variable* variableList[] = {
 ```
 
 - If any of the variables are in a different order on the web page than in your code __reorder the variables in your code to match the website__.
-- After you are completely certain that you have the order right in the variable section of your code use the teal "Copy" button on the website to copy the section of code containing all the UUIDs.
+- After you are completely certain that you have the order right in the variable section of your code, use the teal "Copy" button on the website to copy the section of code containing all the UUIDs.
 - Paste the code from the website into your program in this section below the variable array
 
 ```cpp

@@ -50,7 +50,7 @@ That home page can be accessed from the PlatformIO menu.
 Before you can use this library, you'll need to install it and all of its [dependencies](https://github.com/EnviroDIY/ModularSensors/wiki/Library-Dependencies) so your compiler in the IDE can find them.
 Because this library has a large number of dependencies, I, again, _very, **very** strongly_ suggest using [PlatformIO](https://platformio.org/).
 If you use PlatformIO, the library will automatically be installed when you list it in your dependencies in your project's platformio.ini file.
-If you really must use the Arduino IDE, this library and all is dependencies can be downloaded in one large zip file [here](https://github.com/EnviroDIY/Libraries/blob/master/libraries.zip?raw=true).
+If you really must use the Arduino IDE, this library and all its dependencies can be downloaded in one large zip file downloadable with each Modular Sensors release.
 
 ## Setting the Clock<!--! {#page_getting_started_clock} -->
 
@@ -67,20 +67,20 @@ But, for safety, I suggest you set the clock separately.
 NOTE:  These steps are only for AVR boards, for those of you using a SAMD board, the on-board processor RTC is used instead of the DS3231.
 
 - Attach the DS3231 to your main board - they'll talk over I2C.
-If you're using a Mayfly, the DS3231 is built into the board and you don't need to do anything.
+  If you're using a Mayfly, the DS3231 is built into the board and you don't need to do anything.
 - Put a coin battery in the supplemental power slot for the DS3231 (or you'll lose the time as soon as you unplug).
-The Mayfly has this battery shot right next to the clock chip.
-Every other DS3231 breakout I've seen has a similar way to power the chip.
-On the Mayfly, the (+) side of the battery (with the words on it) goes up.
+  The Mayfly has this battery shot right next to the clock chip.
+  Every other DS3231 breakout I've seen has a similar way to power the chip.
+  On the Mayfly, the (+) side of the battery (with the words on it) goes up.
 - Create a new PlatformIO project from the PlatformIO menu or home page.
-Pick whatever board you'll be working with from the drop down.
+  Pick whatever board you'll be working with from the drop down.
 For a new project, it's easiest to let PlatformIO set everything up in a new folder.
 - Once PlatformIO sets up the new project, find and open the newly created platformio.ini file.
-It should be a short file with one `[platformio]` section and one `[env]` section for the board you selected earlier.
+  It should be a short file with one `[platformio]` section and one `[env]` section for the board you selected earlier.
   - In the `[platformio]` section add this line:  `src_dir = .pio/libdeps/mayfly/EnviroDIY_DS3231/examples/PCsync`
   - In the `[env]` section add this line:  `lib_deps = EnviroDIY_DS3231`
 - Upload to your board.
-You shouldn't have to open or modify the program at all.
+  You shouldn't have to open or modify the program at all.
 - Download and run this tiny clock-sync program:  <https://github.com/EnviroDIY/Sodaq_DS3231/blob/master/examples/PCsync/PCsync.exe?raw=true>
 - Your clock should be set!
 
@@ -89,12 +89,12 @@ You shouldn't have to open or modify the program at all.
 The set-up in for your logger program PlatformIO is pretty simple:
 
 - Create another new PlatformIO project from the PlatformIO menu or home page.
-Pick whatever board you'll be working with.
+  Pick whatever board you'll be working with.
 Again, it's easiest to let PlatformIO set everything up in a new folder.
 - Find and open the newly created platformio.ini file in your directory.
-In the `[env]` section add these lines:
+  In the `[env]` section add these lines:
   - It is important that your configuration has the lib_ldf_mode and build flags set as show below.
-Without this, the library won't compile.
+    Without this, the library won't compile.
 
 ```ini
 lib_deps = EnviroDIY_ModularSensors
@@ -105,11 +105,11 @@ build_flags =
 ```
 
 - Download the "ino" file for whatever example you think will be most similar to what you'll be doing.
-Put the ino into the src directory of your project.
+  Put the ino into the src directory of your project.
   - Delete main.cpp in that folder.
 - Do a test build before changing the example just to make sure it compiles.
-Note: before compiling the first time, PlatformIO has to download the library and is dependencies so be patient.
-The download only happens once.
+  Note: before compiling the first time, PlatformIO has to download the library and its dependencies so be patient.
+  The download only happens once.
 - If the build succeeds, you're ready to move on.
 
 ## Modifying the Examples<!--! {#page_getting_started_examples} -->
@@ -125,16 +125,16 @@ The examples currently available are:
 
 - [menu_a_la_carte](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/menu_a_la_carte)
   - This shows most of the functions of the library at once.
-It has code in it for every possible sensor and modem and for both AVR and SAMD boards.
+    It has code in it for every possible sensor and modem and for both AVR and SAMD boards.
 It is also over 1500 lines long.
 - [single_sensor](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/single_sensor)
   - This shows making use of the unified set of commands to print data from a MaxBotix ultrasonic range finder to the serial port.
-It also shows creating a calculated variable which is the water depth.
+    It also shows creating a calculated variable which is the water depth.
 - [simple_logging](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/simple_logging)
   - This shows how to log data a simple sample count and battery voltage to a SD card.
 - [logging_to_ThingSpeak](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/logging_to_ThingSpeak)
   - This uses an ESP8266 to send data to ThingSpeak.
-It also includes a Meter Hydros 21 (formerly know as a Decagon CTD) and a Campbell OBS3+.
+    It also includes a Meter Hydros 21 (formerly known as a Decagon CTD) and a Campbell OBS3+.
 - [baro_rho_correction](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/baro_rho_correction)
   - This example demonstrates how to work with calculated variables and calculates water depth by correcting the total pressure measured by a Measurement Specialties MS5803 with the atmospheric pressure measured by a Bosch BME280 environmental sensor and the temperature measured by a Maxim DS18 temperature probe.
 - [double_logger](https://github.com/EnviroDIY/ModularSensors/tree/master/examples/double_logger)

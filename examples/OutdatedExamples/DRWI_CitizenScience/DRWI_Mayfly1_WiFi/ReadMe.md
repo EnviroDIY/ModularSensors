@@ -9,12 +9,14 @@ The exact hardware configuration used in this example:
 - Hydros21 CTD sensor
 
 An EnviroDIY ESP32 WiFi module can also be used with the older Mayfly v0.5b boards if you change the modemVccPin from 18 to -1.
-This is because the Mayfly v1.x board has a separate 3.3v regulator to power the Bee socket and is controlled by turning pin 18 on or off.
-Mayfly v0.5b has the Bee socket constantly powered, therefore using "-1" is the proper setting for that line of code.  Leave the modemVccPin as 18 for Mayfly version 1.0 and 1.1.
+This is because the Mayfly v1.x board has a separate 3.3V regulator to power the Bee socket, which is controlled by turning pin 18 on or off.
+Mayfly v0.5b has the Bee socket constantly powered, therefore using "-1" is the proper setting for that line of code.
+Leave the modemVccPin as 18 for Mayfly version 1.0 and 1.1.
 
 The WiFi antenna is built into the ESP32 Bee - no external antenna is needed
 
-Find and replace `YourWiFiSSID` and `YourWiFiPassword` with your real SSID and password, and edit the UUID section between `Beginning of Token UUID List` and `End of Token UUID List` with the correct UUIDs from your specific site on MonitorMyWatershed.
+Find and replace `YourWiFiSSID` and `YourWiFiPassword` with your real SSID and password.
+Edit the UUID section between `Beginning of Token UUID List` and `End of Token UUID List` with the correct UUIDs from your specific site on MonitorMyWatershed.
 
 _______
 

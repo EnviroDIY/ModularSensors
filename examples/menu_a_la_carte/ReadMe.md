@@ -184,7 +184,7 @@ ___
 
 #### AVR Boards<!--! {#menu_walk_avr_serial_ports} -->
 
-Most Arduino AVR style boards have very few (i.e., one, or none) dedicated serial ports *available* after counting out the programming serial port.
+Most Arduino AVR style boards have very few (i.e., one or none) dedicated serial ports *available* after counting out the programming serial port.
 So to connect anything else, we need to try to emulate the processor serial functionality with a software library.
 This example shows three possible libraries that can be used to emulate a serial port on an AVR board.
 
@@ -513,7 +513,7 @@ To create a Sodaq2GBeeR6 object we need to know
 
 - the serial object name,
 - the MCU pin controlling modem power, (**NOTE:**  On the GPRSBee R6 and R7 the pin labeled as ON/OFF in Sodaq's diagrams is tied to *both* the SIM800 power supply and the (inverted) SIM800 `PWRKEY`.
-You should enter this pin as the power pin.)
+  You should enter this pin as the power pin.)
 - and the SIM card's cellular access point name (APN).
 
 Pins that do not apply should be set as -1.
@@ -675,6 +675,7 @@ The default I2C addresses for the circuits are:
 - ORP (redox): 0x62 (98)
 - pH: 0x63 (99)
 - RTD (temperature): 0x66 (102)
+
 All of the circuits can be re-addressed to any other 8 bit number if desired.
 To use multiple circuits of the same type, re-address them.
 
@@ -732,7 +733,7 @@ ___
 
 Here is the code for the Bosch BME280 environmental sensor.
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex is optional as is the number of readings to average.
-Keep in mind that the I2C address (0x76) of the BME280 matches those of some configurations of the MS5803, MS5837, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
+Keep in mind that the I2C address (0x76) of the BME280 matches that of some configurations of the MS5803, MS5837, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_bme280
 
@@ -742,7 +743,7 @@ ___
 
 ### Bosch BMP388 and BMP398 Pressure Sensors<!--! {#menu_walk_bosch_bmp3xx} -->
 
-Keep in mind that the I2C address (0x76) of the BMP388/BMP390 sensors matches those of some configurations of the MS5803, MS5837, and BME280 sensors; when using those sensors together, make sure they are set to different addresses.
+Keep in mind that the I2C address (0x76) of the BMP388/BMP390 sensors matches that of some configurations of the MS5803, MS5837, and BME280 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_bmp3xx
 
@@ -953,8 +954,6 @@ ___
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
 Keep in mind that the I2C address (0x76) of the MS5803 matches those of some configurations of the MS5837, BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
 
-@see @ref sensor_ms5803
-
 <!--! @menusnip{mea_spec_ms5803} -->
 
 ___
@@ -963,7 +962,7 @@ ___
 
 The MS5837 is commonly used in Blue Robotics Bar02/Bar30 pressure sensors for underwater applications and depth measurement.
 The only required input is the Arduino pin controlling power on/off; the sensor model, fluid density, air pressure, and number of readings to average are optional.
-Keep in mind that the I2C address (0x76) of the MS5837 matches those of some configurations of the MS5803, BME280, BMP388, and BMP390 sensors.
+Keep in mind that the I2C address (0x76) of the MS5837 matches that of some configurations of the MS5803, BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
 
 @see @ref sensor_ms5837
 
@@ -1565,7 +1564,7 @@ Every time the logger wakes we check the battery voltage and do 1 of three thing
 
 1. If the battery is very low, go immediately back to sleep and hope the sun comes back out
 2. If the battery is at a moderate level, attempt to collect data from sensors, but do not attempt to publish data.
-The modem the biggest power user of the whole system.
+   The modem the biggest power user of the whole system.
 3.
 
 At full power, do everything.
@@ -1580,7 +1579,7 @@ Here are some guidelines for writing a loop function:
 
 - If you want to log on an even interval, use `if (checkInterval())` or `if (checkMarkedInterval())` to verify that the current or marked time is an even interval of the logging interval..
 - Call the `markTime()` function if you want associate with a two iterations of sensor updates with the same timestamp.
-This allows you to use `checkMarkedInterval()` to check if an action should be preformed based on the exact time when the logger woke rather than up to several seconds later when iterating through sensors.
+  This allows you to use `checkMarkedInterval()` to check if an action should be preformed based on the exact time when the logger woke rather than up to several seconds later when iterating through sensors.
 - Either:
   - Power up all of your sensors with `sensorsPowerUp()`.
   - Wake up all your sensors with `sensorsWake()`.
@@ -1589,7 +1588,7 @@ This allows you to use `checkMarkedInterval()` to check if an action should be p
   - Power down all of your sensors with `sensorsPowerDown()`.
 - Or:
   - Do a full update loop of all sensors, including powering them with `completeUpdate()`.
-(This combines the previous 5 functions.)
+    (This combines the previous 5 functions.)
 - After updating the sensors, then call any functions you want to send/print/save data.
 - Finish by putting the logger back to sleep, if desired, with `systemSleep()`.
 

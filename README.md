@@ -32,7 +32,7 @@ There is extensive documentation available in the [ModularSensors github pages](
   - [The EnviroDIY ModularSensors Library](#the-envirodiy-modularsensors-library)
   - [Supported Sensors](#supported-sensors)
   - [Data Endpoints](#data-endpoints)
-  - [Supported Cellular/Wifi Modules:](#supported-cellularwifi-modules)
+  - [Supported Cellular/WiFi Modules:](#supported-cellularwifi-modules)
   - [Contributing](#contributing)
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
@@ -120,11 +120,11 @@ The currently supported services are [Monitor My Watershed](https://monitormywat
 - [AWS S3](https://envirodiy.github.io/ModularSensors/class_s3_presigned_publisher.html)
   - The S3 publisher requires you to provide a function that will return an updated pre-signed URL to publish to.
   - The S3 publisher does **NOT** publish any sensor data by default.
-It is intended for publishing images.
+    It is intended for publishing images.
 
 <!--! @todo Page on Data Endpoints -->
 
-## Supported Cellular/Wifi Modules:<!--! {#mainpage_modems} -->
+## Supported Cellular/WiFi Modules:<!--! {#mainpage_modems} -->
 
 All cellular and wifi support is through the [TinyGSM](https://github.com/vshymanskyy/TinyGSM) library.
 For information common to all modems and for tables of the proper class, baud rate, and pins to uses, see the [Modem Notes page](https://envirodiy.github.io/ModularSensors/page_modem_notes.html).
@@ -137,7 +137,7 @@ For information common to all modems and for tables of the proper class, baud ra
   - [Digi XBee® Cellular 3G](https://hub.digi.com/support/products/digi-xbee/digi-xbee-cellular-3g/) [*obsolete*]
   - [Digi XBee® Cellular LTE Cat 1 (Verizon)](https://hub.digi.com/support/products/digi-xbee/digi-xbee-cellular-lte-cat-1/) [*obsolete*]
   - [Digi XBee® Wi-Fi (S6B)](https://hub.digi.com/support/products/digi-xbee/digi-xbee-wi-fi/) [*obsolete*]
-- [Espressif Wifi SoC Modules](https://envirodiy.github.io/ModularSensors/group__modem__espressif.html)
+- [Espressif WiFi SoC Modules](https://envirodiy.github.io/ModularSensors/group__modem__espressif.html)
   - Includes the [ESP8266](https://envirodiy.github.io/ModularSensors/group__modem__esp8266.html), [ESP32, ESP32-C3, ESP32-C2, ESP32-C6, and ESP32-S2](https://envirodiy.github.io/ModularSensors/group__modem__esp32.html)
   - Requires Espressif modules to be programmed with the [latest AT firmware provided by Espressif](https://github.com/espressif/esp-at).
   - These Espressif modules are **not** supported as primary processors, only as external communication modules.

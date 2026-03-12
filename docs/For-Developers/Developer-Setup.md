@@ -20,7 +20,8 @@ Clone it to your local computer.
 
 ## Git Filter Setup
 
-This repository uses Git filters to manage sensitive credentials and debug configurations. After cloning the repository, run one of the following setup scripts to configure the necessary Git filter drivers:
+This repository uses Git filters to manage sensitive credentials and debug configurations.
+After cloning the repository, run one of the following setup scripts to configure the necessary Git filter drivers:
 
 **Windows Command Prompt:**
 
@@ -80,7 +81,7 @@ src_dir = your_directory/your_source_code
 ; Default baud for all examples
 monitor_speed = 115200
 framework = arduino
-; To run code checks; clangtidy must be installed
+; To run code checks, clangtidy must be installed
 check_tool = clangtidy
 check_src_filters =
     src

@@ -143,12 +143,14 @@ These are the messages you should see on the serial monitor as your program runs
 - After warm up, the modem will initialize and you should see the message `Initializing modem` &hellip; &hellip; `success`.
 - Next you will see a print out of the modem info; `Modem Info:` followed by the serial number and other info about your modem. This is just for your information.
 - The Stonefly will then load the CA certificate, client certificate, and key onto the modem, convert them to the modem's internal file format, and print back the loaded text so you can confirm it matches later if there are problems.
-- After the certificates are loaded, the modem waits for a network connection.  If the connection succeeds, you'll see the message `Waiting for network` &hellip; &hellip; `success`
+- After the certificates are loaded, the modem waits for a network connection.
+  If the connection succeeds, you'll see the message `Waiting for network` &hellip; &hellip; `success`
 
 > [!WARNING]
 > The first time you connect to the a new cellular tower with a new SIM card and new modem, the connection may take a **long** time - up to several minutes.
 
-- Now the modem waits gets a LTE internet connection.  If the connection succeeds, you'll see the message `Connecting to hologram` &hellip; `success`
+- Now the modem gets an LTE internet connection.
+  If the connection succeeds, you'll see the message `Connecting to hologram` &hellip; `success`
 - Once fully connected, the modem will sync its timestamp with NTP. This is required for later secured connections.
 - You'll see a message `=== MQTT NOT CONNECTED ===` because you haven't connected yet.
 - The modem will connect to MQTT, giving the message `Connecting to YOUR_ENDPOINT with client ID YOUR_THING_NAME` &hellip; `success`
