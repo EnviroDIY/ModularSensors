@@ -95,7 +95,7 @@
  * {{ @ref YosemitechY700_Pressure::YosemitechY700_Pressure }}
  */
 /**@{*/
-/// @brief Decimal places in string representation; Pressure should have 1
+/// @brief Decimal places in string representation; Pressure should have 2
 /// - resolution is 0.01 mm.
 #define Y700_PRES_RESOLUTION 2
 /// @brief Sensor variable number; pressure is stored in sensorValues[0].

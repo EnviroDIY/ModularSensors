@@ -9,6 +9,7 @@
  */
 
 #include "AOSongAM2315.h"
+#include <Wire.h>
 #include <Adafruit_AM2315.h>
 
 

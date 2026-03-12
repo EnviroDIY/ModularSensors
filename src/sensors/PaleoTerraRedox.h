@@ -83,10 +83,11 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-#include <Wire.h>
 
+// Forward declarations
+class TwoWire;
 #if defined(MS_PALEOTERRA_SOFTWAREWIRE)
-#include <SoftwareWire.h>  // Testato's SoftwareWire
+class SoftwareWire;  // Testato's SoftwareWire
 #endif
 
 /** @ingroup sensor_pt_redox */
