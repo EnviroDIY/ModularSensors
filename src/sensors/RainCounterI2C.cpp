@@ -10,11 +10,6 @@
  */
 
 #include "RainCounterI2C.h"
-#include <Wire.h>
-
-#if defined(MS_RAIN_SOFTWAREWIRE)
-#include <SoftwareWire.h>  // Testato's SoftwareWire
-#endif
 
 
 // The constructors

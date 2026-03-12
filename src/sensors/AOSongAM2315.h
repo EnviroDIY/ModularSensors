@@ -75,9 +75,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-
-// Forward declarations
-class TwoWire;
+#include <Wire.h>
 
 /** @ingroup sensor_am2315 */
 /**@{*/

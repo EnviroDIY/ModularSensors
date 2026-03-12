@@ -13,11 +13,6 @@
  */
 
 #include "PaleoTerraRedox.h"
-#include <Wire.h>
-
-#if defined(MS_PALEOTERRA_SOFTWAREWIRE)
-#include <SoftwareWire.h>  // Testato's SoftwareWire
-#endif
 
 
 // Constructors
