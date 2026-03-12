@@ -10,7 +10,6 @@
  */
 
 #include "AtlasParent.h"
-#include <Wire.h>
 
 
 // The constructors

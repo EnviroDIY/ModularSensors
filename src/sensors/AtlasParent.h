@@ -91,9 +91,7 @@
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include "SensorBase.h"
-
-// Forward declarations
-class TwoWire;
+#include <Wire.h>
 
 /**
  * @brief A parent class for Atlas EZO circuits and sensors
