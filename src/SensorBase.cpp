@@ -32,9 +32,9 @@ Sensor::Sensor(const char* sensorName, const uint8_t totalReturnedValues,
       _measurementTime_ms(measurementTime_ms) {
     // Clear arrays
     for (uint8_t i = 0; i < MAX_NUMBER_VARS; i++) {
-        variables[i]                  = nullptr;
-        sensorValues[i]               = MS_INVALID_VALUE;
-        numberGoodMeasurementsMade[i] = 0;
+        variables[i]    = nullptr;
+        sensorValues[i] = MS_INVALID_VALUE;
+        validCount[i]   = 0;
     }
 }
 
@@ -363,29 +363,21 @@ void Sensor::notifyVariables() {
 }
 
 
-// This function empties the value array by setting all values to invalid.
-void Sensor::clearValueArray() {
+// This function resets the value array by setting all values to invalid.
+void Sensor::clearValues() {
     MS_DBG(F("Clearing value array for"), getSensorNameAndLocation());
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
         sensorValues[i] = MS_INVALID_VALUE;
+        validCount[i]   = 0;
     }
 }
 
 // This function resets all measurement counts.
 void Sensor::resetMeasurementCounts() {
     MS_DBG(F("Resetting measurement counts for"), getSensorNameAndLocation());
-    for (uint8_t i = 0; i < _numReturnedValues; i++) {
-        numberGoodMeasurementsMade[i] = 0;
-    }
     // Reset measurement attempt counters
     _completedMeasurements = 0;
     _currentRetries        = 0;
-}
-
-// This function empties the value array and resets the measurement counts.
-void Sensor::clearValues() {
-    clearValueArray();
-    resetMeasurementCounts();
 }
 
 // This clears power-related status bits and resets power timing.
@@ -437,7 +429,7 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
         MS_DBG(F("Putting"), resultValue, F("in result array for variable"),
                resultNumber, F("from"), getSensorNameAndLocation());
         sensorValues[resultNumber] = resultValue;
-        numberGoodMeasurementsMade[resultNumber] += 1;
+        validCount[resultNumber] += 1;
     } else if (prevResultGood && newResultGood) {
         // If the new result is good and there were already good results in
         // place add the new results to the total and add 1 to the good result
@@ -445,7 +437,7 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
         MS_DBG(F("Adding"), resultValue, F("to result array for variable"),
                resultNumber, F("from"), getSensorNameAndLocation());
         sensorValues[resultNumber] += resultValue;
-        numberGoodMeasurementsMade[resultNumber] += 1;
+        validCount[resultNumber] += 1;
     } else if (!prevResultGood && !newResultGood) {
         // If the new result is bad and there were only bad results, only print
         // debugging
@@ -478,8 +470,7 @@ void Sensor::averageMeasurements() {
     MS_DBG(F("Averaging results from"), getSensorNameAndLocation(), F("over"),
            _measurementsToAverage, F("reading[s]"));
     for (uint8_t i = 0; i < _numReturnedValues; i++) {
-        if (numberGoodMeasurementsMade[i] > 0)
-            sensorValues[i] /= numberGoodMeasurementsMade[i];
+        if (validCount[i] > 0) sensorValues[i] /= validCount[i];
         MS_DBG(F("    ->Result #"), i, ':', sensorValues[i]);
     }
 }

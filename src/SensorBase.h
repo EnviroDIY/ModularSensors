@@ -521,42 +521,37 @@ class Sensor {
     /**
      * @brief The array of result values for each sensor.
      *
+     * New valid values are summed with the current values by
+     * verifyAndAddMeasurementResult(). Values are set to the default invalid
+     * value by clearValues().
+     *
      * @todo Support int16_t and int32_t directly in the value array so no
      * casting is needed. This could be done using a template or a union similar
-     * to the modbus library's leFrame union.
+     * to the SensorModbusMaster library's leFrame union.
      *
      * @note The values in this array will not be usable until after the sensor
      * completes all requested measurements! Prior to that, the values in this
-     * array will be the sum of all good values measured so far (or
+     * array will be the **sum** of all good values measured so far (or
      * #MS_INVALID_VALUE if no good values have been measured yet).
      */
     float sensorValues[MAX_NUMBER_VARS];
 
     /**
-     * @brief Clear only the values array.
+     * @brief Clear the values array and the count of values to average.
      *
-     * This clears the values array by setting all values to #MS_INVALID_VALUE.
+     * This clears the values array by setting all values in sensorValues to
+     * #MS_INVALID_VALUE and the count of values to average in validCount to 0.
      */
-    void clearValueArray();
+    void clearValues();
 
     /**
      * @brief Reset all measurement counts.
      *
-     * Sets all values in numberGoodMeasurementsMade to 0, and resets the
-     * attempt (#_completedMeasurements) and retry (#_currentRetries)
+     * Resets the attempt (#_completedMeasurements) and retry (#_currentRetries)
      * counts.
      */
     void resetMeasurementCounts();
 
-    /**
-     * @brief Clear the values array and reset retry counts.
-     *
-     * This clears the values array by setting all values to #MS_INVALID_VALUE,
-     * sets all values in numberGoodMeasurementsMade to 0, and resets the
-     * attempt (#_completedMeasurements) and retry (#_currentRetries)
-     * counts.
-     */
-    void clearValues();
     /**
      * @brief This clears all of the status bits and resets timing values.
      *
@@ -783,12 +778,24 @@ class Sensor {
     uint8_t _measurementsToAverage;
     /**
      * @brief The number of measurement cycles completed in the current update
-     * cycle (reset by clearValues()).
+     * cycle (reset by resetMeasurementCounts()).
+     *
+     * A single completed measurement may include many attempts if some attempts
+     * fail and require retries.  This count is incremented when a measurement
+     * attempt is completed, regardless of whether it was successful or not.
+     * Multiple completed measurement attempts may be needed to get the
+     * requested number of good measurements to average, depending on the sensor
+     * and the environment.
      */
     uint8_t _completedMeasurements = 0;
     /**
      * @brief The number of retries that have been attempted so far for the
-     * current measurement cycle.
+     * current measurement cycle (reset by resetMeasurementCounts()).
+     *
+     * The number of retries is separate from the number of completed
+     * measurements.  Many retries may be needed to complete a single
+     * measurement. Many measurements may need to be taken in order to get
+     * values to average.
      */
     uint8_t _currentRetries = 0;
     /**
@@ -799,15 +806,18 @@ class Sensor {
      */
     uint8_t _maxRetries = 1;
     /**
-     * @brief Array with the number of valid measurement values per variable by
-     * the sensor in the current update cycle.
+     * @brief Array with the number of valid measurement values per variable
+     * that have been summed into the sensorValues array.
+     *
+     * This is bumped by verifyAndAddMeasurementResult and reset by
+     * clearValues().
      *
      * @note The number of good measurements may vary between variables if
      * some values are more likely to be invalid than others - i.e., a pH sensor
      * may also measure temperature and report a valid temperature when the pH
      * is junk.
      */
-    uint8_t numberGoodMeasurementsMade[MAX_NUMBER_VARS];
+    uint8_t validCount[MAX_NUMBER_VARS];
 
     /**
      * @brief The time needed from the when a sensor has power until it's ready
