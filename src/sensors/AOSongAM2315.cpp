@@ -57,6 +57,10 @@ bool AOSongAM2315::addSingleMeasurementResult() {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     Adafruit_AM2315 am2315(_i2c);
+    if (!am2315.begin()) {
+        MS_DBG(getSensorNameAndLocation(), F("AM2315 begin() failed"));
+        return finalizeMeasurementAttempt(false);
+    }
     success = am2315.readTemperatureAndHumidity(&temp_val, &humid_val);
 
 
