@@ -89,10 +89,10 @@ bool TallyCounterI2C::addSingleMeasurementResult() {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
         verifyAndAddMeasurementResult(TALLY_EVENTS_VAR_NUM, events);
         success = true;
-
-        // Clear count value
-        counter_internal.Clear();
     }
+
+    // Clear count value regardless of read success
+    counter_internal.Clear();
 
     MS_DBG(F("  Events:"), events);
 
