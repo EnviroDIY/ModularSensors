@@ -213,8 +213,8 @@ bool GeoluxHydroCam::addSingleMeasurementResult() {
     }
 
     // Open the file in write mode - creating a new file if it doesn't exist or
-    // appending to the end an existing one
-    if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_AT_END)) {
+    // overwriting an existing one
+    if (imgFile.open(filename.c_str(), O_CREAT | O_WRITE | O_TRUNC)) {
         MS_DBG(F("Created new file:"), filename);
     } else {
         MS_DBG(F("Failed to create the image file, aborting!"));
