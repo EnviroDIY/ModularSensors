@@ -390,6 +390,9 @@ static_assert(MAX_NUMBER_SENDERS >= 0 && MAX_NUMBER_SENDERS <= 16,
  */
 // #define MS_LOG_DATA_BUFFER_SIZE 1024
 #endif
+#if !defined(MS_LOG_DATA_BUFFER_SIZE)
+#error The log data buffer size must be defined!
+#endif  // MS_LOG_DATA_BUFFER_SIZE
 // Static assert to validate log buffer size is reasonable
 static_assert(MS_LOG_DATA_BUFFER_SIZE >= 64 && MS_LOG_DATA_BUFFER_SIZE <= 16384,
               "MS_LOG_DATA_BUFFER_SIZE must be between 64 and 16384 bytes");

@@ -658,7 +658,8 @@ class loggerClock {
     static epochStart _core_epoch;
 
     /**
-     * @brief The timezone used by the processor core's internal time.h library.
+     * @brief The timezone used by the processor core's internal time.h library,
+     * in seconds from UTC.
      */
     static int32_t _core_tz;
 

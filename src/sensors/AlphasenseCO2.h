@@ -122,6 +122,8 @@ static_assert(ALPHASENSE_CO2_SENSE_RESISTOR_OHM > 0,
  */
 #define ALPHASENSE_CO2_MFG_SCALE 312.5f
 #endif
+static_assert(ALPHASENSE_CO2_MFG_SCALE > 0,
+              "Manufacturer scale factor must be positive");
 #if !defined(ALPHASENSE_CO2_MFG_OFFSET) || defined(DOXYGEN)
 /**
  * @brief Manufacturer offset for CO2 conversion (ppm)

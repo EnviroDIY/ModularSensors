@@ -120,8 +120,6 @@
  * @brief A parent class for Atlas EZO circuits and sensors
  *
  * This contains the main I2C functionality for all Atlas EZO circuits.
- *
- * @ingroup atlas_group
  */
 class AtlasParent : public Sensor {
  public:
@@ -255,5 +253,5 @@ class AtlasParent : public Sensor {
      */
     bool waitForProcessing(uint32_t timeout = 1000L);
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_ATLASPARENT_H_
