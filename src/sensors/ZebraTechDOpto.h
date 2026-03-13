@@ -289,8 +289,7 @@ class ZebraTechDOpto_Temp : public Variable {
     explicit ZebraTechDOpto_Temp(ZebraTechDOpto* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = DOPTO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(DOPTO_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(DOPTO_TEMP_RESOLUTION),
+        : Variable(parentSense, DOPTO_TEMP_VAR_NUM, DOPTO_TEMP_RESOLUTION,
                    DOPTO_TEMP_VAR_NAME, DOPTO_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ZebraTechDOpto_Temp object - no action needed.
@@ -323,8 +322,7 @@ class ZebraTechDOpto_DOpct : public Variable {
     explicit ZebraTechDOpto_DOpct(
         ZebraTechDOpto* parentSense, const char* uuid = "",
         const char* varCode = DOPTO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(DOPTO_DOPCT_VAR_NUM),
-                   static_cast<uint8_t>(DOPTO_DOPCT_RESOLUTION),
+        : Variable(parentSense, DOPTO_DOPCT_VAR_NUM, DOPTO_DOPCT_RESOLUTION,
                    DOPTO_DOPCT_VAR_NAME, DOPTO_DOPCT_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -358,8 +356,7 @@ class ZebraTechDOpto_DOmgL : public Variable {
     explicit ZebraTechDOpto_DOmgL(
         ZebraTechDOpto* parentSense, const char* uuid = "",
         const char* varCode = DOPTO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(DOPTO_DOMGL_VAR_NUM),
-                   static_cast<uint8_t>(DOPTO_DOMGL_RESOLUTION),
+        : Variable(parentSense, DOPTO_DOMGL_VAR_NUM, DOPTO_DOMGL_RESOLUTION,
                    DOPTO_DOMGL_VAR_NAME, DOPTO_DOMGL_UNIT_NAME, varCode, uuid) {
     }
     /**

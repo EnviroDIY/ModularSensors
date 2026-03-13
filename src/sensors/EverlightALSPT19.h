@@ -365,10 +365,9 @@ class EverlightALSPT19_Voltage : public Variable {
     explicit EverlightALSPT19_Voltage(
         EverlightALSPT19* parentSense, const char* uuid = "",
         const char* varCode = ALSPT19_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ALSPT19_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(ALSPT19_VOLTAGE_RESOLUTION),
-                   ALSPT19_VOLTAGE_VAR_NAME, ALSPT19_VOLTAGE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, ALSPT19_VOLTAGE_VAR_NUM,
+                   ALSPT19_VOLTAGE_RESOLUTION, ALSPT19_VOLTAGE_VAR_NAME,
+                   ALSPT19_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the EverlightALSPT19_Voltage object - no action needed.
      */
@@ -398,10 +397,9 @@ class EverlightALSPT19_Current : public Variable {
     explicit EverlightALSPT19_Current(
         EverlightALSPT19* parentSense, const char* uuid = "",
         const char* varCode = ALSPT19_CURRENT_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ALSPT19_CURRENT_VAR_NUM),
-                   static_cast<uint8_t>(ALSPT19_CURRENT_RESOLUTION),
-                   ALSPT19_CURRENT_VAR_NAME, ALSPT19_CURRENT_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, ALSPT19_CURRENT_VAR_NUM,
+                   ALSPT19_CURRENT_RESOLUTION, ALSPT19_CURRENT_VAR_NAME,
+                   ALSPT19_CURRENT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the EverlightALSPT19_Current object - no action needed.
      */
@@ -431,11 +429,9 @@ class EverlightALSPT19_Illuminance : public Variable {
     explicit EverlightALSPT19_Illuminance(
         EverlightALSPT19* parentSense, const char* uuid = "",
         const char* varCode = ALSPT19_ILLUMINANCE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(ALSPT19_ILLUMINANCE_VAR_NUM),
-                   static_cast<uint8_t>(ALSPT19_ILLUMINANCE_RESOLUTION),
-                   ALSPT19_ILLUMINANCE_VAR_NAME, ALSPT19_ILLUMINANCE_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, ALSPT19_ILLUMINANCE_VAR_NUM,
+                   ALSPT19_ILLUMINANCE_RESOLUTION, ALSPT19_ILLUMINANCE_VAR_NAME,
+                   ALSPT19_ILLUMINANCE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the EverlightALSPT19_Illuminance object - no action
      * needed.

@@ -342,9 +342,8 @@ class CampbellRainVUE10_Precipitation : public Variable {
     explicit CampbellRainVUE10_Precipitation(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_PRECIPITATION_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(RAINVUE10_PRECIPITATION_VAR_NUM),
-                   static_cast<uint8_t>(RAINVUE10_PRECIPITATION_RESOLUTION),
+        : Variable(parentSense, RAINVUE10_PRECIPITATION_VAR_NUM,
+                   RAINVUE10_PRECIPITATION_RESOLUTION,
                    RAINVUE10_PRECIPITATION_VAR_NAME,
                    RAINVUE10_PRECIPITATION_UNIT_NAME, varCode, uuid) {}
     /**
@@ -379,10 +378,9 @@ class CampbellRainVUE10_Tips : public Variable {
     explicit CampbellRainVUE10_Tips(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_TIPS_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(RAINVUE10_TIPS_VAR_NUM),
-                   static_cast<uint8_t>(RAINVUE10_TIPS_RESOLUTION),
-                   RAINVUE10_TIPS_VAR_NAME, RAINVUE10_TIPS_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, RAINVUE10_TIPS_VAR_NUM,
+                   RAINVUE10_TIPS_RESOLUTION, RAINVUE10_TIPS_VAR_NAME,
+                   RAINVUE10_TIPS_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the CampbellRainVUE10_Tips object - no action needed.
      */
@@ -414,9 +412,8 @@ class CampbellRainVUE10_RainRateAve : public Variable {
     explicit CampbellRainVUE10_RainRateAve(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_RAINRATEAVE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_VAR_NUM),
-                   static_cast<uint8_t>(RAINVUE10_RAINRATEAVE_RESOLUTION),
+        : Variable(parentSense, RAINVUE10_RAINRATEAVE_VAR_NUM,
+                   RAINVUE10_RAINRATEAVE_RESOLUTION,
                    RAINVUE10_RAINRATEAVE_VAR_NAME,
                    RAINVUE10_RAINRATEAVE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -452,9 +449,8 @@ class CampbellRainVUE10_RainRateMax : public Variable {
     explicit CampbellRainVUE10_RainRateMax(
         CampbellRainVUE10* parentSense, const char* uuid = "",
         const char* varCode = RAINVUE10_RAINRATEMAX_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_VAR_NUM),
-                   static_cast<uint8_t>(RAINVUE10_RAINRATEMAX_RESOLUTION),
+        : Variable(parentSense, RAINVUE10_RAINRATEMAX_VAR_NUM,
+                   RAINVUE10_RAINRATEMAX_RESOLUTION,
                    RAINVUE10_RAINRATEMAX_VAR_NAME,
                    RAINVUE10_RAINRATEMAX_UNIT_NAME, varCode, uuid) {}
     /**

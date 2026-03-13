@@ -386,9 +386,8 @@ class TurnerTurbidityPlus_Voltage : public Variable {
     explicit TurnerTurbidityPlus_Voltage(
         TurnerTurbidityPlus* parentSense, const char* uuid = "",
         const char* varCode = TURBIDITY_PLUS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(TURBIDITY_PLUS_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(TURBIDITY_PLUS_VOLTAGE_RESOLUTION),
+        : Variable(parentSense, TURBIDITY_PLUS_VOLTAGE_VAR_NUM,
+                   TURBIDITY_PLUS_VOLTAGE_RESOLUTION,
                    TURBIDITY_PLUS_VOLTAGE_VAR_NAME,
                    TURBIDITY_PLUS_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -424,10 +423,9 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
     explicit TurnerTurbidityPlus_Turbidity(
         TurnerTurbidityPlus* parentSense, const char* uuid = "",
         const char* varCode = TURBIDITY_PLUS_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(TURBIDITY_PLUS_VAR_NUM),
-                   static_cast<uint8_t>(TURBIDITY_PLUS_RESOLUTION),
-                   TURBIDITY_PLUS_VAR_NAME, TURBIDITY_PLUS_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, TURBIDITY_PLUS_VAR_NUM,
+                   TURBIDITY_PLUS_RESOLUTION, TURBIDITY_PLUS_VAR_NAME,
+                   TURBIDITY_PLUS_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the TurnerTurbidityPlus_Turbidity object - no action
      * needed.

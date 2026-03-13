@@ -372,10 +372,9 @@ class AlphasenseCO2_CO2 : public Variable {
     explicit AlphasenseCO2_CO2(
         AlphasenseCO2* parentSense, const char* uuid = "",
         const char* varCode = ALPHASENSE_CO2_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ALPHASENSE_CO2_VAR_NUM),
-                   static_cast<uint8_t>(ALPHASENSE_CO2_RESOLUTION),
-                   ALPHASENSE_CO2_VAR_NAME, ALPHASENSE_CO2_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, ALPHASENSE_CO2_VAR_NUM,
+                   ALPHASENSE_CO2_RESOLUTION, ALPHASENSE_CO2_VAR_NAME,
+                   ALPHASENSE_CO2_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AlphasenseCO2_CO2 object - no action needed.
      */
@@ -405,9 +404,8 @@ class AlphasenseCO2_Voltage : public Variable {
     explicit AlphasenseCO2_Voltage(
         AlphasenseCO2* parentSense, const char* uuid = "",
         const char* varCode = ALPHASENSE_CO2_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(ALPHASENSE_CO2_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(ALPHASENSE_CO2_VOLTAGE_RESOLUTION),
+        : Variable(parentSense, ALPHASENSE_CO2_VOLTAGE_VAR_NUM,
+                   ALPHASENSE_CO2_VOLTAGE_RESOLUTION,
                    ALPHASENSE_CO2_VOLTAGE_VAR_NAME,
                    ALPHASENSE_CO2_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**

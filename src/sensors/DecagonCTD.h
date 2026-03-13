@@ -293,9 +293,8 @@ class DecagonCTD_Cond : public Variable {
      */
     explicit DecagonCTD_Cond(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = CTD_COND_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CTD_COND_VAR_NUM),
-                   static_cast<uint8_t>(CTD_COND_RESOLUTION), CTD_COND_VAR_NAME,
-                   CTD_COND_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, CTD_COND_VAR_NUM, CTD_COND_RESOLUTION,
+                   CTD_COND_VAR_NAME, CTD_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the DecagonCTD_Cond object - no action needed.
      */
@@ -325,9 +324,8 @@ class DecagonCTD_Temp : public Variable {
      */
     explicit DecagonCTD_Temp(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = CTD_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CTD_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(CTD_TEMP_RESOLUTION), CTD_TEMP_VAR_NAME,
-                   CTD_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, CTD_TEMP_VAR_NUM, CTD_TEMP_RESOLUTION,
+                   CTD_TEMP_VAR_NAME, CTD_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the DecagonCTD_Temp object - no action needed.
      */
@@ -357,8 +355,7 @@ class DecagonCTD_Depth : public Variable {
      */
     explicit DecagonCTD_Depth(DecagonCTD* parentSense, const char* uuid = "",
                               const char* varCode = CTD_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CTD_DEPTH_VAR_NUM),
-                   static_cast<uint8_t>(CTD_DEPTH_RESOLUTION),
+        : Variable(parentSense, CTD_DEPTH_VAR_NUM, CTD_DEPTH_RESOLUTION,
                    CTD_DEPTH_VAR_NAME, CTD_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the DecagonCTD_Depth object - no action needed.

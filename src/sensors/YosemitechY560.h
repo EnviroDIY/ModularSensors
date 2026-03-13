@@ -261,8 +261,7 @@ class YosemitechY560_NH4_N : public Variable {
     explicit YosemitechY560_NH4_N(YosemitechY560* parentSense,
                                   const char*     uuid = "",
                                   const char* varCode = Y560_NH4_N_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y560_NH4_N_VAR_NUM),
-                   static_cast<uint8_t>(Y560_NH4_N_RESOLUTION),
+        : Variable(parentSense, Y560_NH4_N_VAR_NUM, Y560_NH4_N_RESOLUTION,
                    Y560_NH4_N_VAR_NAME, Y560_NH4_N_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY560_NH4_N object - no action needed.
@@ -295,8 +294,7 @@ class YosemitechY560_Temp : public Variable {
     explicit YosemitechY560_Temp(YosemitechY560* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y560_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y560_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y560_TEMP_RESOLUTION),
+        : Variable(parentSense, Y560_TEMP_VAR_NUM, Y560_TEMP_RESOLUTION,
                    Y560_TEMP_VAR_NAME, Y560_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY560_Temp object - no action needed.
@@ -329,9 +327,8 @@ class YosemitechY560_pH : public Variable {
     explicit YosemitechY560_pH(YosemitechY560* parentSense,
                                const char*     uuid    = "",
                                const char*     varCode = Y560_PH_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y560_PH_VAR_NUM),
-                   static_cast<uint8_t>(Y560_PH_RESOLUTION), Y560_PH_VAR_NAME,
-                   Y560_PH_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, Y560_PH_VAR_NUM, Y560_PH_RESOLUTION,
+                   Y560_PH_VAR_NAME, Y560_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY560_pH object - no action needed.
      */

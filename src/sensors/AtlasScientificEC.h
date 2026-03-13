@@ -359,8 +359,7 @@ class AtlasScientificEC_Cond : public Variable {
     explicit AtlasScientificEC_Cond(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_COND_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ATLAS_COND_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_COND_RESOLUTION),
+        : Variable(parentSense, ATLAS_COND_VAR_NUM, ATLAS_COND_RESOLUTION,
                    ATLAS_COND_VAR_NAME, ATLAS_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AtlasScientificEC_Cond object - no action needed.
@@ -392,8 +391,7 @@ class AtlasScientificEC_TDS : public Variable {
     explicit AtlasScientificEC_TDS(AtlasScientificEC* parentSense,
                                    const char*        uuid = "",
                                    const char* varCode = ATLAS_TDS_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ATLAS_TDS_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_TDS_RESOLUTION),
+        : Variable(parentSense, ATLAS_TDS_VAR_NUM, ATLAS_TDS_RESOLUTION,
                    ATLAS_TDS_VAR_NAME, ATLAS_TDS_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AtlasScientificEC_TDS object - no action needed.
@@ -425,10 +423,9 @@ class AtlasScientificEC_Salinity : public Variable {
     explicit AtlasScientificEC_Salinity(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_SALINITY_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ATLAS_SALINITY_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_SALINITY_RESOLUTION),
-                   ATLAS_SALINITY_VAR_NAME, ATLAS_SALINITY_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, ATLAS_SALINITY_VAR_NUM,
+                   ATLAS_SALINITY_RESOLUTION, ATLAS_SALINITY_VAR_NAME,
+                   ATLAS_SALINITY_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AtlasScientificEC_Salinity() object - no action
      * needed.
@@ -460,9 +457,8 @@ class AtlasScientificEC_SpecificGravity : public Variable {
     explicit AtlasScientificEC_SpecificGravity(
         AtlasScientificEC* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_SG_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ATLAS_SG_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_SG_RESOLUTION), ATLAS_SG_VAR_NAME,
-                   ATLAS_SG_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, ATLAS_SG_VAR_NUM, ATLAS_SG_RESOLUTION,
+                   ATLAS_SG_VAR_NAME, ATLAS_SG_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AtlasScientificEC_SpecificGravity() object - no action
      * needed.

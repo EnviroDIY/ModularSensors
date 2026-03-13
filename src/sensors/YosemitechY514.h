@@ -232,8 +232,7 @@ class YosemitechY514_Chlorophyll : public Variable {
     explicit YosemitechY514_Chlorophyll(
         YosemitechY514* parentSense, const char* uuid = "",
         const char* varCode = Y514_CHLORO_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y514_CHLORO_VAR_NUM),
-                   static_cast<uint8_t>(Y514_CHLORO_RESOLUTION),
+        : Variable(parentSense, Y514_CHLORO_VAR_NUM, Y514_CHLORO_RESOLUTION,
                    Y514_CHLORO_VAR_NAME, Y514_CHLORO_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -268,8 +267,7 @@ class YosemitechY514_Temp : public Variable {
     explicit YosemitechY514_Temp(YosemitechY514* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y514_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y514_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y514_TEMP_RESOLUTION),
+        : Variable(parentSense, Y514_TEMP_VAR_NUM, Y514_TEMP_RESOLUTION,
                    Y514_TEMP_VAR_NAME, Y514_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY514_Temp object - no action needed.

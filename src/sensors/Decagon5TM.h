@@ -326,8 +326,7 @@ class Decagon5TM_Ea : public Variable {
      */
     explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
                            const char* varCode = TM_EA_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(TM_EA_VAR_NUM),
-                   static_cast<uint8_t>(TM_EA_RESOLUTION), TM_EA_VAR_NAME,
+        : Variable(parentSense, TM_EA_VAR_NUM, TM_EA_RESOLUTION, TM_EA_VAR_NAME,
                    TM_EA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Decagon5TM_Ea object - no action needed.
@@ -358,9 +357,8 @@ class Decagon5TM_Temp : public Variable {
      */
     explicit Decagon5TM_Temp(Decagon5TM* parentSense, const char* uuid = "",
                              const char* varCode = TM_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(TM_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(TM_TEMP_RESOLUTION), TM_TEMP_VAR_NAME,
-                   TM_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, TM_TEMP_VAR_NUM, TM_TEMP_RESOLUTION,
+                   TM_TEMP_VAR_NAME, TM_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Decagon5TM_Temp object - no action needed.
      */
@@ -390,9 +388,8 @@ class Decagon5TM_VWC : public Variable {
      */
     explicit Decagon5TM_VWC(Decagon5TM* parentSense, const char* uuid = "",
                             const char* varCode = TM_VWC_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(TM_VWC_VAR_NUM),
-                   static_cast<uint8_t>(TM_VWC_RESOLUTION), TM_VWC_VAR_NAME,
-                   TM_VWC_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, TM_VWC_VAR_NUM, TM_VWC_RESOLUTION,
+                   TM_VWC_VAR_NAME, TM_VWC_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Decagon5TM_VWC object - no action needed.
      */

@@ -238,8 +238,7 @@ class AtlasScientificRTD_Temp : public Variable {
     explicit AtlasScientificRTD_Temp(
         AtlasScientificRTD* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_RTD_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ATLAS_RTD_VAR_NUM),
-                   static_cast<uint8_t>(ATLAS_RTD_RESOLUTION),
+        : Variable(parentSense, ATLAS_RTD_VAR_NUM, ATLAS_RTD_RESOLUTION,
                    ATLAS_RTD_VAR_NAME, ATLAS_RTD_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AtlasScientificRTD_Temp object - no action needed.

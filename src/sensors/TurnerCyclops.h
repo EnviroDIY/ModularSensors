@@ -700,10 +700,9 @@ class TurnerCyclops_Voltage : public Variable {
     explicit TurnerCyclops_Voltage(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_VOLTAGE_RESOLUTION),
-                   CYCLOPS_VOLTAGE_VAR_NAME, CYCLOPS_VOLTAGE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, CYCLOPS_VOLTAGE_VAR_NUM,
+                   CYCLOPS_VOLTAGE_RESOLUTION, CYCLOPS_VOLTAGE_VAR_NAME,
+                   CYCLOPS_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Voltage object - no action needed.
      */
@@ -748,8 +747,7 @@ class TurnerCyclops_Chlorophyll : public Variable {
     explicit TurnerCyclops_Chlorophyll(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_CHLOROPHYLL_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_CHLOROPHYLL_VAR_NAME, CYCLOPS_CHLOROPHYLL_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -796,8 +794,7 @@ class TurnerCyclops_Rhodamine : public Variable {
     explicit TurnerCyclops_Rhodamine(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_RHODAMINE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_RHODAMINE_VAR_NAME, CYCLOPS_RHODAMINE_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -844,8 +841,7 @@ class TurnerCyclops_Fluorescein : public Variable {
     explicit TurnerCyclops_Fluorescein(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_FLUORESCEIN_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_FLUORESCEIN_VAR_NAME, CYCLOPS_FLUORESCEIN_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -893,8 +889,7 @@ class TurnerCyclops_Phycocyanin : public Variable {
     explicit TurnerCyclops_Phycocyanin(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_PHYCOCYANIN_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_PHYCOCYANIN_VAR_NAME, CYCLOPS_PHYCOCYANIN_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -942,8 +937,7 @@ class TurnerCyclops_Phycoerythrin : public Variable {
     explicit TurnerCyclops_Phycoerythrin(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_PHYCOERYTHRIN_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_PHYCOERYTHRIN_VAR_NAME,
                    CYCLOPS_PHYCOERYTHRIN_UNIT_NAME, varCode, uuid) {}
     /**
@@ -994,8 +988,7 @@ class TurnerCyclops_CDOM : public Variable {
     explicit TurnerCyclops_CDOM(TurnerCyclops* parentSense,
                                 const char*    uuid = "",
                                 const char* varCode = CYCLOPS_CDOM_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_CDOM_VAR_NAME, CYCLOPS_CDOM_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -1044,8 +1037,7 @@ class TurnerCyclops_CrudeOil : public Variable {
     explicit TurnerCyclops_CrudeOil(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_CRUDE_OIL_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_CRUDE_OIL_VAR_NAME, CYCLOPS_CRUDE_OIL_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -1095,8 +1087,7 @@ class TurnerCyclops_Brighteners : public Variable {
     explicit TurnerCyclops_Brighteners(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_BRIGHTENERS_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_BRIGHTENERS_VAR_NAME, CYCLOPS_BRIGHTENERS_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -1142,8 +1133,7 @@ class TurnerCyclops_Turbidity : public Variable {
     explicit TurnerCyclops_Turbidity(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_TURBIDITY_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_TURBIDITY_VAR_NAME, CYCLOPS_TURBIDITY_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -1191,8 +1181,7 @@ class TurnerCyclops_PTSA : public Variable {
     explicit TurnerCyclops_PTSA(TurnerCyclops* parentSense,
                                 const char*    uuid = "",
                                 const char* varCode = CYCLOPS_PTSA_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_PTSA_VAR_NAME, CYCLOPS_PTSA_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -1240,8 +1229,7 @@ class TurnerCyclops_BTEX : public Variable {
     explicit TurnerCyclops_BTEX(TurnerCyclops* parentSense,
                                 const char*    uuid = "",
                                 const char* varCode = CYCLOPS_BTEX_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_BTEX_VAR_NAME, CYCLOPS_BTEX_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -1288,8 +1276,7 @@ class TurnerCyclops_Tryptophan : public Variable {
     explicit TurnerCyclops_Tryptophan(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_TRYPTOPHAN_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_TRYPTOPHAN_VAR_NAME, CYCLOPS_TRYPTOPHAN_UNIT_NAME,
                    varCode, uuid) {}
     /**
@@ -1337,8 +1324,7 @@ class TurnerCyclops_RedChlorophyll : public Variable {
     explicit TurnerCyclops_RedChlorophyll(
         TurnerCyclops* parentSense, const char* uuid = "",
         const char* varCode = CYCLOPS_RED_CHLOROPHYLL_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+        : Variable(parentSense, CYCLOPS_VAR_NUM, CYCLOPS_RESOLUTION,
                    CYCLOPS_RED_CHLOROPHYLL_VAR_NAME,
                    CYCLOPS_RED_CHLOROPHYLL_UNIT_NAME, varCode, uuid) {}
     /**

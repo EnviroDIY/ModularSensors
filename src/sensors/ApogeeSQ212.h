@@ -340,8 +340,7 @@ class ApogeeSQ212_PAR : public Variable {
      */
     explicit ApogeeSQ212_PAR(ApogeeSQ212* parentSense, const char* uuid = "",
                              const char* varCode = SQ212_PAR_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(SQ212_PAR_VAR_NUM),
-                   static_cast<uint8_t>(SQ212_PAR_RESOLUTION),
+        : Variable(parentSense, SQ212_PAR_VAR_NUM, SQ212_PAR_RESOLUTION,
                    SQ212_PAR_VAR_NAME, SQ212_PAR_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ApogeeSQ212_PAR object - no action needed.
@@ -374,8 +373,7 @@ class ApogeeSQ212_Voltage : public Variable {
     explicit ApogeeSQ212_Voltage(
         ApogeeSQ212* parentSense, const char* uuid = "",
         const char* varCode = SQ212_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(SQ212_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(SQ212_VOLTAGE_RESOLUTION),
+        : Variable(parentSense, SQ212_VOLTAGE_VAR_NUM, SQ212_VOLTAGE_RESOLUTION,
                    SQ212_VOLTAGE_VAR_NAME, SQ212_VOLTAGE_UNIT_NAME, varCode,
                    uuid) {}
     /**

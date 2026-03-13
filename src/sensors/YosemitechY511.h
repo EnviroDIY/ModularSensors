@@ -243,8 +243,7 @@ class YosemitechY511_Turbidity : public Variable {
     explicit YosemitechY511_Turbidity(
         YosemitechY511* parentSense, const char* uuid = "",
         const char* varCode = Y511_TURB_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y511_TURB_VAR_NUM),
-                   static_cast<uint8_t>(Y511_TURB_RESOLUTION),
+        : Variable(parentSense, Y511_TURB_VAR_NUM, Y511_TURB_RESOLUTION,
                    Y511_TURB_VAR_NAME, Y511_TURB_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY511_Turbidity object - no action needed.
@@ -277,8 +276,7 @@ class YosemitechY511_Temp : public Variable {
     explicit YosemitechY511_Temp(YosemitechY511* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y511_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y511_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y511_TEMP_RESOLUTION),
+        : Variable(parentSense, Y511_TEMP_VAR_NUM, Y511_TEMP_RESOLUTION,
                    Y511_TEMP_VAR_NAME, Y511_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY511_Temp object - no action needed.

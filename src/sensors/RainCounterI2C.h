@@ -351,8 +351,7 @@ class RainCounterI2C_Tips : public Variable {
     explicit RainCounterI2C_Tips(RainCounterI2C* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode = BUCKET_TIPS_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BUCKET_TIPS_VAR_NUM),
-                   static_cast<uint8_t>(BUCKET_TIPS_RESOLUTION),
+        : Variable(parentSense, BUCKET_TIPS_VAR_NUM, BUCKET_TIPS_RESOLUTION,
                    BUCKET_TIPS_VAR_NAME, BUCKET_TIPS_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -384,8 +383,7 @@ class RainCounterI2C_Depth : public Variable {
     explicit RainCounterI2C_Depth(
         RainCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = BUCKET_RAIN_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BUCKET_RAIN_VAR_NUM),
-                   static_cast<uint8_t>(BUCKET_RAIN_RESOLUTION),
+        : Variable(parentSense, BUCKET_RAIN_VAR_NUM, BUCKET_RAIN_RESOLUTION,
                    BUCKET_RAIN_VAR_NAME, BUCKET_RAIN_UNIT_NAME, varCode, uuid) {
     }
     /**

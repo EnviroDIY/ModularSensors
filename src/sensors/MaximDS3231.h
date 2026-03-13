@@ -214,8 +214,7 @@ class MaximDS3231_Temp : public Variable {
      */
     explicit MaximDS3231_Temp(MaximDS3231* parentSense, const char* uuid = "",
                               const char* varCode = DS3231_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(DS3231_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(DS3231_TEMP_RESOLUTION),
+        : Variable(parentSense, DS3231_TEMP_VAR_NUM, DS3231_TEMP_RESOLUTION,
                    DS3231_TEMP_VAR_NAME, DS3231_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**

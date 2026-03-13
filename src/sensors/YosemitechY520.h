@@ -230,8 +230,7 @@ class YosemitechY520_Cond : public Variable {
     explicit YosemitechY520_Cond(YosemitechY520* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y520_COND_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y520_COND_VAR_NUM),
-                   static_cast<uint8_t>(Y520_COND_RESOLUTION),
+        : Variable(parentSense, Y520_COND_VAR_NUM, Y520_COND_RESOLUTION,
                    Y520_COND_VAR_NAME, Y520_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY520_Cond object - no action needed.
@@ -264,8 +263,7 @@ class YosemitechY520_Temp : public Variable {
     explicit YosemitechY520_Temp(YosemitechY520* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y520_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y520_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y520_TEMP_RESOLUTION),
+        : Variable(parentSense, Y520_TEMP_VAR_NUM, Y520_TEMP_RESOLUTION,
                    Y520_TEMP_VAR_NAME, Y520_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY520_Temp object - no action needed.

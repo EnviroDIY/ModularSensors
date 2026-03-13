@@ -325,10 +325,9 @@ class ProcessorAnalog_Voltage : public Variable {
     explicit ProcessorAnalog_Voltage(
         ProcessorAnalog* parentSense, const char* uuid = "",
         const char* varCode = PROCESSOR_ANALOG_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(PROCESSOR_ANALOG_VAR_NUM),
-                   static_cast<uint8_t>(PROCESSOR_ANALOG_RESOLUTION),
-                   PROCESSOR_ANALOG_VAR_NAME, PROCESSOR_ANALOG_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, PROCESSOR_ANALOG_VAR_NUM,
+                   PROCESSOR_ANALOG_RESOLUTION, PROCESSOR_ANALOG_VAR_NAME,
+                   PROCESSOR_ANALOG_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ProcessorAnalog_Voltage object - no action needed.
      */

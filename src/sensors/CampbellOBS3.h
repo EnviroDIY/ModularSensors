@@ -345,9 +345,8 @@ class CampbellOBS3_Turbidity : public Variable {
     explicit CampbellOBS3_Turbidity(
         CampbellOBS3* parentSense, const char* uuid = "",
         const char* varCode = OBS3_TURB_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(OBS3_TURB_VAR_NUM),
-                   static_cast<uint8_t>(OBS3_RESOLUTION), OBS3_TURB_VAR_NAME,
-                   OBS3_TURB_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, OBS3_TURB_VAR_NUM, OBS3_RESOLUTION,
+                   OBS3_TURB_VAR_NAME, OBS3_TURB_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Campbell OBS3 Turbidity object
      */
@@ -381,8 +380,7 @@ class CampbellOBS3_Voltage : public Variable {
     explicit CampbellOBS3_Voltage(
         CampbellOBS3* parentSense, const char* uuid = "",
         const char* varCode = OBS3_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(OBS3_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(OBS3_VOLTAGE_RESOLUTION),
+        : Variable(parentSense, OBS3_VOLTAGE_VAR_NUM, OBS3_VOLTAGE_RESOLUTION,
                    OBS3_VOLTAGE_VAR_NAME, OBS3_VOLTAGE_UNIT_NAME, varCode,
                    uuid) {}
     /**

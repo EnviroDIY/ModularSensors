@@ -226,8 +226,7 @@ class GroPointGPLP8_Moist : public Variable {
                                  const uint8_t  sensorVarNum,
                                  const char*    uuid = "",
                                  const char* varCode = GPLP8_MOIST_DEFAULT_CODE)
-        : Variable(parentSense, sensorVarNum,
-                   static_cast<uint8_t>(GPLP8_MOIST_RESOLUTION),
+        : Variable(parentSense, sensorVarNum, GPLP8_MOIST_RESOLUTION,
                    GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -265,8 +264,7 @@ class GroPointGPLP8_Temp : public Variable {
                                 const uint8_t  sensorVarNum,
                                 const char*    uuid = "",
                                 const char* varCode = GPLP8_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, sensorVarNum,
-                   static_cast<uint8_t>(GPLP8_TEMP_RESOLUTION),
+        : Variable(parentSense, sensorVarNum, GPLP8_TEMP_RESOLUTION,
                    GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the GroPointGPLP8_Temp object - no action needed.

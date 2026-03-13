@@ -458,10 +458,9 @@ class InSituRDO_DOmgL : public Variable {
     explicit InSituRDO_DOmgL(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(INSITU_RDO_DOMGL_VAR_NUM),
-                   static_cast<uint8_t>(INSITU_RDO_DOMGL_RESOLUTION),
-                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, INSITU_RDO_DOMGL_VAR_NUM,
+                   INSITU_RDO_DOMGL_RESOLUTION, INSITU_RDO_DOMGL_VAR_NAME,
+                   INSITU_RDO_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the InSituRDO_DOmgL object - no action needed.
      */
@@ -493,10 +492,9 @@ class InSituRDO_DOpct : public Variable {
     explicit InSituRDO_DOpct(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(INSITU_RDO_DOPCT_VAR_NUM),
-                   static_cast<uint8_t>(INSITU_RDO_DOPCT_RESOLUTION),
-                   INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, INSITU_RDO_DOPCT_VAR_NUM,
+                   INSITU_RDO_DOPCT_RESOLUTION, INSITU_RDO_DOPCT_VAR_NAME,
+                   INSITU_RDO_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the InSituRDO_DOpct object - no action needed.
      */
@@ -527,10 +525,9 @@ class InSituRDO_Temp : public Variable {
      */
     explicit InSituRDO_Temp(InSituRDO* parentSense, const char* uuid = "",
                             const char* varCode = INSITU_RDO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(INSITU_RDO_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(INSITU_RDO_TEMP_RESOLUTION),
-                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, INSITU_RDO_TEMP_VAR_NUM,
+                   INSITU_RDO_TEMP_RESOLUTION, INSITU_RDO_TEMP_VAR_NAME,
+                   INSITU_RDO_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the InSituRDO_Temp object - no action needed.
      */
@@ -562,11 +559,9 @@ class InSituRDO_Pressure : public Variable {
     explicit InSituRDO_Pressure(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(INSITU_RDO_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(INSITU_RDO_PRESSURE_RESOLUTION),
-                   INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, INSITU_RDO_PRESSURE_VAR_NUM,
+                   INSITU_RDO_PRESSURE_RESOLUTION, INSITU_RDO_PRESSURE_VAR_NAME,
+                   INSITU_RDO_PRESSURE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the InSituRDO_Pressure object - no action needed.
      */

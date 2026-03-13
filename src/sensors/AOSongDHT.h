@@ -312,8 +312,7 @@ class AOSongDHT_Humidity : public Variable {
      */
     explicit AOSongDHT_Humidity(AOSongDHT* parentSense, const char* uuid = "",
                                 const char* varCode = DHT_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(DHT_HUMIDITY_VAR_NUM),
-                   static_cast<uint8_t>(DHT_HUMIDITY_RESOLUTION),
+        : Variable(parentSense, DHT_HUMIDITY_VAR_NUM, DHT_HUMIDITY_RESOLUTION,
                    DHT_HUMIDITY_VAR_NAME, DHT_HUMIDITY_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -345,9 +344,8 @@ class AOSongDHT_Temp : public Variable {
      */
     explicit AOSongDHT_Temp(AOSongDHT* parentSense, const char* uuid = "",
                             const char* varCode = DHT_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(DHT_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(DHT_TEMP_RESOLUTION), DHT_TEMP_VAR_NAME,
-                   DHT_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, DHT_TEMP_VAR_NUM, DHT_TEMP_RESOLUTION,
+                   DHT_TEMP_VAR_NAME, DHT_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AOSongDHT_Temp object - no action needed.
      */
@@ -377,9 +375,8 @@ class AOSongDHT_HI : public Variable {
      */
     explicit AOSongDHT_HI(AOSongDHT* parentSense, const char* uuid = "",
                           const char* varCode = DHT_HI_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(DHT_HI_VAR_NUM),
-                   static_cast<uint8_t>(DHT_HI_RESOLUTION), DHT_HI_VAR_NAME,
-                   DHT_HI_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, DHT_HI_VAR_NUM, DHT_HI_RESOLUTION,
+                   DHT_HI_VAR_NAME, DHT_HI_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AOSongDHT_HI object - no action needed.
      */

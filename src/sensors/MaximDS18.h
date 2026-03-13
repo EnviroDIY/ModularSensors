@@ -306,8 +306,7 @@ class MaximDS18_Temp : public Variable {
      */
     explicit MaximDS18_Temp(MaximDS18* parentSense, const char* uuid = "",
                             const char* varCode = DS18_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(DS18_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(DS18_TEMP_RESOLUTION),
+        : Variable(parentSense, DS18_TEMP_VAR_NUM, DS18_TEMP_RESOLUTION,
                    DS18_TEMP_VAR_NAME, DS18_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the MaximDS18_Temp object - no action needed.

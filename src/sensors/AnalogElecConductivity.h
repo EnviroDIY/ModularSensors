@@ -416,9 +416,8 @@ class AnalogElecConductivity_EC : public Variable {
     AnalogElecConductivity_EC(
         AnalogElecConductivity* parentSense, const char* uuid = "",
         const char* varCode = ANALOGELECCONDUCTIVITY_EC_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(ANALOGELECCONDUCTIVITY_EC_VAR_NUM),
-                   static_cast<uint8_t>(ANALOGELECCONDUCTIVITY_EC_RESOLUTION),
+        : Variable(parentSense, ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
+                   ANALOGELECCONDUCTIVITY_EC_RESOLUTION,
                    ANALOGELECCONDUCTIVITY_EC_VAR_NAME,
                    ANALOGELECCONDUCTIVITY_EC_UNIT_NAME, varCode, uuid) {}
 

@@ -611,8 +611,7 @@ class BoschBMP3xx_Temp : public Variable {
      */
     explicit BoschBMP3xx_Temp(BoschBMP3xx* parentSense, const char* uuid = "",
                               const char* varCode = BMP3XX_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BMP3XX_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(BMP3XX_TEMP_RESOLUTION),
+        : Variable(parentSense, BMP3XX_TEMP_VAR_NUM, BMP3XX_TEMP_RESOLUTION,
                    BMP3XX_TEMP_VAR_NAME, BMP3XX_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -646,10 +645,9 @@ class BoschBMP3xx_Pressure : public Variable {
     explicit BoschBMP3xx_Pressure(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BMP3XX_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(BMP3XX_PRESSURE_RESOLUTION),
-                   BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, BMP3XX_PRESSURE_VAR_NUM,
+                   BMP3XX_PRESSURE_RESOLUTION, BMP3XX_PRESSURE_VAR_NAME,
+                   BMP3XX_PRESSURE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the BoschBMP3xx_Pressure object - no action needed.
      */
@@ -681,10 +679,9 @@ class BoschBMP3xx_Altitude : public Variable {
     explicit BoschBMP3xx_Altitude(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BMP3XX_ALTITUDE_VAR_NUM),
-                   static_cast<uint8_t>(BMP3XX_ALTITUDE_RESOLUTION),
-                   BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, BMP3XX_ALTITUDE_VAR_NUM,
+                   BMP3XX_ALTITUDE_RESOLUTION, BMP3XX_ALTITUDE_VAR_NAME,
+                   BMP3XX_ALTITUDE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the BoschBMP3xx_Altitude object - no action needed.
      */

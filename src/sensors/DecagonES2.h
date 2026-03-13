@@ -252,9 +252,8 @@ class DecagonES2_Cond : public Variable {
      */
     explicit DecagonES2_Cond(DecagonES2* parentSense, const char* uuid = "",
                              const char* varCode = ES2_COND_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ES2_COND_VAR_NUM),
-                   static_cast<uint8_t>(ES2_COND_RESOLUTION), ES2_COND_VAR_NAME,
-                   ES2_COND_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, ES2_COND_VAR_NUM, ES2_COND_RESOLUTION,
+                   ES2_COND_VAR_NAME, ES2_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the DecagonES2_Cond object - no action needed.
      */
@@ -283,9 +282,8 @@ class DecagonES2_Temp : public Variable {
      */
     explicit DecagonES2_Temp(DecagonES2* parentSense, const char* uuid = "",
                              const char* varCode = ES2_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ES2_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(ES2_TEMP_RESOLUTION), ES2_TEMP_VAR_NAME,
-                   ES2_TEMP_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, ES2_TEMP_VAR_NUM, ES2_TEMP_RESOLUTION,
+                   ES2_TEMP_VAR_NAME, ES2_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the DecagonES2_Temp object - no action needed.
      */

@@ -350,8 +350,7 @@ class MaxBotixSonar_Range : public Variable {
     explicit MaxBotixSonar_Range(MaxBotixSonar* parentSense,
                                  const char*    uuid    = "",
                                  const char*    varCode = HRXL_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(HRXL_VAR_NUM),
-                   static_cast<uint8_t>(HRXL_RESOLUTION), HRXL_VAR_NAME,
+        : Variable(parentSense, HRXL_VAR_NUM, HRXL_RESOLUTION, HRXL_VAR_NAME,
                    HRXL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the MaxBotixSonar_Range object - no action needed.

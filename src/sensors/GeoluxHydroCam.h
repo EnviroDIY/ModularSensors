@@ -458,8 +458,7 @@ class GeoluxHydroCam_ImageSize : public Variable {
     explicit GeoluxHydroCam_ImageSize(
         GeoluxHydroCam* parentSense, const char* uuid = "",
         const char* varCode = HYDROCAM_SIZE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(HYDROCAM_SIZE_VAR_NUM),
-                   static_cast<uint8_t>(HYDROCAM_SIZE_RESOLUTION),
+        : Variable(parentSense, HYDROCAM_SIZE_VAR_NUM, HYDROCAM_SIZE_RESOLUTION,
                    HYDROCAM_SIZE_VAR_NAME, HYDROCAM_SIZE_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -493,10 +492,9 @@ class GeoluxHydroCam_ByteError : public Variable {
     explicit GeoluxHydroCam_ByteError(
         GeoluxHydroCam* parentSense, const char* uuid = "",
         const char* varCode = HYDROCAM_ERROR_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(HYDROCAM_ERROR_VAR_NUM),
-                   static_cast<uint8_t>(HYDROCAM_ERROR_RESOLUTION),
-                   HYDROCAM_ERROR_VAR_NAME, HYDROCAM_ERROR_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, HYDROCAM_ERROR_VAR_NUM,
+                   HYDROCAM_ERROR_RESOLUTION, HYDROCAM_ERROR_VAR_NAME,
+                   HYDROCAM_ERROR_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the GeoluxHydroCam_ByteError object - no action
      * needed.

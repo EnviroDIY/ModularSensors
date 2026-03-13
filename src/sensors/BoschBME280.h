@@ -376,8 +376,7 @@ class BoschBME280_Temp : public Variable {
      */
     explicit BoschBME280_Temp(BoschBME280* parentSense, const char* uuid = "",
                               const char* varCode = BME280_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BME280_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(BME280_TEMP_RESOLUTION),
+        : Variable(parentSense, BME280_TEMP_VAR_NUM, BME280_TEMP_RESOLUTION,
                    BME280_TEMP_VAR_NAME, BME280_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -411,10 +410,9 @@ class BoschBME280_Humidity : public Variable {
     explicit BoschBME280_Humidity(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BME280_HUMIDITY_VAR_NUM),
-                   static_cast<uint8_t>(BME280_HUMIDITY_RESOLUTION),
-                   BME280_HUMIDITY_VAR_NAME, BME280_HUMIDITY_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, BME280_HUMIDITY_VAR_NUM,
+                   BME280_HUMIDITY_RESOLUTION, BME280_HUMIDITY_VAR_NAME,
+                   BME280_HUMIDITY_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the BoschBME280_Humidity object - no action needed.
      */
@@ -446,10 +444,9 @@ class BoschBME280_Pressure : public Variable {
     explicit BoschBME280_Pressure(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BME280_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(BME280_PRESSURE_RESOLUTION),
-                   BME280_PRESSURE_VAR_NAME, BME280_PRESSURE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, BME280_PRESSURE_VAR_NUM,
+                   BME280_PRESSURE_RESOLUTION, BME280_PRESSURE_VAR_NAME,
+                   BME280_PRESSURE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the BoschBME280_Pressure object - no action needed.
      */
@@ -481,10 +478,9 @@ class BoschBME280_Altitude : public Variable {
     explicit BoschBME280_Altitude(
         BoschBME280* parentSense, const char* uuid = "",
         const char* varCode = BME280_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(BME280_ALTITUDE_VAR_NUM),
-                   static_cast<uint8_t>(BME280_ALTITUDE_RESOLUTION),
-                   BME280_ALTITUDE_VAR_NAME, BME280_ALTITUDE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, BME280_ALTITUDE_VAR_NUM,
+                   BME280_ALTITUDE_RESOLUTION, BME280_ALTITUDE_VAR_NAME,
+                   BME280_ALTITUDE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the BoschBME280_Altitude object - no action needed.
      */

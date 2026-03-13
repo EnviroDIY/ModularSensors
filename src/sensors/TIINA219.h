@@ -344,10 +344,9 @@ class TIINA219_Current : public Variable {
     explicit TIINA219_Current(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_CURRENT_MA_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(INA219_CURRENT_MA_VAR_NUM),
-                   static_cast<uint8_t>(INA219_CURRENT_MA_RESOLUTION),
-                   INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, INA219_CURRENT_MA_VAR_NUM,
+                   INA219_CURRENT_MA_RESOLUTION, INA219_CURRENT_MA_VAR_NAME,
+                   INA219_CURRENT_MA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the TIINA219_Current object - no action needed.
      */
@@ -377,11 +376,9 @@ class TIINA219_Voltage : public Variable {
     explicit TIINA219_Voltage(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_BUS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(INA219_BUS_VOLTAGE_VAR_NUM),
-                   static_cast<uint8_t>(INA219_BUS_VOLTAGE_RESOLUTION),
-                   INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, INA219_BUS_VOLTAGE_VAR_NUM,
+                   INA219_BUS_VOLTAGE_RESOLUTION, INA219_BUS_VOLTAGE_VAR_NAME,
+                   INA219_BUS_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the TIINA219_Voltage object - no action needed.
      */
@@ -419,10 +416,9 @@ class TIINA219_Power : public Variable {
      */
     explicit TIINA219_Power(TIINA219* parentSense, const char* uuid = "",
                             const char* varCode = INA219_POWER_MW_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(INA219_POWER_MW_VAR_NUM),
-                   static_cast<uint8_t>(INA219_POWER_MW_RESOLUTION),
-                   INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, INA219_POWER_MW_VAR_NUM,
+                   INA219_POWER_MW_RESOLUTION, INA219_POWER_MW_VAR_NAME,
+                   INA219_POWER_MW_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the TIINA219_Power object - no action needed.
      */

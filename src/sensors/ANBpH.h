@@ -748,8 +748,7 @@ class ANBpH_pH : public Variable {
      */
     explicit ANBpH_pH(ANBpH* parentSense, const char* uuid = "",
                       const char* varCode = ANB_PH_PH_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_PH_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_PH_RESOLUTION),
+        : Variable(parentSense, ANB_PH_PH_VAR_NUM, ANB_PH_PH_RESOLUTION,
                    ANB_PH_PH_VAR_NAME, ANB_PH_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ANBpH_pH object - no action needed.
@@ -777,8 +776,7 @@ class ANBpH_Temp : public Variable {
      */
     explicit ANBpH_Temp(ANBpH* parentSense, const char* uuid = "",
                         const char* varCode = ANB_PH_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_TEMP_RESOLUTION),
+        : Variable(parentSense, ANB_PH_TEMP_VAR_NUM, ANB_PH_TEMP_RESOLUTION,
                    ANB_PH_TEMP_VAR_NAME, ANB_PH_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -807,10 +805,9 @@ class ANBpH_Salinity : public Variable {
      */
     explicit ANBpH_Salinity(ANBpH* parentSense, const char* uuid = "",
                             const char* varCode = ANB_PH_SALINITY_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_SALINITY_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_SALINITY_RESOLUTION),
-                   ANB_PH_SALINITY_VAR_NAME, ANB_PH_SALINITY_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, ANB_PH_SALINITY_VAR_NUM,
+                   ANB_PH_SALINITY_RESOLUTION, ANB_PH_SALINITY_VAR_NAME,
+                   ANB_PH_SALINITY_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ANBpH_Salinity() object - no action
      * needed.
@@ -839,8 +836,7 @@ class ANBpH_SpCond : public Variable {
      */
     explicit ANBpH_SpCond(ANBpH* parentSense, const char* uuid = "",
                           const char* varCode = ANB_PH_SPCOND_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_SPCOND_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_SPCOND_RESOLUTION),
+        : Variable(parentSense, ANB_PH_SPCOND_VAR_NUM, ANB_PH_SPCOND_RESOLUTION,
                    ANB_PH_SPCOND_VAR_NAME, ANB_PH_SPCOND_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -869,8 +865,7 @@ class ANBpH_EC : public Variable {
      */
     explicit ANBpH_EC(ANBpH* parentSense, const char* uuid = "",
                       const char* varCode = ANB_PH_EC_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(ANB_PH_EC_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_EC_RESOLUTION),
+        : Variable(parentSense, ANB_PH_EC_VAR_NUM, ANB_PH_EC_RESOLUTION,
                    ANB_PH_EC_VAR_NAME, ANB_PH_EC_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ANBpH_EC object - no action needed.
@@ -901,11 +896,9 @@ class ANBpH_HealthCode : public Variable {
     explicit ANBpH_HealthCode(
         ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_HEALTH_CODE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(ANB_PH_HEALTH_CODE_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_HEALTH_CODE_RESOLUTION),
-                   ANB_PH_HEALTH_CODE_VAR_NAME, ANB_PH_HEALTH_CODE_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, ANB_PH_HEALTH_CODE_VAR_NUM,
+                   ANB_PH_HEALTH_CODE_RESOLUTION, ANB_PH_HEALTH_CODE_VAR_NAME,
+                   ANB_PH_HEALTH_CODE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ANBpH_HealthCode object - no action
      * needed.
@@ -936,9 +929,8 @@ class ANBpH_DiagnosticCode : public Variable {
     explicit ANBpH_DiagnosticCode(
         ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_DIAGNOSTIC_CODE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(ANB_PH_DIAGNOSTIC_CODE_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_DIAGNOSTIC_CODE_RESOLUTION),
+        : Variable(parentSense, ANB_PH_DIAGNOSTIC_CODE_VAR_NUM,
+                   ANB_PH_DIAGNOSTIC_CODE_RESOLUTION,
                    ANB_PH_DIAGNOSTIC_CODE_VAR_NAME,
                    ANB_PH_DIAGNOSTIC_CODE_UNIT_NAME, varCode, uuid) {}
     /**
@@ -971,11 +963,9 @@ class ANBpH_StatusCode : public Variable {
     explicit ANBpH_StatusCode(
         ANBpH* parentSense, const char* uuid = "",
         const char* varCode = ANB_PH_STATUS_CODE_DEFAULT_CODE)
-        : Variable(parentSense,
-                   static_cast<uint8_t>(ANB_PH_STATUS_CODE_VAR_NUM),
-                   static_cast<uint8_t>(ANB_PH_STATUS_CODE_RESOLUTION),
-                   ANB_PH_STATUS_CODE_VAR_NAME, ANB_PH_STATUS_CODE_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, ANB_PH_STATUS_CODE_VAR_NUM,
+                   ANB_PH_STATUS_CODE_RESOLUTION, ANB_PH_STATUS_CODE_VAR_NAME,
+                   ANB_PH_STATUS_CODE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ANBpH_StatusCode object - no action
      * needed.

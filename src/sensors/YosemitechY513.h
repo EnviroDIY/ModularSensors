@@ -230,9 +230,8 @@ class YosemitechY513_BGA : public Variable {
     explicit YosemitechY513_BGA(YosemitechY513* parentSense,
                                 const char*     uuid    = "",
                                 const char*     varCode = Y513_BGA_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y513_BGA_VAR_NUM),
-                   static_cast<uint8_t>(Y513_BGA_RESOLUTION), Y513_BGA_VAR_NAME,
-                   Y513_BGA_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, Y513_BGA_VAR_NUM, Y513_BGA_RESOLUTION,
+                   Y513_BGA_VAR_NAME, Y513_BGA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY513_BGA() object - no action
      * needed.
@@ -265,8 +264,7 @@ class YosemitechY513_Temp : public Variable {
     explicit YosemitechY513_Temp(YosemitechY513* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y513_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y513_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y513_TEMP_RESOLUTION),
+        : Variable(parentSense, Y513_TEMP_VAR_NUM, Y513_TEMP_RESOLUTION,
                    Y513_TEMP_VAR_NAME, Y513_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY513_Temp object - no action needed.

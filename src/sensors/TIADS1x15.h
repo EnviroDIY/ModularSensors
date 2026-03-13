@@ -575,8 +575,7 @@ class TIADS1x15_Voltage : public Variable {
      */
     explicit TIADS1x15_Voltage(TIADS1x15* parentSense, const char* uuid = "",
                                const char* varCode = TIADS1X15_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(TIADS1X15_VAR_NUM),
-                   static_cast<uint8_t>(TIADS1X15_RESOLUTION),
+        : Variable(parentSense, TIADS1X15_VAR_NUM, TIADS1X15_RESOLUTION,
                    TIADS1X15_VAR_NAME, TIADS1X15_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the TIADS1x15_Voltage object - no action needed.

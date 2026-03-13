@@ -291,8 +291,7 @@ class FreescaleMPL115A2_Temp : public Variable {
     explicit FreescaleMPL115A2_Temp(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(MPL115A2_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(MPL115A2_TEMP_RESOLUTION),
+        : Variable(parentSense, MPL115A2_TEMP_VAR_NUM, MPL115A2_TEMP_RESOLUTION,
                    MPL115A2_TEMP_VAR_NAME, MPL115A2_TEMP_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -334,10 +333,9 @@ class FreescaleMPL115A2_Pressure : public Variable {
     explicit FreescaleMPL115A2_Pressure(
         FreescaleMPL115A2* parentSense, const char* uuid = "",
         const char* varCode = MPL115A2_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(MPL115A2_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(MPL115A2_PRESSURE_RESOLUTION),
-                   MPL115A2_PRESSURE_VAR_NAME, MPL115A2_PRESSURE_UNIT_NAME,
-                   varCode, uuid) {}
+        : Variable(parentSense, MPL115A2_PRESSURE_VAR_NUM,
+                   MPL115A2_PRESSURE_RESOLUTION, MPL115A2_PRESSURE_VAR_NAME,
+                   MPL115A2_PRESSURE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the FreescaleMPL115A2_Pressure object - no action needed.
      */

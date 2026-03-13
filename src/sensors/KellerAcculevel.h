@@ -219,10 +219,9 @@ class KellerAcculevel_Pressure : public Variable {
     explicit KellerAcculevel_Pressure(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(KELLER_PRESSURE_VAR_NUM),
-                   static_cast<uint8_t>(ACCULEVEL_PRESSURE_RESOLUTION),
-                   KELLER_PRESSURE_VAR_NAME, KELLER_PRESSURE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, KELLER_PRESSURE_VAR_NUM,
+                   ACCULEVEL_PRESSURE_RESOLUTION, KELLER_PRESSURE_VAR_NAME,
+                   KELLER_PRESSURE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the KellerAcculevel_Pressure object - no action needed.
      */
@@ -254,8 +253,7 @@ class KellerAcculevel_Temp : public Variable {
     explicit KellerAcculevel_Temp(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(KELLER_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(ACCULEVEL_TEMP_RESOLUTION),
+        : Variable(parentSense, KELLER_TEMP_VAR_NUM, ACCULEVEL_TEMP_RESOLUTION,
                    KELLER_TEMP_VAR_NAME, KELLER_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -289,10 +287,9 @@ class KellerAcculevel_Height : public Variable {
     explicit KellerAcculevel_Height(
         KellerAcculevel* parentSense, const char* uuid = "",
         const char* varCode = ACCULEVEL_HEIGHT_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(KELLER_HEIGHT_VAR_NUM),
-                   static_cast<uint8_t>(ACCULEVEL_HEIGHT_RESOLUTION),
-                   KELLER_HEIGHT_VAR_NAME, KELLER_HEIGHT_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, KELLER_HEIGHT_VAR_NUM,
+                   ACCULEVEL_HEIGHT_RESOLUTION, KELLER_HEIGHT_VAR_NAME,
+                   KELLER_HEIGHT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the KellerAcculevel_Height object - no action needed.
      */

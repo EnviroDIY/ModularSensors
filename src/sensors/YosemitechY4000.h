@@ -433,8 +433,7 @@ class YosemitechY4000_DOmgL : public Variable {
     explicit YosemitechY4000_DOmgL(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y4000_DOMGL_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_DOMGL_RESOLUTION),
+        : Variable(parentSense, Y4000_DOMGL_VAR_NUM, Y4000_DOMGL_RESOLUTION,
                    Y4000_DOMGL_VAR_NAME, Y4000_DOMGL_UNIT_NAME, varCode, uuid) {
     }
     /**
@@ -467,8 +466,7 @@ class YosemitechY4000_Turbidity : public Variable {
     explicit YosemitechY4000_Turbidity(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_TURB_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y4000_TURB_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_TURB_RESOLUTION),
+        : Variable(parentSense, Y4000_TURB_VAR_NUM, Y4000_TURB_RESOLUTION,
                    Y4000_TURB_VAR_NAME, Y4000_TURB_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY4000_Turbidity object - no action needed.
@@ -500,8 +498,7 @@ class YosemitechY4000_Cond : public Variable {
     explicit YosemitechY4000_Cond(YosemitechY4000* parentSense,
                                   const char*      uuid = "",
                                   const char* varCode = Y4000_COND_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y4000_COND_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_COND_RESOLUTION),
+        : Variable(parentSense, Y4000_COND_VAR_NUM, Y4000_COND_RESOLUTION,
                    Y4000_COND_VAR_NAME, Y4000_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY4000_Cond object - no action needed.
@@ -533,9 +530,8 @@ class YosemitechY4000_pH : public Variable {
     explicit YosemitechY4000_pH(YosemitechY4000* parentSense,
                                 const char*      uuid = "",
                                 const char* varCode   = Y4000_PH_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y4000_PH_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_PH_RESOLUTION), Y4000_PH_VAR_NAME,
-                   Y4000_PH_UNIT_NAME, varCode, uuid) {}
+        : Variable(parentSense, Y4000_PH_VAR_NUM, Y4000_PH_RESOLUTION,
+                   Y4000_PH_VAR_NAME, Y4000_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY4000_pH object - no action needed.
      */
@@ -566,8 +562,7 @@ class YosemitechY4000_Temp : public Variable {
     explicit YosemitechY4000_Temp(YosemitechY4000* parentSense,
                                   const char*      uuid = "",
                                   const char* varCode = Y4000_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y4000_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_TEMP_RESOLUTION),
+        : Variable(parentSense, Y4000_TEMP_VAR_NUM, Y4000_TEMP_RESOLUTION,
                    Y4000_TEMP_VAR_NAME, Y4000_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY4000_Temp object - no action needed.
@@ -599,8 +594,7 @@ class YosemitechY4000_ORP : public Variable {
     explicit YosemitechY4000_ORP(YosemitechY4000* parentSense,
                                  const char*      uuid = "",
                                  const char* varCode   = Y4000_ORP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y4000_ORP_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_ORP_RESOLUTION),
+        : Variable(parentSense, Y4000_ORP_VAR_NUM, Y4000_ORP_RESOLUTION,
                    Y4000_ORP_VAR_NAME, Y4000_ORP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY4000_ORP object - no action needed.
@@ -632,8 +626,7 @@ class YosemitechY4000_Chlorophyll : public Variable {
     explicit YosemitechY4000_Chlorophyll(
         YosemitechY4000* parentSense, const char* uuid = "",
         const char* varCode = Y4000_CHLORO_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y4000_CHLORO_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_CHLORO_RESOLUTION),
+        : Variable(parentSense, Y4000_CHLORO_VAR_NUM, Y4000_CHLORO_RESOLUTION,
                    Y4000_CHLORO_VAR_NAME, Y4000_CHLORO_UNIT_NAME, varCode,
                    uuid) {}
     /**
@@ -667,8 +660,7 @@ class YosemitechY4000_BGA : public Variable {
     explicit YosemitechY4000_BGA(YosemitechY4000* parentSense,
                                  const char*      uuid = "",
                                  const char* varCode   = Y4000_BGA_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(Y4000_BGA_VAR_NUM),
-                   static_cast<uint8_t>(Y4000_BGA_RESOLUTION),
+        : Variable(parentSense, Y4000_BGA_VAR_NUM, Y4000_BGA_RESOLUTION,
                    Y4000_BGA_VAR_NAME, Y4000_BGA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY4000_BGA object - no action needed.

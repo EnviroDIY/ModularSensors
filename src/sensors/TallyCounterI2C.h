@@ -261,8 +261,7 @@ class TallyCounterI2C_Events : public Variable {
     explicit TallyCounterI2C_Events(
         TallyCounterI2C* parentSense, const char* uuid = "",
         const char* varCode = TALLY_EVENTS_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(TALLY_EVENTS_VAR_NUM),
-                   static_cast<uint8_t>(TALLY_EVENTS_RESOLUTION),
+        : Variable(parentSense, TALLY_EVENTS_VAR_NUM, TALLY_EVENTS_RESOLUTION,
                    TALLY_EVENTS_VAR_NAME, TALLY_EVENTS_UNIT_NAME, varCode,
                    uuid) {}
     /**

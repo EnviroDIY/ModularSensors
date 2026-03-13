@@ -286,10 +286,9 @@ class AOSongAM2315_Humidity : public Variable {
     explicit AOSongAM2315_Humidity(
         AOSongAM2315* parentSense, const char* uuid = "",
         const char* varCode = AM2315_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(AM2315_HUMIDITY_VAR_NUM),
-                   static_cast<uint8_t>(AM2315_HUMIDITY_RESOLUTION),
-                   AM2315_HUMIDITY_VAR_NAME, AM2315_HUMIDITY_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, AM2315_HUMIDITY_VAR_NUM,
+                   AM2315_HUMIDITY_RESOLUTION, AM2315_HUMIDITY_VAR_NAME,
+                   AM2315_HUMIDITY_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AOSongAM2315_Humidity object - no action needed.
      */
@@ -318,8 +317,7 @@ class AOSongAM2315_Temp : public Variable {
      */
     explicit AOSongAM2315_Temp(AOSongAM2315* parentSense, const char* uuid = "",
                                const char* varCode = AM2315_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, static_cast<uint8_t>(AM2315_TEMP_VAR_NUM),
-                   static_cast<uint8_t>(AM2315_TEMP_RESOLUTION),
+        : Variable(parentSense, AM2315_TEMP_VAR_NUM, AM2315_TEMP_RESOLUTION,
                    AM2315_TEMP_VAR_NAME, AM2315_TEMP_UNIT_NAME, varCode, uuid) {
     }
     /**
