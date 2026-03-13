@@ -145,6 +145,10 @@ static_assert(ALSPT19_UA_PER_1000LUX > 0,
  * {{ @ref EverlightALSPT19_Voltage::EverlightALSPT19_Voltage }}
  */
 /**@{*/
+/// @brief Minimum voltage in volts.
+#define ALSPT19_VOLTAGE_MIN_V 0.0
+/// @brief Maximum voltage in volts.
+#define ALSPT19_VOLTAGE_MAX_V 4.6
 /**
  * @brief Decimal places in string representation; voltage should have 0
  *
@@ -176,6 +180,10 @@ static_assert(ALSPT19_UA_PER_1000LUX > 0,
  * {{ @ref EverlightALSPT19_Current::EverlightALSPT19_Current }}
  */
 /**@{*/
+/// @brief Minimum electric current in microamperes.
+#define ALSPT19_CURRENT_MIN_UA 5.0
+/// @brief Maximum electric current in microamperes.
+#define ALSPT19_CURRENT_MAX_UA 520.0
 /**
  * @brief Decimal places in string representation; voltage should have 0
  *
@@ -207,6 +215,10 @@ static_assert(ALSPT19_UA_PER_1000LUX > 0,
  * {{ @ref EverlightALSPT19_Illuminance::EverlightALSPT19_Illuminance }}
  */
 /**@{*/
+/// @brief Minimum illuminance in lux.
+#define ALSPT19_ILLUMINANCE_MIN_LUX 0.0
+/// @brief Maximum illuminance in lux.
+#define ALSPT19_ILLUMINANCE_MAX_LUX 10000.0
 /**
  * @brief Decimal places in string representation; illuminance should have 0
  *
@@ -432,3 +444,5 @@ class EverlightALSPT19_Illuminance : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_EVERLIGHTALSPT19_H_
+
+// cSpell:words microamperes

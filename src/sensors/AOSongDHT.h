@@ -167,6 +167,10 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  * {{ @ref AOSongDHT_Humidity::AOSongDHT_Humidity }}
  */
 /**@{*/
+/// @brief Minimum humidity in percent relative humidity.
+#define DHT_HUMIDITY_MIN_RH 0
+/// @brief Maximum humidity in percent relative humidity.
+#define DHT_HUMIDITY_MAX_RH 100
 /// @brief Decimal places in string representation; humidity should have 1 (0.1
 /// % RH for DHT22 and 1 % RH for DHT11)
 #define DHT_HUMIDITY_RESOLUTION 1
@@ -194,6 +198,10 @@ static const uint8_t AM2301{21}; /**< AM2301 */
  * {{ @ref AOSongDHT_Temp::AOSongDHT_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define DHT_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define DHT_TEMP_MAX_C 80.0
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define DHT_TEMP_RESOLUTION 1
@@ -380,4 +388,4 @@ class AOSongDHT_HI : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_AOSONGDHT_H_
 
-// cSpell:ignore DHTHI
+// cSpell:words DHTHI

@@ -96,6 +96,10 @@
  * {{ @ref YosemitechY520_Cond::YosemitechY520_Cond }}
  */
 /**@{*/
+/// @brief Minimum conductivity; 1 µS/cm
+#define Y520_COND_MIN_USCM 1
+/// @brief Maximum conductivity; 200000 µS/cm (200 mS/cm)
+#define Y520_COND_MAX_USCM 200000
 /// @brief Decimal places in string representation; conductivity should have 1
 /// - resolution is 0.1 µS/cm.
 #define Y520_COND_RESOLUTION 1
@@ -123,6 +127,10 @@
  * {{ @ref YosemitechY520_Temp::YosemitechY520_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y520_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y520_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y520_TEMP_RESOLUTION 1

@@ -122,6 +122,12 @@
  * {{ @ref CampbellRainVUE10_Precipitation::CampbellRainVUE10_Precipitation }}
  */
 /**@{*/
+/// @brief Minimum precipitation depth in inches.
+#define RAINVUE10_PRECIPITATION_MIN_IN 0.0
+/// @brief Maximum precipitation depth in inches.
+/// @note There isn't a maximum accumulated depth; this is a very high number to
+/// allow for almost a year of rain in PA.
+#define RAINVUE10_PRECIPITATION_MAX_IN 50.0
 /// @brief Decimal places in string representation; depth should have 2
 /// (resolution is 0.01 inches).
 #define RAINVUE10_PRECIPITATION_RESOLUTION 2
@@ -144,6 +150,9 @@
  * @name Tip Count
  * Defines for tip count variable from a tipping bucket counter
  * - Range and accuracy depend on the tipping bucket used.
+ *
+ * @todo Find and define minimum and maximum tip count range for the Campbell
+ * RainVUE10.
  *
  * {{ @ref CampbellRainVUE10_Tips::CampbellRainVUE10_Tips }}
  */
@@ -183,6 +192,12 @@
  * {{ @ref CampbellRainVUE10_RainRateAve::CampbellRainVUE10_RainRateAve }}
  */
 /**@{*/
+/// @brief Minimum rainfall rate in inches per hour.
+/// @note The minimum rate when it's raining is 0.01 in/h, but is 0 when not
+/// raining.
+#define RAINVUE10_RAINRATEAVE_MIN_INPH 0
+/// @brief Maximum rainfall rate in inches per hour.
+#define RAINVUE10_RAINRATEAVE_MAX_INPH 39.4
 /// @brief Decimal places in string representation; the rainfall intensity
 /// has 2.
 #define RAINVUE10_RAINRATEAVE_RESOLUTION 2
@@ -206,10 +221,16 @@
  * @name Rainfall Rate Maximum
  * The maximum rainfall rate variable from a Campbell RainVUE10,
  * defined as maximum precipitation intensity since last measurement.
- * - Range & Accuracy same as for sensor_rainvue_rainratemax
+ * - Range is 0.01 to 1000 mm/h (0.0004 to 39.4 in./h)
+ * - Range & Accuracy same as for sensor_rainvue_rainrateave
+ *
  * {{ @ref CampbellRainVUE10_RainRateMax::CampbellRainVUE10_RainRateMax }}
  */
 /**@{*/
+/// @brief Minimum rainfall rate; 0.0004 in./h (0.01 mm/h)
+#define RAINVUE10_RAINRATEMAX_MIN_INPH 0.0004
+/// @brief Maximum rainfall rate; 39.4 in./h (1000 mm/h)
+#define RAINVUE10_RAINRATEMAX_MAX_INPH 39.4
 /// @brief Decimal places in string representation; the rainfall intensity
 /// has 2.
 #define RAINVUE10_RAINRATEMAX_RESOLUTION 2
@@ -445,4 +466,4 @@ class CampbellRainVUE10_RainRateMax : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLRAINVUE10_H_
 
-// cSpell:ignore RAINRATEAVE RAINRATEMAX
+// cSpell:words RAINRATEAVE RAINRATEMAX INPH

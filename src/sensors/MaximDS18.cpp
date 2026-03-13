@@ -194,7 +194,8 @@ bool MaximDS18::addSingleMeasurementResult() {
 
     // If a DS18 cannot get a good measurement, it returns 85
     // If the sensor is not properly connected, it returns -127
-    if (result != DS18_BAD_MEASUREMENT_VALUE && result != DS18_DISCONNECTED_VALUE) {
+    if (result != DS18_BAD_MEASUREMENT_VALUE &&
+        result != DS18_DISCONNECTED_VALUE) {
         // Put value into the array
         verifyAndAddMeasurementResult(DS18_TEMP_VAR_NUM, result);
         success = true;

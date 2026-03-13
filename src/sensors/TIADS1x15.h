@@ -231,6 +231,10 @@
  * {{ @ref TIADS1x15_Voltage::TIADS1x15_Voltage }}
  */
 /**@{*/
+/// @brief Minimum voltage in volts.
+#define TIADS1X15_MIN_V -6.144
+/// @brief Maximum voltage in volts.
+#define TIADS1X15_MAX_V 6.144
 /// Variable number; voltage is stored in sensorValues[0].
 #define TIADS1X15_VAR_NUM 0
 /// @brief Variable name in
@@ -590,6 +594,6 @@ typedef TIADS1x15_Voltage ExternalVoltage_Volt;
 
 /**@}*/
 
-// cspell:words GAIN_TWOTHIRDS
-
 #endif  // SRC_SENSORS_TIADS1X15_H_
+
+// cSpell:words GAIN_TWOTHIRDS

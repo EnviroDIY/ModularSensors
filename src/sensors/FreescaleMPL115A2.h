@@ -125,6 +125,10 @@
  * {{ @ref FreescaleMPL115A2_Temp::FreescaleMPL115A2_Temp }}
  */
 /**@{*/
+/// @brief Minimum valid temperature in degrees Celsius.
+#define MPL115A2_TEMP_MIN_C -20.0
+/// @brief Maximum valid temperature in degrees Celsius.
+#define MPL115A2_TEMP_MAX_C 85.0
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define MPL115A2_TEMP_RESOLUTION 2
@@ -152,6 +156,10 @@
  * {{ @ref FreescaleMPL115A2_Pressure::FreescaleMPL115A2_Pressure }}
  */
 /**@{*/
+/// @brief Minimum valid pressure in kilopascals.
+#define MPL115A2_PRESSURE_MIN_KPA 50.0
+/// @brief Maximum valid pressure in kilopascals.
+#define MPL115A2_PRESSURE_MAX_KPA 115.0
 /// @brief Decimal places in string representation; pressure should have 2 -
 /// resolution is 1.5 hPa.
 #define MPL115A2_PRESSURE_RESOLUTION 2

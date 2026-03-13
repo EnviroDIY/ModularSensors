@@ -109,6 +109,10 @@
  * {{ @ref YosemitechY4000_DOmgL::YosemitechY4000_DOmgL }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen concentration in milligrams per liter.
+#define Y4000_DOMGL_MIN_MGPL 0.0
+/// @brief Maximum dissolved oxygen concentration in milligrams per liter.
+#define Y4000_DOMGL_MAX_MGPL 20.0
 /// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y4000_DOMGL_RESOLUTION 2
@@ -137,6 +141,10 @@
  * {{ @ref YosemitechY4000_Turbidity::YosemitechY4000_Turbidity }}
  */
 /**@{*/
+/// @brief Minimum turbidity in nephelometric turbidity units.
+#define Y4000_TURB_MIN_NTU 0.1
+/// @brief Maximum turbidity in nephelometric turbidity units.
+#define Y4000_TURB_MAX_NTU 1000.0
 /// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y4000_TURB_RESOLUTION 2
@@ -164,6 +172,10 @@
  * {{ @ref YosemitechY4000_Cond::YosemitechY4000_Cond }}
  */
 /**@{*/
+/// @brief Minimum specific conductance in microsiemens per centimeter.
+#define Y4000_COND_MIN_USCM 1.0
+/// @brief Maximum specific conductance in microsiemens per centimeter.
+#define Y4000_COND_MAX_USCM 200000.0
 /// @brief Decimal places in string representation; conductivity should have 1
 /// - resolution is 0.1 µS/cm.
 #define Y4000_COND_RESOLUTION 1
@@ -191,6 +203,10 @@
  * {{ @ref YosemitechY4000_pH::YosemitechY4000_pH }}
  */
 /**@{*/
+/// @brief Minimum pH value.
+#define Y4000_PH_MIN 2.0
+/// @brief Maximum pH value.
+#define Y4000_PH_MAX 12.0
 /// @brief Decimal places in string representation; ph should have 2 -
 /// resolution is 0.01 pH units.
 #define Y4000_PH_RESOLUTION 2
@@ -217,6 +233,10 @@
  * {{ @ref YosemitechY4000_Temp::YosemitechY4000_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define Y4000_TEMP_MIN_C 0.0
+/// @brief Maximum temperature in degrees Celsius.
+#define Y4000_TEMP_MAX_C 50.0
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y4000_TEMP_RESOLUTION 1
@@ -244,6 +264,10 @@
  * {{ @ref YosemitechY4000_ORP::YosemitechY4000_ORP }}
  */
 /**@{*/
+/// @brief Minimum oxidation reduction potential in millivolts.
+#define Y4000_ORP_MIN_MV -999.0
+/// @brief Maximum oxidation reduction potential in millivolts.
+#define Y4000_ORP_MAX_MV 999.0
 /// @brief Decimal places in string representation; orp should have 0 -
 /// resolution is 1 mV.
 #define Y4000_ORP_RESOLUTION 0
@@ -272,6 +296,10 @@
  * {{ @ref YosemitechY4000_Chlorophyll::YosemitechY4000_Chlorophyll }}
  */
 /**@{*/
+/// @brief Minimum chlorophyll concentration in micrograms per liter.
+#define Y4000_CHLORO_MIN_UGPL 0.0
+/// @brief Maximum chlorophyll concentration in micrograms per liter.
+#define Y4000_CHLORO_MAX_UGPL 400.0
 /// @brief Decimal places in string representation; chlorophyll concentration
 /// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y4000_CHLORO_RESOLUTION 1
@@ -300,6 +328,10 @@
  * {{ @ref YosemitechY4000_BGA::YosemitechY4000_BGA }}
  */
 /**@{*/
+/// @brief Minimum blue green algae concentration in micrograms per liter.
+#define Y4000_BGA_MIN_UGPL 0.0
+/// @brief Maximum blue green algae concentration in micrograms per liter.
+#define Y4000_BGA_MAX_UGPL 100.0
 /// @brief Decimal places in string representation; bga should have 2 -
 /// resolution is 0.01 µg/L / 0.01 RFU.
 #define Y4000_BGA_RESOLUTION 2
@@ -646,4 +678,4 @@ class YosemitechY4000_BGA : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY4000_H_
 
-// cSpell:ignore Y4000Chloro
+// cSpell:words Y4000Chloro MGPL USCM UGPL

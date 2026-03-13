@@ -115,6 +115,10 @@
  * {{ @ref AtlasScientificpH_pH::AtlasScientificpH_pH }}
  */
 /**@{*/
+/// @brief Minimum pH value.
+#define ATLAS_PH_MIN 0.001
+/// @brief Maximum pH value.
+#define ATLAS_PH_MAX 14.000
 /// @brief Decimal places in string representation; pH should have 3 -
 /// resolution is 0.001.
 #define ATLAS_PH_RESOLUTION 3
@@ -245,4 +249,4 @@ class AtlasScientificpH_pH : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICPH_H_
 
-// cSpell:ignore AtlasScientificpH AtlaspH
+// cSpell:words AtlasScientificpH AtlaspH

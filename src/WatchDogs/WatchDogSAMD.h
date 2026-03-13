@@ -167,6 +167,6 @@ class extendedWatchDogSAMD {
     static uint32_t _resetTime_s;
 };
 
-// cspell:words ULP32KOSC
-
 #endif  // SRC_WATCHDOGS_WATCHDOGSAMD_H_
+
+// cSpell:words ULP32KOSC

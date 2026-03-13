@@ -428,6 +428,6 @@ void WDT_Handler(void) {
 }
 
 // cspell:words EWCTRL EWOFFSET INTENSET ULP32KOSC GCLK_GENCTRL_GENEN APBAMASK
-// cspell:words  GCLK_CLKCTRL_CLKEN irqn CKSEL
-
 #endif
+
+// cSpell:words  GCLK_CLKCTRL_CLKEN irqn CKSEL

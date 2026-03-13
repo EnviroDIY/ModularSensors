@@ -144,6 +144,10 @@
  * {{ @ref AtlasScientificEC_Cond::AtlasScientificEC_Cond }}
  */
 /**@{*/
+/// @brief Minimum electrical conductivity in microsiemens per centimeter.
+#define ATLAS_COND_MIN_USCM 0.07
+/// @brief Maximum electrical conductivity in microsiemens per centimeter.
+#define ATLAS_COND_MAX_USCM 500000.0
 /// @brief Decimal places in string representation; conductivity should have 3.
 #define ATLAS_COND_RESOLUTION 3
 /// @brief Sensor variable number; conductivity is stored in sensorValues[0].
@@ -170,6 +174,10 @@
  * {{ @ref AtlasScientificEC_TDS::AtlasScientificEC_TDS }}
  */
 /**@{*/
+/// @brief Minimum total dissolved solids in parts per million.
+#define ATLAS_TDS_MIN_PPM 0.01
+/// @brief Maximum total dissolved solids in parts per million.
+#define ATLAS_TDS_MAX_PPM 300000.0
 /// @brief Decimal places in string representation; TDS should have 3.
 #define ATLAS_TDS_RESOLUTION 3
 /// @brief Sensor variable number; TDS is stored in sensorValues[1].
@@ -191,11 +199,15 @@
  * @name Salinity
  * The salinity variable from an Atlas EC (conductivity) sensor
  * - Accuracy is ± 2%
- * - Range is 0.07 − 500,000+ μS/cm
+ * - Range is 0 - 42 PSU
  *
  * {{ @ref AtlasScientificEC_Salinity::AtlasScientificEC_Salinity }}
  */
 /**@{*/
+/// @brief Minimum salinity in practical salinity units.
+#define ATLAS_SALINITY_MIN_PSU 0.0
+/// @brief Maximum salinity in practical salinity units.
+#define ATLAS_SALINITY_MAX_PSU 42.0
 /// @brief Decimal places in string representation; salinity should have 3.
 #define ATLAS_SALINITY_RESOLUTION 3
 /// @brief Sensor variable number; salinity is stored in sensorValues[2].
@@ -224,6 +236,10 @@
  */
 /* clang-format on */
 /**@{*/
+/// @brief Minimum specific gravity (dimensionless).
+#define ATLAS_SG_MIN 0.99
+/// @brief Maximum specific gravity (dimensionless).
+#define ATLAS_SG_MAX 1.042
 /// @brief Decimal places in string representation; specific gravity should
 /// have 3.
 #define ATLAS_SG_RESOLUTION 3

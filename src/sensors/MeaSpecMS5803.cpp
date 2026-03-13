@@ -73,13 +73,14 @@ bool MeaSpecMS5803::addSingleMeasurementResult() {
     MS_DBG(F("  Temperature:"), temp);
     MS_DBG(F("  Pressure:"), press);
 
-    if (!isnan(temp) && !isnan(press) && temp >= -40.0 && temp <= 85.0 &&
-        press > 0.0 && press <= (_maxPressure * 1000.0)) {
+    if (!isnan(temp) && !isnan(press) && temp >= MS5803_TEMP_MIN_C &&
+        temp <= MS5803_TEMP_MAX_C && press > 0.0 &&
+        press <= (_maxPressure * 1000.0)) {
         // Temperature Range is -40°C to +85°C
         // Pressure returns 0 when disconnected, which is highly unlikely to be
         // a real value.
-        // Pressure range depends on the model; validation uses _maxPressure *
-        // 1000.0
+        // Pressure range depends on the model; validation uses _maxPressure
+        // (bar) * 1000 (mbar/bar)
         verifyAndAddMeasurementResult(MS5803_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(MS5803_PRESSURE_VAR_NUM, press);
         success = true;

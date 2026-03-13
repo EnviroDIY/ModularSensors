@@ -144,6 +144,10 @@
  * {{ @ref MeaSpecMS5803_Temp::MeaSpecMS5803_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define MS5803_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define MS5803_TEMP_MAX_C 85.0
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is <0.01°C.
 #define MS5803_TEMP_RESOLUTION 2
@@ -165,7 +169,7 @@
  * @anchor sensor_ms5803_pressure
  * @name Pressure
  * The pressure variable from a Measurement Specialties MS5803
- *   - Range is 0 to 14 bar
+ *   - Range is 0 to 14 bar (0 to 14000 mbar)
  *   - Accuracy between 0 and +40°C is:
  *      - 14ba: ±20mbar
  *      - 2ba: ±1.5mbar
@@ -183,6 +187,10 @@
  * {{ @ref MeaSpecMS5803_Pressure::MeaSpecMS5803_Pressure }}
  */
 /**@{*/
+/// @brief Minimum pressure in millibar.
+#define MS5803_PRESSURE_MIN_MBAR 0.0
+/// @brief Maximum pressure in millibar.
+#define MS5803_PRESSURE_MAX_MBAR 14000.0
 /// @brief Decimal places in string representation; pressure should have 3.
 #define MS5803_PRESSURE_RESOLUTION 3
 /// @brief Sensor variable number; pressure is stored in sensorValues[1].
@@ -325,7 +333,7 @@ class MeaSpecMS5803_Pressure : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of MeaSpecMS5803Pressure
+     * optional with a default value of "MeaSpecMS5803Pressure"
      */
     explicit MeaSpecMS5803_Pressure(
         MeaSpecMS5803* parentSense, const char* uuid = "",

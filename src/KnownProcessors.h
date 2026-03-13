@@ -519,6 +519,6 @@
     "The battery multiplier can be added by editing KnownProcessors.h."
 #endif
 
-// cspell:words Tatu Moja Adalogger Duemilanove Esplora
-
 #endif
+
+// cSpell:words Tatu Moja Adalogger Duemilanove Esplora

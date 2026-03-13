@@ -228,6 +228,10 @@ static_assert(
  * {{ @ref TEConnectivityMS5837_Temp::TEConnectivityMS5837_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define MS5837_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define MS5837_TEMP_MAX_C 85.0
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is <0.01°C.
 #define MS5837_TEMP_RESOLUTION 2
@@ -250,8 +254,8 @@ static_assert(
  * @name Pressure
  * The pressure variable from a TE Connectivity MS5837
  *   - Range depends on sensor model:
- *     - Bar02: 0 to 2 bar
- *     - Bar30: 0 to 30 bar
+ *     - Bar02: 0 to 2 bar (0 to 2000 mbar)
+ *     - Bar30: 0 to 30 bar (0 to 30000 mbar)
  *   - Accuracy:
  *     - Bar02: ±1.5mbar
  *     - Bar30: ±20mbar
@@ -264,6 +268,10 @@ static_assert(
  * {{ @ref TEConnectivityMS5837_Pressure::TEConnectivityMS5837_Pressure }}
  */
 /**@{*/
+/// @brief Minimum pressure in millibar.
+#define MS5837_PRESSURE_MIN_MBAR 0.0
+/// @brief Maximum pressure in millibar.
+#define MS5837_PRESSURE_MAX_MBAR 3000.0
 /// @brief Decimal places in string representation; pressure should have 3.
 #define MS5837_PRESSURE_RESOLUTION 3
 /// @brief Sensor variable number; pressure is stored in sensorValues[1].

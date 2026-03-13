@@ -100,6 +100,10 @@
  * {{ @ref YosemitechY504_DOpct::YosemitechY504_DOpct }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen percent saturation; 0% saturation
+#define Y504_DOPCT_MIN_PCT 0
+/// @brief Maximum dissolved oxygen percent saturation; 200% saturation
+#define Y504_DOPCT_MAX_PCT 200
 /// @brief Decimal places in string representation; dissolved oxygen percent
 /// should have 1 - resolution is 0.1%.
 #define Y504_DOPCT_RESOLUTION 1
@@ -128,6 +132,10 @@
  * {{ @ref YosemitechY504_Temp::YosemitechY504_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y504_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y504_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y504_TEMP_RESOLUTION 1
@@ -155,6 +163,10 @@
  * {{ @ref YosemitechY504_DOmgL::YosemitechY504_DOmgL }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen concentration; 0 mg/L
+#define Y504_DOMGL_MIN_MGPL 0
+/// @brief Maximum dissolved oxygen concentration; 20 mg/L
+#define Y504_DOMGL_MAX_MGPL 20
 /// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define Y504_DOMGL_RESOLUTION 2

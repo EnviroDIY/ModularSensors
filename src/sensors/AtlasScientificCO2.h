@@ -124,6 +124,10 @@
  * {{ @ref AtlasScientificCO2_CO2::AtlasScientificCO2_CO2 }}
  */
 /**@{*/
+/// @brief Minimum CO2 concentration in parts per million.
+#define ATLAS_CO2_MIN_PPM 0
+/// @brief Maximum CO2 concentration in parts per million.
+#define ATLAS_CO2_MAX_PPM 10000
 /// @brief Decimal places in string representation; CO2 should have 1 -
 /// resolution is 1 ppm.
 #define ATLAS_CO2_RESOLUTION 1
@@ -151,6 +155,10 @@
  * {{ @ref AtlasScientificCO2_Temp::AtlasScientificCO2_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define ATLAS_CO2TEMP_MIN_C -20
+/// @brief Maximum temperature in degrees Celsius.
+#define ATLAS_CO2TEMP_MAX_C 50
 /// @brief Decimal places in string representation; CO2TEMP should have 0 -
 /// resolution is 1°C.
 #define ATLAS_CO2TEMP_RESOLUTION 0

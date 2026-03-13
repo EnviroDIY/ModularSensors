@@ -152,11 +152,11 @@ class Sensor {
     virtual int8_t getPowerPin();
     /**
      * @brief Set the pin number controlling sensor power.
-     * 
+     *
      * @warning Only change power pins when the sensor is powered off to avoid
      * leaving old pins HIGH and potentially damaging circuits or causing
      * power management conflicts.
-     * 
+     *
      * @param pin The pin on the mcu controlling power to the sensor.
      */
     virtual void setPowerPin(int8_t pin);

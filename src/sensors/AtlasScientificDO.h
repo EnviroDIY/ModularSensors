@@ -133,6 +133,10 @@
  * {{ @ref AtlasScientificDO_DOmgL::AtlasScientificDO_DOmgL }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen concentration in milligrams per liter.
+#define ATLAS_DOMGL_MIN_MGPL 0.01
+/// @brief Maximum dissolved oxygen concentration in milligrams per liter.
+#define ATLAS_DOMGL_MAX_MGPL 100.0
 /// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 2 - resolution is 0.01 mg/L.
 #define ATLAS_DOMGL_RESOLUTION 2
@@ -161,6 +165,10 @@
  * {{ @ref AtlasScientificDO_DOpct::AtlasScientificDO_DOpct }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen percent saturation.
+#define ATLAS_DOPCT_MIN_PCT 0.1
+/// @brief Maximum dissolved oxygen percent saturation.
+#define ATLAS_DOPCT_MAX_PCT 400.0
 /// @brief Decimal places in string representation; dissolved oxygen percent
 /// should have 1 - resolution is 0.1 % saturation.
 #define ATLAS_DOPCT_RESOLUTION 1

@@ -153,6 +153,9 @@
  * The voltage variable from a PaleoTerra redox probe
  * - Accuracy is ±5mV
  *
+ * @todo Find and define minimum and maximum voltage measurement range from a
+ * PaleoTerra redox probe.
+ *
  * {{ @ref PaleoTerraRedox_Voltage::PaleoTerraRedox_Voltage }}
  */
 /**@{*/

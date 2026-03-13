@@ -109,6 +109,10 @@
  * The temperature variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is ± 0.1°C
+ * - Resolution: 0.01°C
+ *
+ * @todo Find and define minimum and maximum temperature measurement range from
+ * a ZebraTech D-Opto.
  *
  * {{ @ref ZebraTechDOpto_Temp::ZebraTechDOpto_Temp }}
  */
@@ -136,6 +140,10 @@
  * The percent saturation variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
+ * - Resolution: 0.01%
+ *
+ * @todo Find and define minimum and maximum dissolved oxygen percent saturation
+ * range from a ZebraTech D-Opto.
  *
  * {{ @ref ZebraTechDOpto_DOpct::ZebraTechDOpto_DOpct }}
  */
@@ -164,6 +172,10 @@
  * The DO concentration variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
+ * - Resolution: 0.001 PPM
+ *
+ * @todo Find and define minimum and maximum dissolved oxygen concentration
+ * range from a ZebraTech D-Opto.
  *
  * {{ @ref ZebraTechDOpto_DOmgL::ZebraTechDOpto_DOmgL }}
  */
@@ -358,4 +370,4 @@ class ZebraTechDOpto_DOmgL : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_ZEBRATECHDOPTO_H_
 
-// cSpell:ignore Pololu
+// cSpell:words Pololu

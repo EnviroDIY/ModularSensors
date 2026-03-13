@@ -127,6 +127,10 @@
  * {{ @ref MeterHydros21_Cond::MeterHydros21_Cond }}
  */
 /**@{*/
+/// @brief Minimum conductivity; 0 µS/cm
+#define HYDROS21_COND_MIN_USCM 0
+/// @brief Maximum conductivity; 120000 µS/cm (120 mS/cm)
+#define HYDROS21_COND_MAX_USCM 120000
 /**
  * @brief Decimal places in string representation; conductivity should have 1.
  *
@@ -158,6 +162,10 @@
  * {{ @ref MeterHydros21_Temp::MeterHydros21_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; -11°C
+#define HYDROS21_TEMP_MIN_C -11
+/// @brief Maximum temperature; 49°C
+#define HYDROS21_TEMP_MAX_C 49
 /**
  * @brief Decimal places in string representation; temperature should have 2.
  *
@@ -189,6 +197,10 @@
  * {{ @ref MeterHydros21_Depth::MeterHydros21_Depth }}
  */
 /**@{*/
+/// @brief Minimum depth; 0 m (0 millimeter)
+#define HYDROS21_DEPTH_MIN_MM 0
+/// @brief Maximum depth; 10 m (10000 millimeters)
+#define HYDROS21_DEPTH_MAX_MM 10000
 /**
  * @brief Decimal places in string representation; depth should have 1.
  *

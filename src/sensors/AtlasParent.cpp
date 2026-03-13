@@ -139,8 +139,9 @@ bool AtlasParent::addSingleMeasurementResult() {
 
     bool success = false;
 
-    // call the circuit and request up to the maximum buffer size (this may be more than we need)
-    int bytesReceived = _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 
+    // call the circuit and request up to the maximum buffer size (this may be
+    // more than we need)
+    int bytesReceived = _i2c->requestFrom(static_cast<int>(_i2cAddressHex),
                                           ATLAS_I2C_RESPONSE_BUFFER_SIZE, 1);
     if (bytesReceived == 0) {
         MS_DBG(getSensorNameAndLocation(), F("I2C read failed - no response"));
@@ -160,7 +161,8 @@ bool AtlasParent::addSingleMeasurementResult() {
             MS_DBG(F("  Measurement Failed"));
             break;
 
-        case ATLAS_RESPONSE_PENDING:  // the command has not yet been finished calculating.
+        case ATLAS_RESPONSE_PENDING:  // the command has not yet been finished
+                                      // calculating.
             MS_DBG(F("  Measurement Pending"));
             break;
 
@@ -206,7 +208,7 @@ bool AtlasParent::waitForProcessing(uint32_t timeout) {
     while (!processed && millis() - start < timeout) {
         _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 1, 1);
         auto code = static_cast<uint8_t>(_i2c->read());
-        if (code == 1) processed = true;
+        if (code == ATLAS_RESPONSE_SUCCESS) processed = true;
     }
     return processed;
 }

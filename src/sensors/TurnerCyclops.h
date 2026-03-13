@@ -279,6 +279,10 @@ class AnalogVoltageReader;
  * {{ @ref TurnerCyclops_Voltage::TurnerCyclops_Voltage }}
  */
 /**@{*/
+/// @brief Minimum voltage; 0 V
+#define CYCLOPS_VOLTAGE_MIN_V 0
+/// @brief Maximum voltage; 3.6 V (when using ADS1x15 powered at 3.3V)
+#define CYCLOPS_VOLTAGE_MAX_V 3.6
 /// Variable number; voltage is stored in sensorValues[1].
 #define CYCLOPS_VOLTAGE_VAR_NUM 1
 /// @brief Variable name in
@@ -302,6 +306,264 @@ class AnalogVoltageReader;
 ///     - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): 2 mV
 #define CYCLOPS_VOLTAGE_RESOLUTION 4
 #endif
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_chlorophyll
+ * @name Chlorophyll (Blue Excitation)
+ * The chlorophyll variable from a Turner Cyclops-7F configured for blue
+ * excitation
+ * - Range is 0 to 500 μg/L
+ * - Detection limit is 0.03 μg/L
+ */
+/**@{*/
+/// @brief Minimum chlorophyll concentration; 0 μg/L
+#define CYCLOPS_CHLOROPHYLL_MIN_UGPL 0
+/// @brief Maximum chlorophyll concentration; 500 μg/L
+#define CYCLOPS_CHLOROPHYLL_MAX_UGPL 500
+/// @brief Variable name in ODM2 controlled vocabulary;
+/// "chlorophyllFluorescence"
+#define CYCLOPS_CHLOROPHYLL_VAR_NAME "chlorophyllFluorescence"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "microgramPerLiter"
+#define CYCLOPS_CHLOROPHYLL_UNIT_NAME "microgramPerLiter"
+/// @brief Default variable short code; "CyclopsChlorophyll"
+#define CYCLOPS_CHLOROPHYLL_DEFAULT_CODE "CyclopsChlorophyll"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_rhodamine
+ * @name Rhodamine WT
+ * The rhodamine variable from a Turner Cyclops-7F configured for Rhodamine WT
+ * - Range is 0 to 1,000 ppb
+ * - Detection limit is 0.01 ppb
+ */
+/**@{*/
+/// @brief Minimum rhodamine concentration; 0 ppb
+#define CYCLOPS_RHODAMINE_MIN_PPB 0
+/// @brief Maximum rhodamine concentration; 1,000 ppb
+#define CYCLOPS_RHODAMINE_MAX_PPB 1000
+/// @brief Variable name in ODM2 controlled vocabulary; "RhodamineFluorescence"
+#define CYCLOPS_RHODAMINE_VAR_NAME "RhodamineFluorescence"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_RHODAMINE_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsRhodamine"
+#define CYCLOPS_RHODAMINE_DEFAULT_CODE "CyclopsRhodamine"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_fluorescein
+ * @name Fluorescein
+ * The fluorescein variable from a Turner Cyclops-7F configured for fluorescein
+ * - Range is 0 to 500 ppb
+ * - Detection limit is 0.01 ppb
+ */
+/**@{*/
+/// @brief Minimum fluorescein concentration; 0 ppb
+#define CYCLOPS_FLUORESCEIN_MIN_PPB 0
+/// @brief Maximum fluorescein concentration; 500 ppb
+#define CYCLOPS_FLUORESCEIN_MAX_PPB 500
+/// @brief Variable name in ODM2 controlled vocabulary; "fluorescein"
+#define CYCLOPS_FLUORESCEIN_VAR_NAME "fluorescein"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_FLUORESCEIN_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsFluorescein"
+#define CYCLOPS_FLUORESCEIN_DEFAULT_CODE "CyclopsFluorescein"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_phycocyanin
+ * @name Phycocyanin
+ * The phycocyanin variable from a Turner Cyclops-7F configured for phycocyanin
+ * - Range is 0 to 4,500 ppbPC
+ * - Detection limit is 2 ppbPC
+ */
+/**@{*/
+/// @brief Minimum phycocyanin concentration; 0 ppb
+#define CYCLOPS_PHYCOCYANIN_MIN_PPB 0
+/// @brief Maximum phycocyanin concentration; 4,500 ppb
+#define CYCLOPS_PHYCOCYANIN_MAX_PPB 4500
+/// @brief Variable name in ODM2 controlled vocabulary;
+/// "blue_GreenAlgae_Cyanobacteria_Phycocyanin"
+#define CYCLOPS_PHYCOCYANIN_VAR_NAME "blue_GreenAlgae_Cyanobacteria_Phycocyanin"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_PHYCOCYANIN_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsPhycocyanin"
+#define CYCLOPS_PHYCOCYANIN_DEFAULT_CODE "CyclopsPhycocyanin"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_phycoerythrin
+ * @name Phycoerythrin
+ * The phycoerythrin variable from a Turner Cyclops-7F configured for
+ * phycoerythrin
+ * - Range is 0 to 750 ppbPE
+ * - Detection limit is 0.1 ppbPE
+ */
+/**@{*/
+/// @brief Minimum phycoerythrin concentration; 0 ppb
+#define CYCLOPS_PHYCOERYTHRIN_MIN_PPB 0
+/// @brief Maximum phycoerythrin concentration; 750 ppb
+#define CYCLOPS_PHYCOERYTHRIN_MAX_PPB 750
+/// @brief Variable name in ODM2 controlled vocabulary; "phycoerythrin"
+#define CYCLOPS_PHYCOERYTHRIN_VAR_NAME "phycoerythrin"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_PHYCOERYTHRIN_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsPhycoerythrin"
+#define CYCLOPS_PHYCOERYTHRIN_DEFAULT_CODE "CyclopsPhycoerythrin"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_cdom
+ * @name CDOM/fDOM
+ * The CDOM/fDOM variable from a Turner Cyclops-7F configured for CDOM
+ * - Range is 0 to 1,500 ppb (or 0 to 3,000 ppb depending on configuration)
+ * - Detection limit is 0.1 ppb (or 0.5 ppb)
+ */
+/**@{*/
+/// @brief Minimum CDOM concentration; 0 ppb
+#define CYCLOPS_CDOM_MIN_PPB 0
+/// @brief Maximum CDOM concentration; 3,000 ppb
+#define CYCLOPS_CDOM_MAX_PPB 3000
+/// @brief Variable name in ODM2 controlled vocabulary;
+/// "fluorescenceDissolvedOrganicMatter"
+#define CYCLOPS_CDOM_VAR_NAME "fluorescenceDissolvedOrganicMatter"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_CDOM_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsCDOM"
+#define CYCLOPS_CDOM_DEFAULT_CODE "CyclopsCDOM"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_crudeoil
+ * @name Crude Oil
+ * The crude oil variable from a Turner Cyclops-7F configured for crude oil
+ * - Range is 0 to 1,500 ppb
+ * - Detection limit is 0.2 ppb
+ */
+/**@{*/
+/// @brief Minimum crude oil concentration; 0 ppb
+#define CYCLOPS_CRUDE_OIL_MIN_PPB 0
+/// @brief Maximum crude oil concentration; 1,500 ppb
+#define CYCLOPS_CRUDE_OIL_MAX_PPB 1500
+/// @brief Variable name in ODM2 controlled vocabulary;
+/// "petroleumHydrocarbonTotal"
+#define CYCLOPS_CRUDE_OIL_VAR_NAME "petroleumHydrocarbonTotal"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_CRUDE_OIL_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsCrudeOil"
+#define CYCLOPS_CRUDE_OIL_DEFAULT_CODE "CyclopsCrudeOil"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_brighteners
+ * @name Optical Brighteners
+ * The optical brighteners variable from a Turner Cyclops-7F configured for
+ * optical brighteners
+ *
+ * @todo Find and define minimum and maximum optical brightener measurement
+ * range on a Turner Cyclops-7F.
+ */
+/**@{*/
+/// @brief Variable name in ODM2 controlled vocabulary; "opticalBrighteners"
+#define CYCLOPS_BRIGHTENERS_VAR_NAME "opticalBrighteners"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_BRIGHTENERS_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsOpticalBrighteners"
+#define CYCLOPS_BRIGHTENERS_DEFAULT_CODE "CyclopsOpticalBrighteners"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_turbidity
+ * @name Turbidity
+ * The turbidity variable from a Turner Cyclops-7F configured for turbidity
+ * - Range is 0 to 1,500 NTU
+ * - Detection limit is 0.05 NTU
+ */
+/**@{*/
+/// @brief Minimum turbidity; 0 NTU
+#define CYCLOPS_TURBIDITY_MIN_NTU 0
+/// @brief Maximum turbidity; 1,500 NTU
+#define CYCLOPS_TURBIDITY_MAX_NTU 1500
+/// @brief Variable name in ODM2 controlled vocabulary; "Turbidity"
+#define CYCLOPS_TURBIDITY_VAR_NAME "Turbidity"
+/// @brief Variable unit name in ODM2 controlled vocabulary;
+/// "nephelometricTurbidityUnit"
+#define CYCLOPS_TURBIDITY_UNIT_NAME "nephelometricTurbidityUnit"
+/// @brief Default variable short code; "CyclopsTurbidity"
+#define CYCLOPS_TURBIDITY_DEFAULT_CODE "CyclopsTurbidity"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_ptsa
+ * @name PTSA
+ * The PTSA variable from a Turner Cyclops-7F configured for PTSA
+ *
+ * @todo Find and define minimum and maximum PTSA measurement range on a Turner
+ * Cyclops-7F.
+ */
+/**@{*/
+/// @brief Variable name in ODM2 controlled vocabulary; "ptsa"
+#define CYCLOPS_PTSA_VAR_NAME "ptsa"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_PTSA_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsPTSA"
+#define CYCLOPS_PTSA_DEFAULT_CODE "CyclopsPTSA"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_btex
+ * @name BTEX
+ * The BTEX variable from a Turner Cyclops-7F configured for BTEX
+ *
+ * @todo Find and define minimum and maximum BTEX measurement range on a Turner
+ * Cyclops-7F.
+ */
+/**@{*/
+/// @brief Variable name in ODM2 controlled vocabulary; "btex"
+#define CYCLOPS_BTEX_VAR_NAME "btex"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerMillion"
+#define CYCLOPS_BTEX_UNIT_NAME "partPerMillion"
+/// @brief Default variable short code; "CyclopsBTEX"
+#define CYCLOPS_BTEX_DEFAULT_CODE "CyclopsBTEX"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_tryptophan
+ * @name Tryptophan
+ * The tryptophan variable from a Turner Cyclops-7F configured for tryptophan
+ *
+ * @todo Find and define minimum and maximum tryptophan measurement range on a
+ * Turner Cyclops-7F.
+ */
+/**@{*/
+/// @brief Variable name in ODM2 controlled vocabulary; "tryptophan"
+#define CYCLOPS_TRYPTOPHAN_VAR_NAME "tryptophan"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "partPerBillion"
+#define CYCLOPS_TRYPTOPHAN_UNIT_NAME "partPerBillion"
+/// @brief Default variable short code; "CyclopsTryptophan"
+#define CYCLOPS_TRYPTOPHAN_DEFAULT_CODE "CyclopsTryptophan"
+/**@}*/
+
+/**
+ * @anchor sensor_cyclops_redchlorophyll
+ * @name Chlorophyll (Red Excitation)
+ * The chlorophyll variable from a Turner Cyclops-7F configured for red
+ * excitation (high CDOM environments)
+ * - Range is 0 to 500 μg/L
+ * - Detection limit is 0.3 μg/L
+ */
+/**@{*/
+/// @brief Minimum red chlorophyll concentration; 0 μg/L
+#define CYCLOPS_RED_CHLOROPHYLL_MIN_UGPL 0
+/// @brief Maximum red chlorophyll concentration; 500 μg/L
+#define CYCLOPS_RED_CHLOROPHYLL_MAX_UGPL 500
+/// @brief Variable name in ODM2 controlled vocabulary;
+/// "chlorophyllFluorescence"
+#define CYCLOPS_RED_CHLOROPHYLL_VAR_NAME "chlorophyllFluorescence"
+/// @brief Variable unit name in ODM2 controlled vocabulary; "microgramPerLiter"
+#define CYCLOPS_RED_CHLOROPHYLL_UNIT_NAME "microgramPerLiter"
+/// @brief Default variable short code; "CyclopsRedChlorophyll"
+#define CYCLOPS_RED_CHLOROPHYLL_DEFAULT_CODE "CyclopsRedChlorophyll"
 /**@}*/
 
 /* clang-format off */
@@ -485,11 +747,11 @@ class TurnerCyclops_Chlorophyll : public Variable {
      */
     explicit TurnerCyclops_Chlorophyll(
         TurnerCyclops* parentSense, const char* uuid = "",
-        const char* varCode = "CyclopsChlorophyll")
+        const char* varCode = CYCLOPS_CHLOROPHYLL_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "chlorophyllFluorescence", "microgramPerLiter", varCode,
-                   uuid) {}
+                   CYCLOPS_CHLOROPHYLL_VAR_NAME, CYCLOPS_CHLOROPHYLL_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Chlorophyll variable object - no action
      * needed.
@@ -531,12 +793,13 @@ class TurnerCyclops_Rhodamine : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "CyclopsRhodamine".
      */
-    explicit TurnerCyclops_Rhodamine(TurnerCyclops* parentSense,
-                                     const char*    uuid = "",
-                                     const char* varCode = "CyclopsRhodamine")
+    explicit TurnerCyclops_Rhodamine(
+        TurnerCyclops* parentSense, const char* uuid = "",
+        const char* varCode = CYCLOPS_RHODAMINE_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "RhodamineFluorescence", "partPerBillion", varCode, uuid) {}
+                   CYCLOPS_RHODAMINE_VAR_NAME, CYCLOPS_RHODAMINE_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Rhodamine variable object - no action
      * needed.
@@ -580,10 +843,11 @@ class TurnerCyclops_Fluorescein : public Variable {
      */
     explicit TurnerCyclops_Fluorescein(
         TurnerCyclops* parentSense, const char* uuid = "",
-        const char* varCode = "CyclopsFluorescein")
+        const char* varCode = CYCLOPS_FLUORESCEIN_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "fluorescein",
-                   "partPerBillion", varCode, uuid) {}
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   CYCLOPS_FLUORESCEIN_VAR_NAME, CYCLOPS_FLUORESCEIN_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Fluorescein variable object - no action
      * needed.
@@ -628,11 +892,11 @@ class TurnerCyclops_Phycocyanin : public Variable {
      */
     explicit TurnerCyclops_Phycocyanin(
         TurnerCyclops* parentSense, const char* uuid = "",
-        const char* varCode = "CyclopsPhycocyanin")
+        const char* varCode = CYCLOPS_PHYCOCYANIN_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "blue_GreenAlgae_Cyanobacteria_Phycocyanin",
-                   "partPerBillion", varCode, uuid) {}
+                   CYCLOPS_PHYCOCYANIN_VAR_NAME, CYCLOPS_PHYCOCYANIN_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Phycocyanin variable object - no action
      * needed.
@@ -677,10 +941,11 @@ class TurnerCyclops_Phycoerythrin : public Variable {
      */
     explicit TurnerCyclops_Phycoerythrin(
         TurnerCyclops* parentSense, const char* uuid = "",
-        const char* varCode = "CyclopsPhycoerythrin")
+        const char* varCode = CYCLOPS_PHYCOERYTHRIN_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "phycoerythrin",
-                   "partPerBillion", varCode, uuid) {}
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   CYCLOPS_PHYCOERYTHRIN_VAR_NAME,
+                   CYCLOPS_PHYCOERYTHRIN_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Phycoerythrin variable object - no
      * action needed.
@@ -727,12 +992,12 @@ class TurnerCyclops_CDOM : public Variable {
      * optional with a default value of "CyclopsCDOM".
      */
     explicit TurnerCyclops_CDOM(TurnerCyclops* parentSense,
-                                const char*    uuid    = "",
-                                const char*    varCode = "CyclopsCDOM")
+                                const char*    uuid = "",
+                                const char* varCode = CYCLOPS_CDOM_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "fluorescenceDissolvedOrganicMatter", "partPerBillion",
-                   varCode, uuid) {}
+                   CYCLOPS_CDOM_VAR_NAME, CYCLOPS_CDOM_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the Turner Cyclops CDOM variable object - no action
      * needed.
@@ -776,13 +1041,13 @@ class TurnerCyclops_CrudeOil : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "CyclopsCrudeOil".
      */
-    explicit TurnerCyclops_CrudeOil(TurnerCyclops* parentSense,
-                                    const char*    uuid    = "",
-                                    const char*    varCode = "CyclopsCrudeOil")
+    explicit TurnerCyclops_CrudeOil(
+        TurnerCyclops* parentSense, const char* uuid = "",
+        const char* varCode = CYCLOPS_CRUDE_OIL_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "petroleumHydrocarbonTotal", "partPerBillion", varCode,
-                   uuid) {}
+                   CYCLOPS_CRUDE_OIL_VAR_NAME, CYCLOPS_CRUDE_OIL_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops CrudeOil variable object - no action
      * needed.
@@ -829,10 +1094,11 @@ class TurnerCyclops_Brighteners : public Variable {
      */
     explicit TurnerCyclops_Brighteners(
         TurnerCyclops* parentSense, const char* uuid = "",
-        const char* varCode = "CyclopsOpticalBrighteners")
+        const char* varCode = CYCLOPS_BRIGHTENERS_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "opticalBrighteners", "partPerBillion", varCode, uuid) {}
+                   CYCLOPS_BRIGHTENERS_VAR_NAME, CYCLOPS_BRIGHTENERS_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Brighteners object - no action needed.
      */
@@ -873,12 +1139,13 @@ class TurnerCyclops_Turbidity : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "CyclopsTurbidity".
      */
-    explicit TurnerCyclops_Turbidity(TurnerCyclops* parentSense,
-                                     const char*    uuid = "",
-                                     const char* varCode = "CyclopsTurbidity")
+    explicit TurnerCyclops_Turbidity(
+        TurnerCyclops* parentSense, const char* uuid = "",
+        const char* varCode = CYCLOPS_TURBIDITY_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "Turbidity",
-                   "nephelometricTurbidityUnit", varCode, uuid) {}
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   CYCLOPS_TURBIDITY_VAR_NAME, CYCLOPS_TURBIDITY_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Turbidity variable object - no action
      * needed.
@@ -922,11 +1189,12 @@ class TurnerCyclops_PTSA : public Variable {
      * optional with a default value of "CyclopsPTSA".
      */
     explicit TurnerCyclops_PTSA(TurnerCyclops* parentSense,
-                                const char*    uuid    = "",
-                                const char*    varCode = "CyclopsPTSA")
+                                const char*    uuid = "",
+                                const char* varCode = CYCLOPS_PTSA_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "ptsa",
-                   "partPerBillion", varCode, uuid) {}
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   CYCLOPS_PTSA_VAR_NAME, CYCLOPS_PTSA_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the Turner Cyclops PTSA variable object - no action
      * needed.
@@ -970,11 +1238,12 @@ class TurnerCyclops_BTEX : public Variable {
      * optional with a default value of "CyclopsBTEX".
      */
     explicit TurnerCyclops_BTEX(TurnerCyclops* parentSense,
-                                const char*    uuid    = "",
-                                const char*    varCode = "CyclopsBTEX")
+                                const char*    uuid = "",
+                                const char* varCode = CYCLOPS_BTEX_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "btex",
-                   "partPerMillion", varCode, uuid) {}
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   CYCLOPS_BTEX_VAR_NAME, CYCLOPS_BTEX_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the Turner Cyclops BTEX variable object - no action
      * needed.
@@ -1016,12 +1285,13 @@ class TurnerCyclops_Tryptophan : public Variable {
      * @param varCode A short code to help identify the variable in files;
      * optional with a default value of "CyclopsTryptophan".
      */
-    explicit TurnerCyclops_Tryptophan(TurnerCyclops* parentSense,
-                                      const char*    uuid = "",
-                                      const char* varCode = "CyclopsTryptophan")
+    explicit TurnerCyclops_Tryptophan(
+        TurnerCyclops* parentSense, const char* uuid = "",
+        const char* varCode = CYCLOPS_TRYPTOPHAN_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
-                   static_cast<uint8_t>(CYCLOPS_RESOLUTION), "tryptophan",
-                   "partPerBillion", varCode, uuid) {}
+                   static_cast<uint8_t>(CYCLOPS_RESOLUTION),
+                   CYCLOPS_TRYPTOPHAN_VAR_NAME, CYCLOPS_TRYPTOPHAN_UNIT_NAME,
+                   varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Tryptophan variable object - no action
      * needed.
@@ -1066,11 +1336,11 @@ class TurnerCyclops_RedChlorophyll : public Variable {
      */
     explicit TurnerCyclops_RedChlorophyll(
         TurnerCyclops* parentSense, const char* uuid = "",
-        const char* varCode = "CyclopsRedChlorophyll")
+        const char* varCode = CYCLOPS_RED_CHLOROPHYLL_DEFAULT_CODE)
         : Variable(parentSense, static_cast<uint8_t>(CYCLOPS_VAR_NUM),
                    static_cast<uint8_t>(CYCLOPS_RESOLUTION),
-                   "chlorophyllFluorescence", "microgramPerLiter", varCode,
-                   uuid) {}
+                   CYCLOPS_RED_CHLOROPHYLL_VAR_NAME,
+                   CYCLOPS_RED_CHLOROPHYLL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Turner Cyclops Red Chlorophyll variable object - no
      * action needed.
@@ -1080,5 +1350,5 @@ class TurnerCyclops_RedChlorophyll : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_TURNERCYCLOPS_H_
 
-// cSpell:ignore fluorophores BTEX PTSA Pyrenetetrasulfonic Tetrasodium
-// cSpell:ignore Ethylbenzene Prozyme sensor_cyclops_calib
+// cSpell:words fluorophores BTEX PTSA Pyrenetetrasulfonic Tetrasodium
+// cSpell:words Ethylbenzene Prozyme sensor_cyclops_calib UGPL

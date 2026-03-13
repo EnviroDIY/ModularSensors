@@ -144,9 +144,13 @@
  *     - For wind, we often use [Inspeed WS2R Version II Reed Switch Anemometer]
  *  (https://www.store.inspeed.com/Inspeed-Version-II-Reed-Switch-Anemometer-Sensor-Only-WS2R.htm)
  *
+ * We do not set a specific maximum for this variable.
+ *
  * {{ @ref TallyCounterI2C_Events::TallyCounterI2C_Events }}
  */
 /**@{*/
+/// @brief Minimum number of events.
+#define TALLY_EVENTS_MIN_COUNT 0
 /// @brief Decimal places in string representation; events are an integer
 /// should be 0 - resolution is 1 event.
 #define TALLY_EVENTS_RESOLUTION 0

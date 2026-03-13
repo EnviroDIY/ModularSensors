@@ -153,6 +153,10 @@
  * {{ @ref MaximDS18_Temp::MaximDS18_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define DS18_TEMP_MIN_C -55.0
+/// @brief Maximum temperature in degrees Celsius.
+#define DS18_TEMP_MAX_C 125.0
 /// @brief Decimal places in string representation; temperature should have 4.
 #define DS18_TEMP_RESOLUTION 4
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].

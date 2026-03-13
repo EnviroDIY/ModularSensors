@@ -141,16 +141,18 @@
  * - Range is between +/-0.4 Amps and +/-3.2 Amps
  * - Absolute accuracy is range dependent, and approx 2LSB (R accuracy
  * unknown)
+ * - Resolution is 12-bit
+ *     - 0.8mA using +/-3.2 Amp range
+ *     - 0.1mA using +/-0.4 Amp range
  *
  * {{ @ref TIINA219_Current::TIINA219_Current }}
  */
 /**@{*/
-/**
- * @brief Decimal places in string representation; current should have 1.
- *  - resolution is 12-bit
- *     - 0.8mA using +/-3.2 Amp range
- *     - 0.1mA using +/-0.4 Amp range
- */
+/// @brief Minimum current in amps (negative for reverse current).
+#define INA219_CURRENT_MIN_A -3.2
+/// @brief Maximum current in amps.
+#define INA219_CURRENT_MAX_A 3.2
+/// @brief Decimal places in string representation; current should have 1.
 #define INA219_CURRENT_MA_RESOLUTION 1
 /// @brief Sensor variable number; current is stored in sensorValues[0].
 #define INA219_CURRENT_MA_VAR_NUM 0
@@ -175,6 +177,10 @@
  * {{ @ref TIINA219_Voltage::TIINA219_Voltage }}
  */
 /**@{*/
+/// @brief Minimum bus voltage in volts.
+#define INA219_BUS_VOLTAGE_MIN_V 0
+/// @brief Maximum bus voltage in volts.
+#define INA219_BUS_VOLTAGE_MAX_V 26
 /// @brief Decimal places in string representation; bus voltage should have 3 -
 /// resolution is 0.004V.
 #define INA219_BUS_VOLTAGE_RESOLUTION 3
@@ -199,6 +205,10 @@
  * {{ @ref TIINA219_Power::TIINA219_Power }}
  */
 /**@{*/
+/// @brief Minimum power in milliwatts.
+#define INA219_POWER_MW_MIN_MW 0
+/// @brief Maximum power in milliwatts.
+#define INA219_POWER_MW_MAX_MW 102400
 /// @brief Decimal places in string representation; power draw should have 2 -
 /// resolution is 0.01mW.
 #define INA219_POWER_MW_RESOLUTION 2
@@ -421,4 +431,4 @@ class TIINA219_Power : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_TIINA219_H_
 
-// cSpell:ignore TIINA219
+// cSpell:words TIINA219

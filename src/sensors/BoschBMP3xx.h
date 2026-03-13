@@ -238,6 +238,10 @@
  * {{ @ref BoschBMP3xx_Temp::BoschBMP3xx_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define BMP3XX_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define BMP3XX_TEMP_MAX_C 85.0
 /// @brief Decimal places in string representation; temperature should have 5 -
 /// resolution is 0.00015°C at the highest oversampling.  See table 7 in the
 /// [sensor
@@ -262,13 +266,17 @@
  * @anchor sensor_bmp3xx_pressure
  * @name Barometric Pressure
  * The barometric pressure variable from a Bosch BMP388 or BMP390
- * - Range for both the BMP388 and BMP390 is 300‒1250 hPa
+ * - Range for both the BMP388 and BMP390 is 300‒1250 hPa (30000‒125000 Pa)
  * - Absolute accuracy is typ. ± 50 Pa (±0.50 hPa)
  * - Relative accuracy is typ. ± 3 Pa (±0.03 hPa), equiv. to ± 0.25 m
  *
  * {{ @ref BoschBMP3xx_Pressure::BoschBMP3xx_Pressure }}
  */
 /**@{*/
+/// @brief Minimum barometric pressure in pascals.
+#define BMP3XX_PRESSURE_MIN_PA 30000.0
+/// @brief Maximum barometric pressure in pascals.
+#define BMP3XX_PRESSURE_MAX_PA 125000.0
 /// @brief Decimal places in string representation; barometric pressure should
 /// have 3.  Resolution of output data in highest resolution mode at lowest
 /// bandwidth is 0.016 Pa.  See table 6 in the [sensor
@@ -685,4 +693,4 @@ class BoschBMP3xx_Altitude : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_
 
-// cSpell:words oversample osrs_p DDIO bmp3xxtimingTest
+// cSpell:words oversample osrs_p DDIO bmp3xxtimingTest hectopascals

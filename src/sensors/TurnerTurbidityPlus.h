@@ -142,6 +142,10 @@ class AnalogVoltageReader;
  * The primary turbidity output from an Turbidity Plus
  */
 /**@{*/
+/// @brief Minimum turbidity; 0 NTU
+#define TURBIDITY_PLUS_MIN_NTU 0
+/// @brief Maximum turbidity; 3000 NTU (detection limit 0.5 NTU)
+#define TURBIDITY_PLUS_MAX_NTU 3000
 /// Variable number; the primary variable is stored in sensorValues[0].
 #define TURBIDITY_PLUS_VAR_NUM 0
 /// @brief Variable name in [ODM2 controlled
@@ -179,6 +183,10 @@ class AnalogVoltageReader;
  * {{ @ref TurnerTurbidityPlus_Voltage::TurnerTurbidityPlus_Voltage }}
  */
 /**@{*/
+/// @brief Minimum voltage when using ADS1x15 at 3.3V; 0.0V
+#define TURBIDITY_PLUS_VOLTAGE_MIN_V 0.0
+/// @brief Maximum voltage when using ADS1x15 at 3.3V; 3.6V
+#define TURBIDITY_PLUS_VOLTAGE_MAX_V 3.6
 /// Variable number; voltage is stored in sensorValues[1].
 #define TURBIDITY_PLUS_VOLTAGE_VAR_NUM 1
 /// @brief Variable name in [ODM2 controlled
@@ -427,5 +435,4 @@ class TurnerTurbidityPlus_Turbidity : public Variable {
     ~TurnerTurbidityPlus_Turbidity() override = default;
 };
 /**@}*/
-
 #endif  // SRC_SENSORS_TURNERTURBIDITYPLUS_H_

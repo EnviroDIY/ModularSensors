@@ -272,4 +272,4 @@ class YosemitechParent : public Sensor {
 
 #endif  // SRC_SENSORS_YOSEMITECHPARENT_H_
 
-// cSpell:ignore ysensor
+// cSpell:words ysensor

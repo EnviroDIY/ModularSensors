@@ -97,6 +97,10 @@
  * {{ @ref YosemitechY514_Chlorophyll::YosemitechY514_Chlorophyll }}
  */
 /**@{*/
+/// @brief Minimum chlorophyll concentration; 0 µg/L
+#define Y514_CHLORO_MIN_UGPL 0
+/// @brief Maximum chlorophyll concentration; 400 µg/L
+#define Y514_CHLORO_MAX_UGPL 400
 /// @brief Decimal places in string representation; chlorophyll concentration
 /// should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y514_CHLORO_RESOLUTION 1
@@ -125,6 +129,10 @@
  * {{ @ref YosemitechY514_Temp::YosemitechY514_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y514_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y514_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y514_TEMP_RESOLUTION 1
@@ -271,4 +279,4 @@ class YosemitechY514_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY514_H_
 
-// cSpell:ignore Wipered Y514Chloro
+// cSpell:words Wipered Y514Chloro UGPL

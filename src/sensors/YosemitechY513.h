@@ -95,6 +95,10 @@
  * {{ @ref YosemitechY513_BGA::YosemitechY513_BGA }}
  */
 /**@{*/
+/// @brief Minimum BGA concentration; 0 µg/L
+#define Y513_BGA_MIN_UGPL 0
+/// @brief Maximum BGA concentration; 400 µg/L
+#define Y513_BGA_MAX_UGPL 400
 /// @brief Decimal places in string representation; blue green algae
 /// concentration should have 1 - resolution is 0.1 µg/L / 0.1 RFU.
 #define Y513_BGA_RESOLUTION 1
@@ -123,6 +127,10 @@
  * {{ @ref YosemitechY513_Temp::YosemitechY513_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y513_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y513_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y513_TEMP_RESOLUTION 1
@@ -267,3 +275,5 @@ class YosemitechY513_Temp : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY513_H_
+
+// cSpell:words UGPL

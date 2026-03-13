@@ -124,14 +124,17 @@
 /**
  * @anchor sensor_fivetm_ea
  * @name EA
- * The EA variable from a Meter ECH2O
- * - Range is 0 – 1 m3/m3 (0 – 100% VWC)
- * - Accuracy for generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typical
- * - Accuracy for medium-specific calibration: ± 0.02 m3/m3 (± 2% VWC)
+ * The Apparent Dielectric Permittivity (EA) variable from a Meter ECH2O
+ * Accuracy is ± 1 Ka from 1 – 40 (soil range);
+ *             ± 15% from 40 – 80 Soil.
  *
  * {{ @ref Decagon5TM_Ea::Decagon5TM_Ea }}
  */
 /**@{*/
+/// @brief Minimum electrical permittivity in farads per meter.
+#define TM_EA_MIN_FPM 1.0
+/// @brief Maximum electrical permittivity in farads per meter.
+#define TM_EA_MAX_FPM 80.0
 /**
  * @brief Decimal places in string representation; EA should have 5
  *
@@ -164,6 +167,10 @@
  * {{ @ref Decagon5TM_Temp::Decagon5TM_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define TM_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define TM_TEMP_MAX_C 50.0
 /**
  * @brief Decimal places in string representation; temperature should have 2
  *
@@ -196,6 +203,10 @@
  * {{ @ref Decagon5TM_VWC::Decagon5TM_VWC }}
  */
 /**@{*/
+/// @brief Minimum volumetric water content in percent.
+#define TM_VWC_MIN_PCT 0.0
+/// @brief Maximum volumetric water content in percent.
+#define TM_VWC_MAX_PCT 100.0
 /**
  * @brief Decimal places in string representation; VWC should have 3
  *
@@ -390,4 +401,4 @@ class Decagon5TM_VWC : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_DECAGON5TM_H_
 
-// cSpell:ignore fivetm matric
+// cSpell:words fivetm matric

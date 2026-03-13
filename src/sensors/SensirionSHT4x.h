@@ -129,6 +129,10 @@
  * {{ @ref SensirionSHT4x_Humidity::SensirionSHT4x_Humidity }}
  */
 /**@{*/
+/// @brief Minimum relative humidity in percent.
+#define SHT4X_HUMIDITY_MIN_RH 0.0
+/// @brief Maximum relative humidity in percent.
+#define SHT4X_HUMIDITY_MAX_RH 100.0
 /**
  * @brief Decimal places in string representation; humidity should have 2 (0.01
  * % RH).
@@ -160,6 +164,10 @@
  * {{ @ref SensirionSHT4x_Temp::SensirionSHT4x_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define SHT4X_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define SHT4X_TEMP_MAX_C 125.0
 /**
  * @brief Decimal places in string representation; temperature should have 2
  * (0.01 °C).
@@ -366,4 +374,4 @@ class SensirionSHT4x_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_SENSIRIONSHT4X_H_
 
-// cSpell:ignore preconfigured
+// cSpell:words preconfigured

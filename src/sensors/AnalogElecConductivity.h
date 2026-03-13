@@ -264,6 +264,9 @@ static_assert(
  * @name Electrical Conductance
  * The electrical conductance variable from a home-made analog sensor.
  *
+ * @todo Find and define minimum and maximum electrical conductivity
+ * measurement range
+ *
  * {{ @ref AnalogElecConductivity_EC::AnalogElecConductivity_EC }}
  */
 /**@{*/
@@ -428,5 +431,5 @@ class AnalogElecConductivity_EC : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_ANALOGELECCONDUCTIVITY_H_
 
-// cSpell:ignore AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater
-// cSpell:ignore _elec_ _Konst anlgEc
+// cSpell:words AnalogElecConductivity Rseries_ohms sensorEC_Konst Rwater
+// cSpell:words _elec_ _Konst anlgEc

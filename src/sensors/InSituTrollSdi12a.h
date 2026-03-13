@@ -117,12 +117,16 @@
  * @anchor sensor_insitu_troll_pressure
  * @name Pressure
  * The pressure variable from a In-Situ TROLL
- * - Range is 0 – x (depends on range eg 5psig)
+ * - Range depends on the model; the highest range models go up to 500 psig.
 
  *
  * {{ @ref InSituTrollSdi12a_Pressure::InSituTrollSdi12a_Pressure }}
  */
 /**@{*/
+/// @brief Minimum pressure; 0 psi
+#define ITROLLA_PRESSURE_MIN_PSI 0
+/// @brief Maximum pressure; 500 psi (depends on model range)
+#define ITROLLA_PRESSURE_MAX_PSI 500
 /// @brief Decimal places in string representation; pressure should have 5.
 #define ITROLLA_PRESSURE_RESOLUTION 5
 /// @brief Sensor variable number; pressure is stored in sensorValues[0].
@@ -149,6 +153,10 @@
  * {{ @ref InSituTrollSdi12a_Temp::InSituTrollSdi12a_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; -11°C
+#define ITROLLA_TEMP_MIN_C -11
+/// @brief Maximum temperature; 49°C
+#define ITROLLA_TEMP_MAX_C 49
 /**
  * @brief Decimal places in string representation; temperature should have 2.
  *
@@ -174,12 +182,16 @@
  * @anchor sensor_insitu_troll_depth
  * @name Water Depth
  * The water depth variable from a In-Situ TROLL
- * - Range is 0 to 3.5m to 350m depending on model
+ * - Range is 0 to 3.5m to 350m (up to 1150ft) depending on model
  * - Accuracy is ±0.05% of full scale
  *
  * {{ @ref InSituTrollSdi12a_Depth::InSituTrollSdi12a_Depth }}
  */
 /**@{*/
+/// @brief Minimum depth; 0 feet
+#define ITROLLA_DEPTH_MIN_FT 0
+/// @brief Maximum depth; 1150 feet (depending on model)
+#define ITROLLA_DEPTH_MAX_FT 1150
 /**
  * @brief Decimal places in string representation; depth should have 1.
  *
@@ -377,4 +389,4 @@ typedef InSituTrollSdi12a_Depth    InsituTrollSdi12a_Depth;
 
 #endif  // SRC_SENSORS_INSITUTROLLSDI12_H_
 
-// cSpell:ignore ITROLL ITROLLA
+// cSpell:words ITROLL ITROLLA

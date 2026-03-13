@@ -109,6 +109,10 @@
  * {{ @ref DecagonCTD_Cond::DecagonCTD_Cond }}
  */
 /**@{*/
+/// @brief Minimum specific conductance in microsiemens per centimeter.
+#define CTD_COND_MIN_USCM 0.0
+/// @brief Maximum specific conductance in microsiemens per centimeter.
+#define CTD_COND_MAX_USCM 120000.0
 /**
  * @brief Decimal places in string representation; conductivity should have 1.
  *
@@ -140,6 +144,10 @@
  * {{ @ref DecagonCTD_Temp::DecagonCTD_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define CTD_TEMP_MIN_C -11.0
+/// @brief Maximum temperature in degrees Celsius.
+#define CTD_TEMP_MAX_C 49.0
 /**
  * @brief Decimal places in string representation; temperature should have 2.
  *
@@ -171,6 +179,10 @@
  * {{ @ref DecagonCTD_Depth::DecagonCTD_Depth }}
  */
 /**@{*/
+/// @brief Minimum water depth in millimeters.
+#define CTD_DEPTH_MIN_MM 0.0
+/// @brief Maximum water depth in millimeters.
+#define CTD_DEPTH_MAX_MM 10000.0
 /**
  * @brief Decimal places in string representation; depth should have 1.
  *

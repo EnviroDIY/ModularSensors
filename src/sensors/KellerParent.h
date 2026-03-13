@@ -285,4 +285,4 @@ class KellerParent : public Sensor {
 /**@}*/
 #endif  // SRC_SENSORS_KELLERPARENT_H_
 
-// cSpell:ignore ksensor
+// cSpell:words ksensor

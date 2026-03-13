@@ -96,6 +96,10 @@
  * {{ @ref YosemitechY532_pH::YosemitechY532_pH }}
  */
 /**@{*/
+/// @brief Minimum pH; 2 pH units
+#define Y532_PH_MIN_PH 2
+/// @brief Maximum pH; 12 pH units
+#define Y532_PH_MAX_PH 12
 /// @brief Decimal places in string representation; pH should have 2 -
 /// resolution is 0.01 pH units.
 #define Y532_PH_RESOLUTION 2
@@ -122,6 +126,10 @@
  * {{ @ref YosemitechY532_Temp::YosemitechY532_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y532_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y532_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y532_TEMP_RESOLUTION 1
@@ -149,6 +157,10 @@
  * {{ @ref YosemitechY532_Voltage::YosemitechY532_Voltage }}
  */
 /**@{*/
+/// @brief Minimum voltage; -999 mV
+#define Y532_VOLTAGE_MIN_MV -999
+/// @brief Maximum voltage; 999 mV
+#define Y532_VOLTAGE_MAX_MV 999
 /// @brief Decimal places in string representation; voltage should have 0 -
 /// resolution is 1mV.
 #define Y532_VOLTAGE_RESOLUTION 0

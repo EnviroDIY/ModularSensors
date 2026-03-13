@@ -139,6 +139,9 @@
  * The raw VWC counts variable from a Meter Teros 11
  * - Range and accuracy of the raw count values are not specified
  *
+ * @todo Find and define minimum and maximum raw count measurement range from a
+ * Meter Teros 11.
+ *
  * {{ @ref MeterTeros11_Count::MeterTeros11_Count }}
  */
 /**@{*/
@@ -172,6 +175,10 @@
  * {{ @ref MeterTeros11_Temp::MeterTeros11_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; -40°C
+#define TEROS11_TEMP_MIN_C -40
+/// @brief Maximum temperature; 60°C
+#define TEROS11_TEMP_MAX_C 60
 /**
  * @brief Decimal places in string representation; temperature should have 2.
  *
@@ -205,6 +212,10 @@
  * {{ @ref MeterTeros11_Ea::MeterTeros11_Ea }}
  */
 /**@{*/
+/// @brief Minimum EA; 1 (air)
+#define TEROS11_EA_MIN 1
+/// @brief Maximum EA; 80 (water)
+#define TEROS11_EA_MAX 80
 /**
  * @brief Decimal places in string representation; EA should have 5.
  *
@@ -242,6 +253,10 @@
  * {{ @ref MeterTeros11_VWC::MeterTeros11_VWC }}
  */
 /**@{*/
+/// @brief Minimum VWC; 0% (0.0 m3/m3)
+#define TEROS11_VWC_MIN_PCT 0
+/// @brief Maximum VWC; 100% (1.0 m3/m3, soilless media calibration)
+#define TEROS11_VWC_MAX_PCT 100
 /**
  * @brief Decimal places in string representation; VWC should have 3.
  *

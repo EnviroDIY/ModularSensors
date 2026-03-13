@@ -95,6 +95,10 @@
  * {{ @ref YosemitechY700_Pressure::YosemitechY700_Pressure }}
  */
 /**@{*/
+/// @brief Minimum pressure; 0 mmH2O
+#define Y700_PRES_MIN_MMH2O 0
+/// @brief Maximum pressure; 100000 mmH2O (100 mH2O, depending on model)
+#define Y700_PRES_MAX_MMH2O 100000
 /// @brief Decimal places in string representation; Pressure should have 2
 /// - resolution is 0.01 mm.
 #define Y700_PRES_RESOLUTION 2
@@ -122,6 +126,10 @@
  * {{ @ref YosemitechY700_Temp::YosemitechY700_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y700_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y700_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y700_TEMP_RESOLUTION 1

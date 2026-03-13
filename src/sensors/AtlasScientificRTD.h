@@ -119,6 +119,10 @@
  * {{ @ref AtlasScientificRTD_Temp::AtlasScientificRTD_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define ATLAS_RTD_MIN_C -126.0
+/// @brief Maximum temperature in degrees Celsius.
+#define ATLAS_RTD_MAX_C 125.0
 /// @brief Decimal places in string representation; temperature should have 3 -
 /// resolution is 0.001°C.
 #define ATLAS_RTD_RESOLUTION 3

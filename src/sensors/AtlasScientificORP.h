@@ -111,8 +111,12 @@
  * {{ @ref AtlasScientificORP_Potential::AtlasScientificORP_Potential }}
  */
 /**@{*/
-/// @brief Decimal places in string representation; ORP should have 1 -
-/// resolution is 0.1 mV.
+/// @brief Minimum oxidation reduction potential in millivolts.
+#define ATLAS_ORP_MIN_MV -1019.9
+/// @brief Maximum oxidation reduction potential in millivolts.
+#define ATLAS_ORP_MAX_MV 1019.9
+/// @brief Decimal places in string representation; ORP should have 1
+/// (resolution is 0.1 mV).
 #define ATLAS_ORP_RESOLUTION 1
 /// @brief Sensor variable number; ORP is stored in sensorValues[0].
 #define ATLAS_ORP_VAR_NUM 0

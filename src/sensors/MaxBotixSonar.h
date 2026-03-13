@@ -190,12 +190,16 @@ static_assert(MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES >= 0 &&
  * @anchor sensor_maxbotix_range
  * @name Range
  * The range variable from a Maxbotix HRXL ultrasonic range finder
- * - Range depends on the exact model
+ * - Range depends on the exact model, up to 10m for the longest range model.
  * - Accuracy is ±1%
  *
  * {{ @ref MaxBotixSonar_Range::MaxBotixSonar_Range }}
  */
 /**@{*/
+/// @brief Minimum range in millimeters.
+#define HRXL_MIN_MM 0
+/// @brief Maximum range in millimeters.
+#define HRXL_MAX_MM 10000
 /// @brief Decimal places in string representation; range should have 0 -
 /// resolution is 1mm (except for models which have range 10mm).
 #define HRXL_RESOLUTION 0
@@ -357,4 +361,4 @@ class MaxBotixSonar_Range : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_MAXBOTIXSONAR_H_
 
-// cSpell:ignore max_botix
+// cSpell:words max_botix

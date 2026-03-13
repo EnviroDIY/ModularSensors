@@ -192,6 +192,10 @@ static_assert(ALPHASENSE_CO2_SENSE_RESISTOR_OHM > 0,
  * {{ @ref AlphasenseCO2_CO2 }}
  */
 /**@{*/
+/// @brief Minimum CO2 concentration in parts per million.
+#define ALPHASENSE_CO2_MIN_PPM 0
+/// @brief Maximum CO2 concentration in parts per million.
+#define ALPHASENSE_CO2_MAX_PPM 5000
 /// Variable number; CO2 is stored in sensorValues[0].
 #define ALPHASENSE_CO2_VAR_NUM 0
 /// @brief Variable name in [ODM2 controlled
@@ -218,7 +222,8 @@ static_assert(ALPHASENSE_CO2_SENSE_RESISTOR_OHM > 0,
  * @anchor sensor_alphasense_co2_voltage
  * @name Voltage
  * The voltage variable from an Alphasense IRC-A1 CO2
- * - Range is 0 to 3.6V [when ADC is powered at 3.3V]
+ * - Range depends on the ADC and sense resistor, but should not be more than
+ * the maximum power supply voltage of 5V.
  * - Accuracy is ± 0.5%
  *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
@@ -232,6 +237,10 @@ static_assert(ALPHASENSE_CO2_SENSE_RESISTOR_OHM > 0,
  * {{ @ref AlphasenseCO2_Voltage }}
  */
 /**@{*/
+/// @brief Minimum voltage in volts.
+#define ALPHASENSE_CO2_VOLTAGE_MIN_V 0
+/// @brief Maximum voltage in volts.
+#define ALPHASENSE_CO2_VOLTAGE_MAX_V 5
 /// Variable number; voltage is stored in sensorValues[1].
 #define ALPHASENSE_CO2_VOLTAGE_VAR_NUM 1
 /// @brief Variable name in [ODM2 controlled

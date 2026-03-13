@@ -96,6 +96,10 @@
  * {{ @ref YosemitechY533_ORP::YosemitechY533_ORP }}
  */
 /**@{*/
+/// @brief Minimum ORP; -999 mV
+#define Y533_ORP_MIN_MV -999
+/// @brief Maximum ORP; 999 mV
+#define Y533_ORP_MAX_MV 999
 /// @brief Decimal places in string representation; ORP should have 0 -
 /// resolution is 1 mV units.
 #define Y533_ORP_RESOLUTION 0
@@ -125,6 +129,10 @@
  * {{ @ref YosemitechY533_Temp::YosemitechY533_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y533_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y533_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y533_TEMP_RESOLUTION 1

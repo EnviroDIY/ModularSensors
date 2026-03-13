@@ -212,11 +212,11 @@
  * @anchor sensor_insitu_rdo_domgl
  * @name Dissolved Oxygen Concentration
  * The DO concentration variable from an In-Situ RDO PRO-X
- * - Range is 0 to 50 mg/L concentration
+ * - Range is 0 to 60 mg/L concentration
  * - Accuracy:
  *   - ± 0.1 mg/L from 0 to 8 mg/L
  *   - ± 0.2 mg/L of reading from 8-20 mg/L
- *   - ± 10% of reading from 20-50 mg/L
+ *   - ± 10% of reading from 20-60 mg/L
  *
  * @note To achieve maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
@@ -224,6 +224,10 @@
  * {{ @ref InSituRDO_DOmgL::InSituRDO_DOmgL }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen concentration in milligrams per liter.
+#define INSITU_RDO_DOMGL_MIN_MGPL 0.0
+/// @brief Maximum dissolved oxygen concentration in milligrams per liter.
+#define INSITU_RDO_DOMGL_MAX_MGPL 60.0
 /**
  * @brief Decimal places in string representation; dissolved oxygen
  * concentration should have 2 - resolution is 0.01 mg/L.
@@ -260,9 +264,16 @@
  * @note To achieve maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
  *
+ * @todo Find the maximum value for percent saturation.  The spec sheet only
+ * lists the maximum DO concentration.  I've set it here to 500%.
+ *
  * {{ @ref InSituRDO_DOpct::InSituRDO_DOpct }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen percent saturation.
+#define INSITU_RDO_DOPCT_MIN_PCT 0.0
+/// @brief Maximum dissolved oxygen percent saturation.
+#define INSITU_RDO_DOPCT_MAX_PCT 500.0
 /**
  * @brief Decimal places in string representation; dissolved oxygen percent
  * saturation should have 1.
@@ -297,6 +308,10 @@
  * {{ @ref InSituRDO_Temp::InSituRDO_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define INSITU_RDO_TEMP_MIN_C 0.0
+/// @brief Maximum temperature in degrees Celsius.
+#define INSITU_RDO_TEMP_MAX_C 50.0
 /**
  * @brief Decimal places in string representation; temperature should have 2 -
  * resolution is 0.01°C.
@@ -327,6 +342,9 @@
  *
  * @note The oxygen partial pressure output must be manually enabled in SDI-12
  * mode using the Win-Situ software.
+ *
+ * @todo Find and define minimum and maximum oxygen partial pressure measurement
+ * range
  *
  * {{ @ref InSituRDO_Pressure::InSituRDO_Pressure }}
  */

@@ -71,8 +71,9 @@ bool FreescaleMPL115A2::addSingleMeasurementResult() {
     MS_DBG(F("  Temperature:"), temp);
     MS_DBG(F("  Pressure:"), press);
 
-    if (!isnan(temp) && !isnan(press) && press >= 50.0 && press <= 115.0 &&
-        temp >= -20.0 && temp <= 85.0) {
+    if (!isnan(temp) && !isnan(press) && press >= MPL115A2_PRESSURE_MIN_KPA &&
+        press <= MPL115A2_PRESSURE_MAX_KPA && temp >= MPL115A2_TEMP_MIN_C &&
+        temp <= MPL115A2_TEMP_MAX_C) {
         verifyAndAddMeasurementResult(MPL115A2_TEMP_VAR_NUM, temp);
         verifyAndAddMeasurementResult(MPL115A2_PRESSURE_VAR_NUM, press);
         success = true;

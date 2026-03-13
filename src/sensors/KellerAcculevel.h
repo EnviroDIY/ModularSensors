@@ -83,6 +83,10 @@
  * {{ @ref KellerAcculevel_Pressure::KellerAcculevel_Pressure }}
  */
 /**@{*/
+/// @brief Minimum pressure; 0 bar
+#define ACCULEVEL_PRESSURE_MIN_BAR 0
+/// @brief Maximum pressure; 11 bar
+#define ACCULEVEL_PRESSURE_MAX_BAR 11
 /// @brief Decimal places in string representation; pressure should have 5 -
 /// resolution is 0.002%.
 #define ACCULEVEL_PRESSURE_RESOLUTION 5
@@ -100,6 +104,10 @@
  * {{ @ref KellerAcculevel_Temp::KellerAcculevel_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; -10°C
+#define ACCULEVEL_TEMP_MIN_C -10
+/// @brief Maximum temperature; 60°C
+#define ACCULEVEL_TEMP_MAX_C 60
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define ACCULEVEL_TEMP_RESOLUTION 2
@@ -111,12 +119,16 @@
  * @anchor sensor_acculevel_height
  * @name Height
  * The height variable from a Keller Acculevel
- * - Range is 0 to 900 feet
+ * - Range is 0 to 900 feet (0 to 275 m)
  * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
  *
  * {{ @ref KellerAcculevel_Height::KellerAcculevel_Height }}
  */
 /**@{*/
+/// @brief Minimum height; 0 feet (0 m)
+#define ACCULEVEL_HEIGHT_MIN_M 0
+/// @brief Maximum height; 900 feet (275 m)
+#define ACCULEVEL_HEIGHT_MAX_M 275
 /// @brief Decimal places in string representation; height should have 4 -
 /// resolution is 0.002%.
 #define ACCULEVEL_HEIGHT_RESOLUTION 4
@@ -289,4 +301,4 @@ class KellerAcculevel_Height : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_KELLERACCULEVEL_H_
 
-// cSpell:ignore kellerAccuPress kellerAccuTemp kellerAccuHeight
+// cSpell:words kellerAccuPress kellerAccuTemp kellerAccuHeight

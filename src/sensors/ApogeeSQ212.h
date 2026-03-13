@@ -179,6 +179,10 @@ class AnalogVoltageReader;
 /// using an ADS1115.
 #define SQ212_PAR_RESOLUTION 4
 #endif
+/// @brief Minimum PAR value in microeinsteins per square meter per second.
+#define SQ212_PAR_MIN 0
+/// @brief Maximum PAR value in microeinsteins per square meter per second.
+#define SQ212_PAR_MAX 2500
 /// Variable number; PAR is stored in sensorValues[0].
 #define SQ212_PAR_VAR_NUM 0
 /// @brief Variable name in [ODM2 controlled
@@ -197,7 +201,7 @@ class AnalogVoltageReader;
  * @anchor sensor_sq212_voltage
  * @name Voltage
  * The voltage variable from an Apogee SQ-212
- * - Range is 0 to 3.6V [when ADC is powered at 3.3V]
+ * - Range is 0 to 2.5V for SQ-212/SQ-222, 0 to 5V for SQ-215/SQ-225
  * - Accuracy is ± 0.5%
  *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
@@ -213,6 +217,10 @@ class AnalogVoltageReader;
 /**@{*/
 /// Variable number; voltage is stored in sensorValues[1].
 #define SQ212_VOLTAGE_VAR_NUM 1
+/// @brief Minimum voltage in volts.
+#define SQ212_VOLTAGE_MIN_V 0
+/// @brief Maximum voltage in volts.
+#define SQ212_VOLTAGE_MAX_V 5.0
 /// @brief Variable name in [ODM2 controlled
 /// vocabulary](http://vocabulary.odm2.org/variablename/); "voltage"
 #define SQ212_VOLTAGE_VAR_NAME "voltage"

@@ -122,11 +122,14 @@
  * @anchor sensor_processor_analog_volt
  * @name Voltage
  * The voltage variable for the processor analog voltage sensor
- * - Range is dependent on the supply voltage and any voltage divider
+ * - Range is dependent on the supply voltage and any voltage divider.  We do
+ * not set a specific maximum for this variable.
  *
  * {{ @ref ProcessorAnalog_Voltage::ProcessorAnalog_Voltage }}
  */
 /**@{*/
+/// @brief Minimum analog voltage in volts.
+#define PROCESSOR_ANALOG_MIN_V 0.0
 /// Variable number; voltage is stored in sensorValues[0].
 #define PROCESSOR_ANALOG_VAR_NUM 0
 /// @brief Variable name in

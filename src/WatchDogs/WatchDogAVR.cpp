@@ -128,6 +128,6 @@ ISR(WDT_vect) {
     }
 }
 
-// cspell:words MCUSR WDTCSR WDCE WDRF WDIF WDIE WDT_vect
-
 #endif
+
+// cSpell:words MCUSR WDTCSR WDCE WDRF WDIF WDIE WDT_vect

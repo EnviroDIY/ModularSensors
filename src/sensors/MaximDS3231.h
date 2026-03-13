@@ -127,6 +127,10 @@
  * {{ @ref MaximDS3231_Temp::MaximDS3231_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define DS3231_TEMP_MIN_C -55.0
+/// @brief Maximum temperature in degrees Celsius.
+#define DS3231_TEMP_MAX_C 125.0
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is -0.25°C (10 bit).
 #define DS3231_TEMP_RESOLUTION 2
@@ -222,4 +226,4 @@ class MaximDS3231_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_MAXIMDS3231_H_
 
-// cSpell:ignore temperatureDatalogger
+// cSpell:words temperatureDatalogger

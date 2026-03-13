@@ -137,11 +137,16 @@
  * @anchor sensor_i2c_rain_depth
  * @name Rain Depth
  * The rain depth variable from a Trinket-based tipping bucket counter
- * - Range and accuracy depend on the tipping bucket used
+ * - Range and accuracy depend on the tipping bucket used.  We set it to a big
+ * number here.
  *
  * {{ @ref RainCounterI2C_Depth::RainCounterI2C_Depth }}
  */
 /**@{*/
+/// @brief Minimum precipitation in millimeters.
+#define BUCKET_RAIN_MIN_MM 0.0
+/// @brief Maximum precipitation in millimeters.
+#define BUCKET_RAIN_MAX_MM 500.0
 /**
  * @brief Decimal places in string representation; rain depth should have 2.
  *
@@ -167,11 +172,16 @@
  * @anchor sensor_i2c_rain_tips
  * @name Tip Count
  * Defines for tip count variable from a Trinket-based tipping bucket counter
- * - Range and accuracy depend on the tipping bucket used.
+ * - Range and accuracy depend on the tipping bucket used.  We set the maximum
+ * tip count to the maximum value of an unsigned long.
  *
  * {{ @ref RainCounterI2C_Tips::RainCounterI2C_Tips }}
  */
 /**@{*/
+/// @brief Minimum number of bucket tips.
+#define BUCKET_TIPS_MIN_TIPS 0
+/// @brief Maximum number of bucket tips.
+#define BUCKET_TIPS_MAX_TIPS 4294967295
 /// @brief Decimal places in string representation; the number of tips should
 /// have 0 - resolution is 1 tip.
 #define BUCKET_TIPS_RESOLUTION 0

@@ -119,6 +119,10 @@
  * {{ @ref CampbellClariVUE10_Turbidity::CampbellClariVUE10_Turbidity }}
  */
 /**@{*/
+/// @brief Minimum turbidity in formazin nephelometric units.
+#define CLARIVUE10_TURBIDITY_MIN_FNU 0.0
+/// @brief Maximum turbidity in formazin nephelometric units.
+#define CLARIVUE10_TURBIDITY_MAX_FNU 4000.0
 /// @brief Decimal places in string representation; turbidity should have 1
 /// (resolution is 0.2 FNU).
 #define CLARIVUE10_TURBIDITY_RESOLUTION 1
@@ -146,6 +150,10 @@
  * {{ @ref CampbellClariVUE10_Temp::CampbellClariVUE10_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define CLARIVUE10_TEMP_MIN_C -2.0
+/// @brief Maximum temperature in degrees Celsius.
+#define CLARIVUE10_TEMP_MAX_C 40.0
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define CLARIVUE10_TEMP_RESOLUTION 2
@@ -168,6 +176,8 @@
  * @name Error Code
  * The error code variable from a Campbell ClariVUE10
  * - Significance of error code values is unknown.
+ *
+ * @todo Find and define minimum and maximum error code range
  *
  * {{ @ref CampbellClariVUE10_ErrorCode::CampbellClariVUE10_ErrorCode }}
  */

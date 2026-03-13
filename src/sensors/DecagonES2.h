@@ -104,6 +104,10 @@
  * {{ @ref DecagonES2_Cond::DecagonES2_Cond }}
  */
 /**@{*/
+/// @brief Minimum specific conductance in microsiemens per centimeter.
+#define ES2_COND_MIN_USCM 0.0
+/// @brief Maximum specific conductance in microsiemens per centimeter.
+#define ES2_COND_MAX_USCM 120000.0
 /**
  * @brief Decimal places in string representation; conductivity should have 1.
  *
@@ -135,6 +139,10 @@
  * {{ @ref DecagonES2_Temp::DecagonES2_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define ES2_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define ES2_TEMP_MAX_C 50.0
 /**
  * @brief Decimal places in string representation; temperature should have 2.
  *

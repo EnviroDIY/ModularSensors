@@ -75,6 +75,10 @@
  * {{ @ref KellerNanolevel_Pressure::KellerNanolevel_Pressure }}
  */
 /**@{*/
+/// @brief Minimum pressure; 0 mbar
+#define NANOLEVEL_PRESSURE_MIN_MBAR 0
+/// @brief Maximum pressure; 300 mbar
+#define NANOLEVEL_PRESSURE_MAX_MBAR 300
 /// @brief Decimal places in string representation; pressure should have 5 -
 /// resolution is 0.002%.
 #define NANOLEVEL_PRESSURE_RESOLUTION 5
@@ -92,6 +96,10 @@
  * {{ @ref KellerNanolevel_Temp::KellerNanolevel_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 10°C
+#define NANOLEVEL_TEMP_MIN_C 10
+/// @brief Maximum temperature; 50°C
+#define NANOLEVEL_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define NANOLEVEL_TEMP_RESOLUTION 2
@@ -103,12 +111,16 @@
  * @anchor sensor_nanolevel_height
  * @name Height
  * The height variable from a Keller Nanolevel
- * - Range is 0 to 120 inches
+ * - Range is 0 to 120 inches (0 to 3.048 m)
  * - Accuracy is Standard ±0.1% FS, Optional ±0.05% FS
  *
  * {{ @ref KellerNanolevel_Height::KellerNanolevel_Height }}
  */
 /**@{*/
+/// @brief Minimum height; 0 inches (0 m)
+#define NANOLEVEL_HEIGHT_MIN_M 0
+/// @brief Maximum height; 120 inches (3.048 m)
+#define NANOLEVEL_HEIGHT_MAX_M 3.048
 /// @brief Decimal places in string representation; height should have 4 -
 /// resolution is 0.002%.
 #define NANOLEVEL_HEIGHT_RESOLUTION 4

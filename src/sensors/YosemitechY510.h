@@ -95,6 +95,10 @@
  * {{ @ref YosemitechY510_Turbidity::YosemitechY510_Turbidity }}
  */
 /**@{*/
+/// @brief Minimum turbidity in nephelometric turbidity units.
+#define Y510_TURB_MIN_NTU 0.1
+/// @brief Maximum turbidity in nephelometric turbidity units.
+#define Y510_TURB_MAX_NTU 1000.0
 /// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y510_TURB_RESOLUTION 2
@@ -122,6 +126,10 @@
  * {{ @ref YosemitechY510_Temp::YosemitechY510_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define Y510_TEMP_MIN_C 0.0
+/// @brief Maximum temperature in degrees Celsius.
+#define Y510_TEMP_MAX_C 50.0
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y510_TEMP_RESOLUTION 1

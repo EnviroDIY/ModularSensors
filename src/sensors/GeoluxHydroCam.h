@@ -154,7 +154,7 @@
 /// @brief Sensor::_measurementTime_ms; the HydroCam imaging time is variable
 /// depending on the image size, but the typical minimum I've seen for the
 /// smallest image (160x120) is ~3.8s on firmware >2.0.1.
-/// The largest image takes over 16s on firmwares <2.0.1.
+/// The largest image (2592x1944) takes over 16s on firmwares <2.0.1.
 #define HYDROCAM_MEASUREMENT_TIME_MS 3800L
 /// @brief The maximum time to wait for an image.
 #define HYDROCAM_MEASUREMENT_TIME_MAX 18000L
@@ -169,9 +169,19 @@
  * SD card, not necessarily (but hopefully) the size of the image
  * as reported by the camera
  *
+ * @todo Figure out the largest image size the camera can produce and set the
+ * max accordingly. The manual doesn't specify, but there is a setting to limit
+ * the file size which has a maximum of 3000KB (3MB), so it seems like the
+ * camera should be able to produce images at least that large. For now, we'll
+ * set the max to a conservative 10MB (10485760 bytes).
+ *
  * {{ @ref GeoluxHydroCam_ImageSize::GeoluxHydroCam_ImageSize }}
  */
 /**@{*/
+/// @brief Minimum image size in bytes.
+#define HYDROCAM_SIZE_MIN_BYTES 0
+/// @brief Maximum image size in bytes.
+#define HYDROCAM_SIZE_MAX_BYTES 10485760
 /// @brief Decimal places in string representation; image size should have 0 -
 /// resolution is 1 byte.
 #define HYDROCAM_SIZE_RESOLUTION 0
@@ -198,6 +208,11 @@
  * {{ @ref GeoluxHydroCam_ByteError::GeoluxHydroCam_ByteError }}
  */
 /**@{*/
+/// @brief Minimum flash memory error count.
+#define HYDROCAM_ERROR_MIN_COUNT 0
+/// @brief Maximum flash memory error count - can be off by as much as the max
+/// image size.
+#define HYDROCAM_ERROR_MAX_COUNT HYDROCAM_SIZE_MAX_BYTES
 /// @brief Decimal places in string representation; byte error should have
 /// 0 - resolution is 1 byte.
 #define HYDROCAM_ERROR_RESOLUTION 0
@@ -491,4 +506,4 @@ class GeoluxHydroCam_ByteError : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_GEOLUXHYDROCAM_H_
 
-// cSpell:ignore dataloggers QQVGA QVGA QXGA UXGA autofocusing
+// cSpell:words dataloggers QQVGA QVGA QXGA UXGA autofocusing

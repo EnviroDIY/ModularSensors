@@ -117,10 +117,13 @@
  * The battery voltage variable from the processor/mcu
  * This is the voltage as measured on the battery attached to the MCU using the
  * inbuilt ADC, if applicable.
- * - Range is assumed to be 0 to 5V
- * - Accuracy is processor dependent
+ * - Range and accuracy are processor dependent.
+ *
+ * We do not set a specific maximum for this variable.
  */
 /**@{*/
+/// @brief Minimum battery voltage in volts.
+#define PROCESSOR_BATTERY_MIN_V 0.0
 /**
  * @brief Decimal places in string representation; battery voltage should
  * have 3.
@@ -187,6 +190,10 @@
  * {{ @ref ProcessorStats_SampleNumber::ProcessorStats_SampleNumber }}
  */
 /**@{*/
+/// @brief Minimum sample number.
+#define PROCESSOR_SAMPNUM_MIN_NUM 0
+/// @brief Maximum sample number.
+#define PROCESSOR_SAMPNUM_MAX_NUM 32767
 /// @brief Decimal places in string representation; sample number should have
 /// 0 - resolution is 1.
 #define PROCESSOR_SAMPNUM_RESOLUTION 0
@@ -217,6 +224,10 @@
  * {{ @ref ProcessorStats_ResetCode::ProcessorStats_ResetCode }}
  */
 /**@{*/
+/// @brief Minimum reset code value.
+#define PROCESSOR_RESET_MIN_CODE 0
+/// @brief Maximum reset code value.
+#define PROCESSOR_RESET_MAX_CODE 255
 /// @brief Decimal places in string representation; reset code should have 0 -
 /// it's just a code
 #define PROCESSOR_RESET_RESOLUTION 0
@@ -518,4 +529,4 @@ class ProcessorStats_ResetCode : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_PROCESSORSTATS_H_
 
-// cSpell:ignore SAMPNUM sampno Tatu Moja Adalogger Duemilanove Esplora
+// cSpell:words SAMPNUM sampno Tatu Moja Adalogger Duemilanove Esplora

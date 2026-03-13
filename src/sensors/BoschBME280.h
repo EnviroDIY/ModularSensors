@@ -161,6 +161,10 @@
  * {{ @ref BoschBME280_Temp::BoschBME280_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define BME280_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define BME280_TEMP_MAX_C 85.0
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define BME280_TEMP_RESOLUTION 2
@@ -186,6 +190,10 @@
  * {{ @ref BoschBME280_Humidity::BoschBME280_Humidity }}
  */
 /**@{*/
+/// @brief Minimum relative humidity in percent.
+#define BME280_HUMIDITY_MIN_RH 0.0
+/// @brief Maximum relative humidity in percent.
+#define BME280_HUMIDITY_MAX_RH 100.0
 /// @brief Decimal places in string representation; humidity should have 3-
 /// resolution is 0.008 % RH (16 bit).
 #define BME280_HUMIDITY_RESOLUTION 3
@@ -207,13 +215,17 @@
  * @anchor sensor_bme280_pressure
  * @name Barometric Pressure
  * The barometric pressure variable from a Bosch BME280
- * - Range is 300 to 1100 hPa
+ * - Range is 300 to 1100 hPa (30000 to 110000 Pa)
  *   - Absolute accuracy is ±1 hPa
  *   - Relative accuracy is ±0.12 hPa
  *
  * {{ @ref BoschBME280_Pressure::BoschBME280_Pressure }}
  */
 /**@{*/
+/// @brief Minimum barometric pressure in pascal.
+#define BME280_PRESSURE_MIN_PA 30000.0
+/// @brief Maximum barometric pressure in pascal.
+#define BME280_PRESSURE_MAX_PA 110000.0
 /// @brief Decimal places in string representation; barometric pressure should
 /// have 2.
 #define BME280_PRESSURE_RESOLUTION 2
@@ -480,3 +492,5 @@ class BoschBME280_Altitude : public Variable {
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBME280_H_
+
+// cSpell:words hectopascals

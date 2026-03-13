@@ -113,6 +113,10 @@
  * {{ @ref VegaPuls21_Stage::VegaPuls21_Stage }}
  */
 /**@{*/
+/// @brief Minimum stage; 0 m
+#define VEGAPULS21_STAGE_MIN_M 0
+/// @brief Maximum stage; 20 m (measuring range)
+#define VEGAPULS21_STAGE_MAX_M 20
 /// @brief Decimal places in string representation; stage in meters should have
 /// 3 - resolution is 1mm.
 #define VEGAPULS21_STAGE_RESOLUTION 3
@@ -139,6 +143,10 @@
  * {{ @ref VegaPuls21_Distance::VegaPuls21_Distance }}
  */
 /**@{*/
+/// @brief Minimum distance; 0.25 m (minimum measuring distance)
+#define VEGAPULS21_DISTANCE_MIN_M 0.25
+/// @brief Maximum distance; 20 m (measuring range)
+#define VEGAPULS21_DISTANCE_MAX_M 20
 /// @brief Decimal places in string representation; distance in meters should
 /// have 3 - resolution is 1mm.
 #define VEGAPULS21_DISTANCE_RESOLUTION 3
@@ -164,6 +172,10 @@
  * {{ @ref VegaPuls21_Temp::VegaPuls21_Temp }}
  */
 /**@{*/
+/// @brief Minimum process temperature; -40°C
+#define VEGAPULS21_TEMP_MIN_C -40
+/// @brief Maximum process temperature; 80°C
+#define VEGAPULS21_TEMP_MAX_C 80
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define VEGAPULS21_TEMP_RESOLUTION 1
@@ -185,6 +197,9 @@
  * @anchor sensor_vega_puls21_reliability
  * @name Reliability
  * The reliability variable from a VEGAPULS C 21
+ *
+ * @todo Find and define minimum and maximum reliability measurement range from
+ * the VegaPuls21.
  *
  * {{ @ref VegaPuls21_Reliability::VegaPuls21_Reliability }}
  */
@@ -211,6 +226,9 @@
  * @name Error Code
  * The error code variable from a VEGAPULS C 21
  * - Significance of error code values is unknown.
+ *
+ * @todo Find and define minimum and maximum error code range from the
+ * VegaPuls21.
  *
  * {{ @ref VegaPuls21_ErrorCode::VegaPuls21_ErrorCode }}
  */

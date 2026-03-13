@@ -118,6 +118,10 @@
  * {{ @ref AOSongAM2315_Humidity::AOSongAM2315_Humidity }}
  */
 /**@{*/
+/// @brief Minimum humidity in percent relative humidity.
+#define AM2315_HUMIDITY_MIN_RH 0
+/// @brief Maximum humidity in percent relative humidity.
+#define AM2315_HUMIDITY_MAX_RH 100
 /// @brief Decimal places in string representation; humidity should have 1 (0.1
 /// % RH for the 16 bit sensor).
 #define AM2315_HUMIDITY_RESOLUTION 1
@@ -145,6 +149,10 @@
  * {{ @ref AOSongAM2315_Temp::AOSongAM2315_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define AM2315_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define AM2315_TEMP_MAX_C 125.0
 /// @brief Decimal places in string representation; temperature should have 1.
 /// (0.1°C for the 16 bit sensor)
 #define AM2315_TEMP_RESOLUTION 1

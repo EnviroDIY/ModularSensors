@@ -155,7 +155,11 @@ class AnalogVoltageReader;
  * {{ @ref CampbellOBS3_Turbidity::CampbellOBS3_Turbidity }}
  */
 /**@{*/
-/// Variable number; turbidity is stored in sensorValues[0].
+/// @brief Minimum turbidity in nephelometric turbidity units.
+#define OBS3_TURB_MIN_NTU 0.0
+/// @brief Maximum turbidity in nephelometric turbidity units.
+#define OBS3_TURB_MAX_NTU 4000.0
+/// @brief Variable number; turbidity is stored in sensorValues[0].
 #define OBS3_TURB_VAR_NUM 0
 #ifdef MS_USE_ADS1015
 /// @brief Decimal places in string representation; turbidity should have 1.
@@ -191,7 +195,11 @@ class AnalogVoltageReader;
  * {{ @ref CampbellOBS3_Voltage::CampbellOBS3_Voltage }}
  */
 /**@{*/
-/// Variable number; voltage is stored in sensorValues[1].
+/// @brief Minimum voltage in volts.
+#define OBS3_VOLTAGE_MIN_V 0.0
+/// @brief Maximum voltage in volts.
+#define OBS3_VOLTAGE_MAX_V 2.5
+/// @brief Variable number; voltage is stored in sensorValues[1].
 #define OBS3_VOLTAGE_VAR_NUM 1
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);

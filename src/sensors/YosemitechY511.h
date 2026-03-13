@@ -109,6 +109,10 @@
  * {{ @ref YosemitechY511_Turbidity::YosemitechY511_Turbidity }}
  */
 /**@{*/
+/// @brief Minimum turbidity; 0.1 NTU
+#define Y511_TURB_MIN_NTU 0.1
+/// @brief Maximum turbidity; 1000 NTU
+#define Y511_TURB_MAX_NTU 1000
 /// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y511_TURB_RESOLUTION 2
@@ -136,6 +140,10 @@
  * {{ @ref YosemitechY511_Temp::YosemitechY511_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y511_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y511_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y511_TEMP_RESOLUTION 1
@@ -280,4 +288,4 @@ class YosemitechY511_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY511_H_
 
-// cSpell:ignore Wipered
+// cSpell:words Wipered

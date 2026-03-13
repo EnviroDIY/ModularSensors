@@ -221,6 +221,12 @@
  * {{ @ref ANBpH_pH::ANBpH_pH }}
  */
 /**@{*/
+/// @brief Minimum pH value.
+#define ANB_PH_PH_MIN 0
+/// @brief Maximum pH value.
+/// @note The valid range is up to 14, but we allow up to 100 to keep the 99.99
+/// error code from being out of range.)
+#define ANB_PH_PH_MAX 100
 /// @brief Decimal places in string representation; pH should have 2 -
 /// resolution is 0.01.
 #define ANB_PH_PH_RESOLUTION 2
@@ -245,6 +251,10 @@
  * {{ @ref ANBpH_Temp::ANBpH_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define ANB_PH_TEMP_MIN_C -5.0
+/// @brief Maximum temperature in degrees Celsius.
+#define ANB_PH_TEMP_MAX_C 40.0
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define ANB_PH_TEMP_RESOLUTION 2
@@ -274,6 +284,8 @@
  *
  * @note If both the pH and salinity output is 99.99, check the
  * transducer health code for instruction.
+ *
+ * @todo Find and define minimum and maximum salinity measurement range
  *
  * {{ @ref ANBpH_Salinity::ANBpH_Salinity }}
  */
@@ -308,6 +320,9 @@
  *
  * @note If both the pH and specific conductance output is 99.99, check the
  * transducer health code for instruction.
+ *
+ * @todo Find and define minimum and maximum specific conductance measurement
+ * range
  *
  * {{ @ref ANBpH_SpCond::ANBpH_SpCond }}
  */
@@ -345,6 +360,9 @@
  *
  * @note If both the pH and raw conductivity output is 99.99, check the
  * transducer health code for instruction.
+ *
+ * @todo Find and define minimum and maximum electrical conductivity measurement
+ * range
  *
  * {{ @ref ANBpH_EC::ANBpH_EC }}
  */
@@ -967,4 +985,4 @@ class ANBpH_StatusCode : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_ANB_SENSORS_PH_H_
 
-// cSpell:ignore millisiemenPerCentimeter ppth SPCOND
+// cSpell:words millisiemenPerCentimeter ppth SPCOND

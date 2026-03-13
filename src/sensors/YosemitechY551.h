@@ -99,6 +99,10 @@
  * {{ @ref YosemitechY551_COD::YosemitechY551_COD }}
  */
 /**@{*/
+/// @brief Minimum COD; 0.75 mg/L
+#define Y551_COD_MIN_MGPL 0.75
+/// @brief Maximum COD; 370 mg/L
+#define Y551_COD_MAX_MGPL 370
 /// @brief Decimal places in string representation; cod should have 2 -
 /// resolution is 0.01 mg/L COD.
 #define Y551_COD_RESOLUTION 2
@@ -126,6 +130,10 @@
  * {{ @ref YosemitechY551_Temp::YosemitechY551_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 5°C
+#define Y551_TEMP_MIN_C 5
+/// @brief Maximum temperature; 45°C
+#define Y551_TEMP_MAX_C 45
 /// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define Y551_TEMP_RESOLUTION 2
@@ -153,6 +161,10 @@
  * {{ @ref YosemitechY551_Turbidity::YosemitechY551_Turbidity }}
  */
 /**@{*/
+/// @brief Minimum turbidity; 0.1 NTU
+#define Y551_TURB_MIN_NTU 0.1
+/// @brief Maximum turbidity; 1000 NTU
+#define Y551_TURB_MAX_NTU 1000
 /// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y551_TURB_RESOLUTION 2

@@ -97,6 +97,10 @@
  * {{ @ref YosemitechY560_NH4_N::YosemitechY560_NH4_N }}
  */
 /**@{*/
+/// @brief Minimum NH4_N concentration; 0 mg/L
+#define Y560_NH4_N_MIN_MGPL 0
+/// @brief Maximum NH4_N concentration; 100 mg/L
+#define Y560_NH4_N_MAX_MGPL 100
 /// @brief Decimal places in string representation; NH4_N should have 1 -
 /// resolution is 0.1 mg/L.
 #define Y560_NH4_N_RESOLUTION 1
@@ -124,6 +128,10 @@
  * {{ @ref YosemitechY560_Temp::YosemitechY560_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; 0°C
+#define Y560_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y560_TEMP_MAX_C 50
 /// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y560_TEMP_RESOLUTION 1
@@ -151,6 +159,10 @@
  * {{ @ref YosemitechY560_pH::YosemitechY560_pH }}
  */
 /**@{*/
+/// @brief Minimum pH; 2 pH units
+#define Y560_PH_MIN_PH 2
+/// @brief Maximum pH; 12 pH units
+#define Y560_PH_MAX_PH 12
 /// @brief Decimal places in string representation; pH should have 2 -
 /// resolution is 0.01 pH units.
 #define Y560_PH_RESOLUTION 2
