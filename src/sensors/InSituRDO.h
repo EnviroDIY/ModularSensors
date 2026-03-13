@@ -70,7 +70,7 @@
  * 1.  Disable caching:
  *   - By default, the RDO PRO-X "caches" readings for 5000ms (5s) and will
  * not take a new measurement until the 5s cache expires.  If you want to take
- * measurements at faster than 5s intervals (ie, to average multiple
+ * measurements at faster than 5s intervals (i.e., to average multiple
  * measurements), I strongly recommend setting the cache value to 0ms using the
  * Win-Situ software.  The cache value can be changed in the "Diagnostics" menu
  * found on the "Device Setup" tab of Win-Situ.
@@ -212,11 +212,11 @@
  * @anchor sensor_insitu_rdo_domgl
  * @name Dissolved Oxygen Concentration
  * The DO concentration variable from an In-Situ RDO PRO-X
- * - Range is 0 to 50 mg/L concentration
+ * - Range is 0 to 60 mg/L concentration
  * - Accuracy:
  *   - ± 0.1 mg/L from 0 to 8 mg/L
  *   - ± 0.2 mg/L of reading from 8-20 mg/L
- *   - ± 10% of reading from 20-50 mg/L
+ *   - ± 10% of reading from 20-60 mg/L
  *
  * @note To achieve maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
@@ -224,8 +224,12 @@
  * {{ @ref InSituRDO_DOmgL::InSituRDO_DOmgL }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen concentration in milligrams per liter.
+#define INSITU_RDO_DOMGL_MIN_MGPL 0.0
+/// @brief Maximum dissolved oxygen concentration in milligrams per liter.
+#define INSITU_RDO_DOMGL_MAX_MGPL 60.0
 /**
- * @brief Decimals places in string representation; dissolved oxygen
+ * @brief Decimal places in string representation; dissolved oxygen
  * concentration should have 2 - resolution is 0.01 mg/L.
  *
  * Contrary to the spec sheet, the actual resolution returned by the sensor in
@@ -260,11 +264,18 @@
  * @note To achieve maximum accuracy, the sensor must be calibrated using either
  * a one or two point calibration.
  *
+ * @todo Find the maximum value for percent saturation.  The spec sheet only
+ * lists the maximum DO concentration.  I've set it here to 500%.
+ *
  * {{ @ref InSituRDO_DOpct::InSituRDO_DOpct }}
  */
 /**@{*/
+/// @brief Minimum dissolved oxygen percent saturation.
+#define INSITU_RDO_DOPCT_MIN_PCT 0.0
+/// @brief Maximum dissolved oxygen percent saturation.
+#define INSITU_RDO_DOPCT_MAX_PCT 500.0
 /**
- * @brief Decimals places in string representation; dissolved oxygen percent
+ * @brief Decimal places in string representation; dissolved oxygen percent
  * saturation should have 1.
  *
  * The actual resolution returned by the sensor in SDI-12 mode is 0.00001 %.
@@ -297,9 +308,12 @@
  * {{ @ref InSituRDO_Temp::InSituRDO_Temp }}
  */
 /**@{*/
-/// @brief
+/// @brief Minimum temperature in degrees Celsius.
+#define INSITU_RDO_TEMP_MIN_C 0.0
+/// @brief Maximum temperature in degrees Celsius.
+#define INSITU_RDO_TEMP_MAX_C 50.0
 /**
- * @brief Decimals places in string representation; temperature should have 2 -
+ * @brief Decimal places in string representation; temperature should have 2 -
  * resolution is 0.01°C.
  *
  * The spec sheet lists 2 decimal resolution, but the returned value has 5.
@@ -329,10 +343,13 @@
  * @note The oxygen partial pressure output must be manually enabled in SDI-12
  * mode using the Win-Situ software.
  *
+ * @todo Find and define minimum and maximum oxygen partial pressure measurement
+ * range
+ *
  * {{ @ref InSituRDO_Pressure::InSituRDO_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 3
+/// @brief Decimal places in string representation; pressure should have 2
 #define INSITU_RDO_PRESSURE_RESOLUTION 2
 /// @brief Variable number; temperature is stored in sensorValues[3].
 #define INSITU_RDO_PRESSURE_VAR_NUM 3
@@ -413,7 +430,7 @@ class InSituRDO : public SDI12Sensors {
     /**
      * @brief Destroy the In-Situ RDO object
      */
-    ~InSituRDO() {}
+    ~InSituRDO() override = default;
 };
 
 
@@ -441,25 +458,13 @@ class InSituRDO_DOmgL : public Variable {
     explicit InSituRDO_DOmgL(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
-                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
-                   varCode, uuid) {}
-    /**
-     * @brief Construct a new InSituRDO_DOmgL object.
-     *
-     * @note This must be tied with a parent InSituRDO before it can be
-     * used.
-     */
-    InSituRDO_DOmgL()
-        : Variable((uint8_t)INSITU_RDO_DOMGL_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOMGL_RESOLUTION,
-                   INSITU_RDO_DOMGL_VAR_NAME, INSITU_RDO_DOMGL_UNIT_NAME,
-                   INSITU_RDO_DOMGL_DEFAULT_CODE) {}
+        : Variable(parentSense, INSITU_RDO_DOMGL_VAR_NUM,
+                   INSITU_RDO_DOMGL_RESOLUTION, INSITU_RDO_DOMGL_VAR_NAME,
+                   INSITU_RDO_DOMGL_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the InSituRDO_DOmgL object - no action needed.
      */
-    ~InSituRDO_DOmgL() {}
+    ~InSituRDO_DOmgL() override = default;
 };
 
 
@@ -487,25 +492,13 @@ class InSituRDO_DOpct : public Variable {
     explicit InSituRDO_DOpct(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOPCT_RESOLUTION,
-                   INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
-                   varCode, uuid) {}
-    /**
-     * @brief Construct a new InSituRDO_DOpct object.
-     *
-     * @note This must be tied with a parent InSituRDO before it can be
-     * used.
-     */
-    InSituRDO_DOpct()
-        : Variable((uint8_t)INSITU_RDO_DOPCT_VAR_NUM,
-                   (uint8_t)INSITU_RDO_DOPCT_RESOLUTION,
-                   INSITU_RDO_DOPCT_VAR_NAME, INSITU_RDO_DOPCT_UNIT_NAME,
-                   INSITU_RDO_DOPCT_DEFAULT_CODE) {}
+        : Variable(parentSense, INSITU_RDO_DOPCT_VAR_NUM,
+                   INSITU_RDO_DOPCT_RESOLUTION, INSITU_RDO_DOPCT_VAR_NAME,
+                   INSITU_RDO_DOPCT_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the InSituRDO_DOpct object - no action needed.
      */
-    ~InSituRDO_DOpct() {}
+    ~InSituRDO_DOpct() override = default;
 };
 
 
@@ -532,25 +525,13 @@ class InSituRDO_Temp : public Variable {
      */
     explicit InSituRDO_Temp(InSituRDO* parentSense, const char* uuid = "",
                             const char* varCode = INSITU_RDO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INSITU_RDO_TEMP_VAR_NUM,
-                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
-                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME, varCode,
-                   uuid) {}
-    /**
-     * @brief Construct a new InSituRDO_Temp object.
-     *
-     * @note This must be tied with a parent InSituRDO before it can be
-     * used.
-     */
-    InSituRDO_Temp()
-        : Variable((uint8_t)INSITU_RDO_TEMP_VAR_NUM,
-                   (uint8_t)INSITU_RDO_TEMP_RESOLUTION,
-                   INSITU_RDO_TEMP_VAR_NAME, INSITU_RDO_TEMP_UNIT_NAME,
-                   INSITU_RDO_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, INSITU_RDO_TEMP_VAR_NUM,
+                   INSITU_RDO_TEMP_RESOLUTION, INSITU_RDO_TEMP_VAR_NAME,
+                   INSITU_RDO_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the InSituRDO_Temp object - no action needed.
      */
-    ~InSituRDO_Temp() {}
+    ~InSituRDO_Temp() override = default;
 };
 
 
@@ -578,25 +559,13 @@ class InSituRDO_Pressure : public Variable {
     explicit InSituRDO_Pressure(
         InSituRDO* parentSense, const char* uuid = "",
         const char* varCode = INSITU_RDO_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
-                   (uint8_t)INSITU_RDO_PRESSURE_RESOLUTION,
-                   INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
-                   varCode, uuid) {}
-    /**
-     * @brief Construct a new InSituRDO_Pressure object.
-     *
-     * @note This must be tied with a parent InSituRDO before it can be
-     * used.
-     */
-    InSituRDO_Pressure()
-        : Variable((uint8_t)INSITU_RDO_PRESSURE_VAR_NUM,
-                   (uint8_t)INSITU_RDO_PRESSURE_RESOLUTION,
-                   INSITU_RDO_PRESSURE_VAR_NAME, INSITU_RDO_PRESSURE_UNIT_NAME,
-                   INSITU_RDO_PRESSURE_DEFAULT_CODE) {}
+        : Variable(parentSense, INSITU_RDO_PRESSURE_VAR_NUM,
+                   INSITU_RDO_PRESSURE_RESOLUTION, INSITU_RDO_PRESSURE_VAR_NAME,
+                   INSITU_RDO_PRESSURE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the InSituRDO_Pressure object - no action needed.
      */
-    ~InSituRDO_Pressure() {}
+    ~InSituRDO_Pressure() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_INSITURDO_H_

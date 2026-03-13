@@ -45,6 +45,20 @@
 #include "LoggerBase.h"
 #include "Client.h"
 
+// HTTP response parsing constants
+/**
+ * @brief Length of the HTTP version prefix "HTTP/1.1 " used when parsing HTTP
+ * response codes
+ */
+#define HTTP_VERSION_PREFIX_LEN 9
+
+// Data publisher defaults
+/**
+ * @brief Default number of startup transmissions to send immediately after each
+ * data point
+ */
+#define DEFAULT_STARTUP_TRANSMISSIONS 5
+
 /**
  * @brief The dataPublisher class is a virtual class used by other publishers to
  * distribute data online.
@@ -80,8 +94,15 @@ class dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
+     * @param startupTransmissions Number of transmissions to send immediately
+     * after each data point is logged, before beginning to cache data and only
+     * transmit every sendEveryX times the logger records data (default: 5).
+     * This allows faster in-field validation of startup data. Not respected by
+     * all publishers.
      */
-    explicit dataPublisher(Logger& baseLogger, int sendEveryX = 1);
+    explicit dataPublisher(
+        Logger& baseLogger, int sendEveryX = 1,
+        uint8_t startupTransmissions = DEFAULT_STARTUP_TRANSMISSIONS);
     /**
      * @brief Construct a new data publisher object.
      *
@@ -95,12 +116,18 @@ class dataPublisher {
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
+     * @param startupTransmissions Number of transmissions to send immediately
+     * after each data point is logged, before beginning to cache data and only
+     * transmit every sendEveryX times the logger records data (default: 5).
+     * This allows faster in-field validation of startup data. Not respected by
+     * all publishers.
      */
-    dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
+    dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
+                  uint8_t startupTransmissions = DEFAULT_STARTUP_TRANSMISSIONS);
     /**
      * @brief Destroy the data publisher object - no action is taken.
      */
-    virtual ~dataPublisher();
+    virtual ~dataPublisher() = default;
 
     /**
      * @brief Set the Client object.
@@ -122,6 +149,28 @@ class dataPublisher {
      * attempted data transmissions. Not respected by all publishers.
      */
     void setSendInterval(int sendEveryX);
+
+    /**
+     * @brief Get the number of startup transmissions
+     *
+     * @return The number of transmissions that will be sent at one minute
+     * intervals for faster in-field validation
+     */
+    uint8_t getStartupTransmissions() const;
+
+    /**
+     * @brief Set the number of startup transmissions to send immediately after
+     * logging
+     *
+     * This controls how many of the first data points are transmitted
+     * immediately after each is logged, before beginning to cache data and only
+     * transmit every sendEveryX times the logger records data. This allows
+     * faster in-field validation of initial data.
+     *
+     * @param count Number of startup transmissions (must be 1-255, will be
+     * clamped to this range)
+     */
+    void setStartupTransmissions(uint8_t count);
 
     /**
      * @brief Attach the publisher to a logger.
@@ -176,7 +225,7 @@ class dataPublisher {
      *
      * @return The URL or HOST to receive published data
      */
-    virtual String getEndpoint(void) = 0;
+    virtual String getEndpoint() = 0;
 
 
     /**
@@ -185,7 +234,7 @@ class dataPublisher {
      *
      * @return True if an internet connection is needed for the next publish.
      */
-    virtual bool connectionNeeded(void);
+    virtual bool connectionNeeded();
 
     /**
      * @brief Opens a socket to the correct receiver and sends out the formatted
@@ -201,9 +250,8 @@ class dataPublisher {
      * @return The result of publishing data.  May be an http response code or a
      * result code from PubSubClient.
      */
-    virtual int16_t
-    publishData(Client* outClient,
-                bool    forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) = 0;
+    virtual int16_t publishData(
+        Client* outClient, bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) = 0;
     /**
      * @brief Open a socket to the correct receiver and send out the formatted
      * data.
@@ -369,6 +417,10 @@ class dataPublisher {
      * memory leak because we cannot delete from the pointer because the
      * destructor for a client in the Arduino core isn't virtual.
      *
+     * @note The client must be deleted by the same type of modem that created
+     * it.  This is unlikely to be an issue unless you're trying to use two
+     * modems on the same logger.
+     *
      * @param client The client to delete
      */
     virtual void deleteClient(Client* client);
@@ -378,6 +430,18 @@ class dataPublisher {
      * attempted data transmissions. Not respected by all publishers.
      */
     int _sendEveryX = 1;
+
+    /**
+     * @brief The number of startup transmissions to send immediately after
+     * logging
+     *
+     * We send each of the first several data points immediately after they are
+     * logged, before beginning to cache data and only transmit every sendEveryX
+     * times the logger records data. This value is user-settable via
+     * constructor parameter or setStartupTransmissions() and allows faster
+     * in-field validation.
+     */
+    uint8_t _startupTransmissions = DEFAULT_STARTUP_TRANSMISSIONS;
 
     // Basic chunks of HTTP
     /**

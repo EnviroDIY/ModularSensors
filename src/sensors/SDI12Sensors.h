@@ -165,7 +165,7 @@ class SDI12Sensors : public Sensor {
     /**
      * @brief Destroy the SDI12Sensors object - no action taken
      */
-    virtual ~SDI12Sensors();
+    ~SDI12Sensors() override = default;
 
     /**
      * @brief Get the stored sensor vendor name returned by a previously called
@@ -174,7 +174,7 @@ class SDI12Sensors : public Sensor {
      * @return String The name of the sensor vendor as reported by the sensor
      * itself.
      */
-    String getSensorVendor(void);
+    String getSensorVendor();
     /**
      * @brief Get the stored sensor model name returned by a previously called
      * SDI-12 get sensor information (aI!) command.
@@ -182,7 +182,7 @@ class SDI12Sensors : public Sensor {
      * @return String The name of the sensor model as reported by the sensor
      * itself.
      */
-    String getSensorModel(void);
+    String getSensorModel();
     /**
      * @brief Get the stored sensor version returned by a previously called
      * SDI-12 get sensor information (aI!) command.
@@ -190,7 +190,7 @@ class SDI12Sensors : public Sensor {
      * @return String The version of the sensor as reported by the sensor
      * itself.
      */
-    String getSensorVersion(void);
+    String getSensorVersion();
     /**
      * @brief Get the stored sensor serial number returned by a previously
      * called SDI-12 get sensor information (aI!) command.
@@ -198,27 +198,27 @@ class SDI12Sensors : public Sensor {
      * @return String The serial number of the sensor as reported by the sensor
      * itself.
      */
-    String getSensorSerialNumber(void);
+    String getSensorSerialNumber();
     /**
      * @copydoc Sensor::getSensorLocation()
      *
      * For SDI-12 sensors this returns a concatenation of the data pin number
      * and the SDI-12 address.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Calls the begin for the SDI-12 object to set all of the
      * pre-scalers and timers.
      */
-    void activate(void);
+    void activate();
 
     /**
      * @brief Empties the SDI-12 object buffer and then ends it. The end
      * function unsets all timer pre-scalers and **--crucially--** disables the
      * interrupts on the SDI-12 data pin.
      */
-    void deactivate(void);
+    void deactivate();
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -233,28 +233,14 @@ class SDI12Sensors : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
 // Only need this for concurrent measurements.
 // NOTE:  By default, concurrent measurements are used!
 #ifndef MS_SDI12_NON_CONCURRENT
-    /**
-     * @brief Tell the sensor to start a single measurement, if needed.
-     *
-     * This also sets the #_millisMeasurementRequested timestamp.
-     *
-     * @note This function does NOT include any waiting for the sensor to be
-     * warmed up or stable!
-     *
-     * @return True if the start measurement function completed
-     * successfully.
-     */
-    bool startSingleMeasurement(void) override;
+    bool startSingleMeasurement() override;
 #endif
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
  protected:
     /**
@@ -264,7 +250,7 @@ class SDI12Sensors : public Sensor {
      * @return True if the correct SDI-12 sensor replied to the
      * command.
      */
-    bool requestSensorAcknowledgement(void);
+    bool requestSensorAcknowledgement();
     /**
      * @brief Send the SDI-12 'info' command [address][I][!] to a sensor and
      * parse the result into the vendor, model, version, and serial number.
@@ -272,7 +258,7 @@ class SDI12Sensors : public Sensor {
      * @return True if all expected information fields returned by the
      * sensor.
      */
-    bool getSensorInfo(void);
+    bool getSensorInfo();
     /**
      * @brief Tell the sensor to start a single measurement, if needed.
      *

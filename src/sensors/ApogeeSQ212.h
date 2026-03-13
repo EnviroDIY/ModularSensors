@@ -12,8 +12,6 @@
  * ApogeeSQ212_PAR and ApogeeSQ212_Voltage.
  *
  * These are used for the Apogee SQ-212 quantum light sensor.
- *
- * This depends on the Adafruit ADS1X15 v2.x library.
  */
 /* clang-format off */
 /**
@@ -56,8 +54,6 @@
  * SQ-212-215 Manual.pdf)
  *
  * @section sensor_sq212_flags Build flags
- * - ```-D MS_USE_ADS1015```
- *      - switches from the 16-bit ADS1115 to the 12 bit ADS1015
  * - ```-D SQ212_CALIBRATION_FACTOR=x```
  *      - Changes the calibration factor from 1 to x
  *
@@ -96,21 +92,11 @@
 #include "VariableBase.h"
 #include "SensorBase.h"
 
+// Forward declaration
+class AnalogVoltageReader;
+
 /** @ingroup sensor_sq212 */
 /**@{*/
-
-/**
- * @anchor sensor_sq212_var_counts
- * @name Sensor Variable Counts
- * The number of variables that can be returned by the Apogee SQ-212
- */
-/**@{*/
-/// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values, raw
-/// voltage and calculated PAR.
-#define SQ212_NUM_VARIABLES 2
-/// @brief Sensor::_incCalcValues; PAR is calculated from the raw voltage.
-#define SQ212_INC_CALC_VARIABLES 1
-/**@}*/
 
 /**
  * @anchor sensor_sq212_config
@@ -126,9 +112,19 @@
  */
 #define SQ212_CALIBRATION_FACTOR 1
 #endif
+/**@}*/
 
-/// The assumed address of the ADS1115, 1001 000 (ADDR = GND)
-#define ADS1115_ADDRESS 0x48
+/**
+ * @anchor sensor_sq212_var_counts
+ * @name Sensor Variable Counts
+ * The number of variables that can be returned by the Apogee SQ-212
+ */
+/**@{*/
+/// @brief Sensor::_numReturnedValues; the SQ212 can report 2 values, raw
+/// voltage and calculated PAR.
+#define SQ212_NUM_VARIABLES 2
+/// @brief Sensor::_incCalcValues; PAR is calculated from the raw voltage.
+#define SQ212_INC_CALC_VARIABLES 1
 /**@}*/
 
 /**
@@ -145,15 +141,16 @@
  */
 #define SQ212_WARM_UP_TIME_MS 2
 /**
- * @brief Sensor::_stabilizationTime_ms; the ADS1115 is stable after 2ms.
+ * @brief Sensor::_stabilizationTime_ms; the default ADS1115 voltage reader is
+ * stable after 2ms.
  *
  * The stabilization time of the SQ-212 itself is not known!
  *
  * @todo Measure stabilization time of the SQ-212
  */
 #define SQ212_STABILIZATION_TIME_MS 2
-/// @brief Sensor::_measurementTime_ms; ADS1115 takes almost 2ms to complete a
-/// measurement (860/sec).
+/// @brief Sensor::_measurementTime_ms; with the default ADS1115 voltage reader,
+/// it takes almost 2ms to complete a measurement (860/sec).
 #define SQ212_MEASUREMENT_TIME_MS 2
 /**@}*/
 
@@ -174,14 +171,18 @@
  */
 /**@{*/
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; PAR should have 0 when
+/// @brief Decimal places in string representation; PAR should have 0 when
 /// using an ADS1015.
 #define SQ212_PAR_RESOLUTION 0
 #else
-/// @brief Decimals places in string representation; PAR should have 4 when
+/// @brief Decimal places in string representation; PAR should have 4 when
 /// using an ADS1115.
 #define SQ212_PAR_RESOLUTION 4
 #endif
+/// @brief Minimum PAR value in microeinsteins per square meter per second.
+#define SQ212_PAR_MIN 0
+/// @brief Maximum PAR value in microeinsteins per square meter per second.
+#define SQ212_PAR_MAX 2500
 /// Variable number; PAR is stored in sensorValues[0].
 #define SQ212_PAR_VAR_NUM 0
 /// @brief Variable name in [ODM2 controlled
@@ -200,7 +201,7 @@
  * @anchor sensor_sq212_voltage
  * @name Voltage
  * The voltage variable from an Apogee SQ-212
- * - Range is 0 to 3.6V [when ADC is powered at 3.3V]
+ * - Range is 0 to 2.5V for SQ-212/SQ-222, 0 to 5V for SQ-215/SQ-225
  * - Accuracy is ± 0.5%
  *   - 16-bit ADC (ADS1115): < 0.25% (gain error), <0.25 LSB (offset error)
  *   - 12-bit ADC (ADS1015, using build flag ```MS_USE_ADS1015```): < 0.15%
@@ -216,6 +217,10 @@
 /**@{*/
 /// Variable number; voltage is stored in sensorValues[1].
 #define SQ212_VOLTAGE_VAR_NUM 1
+/// @brief Minimum voltage in volts.
+#define SQ212_VOLTAGE_MIN_V 0
+/// @brief Maximum voltage in volts.
+#define SQ212_VOLTAGE_MAX_V 5.0
 /// @brief Variable name in [ODM2 controlled
 /// vocabulary](http://vocabulary.odm2.org/variablename/); "voltage"
 #define SQ212_VOLTAGE_VAR_NAME "voltage"
@@ -225,11 +230,11 @@
 /// @brief Default variable short code; "SQ212Voltage"
 #define SQ212_VOLTAGE_DEFAULT_CODE "SQ212Voltage"
 #ifdef MS_USE_ADS1015
-/// @brief Decimals places in string representation; voltage should have 1 when
+/// @brief Decimal places in string representation; voltage should have 1 when
 /// used with an ADS1015.
 #define SQ212_VOLTAGE_RESOLUTION 1
 #else
-/// @brief Decimals places in string representation; voltage should have 4 when
+/// @brief Decimal places in string representation; voltage should have 4 when
 /// used with an ADS1115.
 #define SQ212_VOLTAGE_RESOLUTION 4
 #endif
@@ -244,57 +249,71 @@ class ApogeeSQ212 : public Sensor {
  public:
     /**
      * @brief Construct a new Apogee SQ-212 object - need the power pin and the
-     * data channel on the ADS1x15.
+     * analog data channel.
      *
-     * @note ModularSensors only supports connecting the ADS1x15 to the primary
-     * hardware I2C instance defined in the Arduino core. Connecting the ADS to
-     * a secondary hardware or software I2C instance is *not* supported!
+     * By default, this constructor will internally create a default
+     * AnalogVoltageReader implementation for voltage readings, but a pointer to
+     * a custom AnalogVoltageReader object can be passed in if desired.
      *
      * @param powerPin The pin on the mcu controlling power to the Apogee
      * SQ-212.  Use -1 if it is continuously powered.
      * - The SQ-212 requires 3.3 to 24 V DC; current draw 10 µA
-     * - The ADS1115 requires 2.0-5.5V but is assumed to be powered at 3.3V
-     * @param adsChannel The analog data channel the Apogee SQ-212 is connected
-     * to _on the TI ADS1115_ (0-3).
-     * @param i2cAddress The I2C address of the ADS 1x15, default is 0x48 (ADDR
-     * = GND)
+     * @param analogChannel The analog data channel or processor pin for voltage
+     * measurements.  The significance of the channel number depends on the
+     * specific AnalogVoltageReader implementation used for voltage readings.
+     * For example, with the TI ADS1x15, this would be the ADC channel (0-3)
+     * that the sensor is connected to.  Negative or invalid channel numbers are
+     * not clamped and will cause the reading to fail and emit a warning.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
-     * @note  The ADS is expected to be either continuously powered or have
-     * its power controlled by the same pin as the SQ-212.  This library does
-     * not support any other configuration.
-     */
-    ApogeeSQ212(int8_t powerPin, uint8_t adsChannel,
-                uint8_t i2cAddress            = ADS1115_ADDRESS,
-                uint8_t measurementsToAverage = 1);
-    /**
-     * @brief Destroy the ApogeeSQ212 object - no action needed
-     */
-    ~ApogeeSQ212();
-
-    /**
-     * @brief Report the I1C address of the ADS and the channel that the SQ-212
-     * is attached to.
+     * @param analogVoltageReader Pointer to an AnalogVoltageReader object for
+     * voltage measurements.  Pass nullptr (the default) to have the constructor
+     * internally create and own an analog voltage reader.  For backward
+     * compatibility, the default reader uses a TI ADS1115 or ADS1015.  If a
+     * non-null pointer is supplied, the caller retains ownership and must
+     * ensure its lifetime exceeds that of this object.
      *
-     * @return Text describing how the sensor is attached to the mcu.
+     * @warning In library versions 0.37.0 and earlier, a different constructor
+     * was used that the I2C address of the ADS1x15 was an optional input
+     * parameter which came *before* the optional input parameter for the number
+     * of measurements to average.  The input parameter for the I2C address has
+     * been *removed* and the input for the number of measurements to average
+     * has been moved up in the order!  Please update your code to prevent a
+     * compiler error or a silent reading error.
      */
-    String getSensorLocation(void) override;
-
+    ApogeeSQ212(int8_t powerPin, int8_t analogChannel,
+                uint8_t              measurementsToAverage = 1,
+                AnalogVoltageReader* analogVoltageReader   = nullptr);
     /**
-     * @copydoc Sensor::addSingleMeasurementResult()
+     * @brief Destroy the ApogeeSQ212 object
+     *
+     * If the object owns the analog voltage reader (i.e., it was internally
+     * created), the reader is deleted.
      */
-    bool addSingleMeasurementResult(void) override;
+    ~ApogeeSQ212() override;
+
+    // Delete copy constructor and copy assignment operator to prevent shallow
+    // copies
+    ApogeeSQ212(const ApogeeSQ212&)            = delete;
+    ApogeeSQ212& operator=(const ApogeeSQ212&) = delete;
+
+    // Delete move constructor and move assignment operator
+    ApogeeSQ212(ApogeeSQ212&&)            = delete;
+    ApogeeSQ212& operator=(ApogeeSQ212&&) = delete;
+
+    String getSensorLocation() override;
+
+    bool setup() override;
+
+    bool addSingleMeasurementResult() override;
 
  private:
-    /**
-     * @brief Internal reference to the ADS channel number of the Apogee SQ-212
-     */
-    uint8_t _adsChannel;
-    /**
-     * @brief Internal reference to the I2C address of the TI-ADS1x15
-     */
-    uint8_t _i2cAddress;
+    /// @brief Pointer to analog voltage reader
+    AnalogVoltageReader* _analogVoltageReader = nullptr;
+    /// @brief Flag to track if this object owns the analog voltage reader and
+    /// should delete it in the destructor
+    bool _ownsAnalogVoltageReader = false;
 };
 
 
@@ -321,22 +340,12 @@ class ApogeeSQ212_PAR : public Variable {
      */
     explicit ApogeeSQ212_PAR(ApogeeSQ212* parentSense, const char* uuid = "",
                              const char* varCode = SQ212_PAR_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)SQ212_PAR_VAR_NUM,
-                   (uint8_t)SQ212_PAR_RESOLUTION, SQ212_PAR_VAR_NAME,
-                   SQ212_PAR_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new ApogeeSQ212_PAR object.
-     *
-     * @note This must be tied with a parent ApogeeSQ212 before it can be used.
-     */
-    ApogeeSQ212_PAR()
-        : Variable((uint8_t)SQ212_PAR_VAR_NUM, (uint8_t)SQ212_PAR_RESOLUTION,
-                   SQ212_PAR_VAR_NAME, SQ212_PAR_UNIT_NAME,
-                   SQ212_PAR_DEFAULT_CODE) {}
+        : Variable(parentSense, SQ212_PAR_VAR_NUM, SQ212_PAR_RESOLUTION,
+                   SQ212_PAR_VAR_NAME, SQ212_PAR_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ApogeeSQ212_PAR object - no action needed.
      */
-    ~ApogeeSQ212_PAR() {}
+    ~ApogeeSQ212_PAR() override = default;
 };
 
 
@@ -364,22 +373,13 @@ class ApogeeSQ212_Voltage : public Variable {
     explicit ApogeeSQ212_Voltage(
         ApogeeSQ212* parentSense, const char* uuid = "",
         const char* varCode = SQ212_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLTAGE_RESOLUTION, SQ212_VOLTAGE_VAR_NAME,
-                   SQ212_VOLTAGE_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new ApogeeSQ212_Voltage object.
-     *
-     * @note This must be tied with a parent ApogeeSQ212 before it can be used.
-     */
-    ApogeeSQ212_Voltage()
-        : Variable((uint8_t)SQ212_VOLTAGE_VAR_NUM,
-                   (uint8_t)SQ212_VOLTAGE_RESOLUTION, SQ212_VOLTAGE_VAR_NAME,
-                   SQ212_VOLTAGE_UNIT_NAME, SQ212_VOLTAGE_DEFAULT_CODE) {}
+        : Variable(parentSense, SQ212_VOLTAGE_VAR_NUM, SQ212_VOLTAGE_RESOLUTION,
+                   SQ212_VOLTAGE_VAR_NAME, SQ212_VOLTAGE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the ApogeeSQ212_Voltage object - no action needed.
      */
-    ~ApogeeSQ212_Voltage() {}
+    ~ApogeeSQ212_Voltage() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_APOGEESQ212_H_

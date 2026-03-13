@@ -101,7 +101,7 @@
  * {{ @ref GroPointGPLP8_Moist::GroPointGPLP8_Moist }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; soil moisture should have 1
+/// @brief Decimal places in string representation; soil moisture should have 1
 /// - resolution is 0.1 %.
 #define GPLP8_MOIST_RESOLUTION 1
 /// @brief Variable name in
@@ -124,7 +124,7 @@
  * {{ @ref GroPointGPLP8_Temp::GroPointGPLP8_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define GPLP8_TEMP_RESOLUTION 1
 /// @brief Variable name in
@@ -193,7 +193,7 @@ class GroPointGPLP8 : public GroPointParent {
     /**
      * @brief Destroy the GroPoint GPLP8 object
      */
-    ~GroPointGPLP8() {}
+    ~GroPointGPLP8() override = default;
 };
 
 
@@ -226,28 +226,13 @@ class GroPointGPLP8_Moist : public Variable {
                                  const uint8_t  sensorVarNum,
                                  const char*    uuid = "",
                                  const char* varCode = GPLP8_MOIST_DEFAULT_CODE)
-        : Variable(parentSense, sensorVarNum, (uint8_t)GPLP8_MOIST_RESOLUTION,
+        : Variable(parentSense, sensorVarNum, GPLP8_MOIST_RESOLUTION,
                    GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME, varCode, uuid) {
     }
     /**
-     * @brief Construct a new GroPointGPLP8_Moist object.
-     *
-     * @param sensorVarNum The position the variable result holds in the
-     * variable result array.  The GroPoint GPLP8 can have up to 8 soil moisture
-     * results. When creating the variable for soil moisture, you must specify
-     * the output number from the sensor.
-     *
-     * @note This must be tied with a parent GroPointGPLP8 before it can be
-     * used.
-     */
-    GroPointGPLP8_Moist(const uint8_t sensorVarNum)
-        : Variable(sensorVarNum, (uint8_t)GPLP8_MOIST_RESOLUTION,
-                   GPLP8_MOIST_VAR_NAME, GPLP8_MOIST_UNIT_NAME,
-                   GPLP8_MOIST_DEFAULT_CODE) {}
-    /**
      * @brief Destroy the GroPointGPLP8_Moist object - no action needed.
      */
-    ~GroPointGPLP8_Moist() {}
+    ~GroPointGPLP8_Moist() override = default;
 };
 
 /* clang-format off */
@@ -279,27 +264,12 @@ class GroPointGPLP8_Temp : public Variable {
                                 const uint8_t  sensorVarNum,
                                 const char*    uuid = "",
                                 const char* varCode = GPLP8_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, sensorVarNum, (uint8_t)GPLP8_TEMP_RESOLUTION,
+        : Variable(parentSense, sensorVarNum, GPLP8_TEMP_RESOLUTION,
                    GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new GroPointGPLP8_Temp object.
-     *
-     * @param sensorVarNum The position the variable result holds in the
-     * variable result array.  The GroPoint GPLP8 can have up to 8 temperature
-     * results. When creating the variable for temperature, you must specify the
-     * output number from the sensor.
-     *
-     * @note This must be tied with a parent GroPointGPLP8 before it can be
-     * used.
-     */
-    GroPointGPLP8_Temp(const uint8_t sensorVarNum)
-        : Variable(sensorVarNum, (uint8_t)GPLP8_TEMP_RESOLUTION,
-                   GPLP8_TEMP_VAR_NAME, GPLP8_TEMP_UNIT_NAME,
-                   GPLP8_TEMP_DEFAULT_CODE) {}
     /**
      * @brief Destroy the GroPointGPLP8_Temp object - no action needed.
      */
-    ~GroPointGPLP8_Temp() {}
+    ~GroPointGPLP8_Temp() override = default;
 };
 
 /**@}*/

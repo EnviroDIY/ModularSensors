@@ -50,6 +50,18 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_orp_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas ORP sensor
+ */
+/**@{*/
+#ifndef ATLAS_ORP_I2C_ADDR
+/// @brief The default I2C address of the Atlas ORP sensor is 0x62 (98)
+#define ATLAS_ORP_I2C_ADDR 0x62
+#endif
+/**@}*/
+
+/**
  * @anchor sensor_atlas_orp_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas ORP sensor
@@ -60,16 +72,6 @@
 #define ATLAS_ORP_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_ORP_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_orp_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas ORP sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas ORP sensor is 0x62 (98)
-#define ATLAS_ORP_I2C_ADDR 0x62
 /**@}*/
 
 /**
@@ -109,8 +111,12 @@
  * {{ @ref AtlasScientificORP_Potential::AtlasScientificORP_Potential }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; ORP should have 1 -
-/// resolution is 0.1 mV.
+/// @brief Minimum oxidation reduction potential in millivolts.
+#define ATLAS_ORP_MIN_MV -1019.9
+/// @brief Maximum oxidation reduction potential in millivolts.
+#define ATLAS_ORP_MAX_MV 1019.9
+/// @brief Decimal places in string representation; ORP should have 1
+/// (resolution is 0.1 mV).
 #define ATLAS_ORP_RESOLUTION 1
 /// @brief Sensor variable number; ORP is stored in sensorValues[0].
 #define ATLAS_ORP_VAR_NUM 0
@@ -197,7 +203,7 @@ class AtlasScientificORP : public AtlasParent {
     /**
      * @brief Destroy the Atlas Scientific ORP object
      */
-    ~AtlasScientificORP() {}
+    ~AtlasScientificORP() override = default;
 };
 
 
@@ -225,24 +231,13 @@ class AtlasScientificORP_Potential : public Variable {
     explicit AtlasScientificORP_Potential(
         AtlasScientificORP* parentSense, const char* uuid = "",
         const char* varCode = ATLAS_ORP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_ORP_VAR_NUM,
-                   (uint8_t)ATLAS_ORP_RESOLUTION, ATLAS_ORP_VAR_NAME,
-                   ATLAS_ORP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new AtlasScientificORP_Potential object.
-     *
-     * @note This must be tied with a parent AtlasScientificORP before it can be
-     * used.
-     */
-    AtlasScientificORP_Potential()
-        : Variable((uint8_t)ATLAS_ORP_VAR_NUM, (uint8_t)ATLAS_ORP_RESOLUTION,
-                   ATLAS_ORP_VAR_NAME, ATLAS_ORP_UNIT_NAME,
-                   ATLAS_ORP_DEFAULT_CODE) {}
+        : Variable(parentSense, ATLAS_ORP_VAR_NUM, ATLAS_ORP_RESOLUTION,
+                   ATLAS_ORP_VAR_NAME, ATLAS_ORP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AtlasScientificORP_Potential() object - no action
      * needed.
      */
-    ~AtlasScientificORP_Potential() {}
+    ~AtlasScientificORP_Potential() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICORP_H_

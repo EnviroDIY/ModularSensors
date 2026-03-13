@@ -93,12 +93,33 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
+/** @ingroup atlas_group */
+/**@{*/
+
+/**
+ * @anchor atlas_response_codes
+ * @name Atlas Response Codes
+ * Standard response codes returned by Atlas EZO circuits
+ */
+/**@{*/
+/// @brief The command was successful
+#define ATLAS_RESPONSE_SUCCESS 1
+/// @brief The command has failed
+#define ATLAS_RESPONSE_FAILED 2
+/// @brief The command has not yet been finished calculating
+#define ATLAS_RESPONSE_PENDING 254
+/// @brief There is no further data to send
+#define ATLAS_RESPONSE_NO_DATA 255
+/// @brief Maximum I2C response buffer size for Atlas circuits
+#define ATLAS_I2C_RESPONSE_BUFFER_SIZE 40
+/// @brief Minimum valid result threshold for Atlas sensor readings
+#define ATLAS_MIN_VALID_RESULT -1020.0f
+/**@}*/
+
 /**
  * @brief A parent class for Atlas EZO circuits and sensors
  *
  * This contains the main I2C functionality for all Atlas EZO circuits.
- *
- * @ingroup atlas_group
  */
 class AtlasParent : public Sensor {
  public:
@@ -171,17 +192,16 @@ class AtlasParent : public Sensor {
                 uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
 
     /**
-     * @brief Destroy the Atlas Parent object.  Also destroy the software I2C
-     * instance if one was created.
+     * @brief Destroy the Atlas Parent object.
      */
-    virtual ~AtlasParent();
+    ~AtlasParent() override = default;
 
     /**
      * @brief Return the I2C address of the EZO circuit.
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -193,39 +213,17 @@ class AtlasParent : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
     // NOTE:  The sensor should wake as soon as any command is sent.
     // I assume that means we can use the command to take a reading to both
     // wake it and ask for a reading.
-    // bool wake(void) override;
+    // bool wake() override;
 
-    /**
-     * @brief Puts the sensor to sleep, if necessary.
-     *
-     * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
-     * This does NOT power down the sensor!
-     *
-     * @return True if the sleep function completed successfully.
-     */
-    bool sleep(void) override;
+    bool sleep() override;
 
-    /**
-     * @brief Tell the sensor to start a single measurement, if needed.
-     *
-     * This also sets the #_millisMeasurementRequested timestamp.
-     *
-     * @note This function does NOT include any waiting for the sensor to be
-     * warmed up or stable!
-     *
-     * @return True if the start measurement function completed
-     * successfully.
-     */
-    bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
  protected:
     /**
@@ -255,5 +253,5 @@ class AtlasParent : public Sensor {
      */
     bool waitForProcessing(uint32_t timeout = 1000L);
 };
-
+/**@}*/
 #endif  // SRC_SENSORS_ATLASPARENT_H_

@@ -96,7 +96,11 @@
  * {{ @ref YosemitechY532_pH::YosemitechY532_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pH should have 2 -
+/// @brief Minimum pH; 2 pH units
+#define Y532_PH_MIN_PH 2
+/// @brief Maximum pH; 12 pH units
+#define Y532_PH_MAX_PH 12
+/// @brief Decimal places in string representation; pH should have 2 -
 /// resolution is 0.01 pH units.
 #define Y532_PH_RESOLUTION 2
 /// @brief Sensor variable number; pH is stored in sensorValues[0].
@@ -122,7 +126,11 @@
  * {{ @ref YosemitechY532_Temp::YosemitechY532_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Minimum temperature; 0°C
+#define Y532_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y532_TEMP_MAX_C 50
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y532_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -149,7 +157,11 @@
  * {{ @ref YosemitechY532_Voltage::YosemitechY532_Voltage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; voltage should have 0 -
+/// @brief Minimum voltage; -999 mV
+#define Y532_VOLTAGE_MIN_MV -999
+/// @brief Maximum voltage; 999 mV
+#define Y532_VOLTAGE_MAX_MV 999
+/// @brief Decimal places in string representation; voltage should have 0 -
 /// resolution is 1mV.
 #define Y532_VOLTAGE_RESOLUTION 0
 /// @brief Sensor variable number; voltage is stored in sensorValues[2].
@@ -220,7 +232,7 @@ class YosemitechY532 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y532 object
      */
-    ~YosemitechY532() {}
+    ~YosemitechY532() override = default;
 };
 
 
@@ -248,22 +260,12 @@ class YosemitechY532_pH : public Variable {
     explicit YosemitechY532_pH(YosemitechY532* parentSense,
                                const char*     uuid    = "",
                                const char*     varCode = Y532_PH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y532_PH_VAR_NUM,
-                   (uint8_t)Y532_PH_RESOLUTION, Y532_PH_VAR_NAME,
-                   Y532_PH_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY532_pH object.
-     *
-     * @note This must be tied with a parent YosemitechY532 before it can be
-     * used.
-     */
-    YosemitechY532_pH()
-        : Variable((uint8_t)Y532_PH_VAR_NUM, (uint8_t)Y532_PH_RESOLUTION,
-                   Y532_PH_VAR_NAME, Y532_PH_UNIT_NAME, Y532_PH_DEFAULT_CODE) {}
+        : Variable(parentSense, Y532_PH_VAR_NUM, Y532_PH_RESOLUTION,
+                   Y532_PH_VAR_NAME, Y532_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY532_pH object - no action needed.
      */
-    ~YosemitechY532_pH() {}
+    ~YosemitechY532_pH() override = default;
 };
 
 
@@ -291,23 +293,12 @@ class YosemitechY532_Temp : public Variable {
     explicit YosemitechY532_Temp(YosemitechY532* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y532_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y532_TEMP_VAR_NUM,
-                   (uint8_t)Y532_TEMP_RESOLUTION, Y532_TEMP_VAR_NAME,
-                   Y532_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY532_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY532 before it can be
-     * used.
-     */
-    YosemitechY532_Temp()
-        : Variable((uint8_t)Y532_TEMP_VAR_NUM, (uint8_t)Y532_TEMP_RESOLUTION,
-                   Y532_TEMP_VAR_NAME, Y532_TEMP_UNIT_NAME,
-                   Y532_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, Y532_TEMP_VAR_NUM, Y532_TEMP_RESOLUTION,
+                   Y532_TEMP_VAR_NAME, Y532_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY532_Temp object - no action needed.
      */
-    ~YosemitechY532_Temp() {}
+    ~YosemitechY532_Temp() override = default;
 };
 
 
@@ -335,23 +326,13 @@ class YosemitechY532_Voltage : public Variable {
     explicit YosemitechY532_Voltage(
         YosemitechY532* parentSense, const char* uuid = "",
         const char* varCode = Y532_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y532_VOLTAGE_VAR_NUM,
-                   (uint8_t)Y532_VOLTAGE_RESOLUTION, Y532_VOLTAGE_VAR_NAME,
-                   Y532_VOLTAGE_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY532_Voltage object.
-     *
-     * @note This must be tied with a parent YosemitechY532 before it can be
-     * used.
-     */
-    YosemitechY532_Voltage()
-        : Variable((uint8_t)Y532_VOLTAGE_VAR_NUM,
-                   (uint8_t)Y532_VOLTAGE_RESOLUTION, Y532_VOLTAGE_VAR_NAME,
-                   Y532_VOLTAGE_UNIT_NAME, Y532_VOLTAGE_DEFAULT_CODE) {}
+        : Variable(parentSense, Y532_VOLTAGE_VAR_NUM, Y532_VOLTAGE_RESOLUTION,
+                   Y532_VOLTAGE_VAR_NAME, Y532_VOLTAGE_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the YosemitechY532_Voltage object - no action needed.
      */
-    ~YosemitechY532_Voltage() {}
+    ~YosemitechY532_Voltage() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY532_H_

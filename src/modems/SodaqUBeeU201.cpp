@@ -30,9 +30,6 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream, int8_t powerPin,
       _apn(apn) {
 }
 
-// Destructor
-SodaqUBeeU201::~SodaqUBeeU201() {}
-
 MS_IS_MODEM_AWAKE(SodaqUBeeU201);
 MS_MODEM_WAKE(SodaqUBeeU201);
 
@@ -40,12 +37,12 @@ MS_MODEM_CONNECT_INTERNET(SodaqUBeeU201);
 MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeU201);
 MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeU201);
 
-MS_MODEM_CREATE_CLIENT(SodaqUBeeU201);
-MS_MODEM_DELETE_CLIENT(SodaqUBeeU201);
-MS_MODEM_CREATE_SECURE_CLIENT(SodaqUBeeU201);
-MS_MODEM_DELETE_SECURE_CLIENT(SodaqUBeeU201);
+MS_MODEM_CREATE_CLIENT(SodaqUBeeU201, UBLOX);
+MS_MODEM_DELETE_CLIENT(SodaqUBeeU201, UBLOX);
+MS_MODEM_CREATE_SECURE_CLIENT(SodaqUBeeU201, UBLOX);
+MS_MODEM_DELETE_SECURE_CLIENT(SodaqUBeeU201, UBLOX);
 
-MS_MODEM_GET_NIST_TIME(SodaqUBeeU201);
+MS_MODEM_GET_NIST_TIME(SodaqUBeeU201, UBLOX);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeU201);
 MS_MODEM_GET_MODEM_BATTERY_DATA(SodaqUBeeU201);
@@ -53,7 +50,7 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SodaqUBeeU201);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool SodaqUBeeU201::modemWakeFxn(void) {
+bool SodaqUBeeU201::modemWakeFxn() {
     // SARA/LISA U2/G2 and SARA G3 series turn on when power is applied
     // No pulsing required in this case
     if (_powerPin >= 0) { return true; }
@@ -72,7 +69,7 @@ bool SodaqUBeeU201::modemWakeFxn(void) {
 }
 
 
-bool SodaqUBeeU201::modemSleepFxn(void) {
+bool SodaqUBeeU201::modemSleepFxn() {
     if (_powerPin >= 0 || _modemSleepRqPin >= 0) {
         // will go on with power on
         // Easiest to just go to sleep with the AT command rather than using
@@ -87,13 +84,16 @@ bool SodaqUBeeU201::modemSleepFxn(void) {
     }
 }
 
-bool SodaqUBeeU201::extraModemSetup(void) {
+bool SodaqUBeeU201::extraModemSetup() {
     bool success = gsmModem.init();
     _modemName   = gsmModem.getModemName();
     // Turn on network indicator light
     // Pin 16 = GPIO1, function 2 = network status indication
     gsmModem.sendAT(GF("+UGPIOC=16,2"));
-    gsmModem.waitResponse();
+    if (gsmModem.waitResponse() != 1) {
+        // NOTE: We don't consider setup a failure without the light
+        MS_DBG(F("Failed to configure network indicator LED"));
+    }
     return success;
 }
 

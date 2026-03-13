@@ -12,7 +12,7 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for ThingSpeak
 // ============================================================================
 
 // Constant values for MQTT publish
@@ -26,38 +26,39 @@ const int   ThingSpeakPublisher::mqttPort            = 1883;
 
 
 // Constructors
-ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {}
+// Primary constructor with all MQTT parameters and client
 ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {}
+                                         const char* thingSpeakClientName,
+                                         const char* thingSpeakMQTTUser,
+                                         const char* thingSpeakMQTTPassword,
+                                         const char* thingSpeakChannelID)
+    : dataPublisher(baseLogger, inClient) {
+    if (thingSpeakClientName) setMQTTClient(thingSpeakClientName);
+    if (thingSpeakMQTTUser) setUserName(thingSpeakMQTTUser);
+    if (thingSpeakMQTTPassword) setPassword(thingSpeakMQTTPassword);
+    if (thingSpeakChannelID) setChannelID(thingSpeakChannelID);
+}
+
+// Delegating constructors
 ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
-                                         const char* thingSpeakChannelID,
-                                         int         sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setMQTTClient(thingSpeakClientName);
-    setUserName(thingSpeakMQTTUser);
-    setPassword(thingSpeakMQTTPassword);
-    setChannelID(thingSpeakChannelID);
-}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
-                                         const char* thingSpeakClientName,
-                                         const char* thingSpeakMQTTUser,
-                                         const char* thingSpeakMQTTPassword,
-                                         const char* thingSpeakChannelID,
-                                         int         sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setMQTTClient(thingSpeakClientName);
-    setUserName(thingSpeakMQTTUser);
-    setPassword(thingSpeakMQTTPassword);
-    setChannelID(thingSpeakChannelID);
-}
-// Destructor
-ThingSpeakPublisher::~ThingSpeakPublisher() {}
+                                         const char* thingSpeakChannelID)
+    : ThingSpeakPublisher(baseLogger, nullptr, thingSpeakClientName,
+                          thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                          thingSpeakChannelID) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient)
+    : ThingSpeakPublisher(
+          baseLogger, inClient, static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr)) {}
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger)
+    : ThingSpeakPublisher(
+          baseLogger, nullptr, static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
+          static_cast<const char*>(nullptr)) {}
+ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
 
 
 void ThingSpeakPublisher::setMQTTClient(const char* thingSpeakClientName) {
@@ -101,10 +102,8 @@ void ThingSpeakPublisher::begin(Logger& baseLogger, Client* inClient,
                                 const char* thingSpeakMQTTUser,
                                 const char* thingSpeakMQTTPassword,
                                 const char* thingSpeakChannelID) {
-    setMQTTClient(thingSpeakClientName);
-    setChannelID(thingSpeakChannelID);
-    setPassword(thingSpeakMQTTPassword);
-    setUserName(thingSpeakMQTTUser);
+    setThingSpeakParams(thingSpeakClientName, thingSpeakMQTTUser,
+                        thingSpeakMQTTPassword, thingSpeakChannelID);
     dataPublisher::begin(baseLogger, inClient);
 }
 void ThingSpeakPublisher::begin(Logger&     baseLogger,
@@ -112,17 +111,35 @@ void ThingSpeakPublisher::begin(Logger&     baseLogger,
                                 const char* thingSpeakMQTTUser,
                                 const char* thingSpeakMQTTPassword,
                                 const char* thingSpeakChannelID) {
-    setMQTTClient(thingSpeakClientName);
-    setChannelID(thingSpeakChannelID);
-    setPassword(thingSpeakMQTTPassword);
-    setUserName(thingSpeakMQTTUser);
+    setThingSpeakParams(thingSpeakClientName, thingSpeakMQTTUser,
+                        thingSpeakMQTTPassword, thingSpeakChannelID);
     dataPublisher::begin(baseLogger);
 }
 
 
 // This sends the data to ThingSpeak
 int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
-    bool retVal = false;
+    // Validate required MQTT parameters before proceeding
+    if (_thingSpeakChannelID == nullptr || strlen(_thingSpeakChannelID) == 0) {
+        MS_DBG(F("ERROR: ThingSpeak Channel ID is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakClientName == nullptr ||
+        strlen(_thingSpeakClientName) == 0) {
+        MS_DBG(F("ERROR: ThingSpeak Client Name is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakMQTTUser == nullptr || strlen(_thingSpeakMQTTUser) == 0) {
+        MS_DBG(F("ERROR: ThingSpeak MQTT User is required but not set!"));
+        return -1;
+    }
+    if (_thingSpeakMQTTPassword == nullptr ||
+        strlen(_thingSpeakMQTTPassword) == 0) {
+        MS_DBG(F("ERROR: ThingSpeak MQTT Password is required but not set!"));
+        return -1;
+    }
+
+    int16_t status = 0;
 
     // Make sure we don't have too many fields
     // A channel can have a max of 8 fields
@@ -186,7 +203,8 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
         MS_DBG(F("Publishing to ThingSpeak"));
         PRINTOUT(F("\nTopic ["), strlen(topicBuffer), F("]:"), topicBuffer);
         PRINTOUT(F("Message ["), strlen(txBuffer), F("]:"), txBuffer);
-        retVal = _mqttClient.publish(topicBuffer, txBuffer, false);
+        bool publishSuccess = _mqttClient.publish(topicBuffer, txBuffer, false);
+        status              = publishSuccess ? 1 : 0;
 
         PRINTOUT(F("ThingSpeak topic published!  Current state:"),
                  parseMQTTState(_mqttClient.state()));
@@ -194,7 +212,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
         PRINTOUT(F("MQTT connection failed with state:"),
                  parseMQTTState(_mqttClient.state()));
         delay(1000);
-        retVal = false;
+        status = 0;
     }
 
     // Disconnect from MQTT
@@ -202,7 +220,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
     MS_RESET_DEBUG_TIMER
     _mqttClient.disconnect();
     MS_DBG(F("Disconnected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
-    return retVal;
+    return status;
 }
 
 // This updates your channel field names on ThingSpeak
@@ -269,9 +287,9 @@ int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
         did_respond = outClient->readBytes(tempBuffer, 12);
         // Process the HTTP response code
         // The first 9 characters should be "HTTP/1.1 "
-        if (did_respond > 0) {
+        if (did_respond >= 12) {
             char responseCode_char[4];
-            memcpy(responseCode_char, tempBuffer + 9, 3);
+            memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string
             memset(responseCode_char + 3, '\0', 1);
             responseCode = atoi(responseCode_char);

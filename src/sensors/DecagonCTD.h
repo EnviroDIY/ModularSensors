@@ -109,8 +109,12 @@
  * {{ @ref DecagonCTD_Cond::DecagonCTD_Cond }}
  */
 /**@{*/
+/// @brief Minimum specific conductance in microsiemens per centimeter.
+#define CTD_COND_MIN_USCM 0.0
+/// @brief Maximum specific conductance in microsiemens per centimeter.
+#define CTD_COND_MAX_USCM 120000.0
 /**
- * @brief Decimals places in string representation; conductivity should have 1.
+ * @brief Decimal places in string representation; conductivity should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
@@ -140,8 +144,12 @@
  * {{ @ref DecagonCTD_Temp::DecagonCTD_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define CTD_TEMP_MIN_C -11.0
+/// @brief Maximum temperature in degrees Celsius.
+#define CTD_TEMP_MAX_C 49.0
 /**
- * @brief Decimals places in string representation; temperature should have 2.
+ * @brief Decimal places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging  - resolution is 0.1°C
@@ -171,8 +179,12 @@
  * {{ @ref DecagonCTD_Depth::DecagonCTD_Depth }}
  */
 /**@{*/
+/// @brief Minimum water depth in millimeters.
+#define CTD_DEPTH_MIN_MM 0.0
+/// @brief Maximum water depth in millimeters.
+#define CTD_DEPTH_MAX_MM 10000.0
 /**
- * @brief Decimals places in string representation; depth should have 1.
+ * @brief Decimal places in string representation; depth should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 2 mm
@@ -252,11 +264,10 @@ class DecagonCTD : public SDI12Sensors {
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
                        CTD_EXTRA_WAKE_TIME_MS, CTD_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the Decagon CTD object
      */
-    ~DecagonCTD() {}
+    ~DecagonCTD() override = default;
 };
 
 
@@ -282,22 +293,12 @@ class DecagonCTD_Cond : public Variable {
      */
     explicit DecagonCTD_Cond(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = CTD_COND_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CTD_COND_VAR_NUM,
-                   (uint8_t)CTD_COND_RESOLUTION, CTD_COND_VAR_NAME,
-                   CTD_COND_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new DecagonCTD_Cond object.
-     *
-     * @note This must be tied with a parent DecagonCTD before it can be used.
-     */
-    DecagonCTD_Cond()
-        : Variable((uint8_t)CTD_COND_VAR_NUM, (uint8_t)CTD_COND_RESOLUTION,
-                   CTD_COND_VAR_NAME, CTD_COND_UNIT_NAME,
-                   CTD_COND_DEFAULT_CODE) {}
+        : Variable(parentSense, CTD_COND_VAR_NUM, CTD_COND_RESOLUTION,
+                   CTD_COND_VAR_NAME, CTD_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the DecagonCTD_Cond object - no action needed.
      */
-    ~DecagonCTD_Cond() {}
+    ~DecagonCTD_Cond() override = default;
 };
 
 
@@ -323,22 +324,12 @@ class DecagonCTD_Temp : public Variable {
      */
     explicit DecagonCTD_Temp(DecagonCTD* parentSense, const char* uuid = "",
                              const char* varCode = CTD_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CTD_TEMP_VAR_NUM,
-                   (uint8_t)CTD_TEMP_RESOLUTION, CTD_TEMP_VAR_NAME,
-                   CTD_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new DecagonCTD_Temp object.
-     *
-     * @note This must be tied with a parent DecagonCTD before it can be used.
-     */
-    DecagonCTD_Temp()
-        : Variable((uint8_t)CTD_TEMP_VAR_NUM, (uint8_t)CTD_TEMP_RESOLUTION,
-                   CTD_TEMP_VAR_NAME, CTD_TEMP_UNIT_NAME,
-                   CTD_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, CTD_TEMP_VAR_NUM, CTD_TEMP_RESOLUTION,
+                   CTD_TEMP_VAR_NAME, CTD_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the DecagonCTD_Temp object - no action needed.
      */
-    ~DecagonCTD_Temp() {}
+    ~DecagonCTD_Temp() override = default;
 };
 
 
@@ -364,22 +355,12 @@ class DecagonCTD_Depth : public Variable {
      */
     explicit DecagonCTD_Depth(DecagonCTD* parentSense, const char* uuid = "",
                               const char* varCode = CTD_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)CTD_DEPTH_VAR_NUM,
-                   (uint8_t)CTD_DEPTH_RESOLUTION, CTD_DEPTH_VAR_NAME,
-                   CTD_DEPTH_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new DecagonCTD_Depth object.
-     *
-     * @note This must be tied with a parent DecagonCTD before it can be used.
-     */
-    DecagonCTD_Depth()
-        : Variable((uint8_t)CTD_DEPTH_VAR_NUM, (uint8_t)CTD_DEPTH_RESOLUTION,
-                   CTD_DEPTH_VAR_NAME, CTD_DEPTH_UNIT_NAME,
-                   CTD_DEPTH_DEFAULT_CODE) {}
+        : Variable(parentSense, CTD_DEPTH_VAR_NUM, CTD_DEPTH_RESOLUTION,
+                   CTD_DEPTH_VAR_NAME, CTD_DEPTH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the DecagonCTD_Depth object - no action needed.
      */
-    ~DecagonCTD_Depth() {}
+    ~DecagonCTD_Depth() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_decagon_ctd_H_

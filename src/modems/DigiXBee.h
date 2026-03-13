@@ -127,9 +127,9 @@
  * indirectly with `CTS_N/DIO7`.  The status level will depend on which is
  * being used:
  *     - the `ON/SLEEP_N/DIO9` will be `HIGH` when the XBee is awake
- * (ie, yes, I am not sleeping)
+ * (i.e., yes, I am not sleeping)
  *     - but the `CTS_N/DIO7` will be `LOW` when the
- * board is awake (ie, no it's not not clear to send).
+ * board is awake (i.e., no it's not not clear to send).
  *
  * To use the `CTS_N/DIO7` as the status indicator, set useCTSStatus to true in
  * the constructor.
@@ -221,11 +221,11 @@ class DigiXBee : public loggerModem {
     /**
      * @brief Destroy the Digi XBee object - no action taken
      */
-    virtual ~DigiXBee();
+    ~DigiXBee() override = default;
 
  protected:
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
+    bool modemSleepFxn() override;
+    bool modemWakeFxn() override;
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEE_H_

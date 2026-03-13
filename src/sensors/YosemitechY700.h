@@ -95,7 +95,11 @@
  * {{ @ref YosemitechY700_Pressure::YosemitechY700_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; Pressure should have 1
+/// @brief Minimum pressure; 0 mmH2O
+#define Y700_PRES_MIN_MMH2O 0
+/// @brief Maximum pressure; 100000 mmH2O (100 mH2O, depending on model)
+#define Y700_PRES_MAX_MMH2O 100000
+/// @brief Decimal places in string representation; Pressure should have 2
 /// - resolution is 0.01 mm.
 #define Y700_PRES_RESOLUTION 2
 /// @brief Sensor variable number; pressure is stored in sensorValues[0].
@@ -122,7 +126,11 @@
  * {{ @ref YosemitechY700_Temp::YosemitechY700_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Minimum temperature; 0°C
+#define Y700_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y700_TEMP_MAX_C 50
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y700_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -193,7 +201,7 @@ class YosemitechY700 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y700 object
      */
-    ~YosemitechY700() {}
+    ~YosemitechY700() override = default;
 };
 
 
@@ -221,23 +229,12 @@ class YosemitechY700_Pressure : public Variable {
     explicit YosemitechY700_Pressure(
         YosemitechY700* parentSense, const char* uuid = "",
         const char* varCode = Y700_PRES_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y700_PRES_VAR_NUM,
-                   (uint8_t)Y700_PRES_RESOLUTION, Y700_PRES_VAR_NAME,
-                   Y700_PRES_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY700_Pressure object.
-     *
-     * @note This must be tied with a parent YosemitechY700 before it can be
-     * used.
-     */
-    YosemitechY700_Pressure()
-        : Variable((uint8_t)Y700_PRES_VAR_NUM, (uint8_t)Y700_PRES_RESOLUTION,
-                   Y700_PRES_VAR_NAME, Y700_PRES_UNIT_NAME,
-                   Y700_PRES_DEFAULT_CODE) {}
+        : Variable(parentSense, Y700_PRES_VAR_NUM, Y700_PRES_RESOLUTION,
+                   Y700_PRES_VAR_NAME, Y700_PRES_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY700_Pressure object - no action needed.
      */
-    ~YosemitechY700_Pressure() {}
+    ~YosemitechY700_Pressure() override = default;
 };
 
 
@@ -265,23 +262,12 @@ class YosemitechY700_Temp : public Variable {
     explicit YosemitechY700_Temp(YosemitechY700* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y700_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y700_TEMP_VAR_NUM,
-                   (uint8_t)Y700_TEMP_RESOLUTION, Y700_TEMP_VAR_NAME,
-                   Y700_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY700_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY700 before it can be
-     * used.
-     */
-    YosemitechY700_Temp()
-        : Variable((uint8_t)Y700_TEMP_VAR_NUM, (uint8_t)Y700_TEMP_RESOLUTION,
-                   Y700_TEMP_VAR_NAME, Y700_TEMP_UNIT_NAME,
-                   Y700_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, Y700_TEMP_VAR_NUM, Y700_TEMP_RESOLUTION,
+                   Y700_TEMP_VAR_NAME, Y700_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY700_Temp object - no action needed.
      */
-    ~YosemitechY700_Temp() {}
+    ~YosemitechY700_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY700_H_

@@ -109,11 +109,15 @@
  * The temperature variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is ± 0.1°C
+ * - Resolution: 0.01°C
+ *
+ * @todo Find and define minimum and maximum temperature measurement range from
+ * a ZebraTech D-Opto.
  *
  * {{ @ref ZebraTechDOpto_Temp::ZebraTechDOpto_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define DOPTO_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -136,11 +140,15 @@
  * The percent saturation variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
+ * - Resolution: 0.01%
+ *
+ * @todo Find and define minimum and maximum dissolved oxygen percent saturation
+ * range from a ZebraTech D-Opto.
  *
  * {{ @ref ZebraTechDOpto_DOpct::ZebraTechDOpto_DOpct }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen percent
+/// @brief Decimal places in string representation; dissolved oxygen percent
 /// should have 2.
 #define DOPTO_DOPCT_RESOLUTION 2
 /// @brief Sensor variable number; dissolved oxygen percent is stored in
@@ -164,11 +172,15 @@
  * The DO concentration variable from a ZebraTech D-Opto
  * - Range is not specified in sensor datasheet
  * - Accuracy is 1 % of reading or 0.02PPM, whichever is greater
+ * - Resolution: 0.001 PPM
+ *
+ * @todo Find and define minimum and maximum dissolved oxygen concentration
+ * range from a ZebraTech D-Opto.
  *
  * {{ @ref ZebraTechDOpto_DOmgL::ZebraTechDOpto_DOmgL }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; dissolved oxygen
+/// @brief Decimal places in string representation; dissolved oxygen
 /// concentration should have 3 - resolution is 0.01 % / 0.001 PPM.
 #define DOPTO_DOMGL_RESOLUTION 3
 /// @brief Sensor variable number; dissolved oxygen concentration is stored in
@@ -249,7 +261,7 @@ class ZebraTechDOpto : public SDI12Sensors {
     /**
      * @brief Destroy the Zebra-Tech DOpto object
      */
-    ~ZebraTechDOpto() {}
+    ~ZebraTechDOpto() override = default;
 };
 
 
@@ -277,23 +289,12 @@ class ZebraTechDOpto_Temp : public Variable {
     explicit ZebraTechDOpto_Temp(ZebraTechDOpto* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = DOPTO_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DOPTO_TEMP_VAR_NUM,
-                   (uint8_t)DOPTO_TEMP_RESOLUTION, DOPTO_TEMP_VAR_NAME,
-                   DOPTO_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new ZebraTechDOpto_Temp object.
-     *
-     * @note This must be tied with a parent ZebraTechDOpto before it can be
-     * used.
-     */
-    ZebraTechDOpto_Temp()
-        : Variable((uint8_t)DOPTO_TEMP_VAR_NUM, (uint8_t)DOPTO_TEMP_RESOLUTION,
-                   DOPTO_TEMP_VAR_NAME, DOPTO_TEMP_UNIT_NAME,
-                   DOPTO_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, DOPTO_TEMP_VAR_NUM, DOPTO_TEMP_RESOLUTION,
+                   DOPTO_TEMP_VAR_NAME, DOPTO_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the ZebraTechDOpto_Temp object - no action needed.
      */
-    ~ZebraTechDOpto_Temp() {}
+    ~ZebraTechDOpto_Temp() override = default;
 };
 
 
@@ -321,23 +322,13 @@ class ZebraTechDOpto_DOpct : public Variable {
     explicit ZebraTechDOpto_DOpct(
         ZebraTechDOpto* parentSense, const char* uuid = "",
         const char* varCode = DOPTO_DOPCT_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DOPTO_DOPCT_VAR_NUM,
-                   (uint8_t)DOPTO_DOPCT_RESOLUTION, DOPTO_DOPCT_VAR_NAME,
-                   DOPTO_DOPCT_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new ZebraTechDOpto_DOpct object.
-     *
-     * @note This must be tied with a parent ZebraTechDOpto before it can be
-     * used.
-     */
-    ZebraTechDOpto_DOpct()
-        : Variable((uint8_t)DOPTO_DOPCT_VAR_NUM,
-                   (uint8_t)DOPTO_DOPCT_RESOLUTION, DOPTO_DOPCT_VAR_NAME,
-                   DOPTO_DOPCT_UNIT_NAME, DOPTO_DOPCT_DEFAULT_CODE) {}
+        : Variable(parentSense, DOPTO_DOPCT_VAR_NUM, DOPTO_DOPCT_RESOLUTION,
+                   DOPTO_DOPCT_VAR_NAME, DOPTO_DOPCT_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Destroy the ZebraTechDOpto_DOpct object - no action needed.
      */
-    ~ZebraTechDOpto_DOpct() {}
+    ~ZebraTechDOpto_DOpct() override = default;
 };
 
 
@@ -365,25 +356,15 @@ class ZebraTechDOpto_DOmgL : public Variable {
     explicit ZebraTechDOpto_DOmgL(
         ZebraTechDOpto* parentSense, const char* uuid = "",
         const char* varCode = DOPTO_DOMGL_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DOPTO_DOMGL_VAR_NUM,
-                   (uint8_t)DOPTO_DOMGL_RESOLUTION, DOPTO_DOMGL_VAR_NAME,
-                   DOPTO_DOMGL_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new ZebraTechDOpto_DOmgL object.
-     *
-     * @note This must be tied with a parent ZebraTechDOpto before it can be
-     * used.
-     */
-    ZebraTechDOpto_DOmgL()
-        : Variable((uint8_t)DOPTO_DOMGL_VAR_NUM,
-                   (uint8_t)DOPTO_DOMGL_RESOLUTION, DOPTO_DOMGL_VAR_NAME,
-                   DOPTO_DOMGL_UNIT_NAME, DOPTO_DOMGL_DEFAULT_CODE) {}
+        : Variable(parentSense, DOPTO_DOMGL_VAR_NUM, DOPTO_DOMGL_RESOLUTION,
+                   DOPTO_DOMGL_VAR_NAME, DOPTO_DOMGL_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Destroy the ZebraTechDOpto_DOmgL object - no action needed.
      */
-    ~ZebraTechDOpto_DOmgL() {}
+    ~ZebraTechDOpto_DOmgL() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ZEBRATECHDOPTO_H_
 
-// cSpell:ignore Pololu
+// cSpell:words Pololu

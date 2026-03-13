@@ -27,21 +27,6 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-#ifndef MQTT_MAX_PACKET_SIZE
-#define MQTT_MAX_PACKET_SIZE 1024
-#endif
-/** End [defines] */
-
-// ==========================================================================
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
@@ -81,7 +66,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t  buttonPin  = 21;      // Pin for debugging mode (i.e., button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
@@ -114,8 +99,8 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // The WiFi access point
-const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi
+const char* wifiId  = "YourWiFiSSID";  // The WiFi access point
+const char* wifiPwd = "YourWiFiPassword";       // The WiFi password
 
 // Create the loggerModem object
 EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
@@ -160,8 +145,8 @@ const int8_t alsData = A8;  // The ALS PT-19 data pin
 #else
 const int8_t alsData = A4;  // The ALS PT-19 data pin
 #endif
-const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
-const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)
+const float   alsSupply     = 3.3f;  // The ALS PT-19 supply power voltage
+const int8_t  alsResistance = 10;    // The ALS PT-19 loading resistance (in kΩ)
 const uint8_t alsNumberReadings = 10;
 
 // Create a Everlight ALS-PT19 sensor object
@@ -279,7 +264,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Reads the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    if (mcuBoard.sensorValues[0] == MS_INVALID_VALUE) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
 /** End [working_functions] */

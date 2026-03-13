@@ -99,7 +99,11 @@
  * {{ @ref YosemitechY551_COD::YosemitechY551_COD }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; cod should have 2 -
+/// @brief Minimum COD; 0.75 mg/L
+#define Y551_COD_MIN_MGPL 0.75
+/// @brief Maximum COD; 370 mg/L
+#define Y551_COD_MAX_MGPL 370
+/// @brief Decimal places in string representation; cod should have 2 -
 /// resolution is 0.01 mg/L COD.
 #define Y551_COD_RESOLUTION 2
 /// @brief Sensor variable number; COD is stored in sensorValues[0].
@@ -126,7 +130,11 @@
  * {{ @ref YosemitechY551_Temp::YosemitechY551_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Minimum temperature; 5°C
+#define Y551_TEMP_MIN_C 5
+/// @brief Maximum temperature; 45°C
+#define Y551_TEMP_MAX_C 45
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is 0.01°C.
 #define Y551_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -153,7 +161,11 @@
  * {{ @ref YosemitechY551_Turbidity::YosemitechY551_Turbidity }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; turbidity should have 2 -
+/// @brief Minimum turbidity; 0.1 NTU
+#define Y551_TURB_MIN_NTU 0.1
+/// @brief Maximum turbidity; 1000 NTU
+#define Y551_TURB_MAX_NTU 1000
+/// @brief Decimal places in string representation; turbidity should have 2 -
 /// resolution is 0.01 NTU.
 #define Y551_TURB_RESOLUTION 2
 /// @brief Sensor variable number; turbidity is stored in sensorValues[2].
@@ -224,7 +236,7 @@ class YosemitechY551 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y551 object
      */
-    ~YosemitechY551() {}
+    ~YosemitechY551() override = default;
 };
 
 
@@ -252,23 +264,12 @@ class YosemitechY551_COD : public Variable {
     explicit YosemitechY551_COD(YosemitechY551* parentSense,
                                 const char*     uuid    = "",
                                 const char*     varCode = Y551_COD_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y551_COD_VAR_NUM,
-                   (uint8_t)Y551_COD_RESOLUTION, Y551_COD_VAR_NAME,
-                   Y551_COD_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY551_COD object.
-     *
-     * @note This must be tied with a parent YosemitechY551 before it can be
-     * used.
-     */
-    YosemitechY551_COD()
-        : Variable((uint8_t)Y551_COD_VAR_NUM, (uint8_t)Y551_COD_RESOLUTION,
-                   Y551_COD_VAR_NAME, Y551_COD_UNIT_NAME,
-                   Y551_COD_DEFAULT_CODE) {}
+        : Variable(parentSense, Y551_COD_VAR_NUM, Y551_COD_RESOLUTION,
+                   Y551_COD_VAR_NAME, Y551_COD_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY551_COD object - no action needed.
      */
-    ~YosemitechY551_COD() {}
+    ~YosemitechY551_COD() override = default;
 };
 
 
@@ -296,23 +297,12 @@ class YosemitechY551_Temp : public Variable {
     explicit YosemitechY551_Temp(YosemitechY551* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y551_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y551_TEMP_VAR_NUM,
-                   (uint8_t)Y551_TEMP_RESOLUTION, Y551_TEMP_VAR_NAME,
-                   Y551_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY551_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY551 before it can be
-     * used.
-     */
-    YosemitechY551_Temp()
-        : Variable((uint8_t)Y551_TEMP_VAR_NUM, (uint8_t)Y551_TEMP_RESOLUTION,
-                   Y551_TEMP_VAR_NAME, Y551_TEMP_UNIT_NAME,
-                   Y551_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, Y551_TEMP_VAR_NUM, Y551_TEMP_RESOLUTION,
+                   Y551_TEMP_VAR_NAME, Y551_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY551_Temp object - no action needed.
      */
-    ~YosemitechY551_Temp() {}
+    ~YosemitechY551_Temp() override = default;
 };
 
 
@@ -340,23 +330,12 @@ class YosemitechY551_Turbidity : public Variable {
     explicit YosemitechY551_Turbidity(
         YosemitechY551* parentSense, const char* uuid = "",
         const char* varCode = Y551_TURB_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y551_TURB_VAR_NUM,
-                   (uint8_t)Y551_TURB_RESOLUTION, Y551_TURB_VAR_NAME,
-                   Y551_TURB_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY551_Turbidity object.
-     *
-     * @note This must be tied with a parent YosemitechY551 before it can be
-     * used.
-     */
-    YosemitechY551_Turbidity()
-        : Variable((uint8_t)Y551_TURB_VAR_NUM, (uint8_t)Y551_TURB_RESOLUTION,
-                   Y551_TURB_VAR_NAME, Y551_TURB_UNIT_NAME,
-                   Y551_TURB_DEFAULT_CODE) {}
+        : Variable(parentSense, Y551_TURB_VAR_NUM, Y551_TURB_RESOLUTION,
+                   Y551_TURB_VAR_NAME, Y551_TURB_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY551_Turbidity object - no action needed.
      */
-    ~YosemitechY551_Turbidity() {}
+    ~YosemitechY551_Turbidity() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY551_H_

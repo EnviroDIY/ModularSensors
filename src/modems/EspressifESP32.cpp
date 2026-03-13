@@ -26,9 +26,6 @@ EspressifESP32::EspressifESP32(Stream* modemStream, int8_t powerPin,
 {
 }
 
-// Destructor
-EspressifESP32::~EspressifESP32() {}
-
 MS_IS_MODEM_AWAKE(EspressifESP32);
 MS_MODEM_WAKE(EspressifESP32);
 
@@ -36,18 +33,18 @@ MS_MODEM_CONNECT_INTERNET(EspressifESP32, ESPRESSIF_RECONNECT_TIME_MS);
 MS_MODEM_DISCONNECT_INTERNET(EspressifESP32);
 MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP32);
 
-MS_MODEM_CREATE_CLIENT(EspressifESP32);
-MS_MODEM_DELETE_CLIENT(EspressifESP32);
-MS_MODEM_CREATE_SECURE_CLIENT(EspressifESP32);
-MS_MODEM_DELETE_SECURE_CLIENT(EspressifESP32);
+MS_MODEM_CREATE_CLIENT(EspressifESP32, ESP32);
+MS_MODEM_DELETE_CLIENT(EspressifESP32, ESP32);
+MS_MODEM_CREATE_SECURE_CLIENT(EspressifESP32, ESP32);
+MS_MODEM_DELETE_SECURE_CLIENT(EspressifESP32, ESP32);
 
-MS_MODEM_GET_NIST_TIME(EspressifESP32);
+MS_MODEM_GET_NIST_TIME(EspressifESP32, ESP32);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP32);
 MS_MODEM_GET_MODEM_BATTERY_DATA(EspressifESP32);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(EspressifESP32);
 
-bool EspressifESP32::modemSleepFxn(void) {
+bool EspressifESP32::modemSleepFxn() {
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake
     // from deep sleep.  We'll also put it in deep sleep before yanking power.
     if (_modemResetPin >= 0 || _powerPin >= 0) {
@@ -67,25 +64,31 @@ bool EspressifESP32::modemSleepFxn(void) {
 }
 
 // Set up the light-sleep status pin, if applicable
-bool EspressifESP32::extraModemSetup(void) {
+bool EspressifESP32::extraModemSetup() {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
-    gsmModem.init();
+    bool success = gsmModem.init();
+    // Attempt to get the modem name even without a successful init
+    // The full make and model won't be returned, but it will at least be
+    // something that identifies the modem as an ESP32, which is helpful for
+    // debugging.
     _modemName = gsmModem.getModemName();
-    // AT+CWCOUNTRY=<country_policy>,<country_code>,<start_channel>,<total_channel_count>
-    // <country_policy>:
-    //     0: will change the county code to be the same as the AP that the
-    //     ESP32 is connected to.
-    //     1: the country code will not change, always be the one set by
-    //     command.
-    // <country_code>: country code. Maximum length: 3 characters. Refer to ISO
-    //     3166-1 alpha-2 for country codes.
-    // <start_channel>: the channel number to start. Range: [1,14].
-    // <total_channel_count>: total number of channels.
-    gsmModem.sendAT(
-        GF("+CWCOUNTRY=0,\"US\",1,13"));  // Set country code to default to US,
-                                          // but allow to change if the AP is
-    gsmModem.waitResponse();
-    return true;
+    if (success) {
+        // AT+CWCOUNTRY=<country_policy>,<country_code>,<start_channel>,<total_channel_count>
+        // <country_policy>:
+        //     0: will change the county code to be the same as the AP that the
+        //     ESP32 is connected to.
+        //     1: the country code will not change, always be the one set by
+        //     command.
+        // <country_code>: country code. Maximum length: 3 characters. Refer to
+        //     ISO 3166-1 alpha-2 for country codes.
+        // <start_channel>: the channel number to start. Range: [1,14].
+        // <total_channel_count>: total number of channels.
+        // We set the country code to default to US, but allow it to change if
+        // the AP is in a different country.
+        gsmModem.sendAT(GF("+CWCOUNTRY=0,\"US\",1,13"));
+        success &= (gsmModem.waitResponse() == 1);
+    }
+    return success;
 }
 
 // cSpell:ignore CWCOUNTRY

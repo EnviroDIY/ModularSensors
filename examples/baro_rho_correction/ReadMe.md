@@ -19,7 +19,7 @@ _______
   - [To Use this Example](#to-use-this-example)
     - [Prepare and set up PlatformIO](#prepare-and-set-up-platformio)
     - [Set the logger ID](#set-the-logger-id)
-    - [Set the universally universal identifiers (UUID) for each variable](#set-the-universally-universal-identifiers-uuid-for-each-variable)
+    - [Set the universally unique identifiers (UUIDs) for each variable](#set-the-universally-unique-identifiers-uuids-for-each-variable)
     - [Upload!](#upload)
 
 <!--! @endif -->
@@ -35,7 +35,7 @@ _______
 
 ### Prepare and set up PlatformIO<!--! {#example_baro_rho_pio} -->
 
-- Register a site and sensors at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
+- Register a site and sensors on [Monitor My Watershed](https://monitormywatershed.org)
 - Create a new PlatformIO project
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/baro_rho_correction/platformio.ini) file in the examples/baro_rho_correction folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
@@ -47,16 +47,16 @@ _______
 
 ### Set the logger ID<!--! {#example_baro_rho_logger_id} -->
 
-- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+- Change the text `YourLoggerID` in this section of code to your logger ID or serial number:
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
-### Set the universally universal identifiers (UUID) for each variable<!--! {#example_baro_rho_uuids} -->
+### Set the universally unique identifiers (UUIDs) for each variable<!--! {#example_baro_rho_uuids} -->
 
-- Go back to the web page for your site at the Monitor My Watershed/EnviroDIY data portal (<http://monitormywatershed.org/>)
+- Go back to the web page for your site on [Monitor My Watershed](https://monitormywatershed.org)
 - For each variable, find the dummy UUID (`"12345678-abcd-1234-ef00-1234567890ab"`) and replace it with the real UUID for the variable.
 
 ### Upload!<!--! {#example_baro_rho_upload} -->

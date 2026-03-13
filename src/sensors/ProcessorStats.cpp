@@ -19,65 +19,48 @@ ProcessorStats::ProcessorStats(const char* version,
              -1, measurementsToAverage, PROCESSOR_INC_CALC_VARIABLES),
       _version(version),
       _boardName(LOGGER_BOARD) {
-    // change the battery related settings for known boards
+    _operatingVoltage  = OPERATING_VOLTAGE;
+    _batteryPin        = BATTERY_PIN;
+    _batteryMultiplier = BATTERY_MULTIPLIER;
+
+    // change the battery related settings for known boards where the pin or
+    // multiplier is version dependent
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-    _operatingVoltage = 3.3;
-    _batteryPin       = A6;
-    if (strcmp(_version, "v0.3") == 0 || strcmp(_version, "v0.4") == 0) {
+    // fix battery multiplier for older Mayfly versions
+    if (_version != nullptr &&
+        (strcmp_P(_version, PSTR("v0.3")) == 0 ||
+         strcmp_P(_version, PSTR("v0.4")) == 0)) {
         _batteryMultiplier = 1.47;
-    } else if (strcmp(_version, "v0.5") == 0 || strcmp(_version, "v0.5b") ||
-               strcmp(_version, "v1.0") || strcmp(_version, "v1.1") == 0) {
-        _batteryMultiplier = 4.7;
-    } else {
-        _batteryPin        = -1;
-        _batteryMultiplier = -1;
     }
-#elif defined(ENVIRODIY_STONEFLY_M4)
-    if (strcmp(_version, "v0.1") == 0) {
-        _operatingVoltage  = 3.3;
-        _batteryPin        = A9;  // aka 75
-        _batteryMultiplier = 4.7;
-    } else {
-        _batteryPin        = -1;
-        _batteryMultiplier = -1;
-    }
-#elif defined(ARDUINO_AVR_FEATHER328P) || defined(ARDUINO_AVR_FEATHER32U4) ||  \
-    defined(ARDUINO_SAMD_FEATHER_M0) || defined(SAMD_FEATHER_M0) ||            \
-    defined(ARDUINO_SAMD_FEATHER_M0_EXPRESS) ||                                \
-    defined(SAMD_FEATHER_M0_EXPRESS) || defined(ARDUINO_FEATHER_M4) ||         \
-    defined(ADAFRUIT_FEATHER_M4_EXPRESS) || defined(ARDUINO_FEATHER_M4_CAN) || \
-    defined(ADAFRUIT_FEATHER_M4_CAN) || defined(ADAFRUIT_FEATHER_M4_ADALOGGER)
-    _operatingVoltage  = 3.3;
-    _batteryPin        = 9;
-    _batteryMultiplier = 2;
-#elif defined(ARDUINO_AVR_SODAQ_MBILI)
-    _operatingVoltage  = 3.3;
-    _batteryPin        = A6;
-    _batteryMultiplier = 1.47;
-#elif defined(ARDUINO_AVR_SODAQ_NDOGO)
-    _operatingVoltage  = 3.3;
-    _batteryPin        = 10;
-    _batteryMultiplier = 1.47;
 #elif defined(ARDUINO_SODAQ_ONE) || defined(ARDUINO_SODAQ_ONE_BETA)
-    _operatingVoltage = 3.3;
-    _batteryPin       = 10;
-    if (strcmp(_version, "v0.1") == 0) {
-        _batteryMultiplier = 2;
-    } else if (strcmp(_version, "v0.2") == 0) {
-        _batteryMultiplier = 1.47;
+    // only versions v0.1 and v0.2 of the Sodaq One are supported, and they have
+    // different battery multipliers (_batteryPin uses the default)
+    if (_version != nullptr) {
+        if (strcmp_P(_version, PSTR("v0.1")) == 0) {
+            _batteryMultiplier = 2;
+        } else if (strcmp_P(_version, PSTR("v0.2")) == 0) {
+            _batteryMultiplier = 1.47;
+        } else {
+            MS_DBG(F("Unsupported Sodaq One version:"), _version,
+                   F("- setting battery multiplier to -1"));
+            _batteryMultiplier = -1;
+        }
     } else {
-        _batteryMultiplier = -1
+        MS_DBG(F("No Sodaq One version specified - setting battery multiplier "
+                 "to -1"));
+        _batteryMultiplier = -1;
     }
 #elif defined(ARDUINO_SODAQ_AUTONOMO)
-    _operatingVoltage  = 3.3;
-    _batteryMultiplier = 1.47;
-    if (strcmp(_version, "v0.1") == 0)
-        _batteryPin = 48;
-    else
-        _batteryPin = 33;
-#else
-    _batteryPin        = -1;
-    _batteryMultiplier = -1;
+    if (_version != nullptr) {
+        if (strcmp_P(_version, PSTR("v0.1")) == 0) {
+            _batteryPin = 48;
+        } else {
+            _batteryPin = 33;
+        }
+    } else {
+        MS_DBG(F(
+            "No Sodaq Autonomo version specified - using default battery pin"));
+    }
 #endif
 }
 
@@ -96,16 +79,20 @@ ProcessorStats::ProcessorStats(const char* boardName, const char* version,
       _batteryMultiplier(batteryMultiplier),
       _operatingVoltage(operatingVoltage) {}
 
-// Destructor
-ProcessorStats::~ProcessorStats() {}
 
-
-String ProcessorStats::getSensorLocation(void) {
-    return String(_boardName) + " " + String(_version);
+String ProcessorStats::getSensorLocation() {
+    String result;
+    result.reserve(50);  // Reserve for board name + " " + version
+    result = String(_boardName);
+    if (_version != nullptr) {
+        result += " ";
+        result += _version;
+    }
+    return result;
 }
 
-float ProcessorStats::getBatteryVoltage(void) {
-    float sensorValue_battery = -9999;
+float ProcessorStats::getBatteryVoltage() {
+    float sensorValue_battery = MS_INVALID_VALUE;
     if (_batteryPin >= 0 && _batteryMultiplier > 0) {
         // Get the battery voltage
         MS_DBG(F("Getting battery voltage from pin"), _batteryPin);
@@ -189,7 +176,7 @@ int16_t FreeRam() {
     return &stack_dummy - sbrk(0);
 }
 
-uint8_t ProcessorStats::getLastResetCode(void) {
+uint8_t ProcessorStats::getLastResetCode() {
     return PM->RCAUSE.reg;
 }
 String ProcessorStats::getLastResetCause() {
@@ -220,7 +207,7 @@ int16_t FreeRam() {
     return sensorValue_freeRam;
 }
 
-uint8_t ProcessorStats::getLastResetCode(void) {
+uint8_t ProcessorStats::getLastResetCode() {
     return MCUSR;
 }
 String ProcessorStats::getLastResetCause() {
@@ -237,21 +224,26 @@ String ProcessorStats::getLastResetCause() {
 #endif
 
 
-bool ProcessorStats::addSingleMeasurementResult(void) {
+bool ProcessorStats::addSingleMeasurementResult() {
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
+
+    // NOTE: There is no way for the measurement start to fail!
+
     float sensorValue_battery = getBatteryVoltage();
     verifyAndAddMeasurementResult(PROCESSOR_BATTERY_VAR_NUM,
                                   sensorValue_battery);
 
     // NOTE: Only running this section if there are no measurements already for
     // the RAM!
-    if (numberGoodMeasurementsMade[PROCESSOR_RAM_VAR_NUM] == 0) {
+    if (validCount[PROCESSOR_RAM_VAR_NUM] == 0) {
         // Used only for debugging - can be removed
         MS_DBG(F("Getting Free RAM"));
 
 #if !defined(__SAMD51__)
         float sensorValue_freeRam = FreeRam();
 #else
-        float sensorValue_freeRam = -9999;
+        float sensorValue_freeRam = MS_INVALID_VALUE;
 #endif
 
         verifyAndAddMeasurementResult(PROCESSOR_RAM_VAR_NUM,
@@ -265,7 +257,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
     // average-able measurement, only for new measurements. This is a workaround
     // in case someone wants to average more than one measurement of the battery
     // voltage.
-    if (numberGoodMeasurementsMade[PROCESSOR_SAMPNUM_VAR_NUM] == 0) {
+    if (validCount[PROCESSOR_SAMPNUM_VAR_NUM] == 0) {
         // bump up the sample number
         sampNum += 1;
 
@@ -276,7 +268,7 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
 
     // NOTE: Only running this section if there are no measurements already for
     // the reset cause!
-    if (numberGoodMeasurementsMade[PROCESSOR_RESET_VAR_NUM] == 0) {
+    if (validCount[PROCESSOR_RESET_VAR_NUM] == 0) {
         // Used only for debugging - can be removed
         MS_DBG(F("Getting last reset cause"));
 
@@ -289,13 +281,8 @@ bool ProcessorStats::addSingleMeasurementResult(void) {
         MS_DBG(F("Skipping reset cause check on reps"));
     }
 
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    // Return true when finished
-    return true;
+    // Return true value when finished
+    return finalizeMeasurementAttempt(true);
 }
 
 // cSpell:ignore ADALOGGER RSTC RCAUSE BKUPEXIT BODCORE BODVDD BBPS brkval MCUSR

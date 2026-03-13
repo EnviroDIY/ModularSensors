@@ -6,10 +6,9 @@
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
  * @brief Contains the BoschBMP3xx sensor subclass and the variable subclasses
- * BoschBMP3xx_Temp, BoschBMP3xx_Humidity, BoschBMP3xx_Pressure, and
- * BoschBMP3xx_Altitude.
+ * BoschBMP3xx_Temp, BoschBMP3xx_Pressure, and BoschBMP3xx_Altitude.
  *
- * These are used for the Bosch BMP3xx digital pressure and humidity sensor.
+ * These are used for the Bosch BMP3xx digital pressure and temperature sensor.
  *
  * This depends on the [MartinL1's BMP388
  * library](https://github.com/MartinL1/BMP388_DEV).
@@ -111,11 +110,10 @@
  * - [BMP388 Datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP388-Datasheet.pdf)
  *
  * @section sensor_bmp3xx_flags Build flags
- * - ```-D SEALEVELPRESSURE_HPA```
+ * - ```-D MS_SEA_LEVEL_PRESSURE_HPA```
  *      - use to adjust the sea level pressure used to calculate altitude from measured barometric pressure
  *      - if not defined, 1013.25 is used
- *      - The same sea level pressure flag is used for both the BMP3xx and the BME280.
- * Whatever you select will be used for both sensors.
+ *      - The same sea level pressure flag is used for BMP3xx, BME280, and MS5837 sensors.
  *
  * @section sensor_bmp3xx_ctor Sensor Constructors
  * {{ @ref BoschBMP3xx::BoschBMP3xx(int8_t, Mode, Oversampling, Oversampling, IIRFilter, TimeStandby, uint8_t) }}
@@ -164,22 +162,8 @@
 /**@{*/
 /// @brief Sensor::_numReturnedValues; the BMP3xx can report 3 values.
 #define BMP3XX_NUM_VARIABLES 3
-/// @brief Sensor::_incCalcValues; altitude is calculated within the Adafruit
-/// library.
+/// @brief Sensor::_incCalcValues; altitude is calculated from pressure.
 #define BMP3XX_INC_CALC_VARIABLES 1
-/**@}*/
-
-/**
- * @anchor sensor_bme3xx_config
- * @name Configuration Defines
- * Defines to set the calibration of the calculated base pressure used to
- * calculate altitude by the BME3xx.
- */
-/**@{*/
-#if !defined(SEALEVELPRESSURE_HPA) || defined(DOXYGEN)
-/// The atmospheric pressure at sea level
-#define SEALEVELPRESSURE_HPA (1013.25)
-#endif
 /**@}*/
 
 /**
@@ -254,8 +238,12 @@
  * {{ @ref BoschBMP3xx_Temp::BoschBMP3xx_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 5 -
-/// resolution is 0.0.00015°C at the hightest oversampling.  See table 7 in the
+/// @brief Minimum temperature in degrees Celsius.
+#define BMP3XX_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define BMP3XX_TEMP_MAX_C 85.0
+/// @brief Decimal places in string representation; temperature should have 5 -
+/// resolution is 0.00015°C at the highest oversampling.  See table 7 in the
 /// [sensor
 /// datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf)
 /// for resolution at all bandwidths.
@@ -278,20 +266,24 @@
  * @anchor sensor_bmp3xx_pressure
  * @name Barometric Pressure
  * The barometric pressure variable from a Bosch BMP388 or BMP390
- * - Range for both the BMP388 and BMP390 is 300‒1250 hPa
+ * - Range for both the BMP388 and BMP390 is 300‒1250 hPa (30000‒125000 Pa)
  * - Absolute accuracy is typ. ± 50 Pa (±0.50 hPa)
  * - Relative accuracy is typ. ± 3 Pa (±0.03 hPa), equiv. to ± 0.25 m
  *
  * {{ @ref BoschBMP3xx_Pressure::BoschBMP3xx_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; barometric pressure should
+/// @brief Minimum barometric pressure in pascals.
+#define BMP3XX_PRESSURE_MIN_PA 30000.0
+/// @brief Maximum barometric pressure in pascals.
+#define BMP3XX_PRESSURE_MAX_PA 125000.0
+/// @brief Decimal places in string representation; barometric pressure should
 /// have 3.  Resolution of output data in highest resolution mode at lowest
 /// bandwidth is 0.016 Pa.  See table 6 in the [sensor
 /// datasheet](https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Bosch-BMP390-Datasheet.pdf)
 /// for resolution at all bandwidths.
 #define BMP3XX_PRESSURE_RESOLUTION 3
-/// @brief Sensor variable number; pressure is stored in sensorValues[2].
+/// @brief Sensor variable number; pressure is stored in sensorValues[1].
 #define BMP3XX_PRESSURE_VAR_NUM 1
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -313,15 +305,17 @@
  * {{ @ref BoschBMP3xx_Altitude::BoschBMP3xx_Altitude }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; altitude should have 0 -
+/// @brief Decimal places in string representation; altitude should have 0 -
 /// resolution is 1m.
 #define BMP3XX_ALTITUDE_RESOLUTION 0
-/// @brief Sensor variable number; altitude is stored in sensorValues[3].
+/// @brief Sensor variable number; altitude is stored in sensorValues[2].
 #define BMP3XX_ALTITUDE_VAR_NUM 2
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "heightAboveSeaFloor"
-#define BMP3XX_ALTITUDE_VAR_NAME "heightAboveSeaFloor"
+/// "altitude"
+/// @remark In library versions 0.37.0 and earlier, this variable was
+/// incorrectly named "heightAboveSeaFloor"
+#define BMP3XX_ALTITUDE_VAR_NAME "altitude"
 /// @brief Variable unit name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "meter"
 #define BMP3XX_ALTITUDE_UNIT_NAME "meter"
@@ -369,11 +363,23 @@ class BoschBMP3xx : public Sensor {
      * - `OVERSAMPLING_X8`
      * - `OVERSAMPLING_X16`,
      * - `OVERSAMPLING_X32`
+     * <br>Optional with a default of `OVERSAMPLING_SKIP` (no oversampling).
+     * This is what is recommended in the datasheet for the lowest power use
+     * case including environmental and weather monitoring, but you may want to
+     * use oversampling for better resolution.
+     * See @ref sensor_bmp3xx_pressure_osr for recommended pressure oversampling
+     * settings.
      *
      * @param tempOversample Temperature oversampling setting
      * <br>Possible values are the same as those for pressureOversample.  Using
      * temperature oversampling above X2 is not recommended as it does not
      * further improve pressure data quality.
+     * <br>Optional with a default of `OVERSAMPLING_SKIP` (no oversampling).
+     * This is what is recommended in the datasheet for the lowest power use
+     * case including environmental and weather monitoring, but you may want to
+     * use oversampling for better resolution.
+     * See @ref sensor_bmp3xx_temp_osr for recommended temperature oversampling
+     * settings.
      *
      * @param filterCoeff Coefficient of the infinite impulse response (IIR)
      * filter (in samples).
@@ -422,6 +428,16 @@ class BoschBMP3xx : public Sensor {
      * @param i2cAddressHex The I2C address of the BMP3xx; must be either 0x76
      * or 0x77.  The default value is 0x76.
      *
+     * @note **BEHAVIORAL CHANGE**: In previous versions of this library, the
+     * default oversampling settings were `OVERSAMPLING_X16` for pressure and
+     * `OVERSAMPLING_X2` for temperature, which provided higher resolution but
+     * consumed more power. The defaults have been changed to
+     * `OVERSAMPLING_SKIP` for both parameters to optimize for lowest power
+     * consumption as recommended in the datasheet. To retain the previous
+     * higher-resolution behavior, explicitly pass `OVERSAMPLING_X16` for
+     * pressure and `OVERSAMPLING_X2` for temperature when constructing the
+     * sensor object.
+     *
      * @note For the BoschBMP3xx we do _**NOT**_ provide a
      * `measurementsToAverage` option.  The sensor already provides on-board
      * averaging by way of oversampling and the IIR filter, so there is no
@@ -431,20 +447,17 @@ class BoschBMP3xx : public Sensor {
      * @ref sensor_bmp3xx_filts_uses for recommended settings
      */
     explicit BoschBMP3xx(int8_t powerPin, Mode mode = FORCED_MODE,
-                         Oversampling pressureOversample = OVERSAMPLING_X16,
-                         Oversampling tempOversample     = OVERSAMPLING_X2,
+                         Oversampling pressureOversample = OVERSAMPLING_SKIP,
+                         Oversampling tempOversample     = OVERSAMPLING_SKIP,
                          IIRFilter    filterCoeff        = IIR_FILTER_OFF,
                          TimeStandby  timeStandby        = TIME_STANDBY_10MS,
                          uint8_t      i2cAddressHex      = 0x76);
     /**
      * @brief Destroy the Bosch BMP3xx object
      */
-    ~BoschBMP3xx();
+    ~BoschBMP3xx() override = default;
 
-    /**
-     * @copydoc Sensor::wake()
-     */
-    bool wake(void) override;
+    bool wake() override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
@@ -455,24 +468,16 @@ class BoschBMP3xx : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::startSingleMeasurement()
-     */
-    bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    String getSensorLocation() override;
+
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
-     * @brief Internal reference the the BMP388_DEV object
+     * @brief Internal reference to the BMP388_DEV object
      */
     BMP388_DEV bmp_internal;
 
@@ -606,22 +611,13 @@ class BoschBMP3xx_Temp : public Variable {
      */
     explicit BoschBMP3xx_Temp(BoschBMP3xx* parentSense, const char* uuid = "",
                               const char* varCode = BMP3XX_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BMP3XX_TEMP_VAR_NUM,
-                   (uint8_t)BMP3XX_TEMP_RESOLUTION, BMP3XX_TEMP_VAR_NAME,
-                   BMP3XX_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new BoschBMP3xx_Temp object.
-     *
-     * @note This must be tied with a parent BoschBMP3xx before it can be used.
-     */
-    BoschBMP3xx_Temp()
-        : Variable((uint8_t)BMP3XX_TEMP_VAR_NUM,
-                   (uint8_t)BMP3XX_TEMP_RESOLUTION, BMP3XX_TEMP_VAR_NAME,
-                   BMP3XX_TEMP_UNIT_NAME, BMP3XX_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, BMP3XX_TEMP_VAR_NUM, BMP3XX_TEMP_RESOLUTION,
+                   BMP3XX_TEMP_VAR_NAME, BMP3XX_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Destroy the BoschBMP3xx_Temp object - no action needed.
      */
-    ~BoschBMP3xx_Temp() {}
+    ~BoschBMP3xx_Temp() override = default;
 };
 
 
@@ -649,20 +645,13 @@ class BoschBMP3xx_Pressure : public Variable {
     explicit BoschBMP3xx_Pressure(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BMP3XX_PRESSURE_VAR_NUM,
-                   (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
-                   BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, BMP3XX_PRESSURE_VAR_NUM,
+                   BMP3XX_PRESSURE_RESOLUTION, BMP3XX_PRESSURE_VAR_NAME,
+                   BMP3XX_PRESSURE_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new BoschBMP3xx_Pressure object.
-     *
-     * @note This must be tied with a parent BoschBMP3xx before it can be used.
+     * @brief Destroy the BoschBMP3xx_Pressure object - no action needed.
      */
-    BoschBMP3xx_Pressure()
-        : Variable((uint8_t)BMP3XX_PRESSURE_VAR_NUM,
-                   (uint8_t)BMP3XX_PRESSURE_RESOLUTION,
-                   BMP3XX_PRESSURE_VAR_NAME, BMP3XX_PRESSURE_UNIT_NAME,
-                   BMP3XX_PRESSURE_DEFAULT_CODE) {}
+    ~BoschBMP3xx_Pressure() override = default;
 };
 
 
@@ -690,22 +679,15 @@ class BoschBMP3xx_Altitude : public Variable {
     explicit BoschBMP3xx_Altitude(
         BoschBMP3xx* parentSense, const char* uuid = "",
         const char* varCode = BMP3XX_ALTITUDE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
-                   (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
-                   BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME, varCode,
-                   uuid) {}
+        : Variable(parentSense, BMP3XX_ALTITUDE_VAR_NUM,
+                   BMP3XX_ALTITUDE_RESOLUTION, BMP3XX_ALTITUDE_VAR_NAME,
+                   BMP3XX_ALTITUDE_UNIT_NAME, varCode, uuid) {}
     /**
-     * @brief Construct a new BoschBMP3xx_Altitude object.
-     *
-     * @note This must be tied with a parent BoschBMP3xx before it can be used.
+     * @brief Destroy the BoschBMP3xx_Altitude object - no action needed.
      */
-    BoschBMP3xx_Altitude()
-        : Variable((uint8_t)BMP3XX_ALTITUDE_VAR_NUM,
-                   (uint8_t)BMP3XX_ALTITUDE_RESOLUTION,
-                   BMP3XX_ALTITUDE_VAR_NAME, BMP3XX_ALTITUDE_UNIT_NAME,
-                   BMP3XX_ALTITUDE_DEFAULT_CODE) {}
+    ~BoschBMP3xx_Altitude() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_
 
-// cSpell:ignore oversample SEALEVELPRESSURE osrs_p DDIO bmp3xxtimingTest
+// cSpell:words oversample osrs_p DDIO bmp3xxtimingTest hectopascals

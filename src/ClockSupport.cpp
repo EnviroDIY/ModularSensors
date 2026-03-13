@@ -11,7 +11,6 @@
 #include "ClockSupport.h"
 #include "LoggerBase.h"
 
-
 epochTime::epochTime(time_t timestamp, epochStart epoch) {
     _unixTimestamp = convert_epoch(timestamp, epoch, epochStart::unix_epoch);
 }
@@ -181,6 +180,8 @@ const uint32_t epochTime::leapSeconds[NUMBER_LEAP_SECONDS] = LEAP_SECONDS;
 
 // Initialize the processor epoch
 epochStart loggerClock::_core_epoch = epochStart::y2k_epoch;
+// Initialize the processor timezone offset
+int32_t loggerClock::_core_tz = 0;
 // Initialize the static timezone
 int8_t loggerClock::_rtcUTCOffset = 0;
 
@@ -210,7 +211,7 @@ RTCZero loggerClock::zero_sleep_rtc;
 
 
 // Sets the static offset from UTC that the RTC is programmed in
-// I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC (ie, offset = 0)
+// I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC (i.e., offset = 0)
 // You can either set the RTC offset directly or set the offset between the
 // RTC and the logger
 void loggerClock::setRTCOffset(int8_t offsetHours) {
@@ -227,7 +228,7 @@ void loggerClock::setRTCOffset(int8_t offsetHours) {
     }
 #endif
 }
-int8_t loggerClock::getRTCOffset(void) {
+int8_t loggerClock::getRTCOffset() {
     return loggerClock::_rtcUTCOffset;
 }
 
@@ -280,7 +281,7 @@ String loggerClock::formatDateTime_ISO8601(time_t     epochSeconds,
 String loggerClock::formatDateTime_ISO8601(epochTime in_time,
                                            int8_t    epochSecondsUTCOffset) {
     // Use the conversion function to get a temporary variable for the epoch
-    // time in the epoch used by the processor core (ie, used by gmtime).
+    // time in the epoch used by the processor core (i.e., used by gmtime).
     time_t t = epochTime::convert_epoch(in_time, loggerClock::_core_epoch);
     MS_DEEP_DBG(F("Input time converted to processor epoch:"), t, '(',
                 epochTime::printEpochName(loggerClock::_core_epoch), ')');
@@ -330,7 +331,7 @@ void loggerClock::formatDateTime(char* buffer, const char* fmt,
 void loggerClock::formatDateTime(char* buffer, const char* fmt,
                                  epochTime in_time) {
     // Use the conversion function to get a temporary variable for the epoch
-    // time in the epoch used by the processor core (ie, used by gmtime).
+    // time in the epoch used by the processor core (i.e., used by gmtime).
     time_t t = epochTime::convert_epoch(in_time, loggerClock::_core_epoch);
     MS_DEEP_DBG(F("Input time converted to processor epoch:"), t, '(',
                 epochTime::printEpochName(loggerClock::_core_epoch), ')');
@@ -382,7 +383,9 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
     // If the RTC is already within 5 seconds of the input time, just quit
     if (abs(new_rtc_value - prev_rtc_value) < 5) {
         PRINTOUT(F("Clock already within 5 seconds of time."));
-        return false;
+        // return true because the clock is correctly set, even if we didn't
+        // actually set it
+        return true;
     }
 
     MS_DEEP_DBG(F("Setting raw RTC value to:"), new_rtc_value);
@@ -395,7 +398,7 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
 }
 
 // This checks that the logger time is within a "sane" range
-bool loggerClock::isRTCSane(void) {
+bool loggerClock::isRTCSane() {
     time_t curRTC  = getRawRTCNow();
     bool   is_sane = isEpochTimeSane(curRTC, loggerClock::_rtcUTCOffset,
                                      loggerClock::_rtcEpoch);
@@ -437,7 +440,7 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
     resetClockInterruptStatus();
 
     // Use the conversion function to get a temporary variable for the epoch
-    // time in the epoch used by the processor core (ie, used by gmtime).
+    // time in the epoch used by the processor core (i.e., used by gmtime).
     time_t t = epochTime::convert_epoch(in_time, _rtcEpoch) -
         static_cast<time_t>(utcOffset * 3600);
     MS_DBG(F("Setting the next alarm on the"), MS_CLOCK_NAME, F("to"),
@@ -451,7 +454,7 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
 
 #if defined(MS_USE_RV8803)
     // NOTE: The RV-8803 hardware does **NOT** support alarms at finer frequency
-    // than minutes! The alarm will fire when the minute turns (ie, at
+    // than minutes! The alarm will fire when the minute turns (i.e., at
     // hh:mm:00). To set an alarm at a specific second interval, you would have
     // to use a periodic countdown timer interrupt and start the interrupt timer
     // carefully on the second you want to match.
@@ -471,7 +474,7 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
     rtc.enableHardwareInterrupt(ALARM_INTERRUPT);
 
 #elif defined(MS_USE_DS3231)
-    // MATCH_HOURS = match hours *and* minutes, seconds, ie 1x per day at set
+    // MATCH_HOURS = match hours *and* minutes, seconds, i.e., 1x per day at set
     // hh:mm:ss
     rtc.enableInterrupts(MATCH_HOURS, 0, tmp->tm_hour, tmp->tm_min,
                          tmp->tm_sec);  // interrupt at (h,m,s)
@@ -529,7 +532,7 @@ void loggerClock::disableRTCInterrupts() {
 #endif
 }
 
-void loggerClock::resetClockInterruptStatus(void) {
+void loggerClock::resetClockInterruptStatus() {
     MS_DBG(F("Clearing all interrupt flags on the"), MS_CLOCK_NAME);
 #if defined(MS_USE_RV8803)
     // NOTE: We're not going to bother to call getInterruptFlag(x) to see which
@@ -552,7 +555,7 @@ void loggerClock::resetClockInterruptStatus(void) {
 #endif
 }
 
-void loggerClock::rtcISR(void) {
+void loggerClock::rtcISR() {
 #if defined(MS_CLOCKSUPPORT_DEBUG) || defined(MS_LOGGERBASE_DEBUG_DEEP)
     // This is bad practice - calling a Serial.print from an ISR
     // But.. it's so helpful for debugging!
@@ -563,8 +566,10 @@ void loggerClock::rtcISR(void) {
 }
 
 void loggerClock::begin() {
-    MS_DBG(F("Getting the epoch the processor uses for gmtime"));
-    loggerClock::_core_epoch = getProcessorEpochStart();
+    MS_DBG(F("Getting the epoch the processor core uses for gmtime"));
+    getProcessorEpochStart();  // Sets _core_epoch internally
+    MS_DBG(F("Getting the timezone the processor core uses for mktime"));
+    getProcessorTimeZone();  // Sets _core_tz internally
     PRINTOUT(F("An"), MS_CLOCK_NAME, F("will be used as the real time clock"));
     MS_DBG(F("Beginning"), MS_CLOCK_NAME, F("real time clock"));
     rtcBegin();
@@ -579,6 +584,8 @@ void loggerClock::begin() {
            static_cast<uint32_t>(static_cast<uint32_t>(_core_epoch) -
                                  static_cast<uint32_t>(epochStart::unix_epoch)),
            F("seconds"));
+    MS_DBG(F("The processor considers local time to be"), _core_tz,
+           F("seconds ("), _core_tz / 3600, F("hours) offset from UTC"));
     MS_DBG(F("The attached"), MS_CLOCK_NAME, F("uses a"),
            epochTime::printEpochName(_rtcEpoch),
            F("epoch internally, which starts"),
@@ -612,7 +619,82 @@ epochStart loggerClock::getProcessorEpochStart() {
         case 1980: ret_val = epochStart::gps_epoch; break;
         case 1900: ret_val = epochStart::nist_epoch; break;
     }
+    loggerClock::_core_epoch = ret_val;
     return ret_val;
+}
+
+// This is yet another awkward function, but time support varies across device
+// cores and I'm not sure if there is a better way to get the timezone offset
+// that the processor/core considers "local time".  We need to know this because
+// the mktime function converts the input time to the number of seconds since
+// the epoch in the processor's timezone. The UTC version of the function
+// (timegm(&timeParts)) is not available on all platforms, and I have no idea
+// how to consistently set or detect the timezone across platforms, so instead
+// we will just use mktime and then compare the returned timestamp to the known
+// epoch start to figure out the offset.
+int32_t loggerClock::getProcessorTimeZone() {
+    // Create a time struct for Jan 1, 2000 at 00:00:00 in the processor's epoch
+    tm timeParts       = {};
+    timeParts.tm_sec   = 0;
+    timeParts.tm_min   = 0;
+    timeParts.tm_hour  = 0;
+    timeParts.tm_mday  = 1;
+    timeParts.tm_mon   = 0;   /* tm_mon is 0-11 */
+    timeParts.tm_year  = 100; /* tm_year is since 1900 */
+    timeParts.tm_wday  = 0;   /* day of week, will be calculated */
+    timeParts.tm_yday  = 0;   /* day of year, will be calculated */
+    timeParts.tm_isdst = 0;   /* daylight saving time flag */
+    time_t timeTimeT   = mktime(&timeParts);
+
+    // Check for mktime failure
+    if (timeTimeT == (time_t)-1) {
+        MS_DBG(F("mktime failed, defaulting timezone offset to 0"));
+        loggerClock::_core_tz = 0;
+        return 0;
+    }
+
+    // make a epoch time from the converted time
+    // NOTE: Re-run getProcessorEpochStart() instead of calling _core_epoch in
+    // case the functions are called out of order and _core_epoch hasn't been
+    // set yet.
+    epochTime timeEpoch(timeTimeT, getProcessorEpochStart());
+    // convert to Y2K epoch
+    time_t timeY2K = epochTime::convert_epoch(timeEpoch, epochStart::y2k_epoch);
+    // Since we started with Jan 1, 2000, the offset from the input time and 0
+    // in the Y2K epoch can only be caused by timezone shifts within the mktime
+    // function.
+    // Handle both signed and unsigned time_t properly
+    // Check if time_t is signed by testing if (time_t)-1 < (time_t)0
+    int32_t        tz_offset;
+    constexpr bool is_time_t_signed = ((time_t)-1 < (time_t)0);
+
+    if (is_time_t_signed) {
+        // For signed time_t, negative values are represented normally
+        if (timeY2K >= -static_cast<time_t>(SECONDS_IN_DAY) &&
+            timeY2K <= static_cast<time_t>(SECONDS_IN_DAY)) {
+            tz_offset = static_cast<int32_t>(timeY2K);
+        } else {
+            tz_offset = 0;  // Outside reasonable timezone range (±24 hours)
+        }
+    } else {
+        // For unsigned time_t, check for wraparound indicating negative values
+        if (timeY2K <= SECONDS_IN_DAY) {
+            // Positive offset or zero
+            tz_offset = static_cast<int32_t>(timeY2K);
+        } else {
+            // Check if this looks like a wrapped negative value
+            const time_t max_unsigned = (time_t)-1;
+            if (timeY2K > (max_unsigned - SECONDS_IN_DAY)) {
+                // This is likely a wrapped negative offset
+                time_t offsetMagnitude = max_unsigned - timeY2K + 1;
+                tz_offset              = -static_cast<int32_t>(offsetMagnitude);
+            } else {
+                tz_offset = 0;  // Outside reasonable timezone range
+            }
+        }
+    }
+    loggerClock::_core_tz = tz_offset;
+    return tz_offset;
 }
 
 inline time_t loggerClock::tsToRawRTC(time_t ts, int8_t utcOffset,

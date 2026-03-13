@@ -11,19 +11,6 @@
  * @m_examplenavigation{example_baro_rho,}
  * ======================================================================= */
 
-// ==========================================================================
-// Defines for TinyGSM
-// NOTE:  These only work with TinyGSM.
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
 
 // ==========================================================================
 //  Include the libraries required for any data logger
@@ -44,7 +31,7 @@
 // The name of this program file
 const char* sketchName = "baro_rho_correction.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -56,7 +43,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t  buttonPin  = 21;      // Pin for debugging mode (i.e., button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
@@ -91,7 +78,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "xxxxx";  // APN for GPRS connection
+const char* apn = "YourAPN";  // APN for GPRS connection
 
 // Create the modem object
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
@@ -109,7 +96,7 @@ Variable* modemSignalPct = new Modem_SignalPercent(
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
@@ -124,7 +111,7 @@ Variable* mcuBoardAvailableRAM = new ProcessorStats_FreeRam(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* mcuBoardSampNo = new ProcessorStats_SampleNumber(
     &mcuBoard, "12345678-abcd-1234-ef00-1234567890ab");
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
@@ -224,8 +211,9 @@ float calculateWaterPressure(void) {
     float baroPressureFromBME280  = bme280Press->getValue();
     float waterPressure           = totalPressureFromMS5803 -
         (baroPressureFromBME280) * 0.01;
-    if (totalPressureFromMS5803 == -9999 || baroPressureFromBME280 == -9999) {
-        waterPressure = -9999;
+    if (totalPressureFromMS5803 == MS_INVALID_VALUE ||
+        baroPressureFromBME280 == MS_INVALID_VALUE) {
+        waterPressure = MS_INVALID_VALUE;
     }
     // Serial.print(F("Water pressure is "));  // for debugging
     // Serial.println(waterPressure);  // for debugging
@@ -252,8 +240,13 @@ Variable* calcWaterPress = new Variable(
 // For this, we're using the conversion between mbar and mm pure water at 4°C
 // This calculation gives a final result in mm of water
 float calculateWaterDepthRaw(void) {
-    float waterDepth = calculateWaterPressure() * 10.1972;
-    if (calculateWaterPressure() == -9999) waterDepth = -9999;
+    float pressure = calculateWaterPressure();
+    float waterDepth;
+    if (pressure == MS_INVALID_VALUE) {
+        waterDepth = MS_INVALID_VALUE;
+    } else {
+        waterDepth = pressure * 10.1972;
+    }
     // Serial.print(F("'Raw' water depth is "));  // for debugging
     // Serial.println(waterDepth);  // for debugging
     return waterDepth;
@@ -295,8 +288,9 @@ float calculateWaterDepthTempCorrected(void) {
     // from P = rho * g * h
     float rhoDepth = 1000 * waterPressurePa /
         (waterDensity * gravitationalConstant);
-    if (calculateWaterPressure() == -9999 || waterTemperatureC == -9999) {
-        rhoDepth = -9999;
+    if (calculateWaterPressure() == MS_INVALID_VALUE ||
+        waterTemperatureC == MS_INVALID_VALUE) {
+        rhoDepth = MS_INVALID_VALUE;
     }
     // Serial.print(F("Temperature corrected water depth is "));  // for
     // debugging Serial.println(rhoDepth);  // for debugging
@@ -352,18 +346,18 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// A Publisher to Monitor My Watershed / EnviroDIY Data Sharing Portal
+// A Publisher to Monitor My Watershed
 // Device registration and sampling feature information can be obtained after
-// registration at https://monitormywatershed.org or https://data.envirodiy.org
+// registration at https://monitormywatershed.org
 const char* registrationToken =
     "12345678-abcd-1234-ef00-1234567890ab";  // Device registration token
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
-// Create a data publisher for the Monitor My Watershed/EnviroDIY POST endpoint
-#include <publishers/EnviroDIYPublisher.h>
-EnviroDIYPublisher EnviroDIYPost(dataLogger, registrationToken,
-                                 samplingFeature);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+#include <publishers/MonitorMyWatershedPublisher.h>
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
+                                          samplingFeature);
 /** End [publishers] */
 
 
@@ -387,7 +381,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Uses the processor sensor to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    if (mcuBoard.sensorValues[0] == MS_INVALID_VALUE) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
 /** End [working_functions] */
@@ -496,3 +490,5 @@ void loop() {
     }
 }
 /** End [loop] */
+
+// cspell: words baro

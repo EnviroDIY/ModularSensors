@@ -46,10 +46,6 @@ LINKS_NAVBAR1 = [
                 # ],
             ),
             (
-                "Library Dependencies",
-                "page_library_dependencies",
-            ),
-            (
                 "Physical Dependencies",
                 "page_physical_dependencies",
             ),

@@ -80,7 +80,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientESP32.h"
 #include "Espressif.h"
 
 #ifdef MS_ESPRESSIFESP32_DEBUG_DEEP
@@ -123,34 +123,35 @@ class EspressifESP32 : public Espressif {
     /**
      * @brief Destroy the Espressif ESP32 object - no action taken
      */
-    ~EspressifESP32();
+    ~EspressifESP32() override = default;
 
-    bool modemWake(void) override;
+    bool modemWake() override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    void disconnectInternet() override;
 
-    virtual Client* createClient() override;
-    virtual void    deleteClient(Client* client);
-    virtual Client* createSecureClient() override;
-    virtual void    deleteSecureClient(Client* client);
-    virtual Client* createSecureClient(
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) override;
-    virtual Client*
-    createSecureClient(const char* pskIdent, const char* psKey,
-                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    virtual Client*
-    createSecureClient(const char* pskTableName,
-                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+    Client* createClient() override;
+    void    deleteClient(Client* client) override;
+    Client* createSecureClient() override;
+    void    deleteSecureClient(Client* client) override;
+    Client* createSecureClient(SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) override;
+    Client* createSecureClient(
+        const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    Client* createSecureClient(
+        const char* pskTableName,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
-    uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime() override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
     bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                int16_t& milliVolts) override;
-    float getModemChipTemperature(void) override;
+    float getModemChipTemperature() override;
 
 #ifdef MS_ESPRESSIFESP32_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -159,13 +160,13 @@ class EspressifESP32 : public Espressif {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmESP32 gsmModem;
 
  protected:
-    bool isInternetAvailable(void) override;
-    bool modemSleepFxn(void) override;
-    bool extraModemSetup(void) override;
-    bool isModemAwake(void) override;
+    bool isInternetAvailable() override;
+    bool modemSleepFxn() override;
+    bool extraModemSetup() override;
+    bool isModemAwake() override;
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP32_H_

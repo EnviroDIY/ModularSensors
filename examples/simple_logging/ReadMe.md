@@ -1,10 +1,10 @@
 # Simple Logging<!--! {#example_simple_logging} -->
 
 This shows the simplest use of a "logger" object.
-That is, creating an array of variable objects and then creating a logger object that utilizes those variables to update all of the variable results together and save the data to a SD card.
+That is, creating an array of variable objects and then creating a logger object that utilizes those variables to update all of the variable results together and save the data to an SD card.
 The processor then goes to sleep between readings.
 
-This is the example you should use to deploy a logger somewhere where you don't want or have access to a way of streaming live data and you won't want to upload data to the Monitor My Watershed data portal.
+This is the example you should use to deploy a logger somewhere where you don't want or have access to a way of streaming live data and you won't be uploading data to Monitor My Watershed.
 
 _______
 
@@ -35,16 +35,17 @@ _______
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging/platformio.ini) file in the examples/simple_logging folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
   - Without this, the program won't compile.
-- Open [simple_logging.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging/simple_logging.ino) and save it to your computer.  Put it into the src directory of your project.
+- Open [simple_logging.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging/simple_logging.ino) and save it to your computer.
+  Put it into the src directory of your project.
   - Delete main.cpp in that folder.
 
 ### Set the logger ID<!--! {#example_simple_logging_logger_id} -->
 
-- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+- Change the text `YourLoggerID` in this section of code to your logger ID or serial number:
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 ### Upload!<!--! {#example_simple_logging_upload} -->
