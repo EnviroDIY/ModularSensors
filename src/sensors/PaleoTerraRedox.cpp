@@ -160,12 +160,12 @@ bool PaleoTerraRedox::addSingleMeasurementResult() {
         adcValue |= 0xFFFC0000;  // Sign extend from bit 17 (set all bits 18-31)
     }
 
-    // convert the raw ADC value to voltage in microvolts (uV)
-    res = adcValue * 0.015625;  // 15.625 uV per LSB
+    // convert the raw ADC value to voltage in millivolts (mV)
+    res = adcValue * PTR_MV_PER_LSB;  // 0.015625 mV per LSB
 
     MS_DBG(F("Raw ADC reading in bits:"), adcValue);
     MS_DBG(F("Config byte:"), config);
-    MS_DBG(F("Calculated voltage in uV:"), res);
+    MS_DBG(F("Calculated voltage in mV:"), res);
 
     success = (!isnan(res)) && !(adcValue == 0 && config == 0);
     if (success) {

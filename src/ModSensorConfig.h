@@ -74,6 +74,10 @@
  */
 #define LATEST_SANE_UNIX_TIMESTAMP 2051222400
 #endif
+// Static assert to validate timestamp bounds relationship
+static_assert(EARLIEST_SANE_UNIX_TIMESTAMP < LATEST_SANE_UNIX_TIMESTAMP,
+              "EARLIEST_SANE_UNIX_TIMESTAMP must be less than "
+              "LATEST_SANE_UNIX_TIMESTAMP");
 //==============================================================
 
 

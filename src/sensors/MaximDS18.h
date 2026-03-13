@@ -167,6 +167,10 @@
 #define DS18_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "DS18Temp"
 #define DS18_TEMP_DEFAULT_CODE "DS18Temp"
+/// @brief Value returned when DS18 cannot get a good measurement
+#define DS18_BAD_MEASUREMENT_VALUE 85.0f
+/// @brief Value returned when DS18 sensor is not properly connected
+#define DS18_DISCONNECTED_VALUE -127.0f
 /**@}*/
 
 /* clang-format off */

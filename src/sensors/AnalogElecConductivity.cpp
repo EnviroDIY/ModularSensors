@@ -43,6 +43,7 @@ String AnalogElecConductivity::getSensorLocation() {
     String sensorLocation;
     sensorLocation.reserve(48);  // Approximate expected size
     if (_analogVoltageReader != nullptr) {
+        // Set the reference channel to -1 for a single-ended sensor
         sensorLocation = _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
         sensorLocation = F("Unknown_AnalogVoltageReader");
@@ -127,7 +128,7 @@ bool AnalogElecConductivity::addSingleMeasurementResult() {
         float EC_uScm = MS_INVALID_VALUE;  // units are uS per cm
         if (Rwater_ohms > 0.0f) {
             EC_uScm = 1000000.0f / (Rwater_ohms * _sensorEC_Konst);
-            MS_DBG(F("Water EC (uS/cm)"), EC_uScm);
+            MS_DBG(F("Water EC (uS/cm):"), EC_uScm);
             verifyAndAddMeasurementResult(ANALOGELECCONDUCTIVITY_EC_VAR_NUM,
                                           EC_uScm);
         } else {

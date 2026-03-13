@@ -253,6 +253,7 @@ class Logger {
     }
     /**
      * @brief Deprecated alias for getStartupMeasurements
+     * @return The remaining number of startup measurements
      * @m_deprecated_since{0,38,0} use getStartupMeasurements
      */
     int16_t getinitialShortIntervals() {

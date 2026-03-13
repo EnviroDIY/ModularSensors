@@ -152,6 +152,11 @@ class Sensor {
     virtual int8_t getPowerPin();
     /**
      * @brief Set the pin number controlling sensor power.
+     * 
+     * @warning Only change power pins when the sensor is powered off to avoid
+     * leaving old pins HIGH and potentially damaging circuits or causing
+     * power management conflicts.
+     * 
      * @param pin The pin on the mcu controlling power to the sensor.
      */
     virtual void setPowerPin(int8_t pin);
@@ -171,6 +176,10 @@ class Sensor {
      * This is for a second power needed to communicate with a sensor. Generally
      * to an adapter or converter needed to talk to the sensor - i.e., an RS232
      * adapter, an RS485 adapter, or an IO multiplexer.
+     *
+     * @warning Only change power pins when the sensor is powered off to avoid
+     * leaving old pins HIGH and potentially damaging circuits or causing
+     * power management conflicts.
      *
      * @param pin The pin on the mcu controlling secondary power
      */

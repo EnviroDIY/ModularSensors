@@ -93,6 +93,29 @@
 #include "SensorBase.h"
 #include <Wire.h>
 
+/** @ingroup atlas_group */
+/**@{*/
+
+/**
+ * @anchor atlas_response_codes
+ * @name Atlas Response Codes
+ * Standard response codes returned by Atlas EZO circuits
+ */
+/**@{*/
+/// @brief The command was successful
+#define ATLAS_RESPONSE_SUCCESS 1
+/// @brief The command has failed
+#define ATLAS_RESPONSE_FAILED 2
+/// @brief The command has not yet been finished calculating
+#define ATLAS_RESPONSE_PENDING 254
+/// @brief There is no further data to send
+#define ATLAS_RESPONSE_NO_DATA 255
+/// @brief Maximum I2C response buffer size for Atlas circuits
+#define ATLAS_I2C_RESPONSE_BUFFER_SIZE 40
+/// @brief Minimum valid result threshold for Atlas sensor readings
+#define ATLAS_MIN_VALID_RESULT -1020.0f
+/**@}*/
+
 /**
  * @brief A parent class for Atlas EZO circuits and sensors
  *

@@ -166,8 +166,8 @@ class ProcessorAnalogReader : public AnalogVoltageReader {
      * @brief Construct a new ProcessorAnalogReader object
      *
      * @param voltageMultiplier Any multiplier needed to convert raw battery
-     * readings from `analogRead()` into true battery values based on any
-     * resistors or voltage dividers
+     * readings from `analogRead()` into true voltage values based on any
+     * voltage divider resistors
      * @param operatingVoltage The processor's operating voltage; most
      * likely 3.3 or 5.
      */

@@ -139,9 +139,9 @@ bool AtlasParent::addSingleMeasurementResult() {
 
     bool success = false;
 
-    // call the circuit and request 40 bytes (this may be more than we need)
-    int bytesReceived = _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 40,
-                                          1);
+    // call the circuit and request up to the maximum buffer size (this may be more than we need)
+    int bytesReceived = _i2c->requestFrom(static_cast<int>(_i2cAddressHex), 
+                                          ATLAS_I2C_RESPONSE_BUFFER_SIZE, 1);
     if (bytesReceived == 0) {
         MS_DBG(getSensorNameAndLocation(), F("I2C read failed - no response"));
         return finalizeMeasurementAttempt(false);
@@ -151,20 +151,20 @@ bool AtlasParent::addSingleMeasurementResult() {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
     // Parse the response code
     switch (code) {
-        case 1:  // the command was successful.
+        case ATLAS_RESPONSE_SUCCESS:  // the command was successful.
             MS_DBG(F("  Measurement successful"));
             success = true;
             break;
 
-        case 2:  // the command has failed.
+        case ATLAS_RESPONSE_FAILED:  // the command has failed.
             MS_DBG(F("  Measurement Failed"));
             break;
 
-        case 254:  // the command has not yet been finished calculating.
+        case ATLAS_RESPONSE_PENDING:  // the command has not yet been finished calculating.
             MS_DBG(F("  Measurement Pending"));
             break;
 
-        case 255:  // there is no further data to send.
+        case ATLAS_RESPONSE_NO_DATA:  // there is no further data to send.
             MS_DBG(F("  No Data"));
             break;
 
@@ -179,7 +179,7 @@ bool AtlasParent::addSingleMeasurementResult() {
                 break;
             }
             float result = _i2c->parseFloat();
-            if (isnan(result) || result < -1020) {
+            if (isnan(result) || result < ATLAS_MIN_VALID_RESULT) {
                 result  = MS_INVALID_VALUE;
                 success = false;
                 MS_DBG(F("  Invalid response for result #"), i);

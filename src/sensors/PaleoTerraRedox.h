@@ -43,6 +43,12 @@
  * @section sensor_pt_redox_flags Build flags
  * - `-D MS_PALEOTERRA_SOFTWAREWIRE`
  *      - switches from using hardware I2C to software I2C
+ * - `PTR_MV_PER_LSB`
+ *      - ADC LSB to microvolts conversion factor (15.625 μV per LSB)
+ *      - Used to convert raw ADC values to voltage measurements
+ * - `MCP3421_ADR`
+ *      - Default I2C address of the PaleoTerra redox sensor (0x68)
+ *      - Can be overridden in constructor if sensor address is different
  * @warning Either all or none of your attached redox probes may use software I2C.
  * Using some with software I2C and others with hardware I2C is not supported.
  *
@@ -93,6 +99,23 @@
 /**@{*/
 
 /**
+ * @anchor sensor_pt_redox_config
+ * @name Configuration Defines
+ * Defines to set the address of the PaleoTerra redox sensor.
+ */
+/**@{*/
+/// @brief The default I2C address of the PaleoTerra redox sensor
+#ifndef MCP3421_ADR
+#define MCP3421_ADR 0x68
+#endif
+/// @brief ADC LSB to millivolts conversion factor (15.625 µV per LSB = 0.015625
+/// mV per LSB)
+#ifndef PTR_MV_PER_LSB
+#define PTR_MV_PER_LSB 0.015625f
+#endif
+/**@}*/
+
+/**
  * @anchor sensor_pt_redox_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by PaleoTerra redox sensor
@@ -103,16 +126,6 @@
 #define PTR_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define PTR_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_pt_redox_config
- * @name Configuration Defines
- * Defines to set the address of the PaleoTerra redox sensor.
- */
-/**@{*/
-/// @brief The default I2C address of the PaleoTerra redox sensor
-#define MCP3421_ADR 0x68
 /**@}*/
 
 /**

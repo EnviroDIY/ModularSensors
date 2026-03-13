@@ -462,7 +462,7 @@
 
 #ifndef MS_PROCESSOR_ADC_REFERENCE_MODE
 // Fallback ADC reference mode based on processor architecture
-#if defined(ARDUINO_ARCH_AVR)
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define MS_PROCESSOR_ADC_REFERENCE_MODE DEFAULT
 #elif defined(ARDUINO_ARCH_SAMD)
 #define MS_PROCESSOR_ADC_REFERENCE_MODE AR_DEFAULT
@@ -505,17 +505,17 @@
 #define BATTERY_PIN -1
 #pragma message                                                                          \
     "Warning: BATTERY_PIN is not defined for this processor.\n"                          \
-    "If your processor does not have a built-in pin for measuring the battery voltage,"  \
+    "If your processor does not have a built-in pin for measuring the battery voltage, " \
     "or you have specified a different pin in your code, you can ignore this message.\n" \
     "The battery pin can be added by editing KnownProcessors.h."
 #endif
 
 #ifndef BATTERY_MULTIPLIER
 #define BATTERY_MULTIPLIER -1
-#pragma message                                                                         \
-    "Warning: BATTERY_MULTIPLIER is not defined for this processor.\n"                  \
-    "If your processor does not have a built-in pin for measuring the battery voltage," \
-    "or you have specified the multiplier in your code, you can ignore this message.\n" \
+#pragma message                                                                          \
+    "Warning: BATTERY_MULTIPLIER is not defined for this processor.\n"                   \
+    "If your processor does not have a built-in pin for measuring the battery voltage, " \
+    "or you have specified the multiplier in your code, you can ignore this message.\n"  \
     "The battery multiplier can be added by editing KnownProcessors.h."
 #endif
 

@@ -224,7 +224,7 @@
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/);
 /// "inchPerHour"
 #define RAINVUE10_RAINRATEMAX_UNIT_NAME "inchPerHour"
-/// @brief Default variable short code; "RainVUERateAve"
+/// @brief Default variable short code; "RainVUERateMax"
 #define RAINVUE10_RAINRATEMAX_DEFAULT_CODE "RainVUERateMax"
 /**@}*/
 

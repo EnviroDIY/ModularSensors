@@ -212,14 +212,14 @@ class YosemitechY533 : public YosemitechParent {
 class YosemitechY533_ORP : public Variable {
  public:
     /**
-     * @brief Construct a new YosemitechY533_pH object.
+     * @brief Construct a new YosemitechY533_ORP object.
      *
      * @param parentSense The parent YosemitechY533 providing the result
      * values.
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of "Y533pH".
+     * optional with a default value of "Y533ORP".
      */
     explicit YosemitechY533_ORP(YosemitechY533* parentSense,
                                 const char*     uuid    = "",

@@ -40,6 +40,7 @@ ApogeeSQ212::~ApogeeSQ212() {
 
 String ApogeeSQ212::getSensorLocation() {
     if (_analogVoltageReader != nullptr) {
+        // Set the reference channel to -1 for a single-ended sensor
         return _analogVoltageReader->getAnalogLocation(_dataPin, -1);
     } else {
         return String(F("Unknown_AnalogVoltageReader"));

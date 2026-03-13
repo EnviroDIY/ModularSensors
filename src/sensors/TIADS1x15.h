@@ -246,9 +246,13 @@
 #ifdef MS_USE_ADS1015
 /// @brief Decimal places in string representation; voltage should have 1.
 #define TIADS1X15_RESOLUTION 1
+/// @brief Default data rate for ADS1015 (1600 SPS)
+#define TIADS1X15_DEFAULT_DATA_RATE RATE_ADS1015_1600SPS
 #else
 /// @brief Decimal places in string representation; voltage should have 4.
 #define TIADS1X15_RESOLUTION 4
+/// @brief Default data rate for ADS1115 (128 SPS)
+#define TIADS1X15_DEFAULT_DATA_RATE RATE_ADS1115_128SPS
 #endif
 /**@}*/
 
@@ -275,16 +279,12 @@ class TIADS1x15Reader : public AnalogVoltageReader {
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
      * @param adsDataRate The data rate for the ADS1x15 (samples per second)
      */
-    explicit TIADS1x15Reader(TwoWire* theI2C, float voltageMultiplier = 1.0f,
-                             adsGain_t adsGain    = GAIN_ONE,
-                             uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
-                             float     adsSupplyVoltage = OPERATING_VOLTAGE,
-#ifndef MS_USE_ADS1015
-                             uint16_t adsDataRate = RATE_ADS1115_128SPS
-#else
-                             uint16_t adsDataRate = RATE_ADS1015_1600SPS
-#endif
-    );
+    explicit TIADS1x15Reader(
+        TwoWire* theI2C, float voltageMultiplier = 1.0f,
+        adsGain_t adsGain          = GAIN_ONE,
+        uint8_t   i2cAddress       = MS_DEFAULT_ADS1X15_ADDRESS,
+        float     adsSupplyVoltage = OPERATING_VOLTAGE,
+        uint16_t  adsDataRate      = TIADS1X15_DEFAULT_DATA_RATE);
 
     /**
      * @brief Construct a new TIADS1x15Reader object using the default hardware
@@ -296,16 +296,11 @@ class TIADS1x15Reader : public AnalogVoltageReader {
      * @param adsSupplyVoltage The power supply voltage for the ADS1x15 in volts
      * @param adsDataRate The data rate for the ADS1x15 (samples per second)
      */
-    explicit TIADS1x15Reader(float     voltageMultiplier = 1.0f,
-                             adsGain_t adsGain           = GAIN_ONE,
-                             uint8_t   i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS,
-                             float     adsSupplyVoltage = OPERATING_VOLTAGE,
-#ifndef MS_USE_ADS1015
-                             uint16_t adsDataRate = RATE_ADS1115_128SPS
-#else
-                             uint16_t adsDataRate = RATE_ADS1015_1600SPS
-#endif
-    );
+    explicit TIADS1x15Reader(
+        float voltageMultiplier = 1.0f, adsGain_t adsGain = GAIN_ONE,
+        uint8_t  i2cAddress       = MS_DEFAULT_ADS1X15_ADDRESS,
+        float    adsSupplyVoltage = OPERATING_VOLTAGE,
+        uint16_t adsDataRate      = TIADS1X15_DEFAULT_DATA_RATE);
 
     /**
      * @brief Destroy the TIADS1x15Reader object
@@ -432,19 +427,19 @@ class TIADS1x15Reader : public AnalogVoltageReader {
     /**
      * @brief An internal reference to the hardware Wire instance.
      */
-    TwoWire* _wire;
+    TwoWire* _wire = nullptr;
     /**
      * @brief Internal reference to the I2C address of the TI-ADS1x15
      */
-    uint8_t _i2cAddress;
+    uint8_t _i2cAddress = MS_DEFAULT_ADS1X15_ADDRESS;
     /**
      * @brief The internal gain setting for the ADS1x15
      */
-    adsGain_t _adsGain;
+    adsGain_t _adsGain = GAIN_ONE;
     /**
      * @brief The data rate setting for the ADS1x15
      */
-    uint16_t _adsDataRate;
+    uint16_t _adsDataRate = TIADS1X15_DEFAULT_DATA_RATE;
     /**
      * @brief Per-instance ADS1x15 driver to maintain separate I2C state
      */
