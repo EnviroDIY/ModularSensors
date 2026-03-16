@@ -64,16 +64,19 @@
  * @brief A text description of the clock
  */
 #if defined(MS_USE_RV8803)
+// #pragma message "Using RV-8803 RTC as the clock."
 #define MS_CLOCK_NAME "RV-8803"
 #include <SparkFun_RV8803.h>
 // Interrupt is active low on the RV8803
 #define CLOCK_INTERRUPT_MODE FALLING
 #elif defined(MS_USE_DS3231)
+// #pragma message "Using DS3231 RTC as the clock."
 #define MS_CLOCK_NAME "DS3231"
 #include <Sodaq_DS3231.h>
 // Interrupt is active low on the DS3231
 #define CLOCK_INTERRUPT_MODE FALLING
 #elif defined(MS_USE_RTC_ZERO)
+// #pragma message "Using SAMD 32-bit RTC as the clock."
 #define MS_CLOCK_NAME "SAMD 32-bit RTC"
 #include <RTCZero.h>
 #endif

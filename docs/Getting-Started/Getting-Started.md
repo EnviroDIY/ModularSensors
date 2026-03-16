@@ -98,7 +98,7 @@ Again, it's easiest to let PlatformIO set everything up in a new folder.
 
 ```ini
 lib_deps = EnviroDIY_ModularSensors
-lib_ldf_mode = deep+
+lib_ldf_mode = deep
 build_flags =
     -DSDI12_EXTERNAL_PCINT
     -DNEOSWSERIAL_EXTERNAL_PCINT

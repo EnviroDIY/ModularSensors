@@ -91,7 +91,7 @@ check_flags =
     clangtidy: --checks=-*
 check_skip_packages = yes
 ; deep search for dependencies, evaluating preprocessor conditionals
-lib_ldf_mode = deep+
+lib_ldf_mode = deep
 lib_compat_mode = soft
 ; look for the library directory
 lib_extra_dirs = .
