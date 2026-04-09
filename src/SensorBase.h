@@ -668,22 +668,20 @@ class Sensor {
     /**
      * @brief Check if the #_powerPin is currently high.
      *
-     * @param debug True to output the result to the debugging Serial
      * @return True indicates the #_powerPin is currently `HIGH`.
      */
-    bool checkPowerOn(bool debug = false);
+    bool checkPowerOn();
     /**
      * @brief Check whether or not enough time has passed between the sensor
      * receiving power and being ready to respond to logger commands.
      *
-     * @param debug True to output the result to the debugging Serial
      * @return True indicates that enough time has passed that the
      * sensor should be ready to respond to commands.
      *
      * @note A true response does _NOT_ indicate that the sensor will respond to
      * commands, merely that the specified time for wake has passed.
      */
-    virtual bool isWarmedUp(bool debug = false);
+    virtual bool isWarmedUp();
     /**
      * @brief Hold all further program execution until this sensor is ready to
      * receive commands.
@@ -694,7 +692,6 @@ class Sensor {
      * @brief Check whether or not enough time has passed between the sensor
      * being awoken/activated and being ready to output stable values.
      *
-     * @param debug True to output the result to the debugging Serial
      * @return True indicates that enough time has passed that the
      * sensor should have stabilized.
      *
@@ -702,7 +699,7 @@ class Sensor {
      * stable values, merely that the specified time for sensor stabilization
      * has passed.
      */
-    virtual bool isStable(bool debug = false);
+    virtual bool isStable();
     /**
      * @brief Hold all further program execution until this sensor is reporting
      * stable values.
@@ -714,7 +711,6 @@ class Sensor {
      * sensor was asked to take a single measurement and when that measurement
      * is expected to be complete.
      *
-     * @param debug True to output the result to the debugging Serial
      * @return True indicates that enough time has passed the
      * measurement should have completed
      *
@@ -722,7 +718,7 @@ class Sensor {
      * successfully report a result, merely that the specified time for a
      * measurement has passed.
      */
-    virtual bool isMeasurementComplete(bool debug = false);
+    virtual bool isMeasurementComplete();
     /**
      * @brief Hold all further program execution until this sensor is has
      * finished the current measurement.

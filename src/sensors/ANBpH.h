@@ -590,7 +590,7 @@ class ANBpH : public Sensor {
     bool addSingleMeasurementResult() override;
 
     /**
-     * @copydoc Sensor::isWarmedUp(bool debug)
+     * @copydoc Sensor::isWarmedUp()
      *
      * For the ANB pH sensor, this waits for both the power-on warm up and for a
      * valid status code response from the sensor - which indicates that it's
@@ -598,18 +598,17 @@ class ANBpH : public Sensor {
      *
      * @note The timing here is probably not very variable.
      */
-    bool isWarmedUp(bool debug = false) override;
+    bool isWarmedUp() override;
 
     /**
      * @brief Check whether or not the pH sensor has completed a measurement.
      *
-     * @param debug True to output the result to the debugging Serial
      * @return True indicates that the pH sensor has completed a measurement.
      *
      * @note We override the default function because the amount of time
      * required depends on the salinity, power "style" and the immersion sensor.
      */
-    bool isMeasurementComplete(bool debug = false) override;
+    bool isMeasurementComplete() override;
 
     /**
      * @brief Set the sensor salinity mode

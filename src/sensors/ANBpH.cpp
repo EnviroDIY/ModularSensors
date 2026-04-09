@@ -437,17 +437,12 @@ bool ANBpH::isSensorReady(bool (anbSensor::*checkReadyFxn)(), uint32_t spacing,
 
 
 // This checks to see if enough time has passed for warm-up
-bool ANBpH::isWarmedUp(bool debug) {
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP) || defined(MS_SENSORBASE_DEBUG)
-    debug = true;
-#endif
+bool ANBpH::isWarmedUp() {
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
     if (!getStatusBit(POWER_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("does not have power and cannot warm up!"));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("does not have power and cannot warm up!"));
         return true;
     }
 
@@ -507,18 +502,12 @@ uint32_t ANBpH::getEndMeasurementWindow() {
 }
 
 // This checks to see if enough time has passed for measurement completion
-bool ANBpH::isMeasurementComplete(bool debug) {
-#if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
-    debug = true;
-#endif
+bool ANBpH::isMeasurementComplete() {
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(
-                getSensorNameAndLocation(),
-                F("is not taking a measurement and will not return a value!"));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("is not taking a measurement and will not return a value!"));
         return true;
     }
 
@@ -529,11 +518,9 @@ bool ANBpH::isMeasurementComplete(bool debug) {
     // least 10.5 (high salinity) or 14 (low salinity) seconds.
     if (_currentRetries > 0) {
         if (elapsed_since_meas_start > _measurementTime_ms) {
-            if (debug) {
-                MS_DBG(F("It's been"), elapsed_since_meas_start,
-                       F("ms, and measurement by"), getSensorNameAndLocation(),
-                       F("should be complete!"));
-            }
+            MS_DBG(F("It's been"), elapsed_since_meas_start,
+                   F("ms, and measurement by"), getSensorNameAndLocation(),
+                   F("should be complete!"));
             return true;
         } else {
             // If the sensor is measuring but the time hasn't passed, we still

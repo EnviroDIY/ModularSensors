@@ -295,17 +295,12 @@ bool GeoluxHydroCam::isCameraReady(uint32_t
 
 
 // This checks to see if enough time has passed for warm-up
-bool GeoluxHydroCam::isWarmedUp(bool debug) {
-#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP) || defined(MS_SENSORBASE_DEBUG)
-    debug = true;
-#endif
+bool GeoluxHydroCam::isWarmedUp() {
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
     if (!getStatusBit(POWER_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("does not have power and cannot warm up!"));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("does not have power and cannot warm up!"));
         return true;
     }
 
@@ -330,17 +325,12 @@ bool GeoluxHydroCam::isWarmedUp(bool debug) {
 
 
 // This checks to see if enough time has passed for stability
-bool GeoluxHydroCam::isStable(bool debug) {
-#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP) || defined(MS_SENSORBASE_DEBUG)
-    debug = true;
-#endif
+bool GeoluxHydroCam::isStable() {
     // If the sensor failed to activate, it will never stabilize, so the
     // stabilization time is essentially already passed
     if (!getStatusBit(WAKE_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("is not active and cannot stabilize!"));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("is not active and cannot stabilize!"));
         return true;
     }
 
@@ -377,17 +367,12 @@ bool GeoluxHydroCam::isStable(bool debug) {
 
 
 // This checks to see if enough time has passed for measurement completion
-bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
-#if defined(MS_GEOLUXHYDROCAM_DEBUG_DEEP)
-    debug = true;
-#endif
+bool GeoluxHydroCam::isMeasurementComplete() {
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("is not taking an image and will not return a value!"));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("is not taking an image and will not return a value!"));
         return true;
     }
 
@@ -398,11 +383,9 @@ bool GeoluxHydroCam::isMeasurementComplete(bool debug) {
                F("timed out waiting for image to complete"));
         return true;  // timeout
     } else if (elapsed_since_meas_start > _measurementTime_ms) {
-        // if (debug) {
-        //     MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
-        //            getSensorNameAndLocation(),
-        //            F("might have finished an image."));
-        // }
+        // MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),
+        //        getSensorNameAndLocation(),
+        //        F("might have finished an image."));
         bool is_ready = isCameraReady(_millisMeasurementRequested);
         if (is_ready) {
             MS_DBG(F("It's been"), elapsed_since_meas_start, F("ms, and"),

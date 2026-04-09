@@ -342,18 +342,17 @@ class GeoluxHydroCam : public Sensor {
     bool addSingleMeasurementResult() override;
 
     /**
-     * @copydoc Sensor::isWarmedUp(bool debug)
+     * @copydoc Sensor::isWarmedUp()
      *
      * For the Geolux camera, this waits for both the power-on warm up and for
      * an affirmative from the camera that it is ready to accept commands.
      */
-    bool isWarmedUp(bool debug = false) override;
+    bool isWarmedUp() override;
 
     /**
      * @brief Check whether or not enough time has passed between the camera
      * wake and being ready to image.
      *
-     * @param debug True to output the result to the debugging Serial
      * @return True indicates that enough time has passed that the camera is
      * ready to take an image.
      *
@@ -361,19 +360,18 @@ class GeoluxHydroCam : public Sensor {
      * required for imaging depends on the camera's mood and whether or not you
      * autofocus on every reading.
      */
-    bool isStable(bool debug = false) override;
+    bool isStable() override;
 
     /**
      * @brief Check whether or not the camera has completed imaging.
      *
-     * @param debug True to output the result to the debugging Serial
      * @return True indicates that the camera is now reporting ready after an
      * image was started.
      *
      * @note We override the default function because the amount of time
      * required for imaging depends on the resolution.
      */
-    bool isMeasurementComplete(bool debug = false) override;
+    bool isMeasurementComplete() override;
 
  private:
     const char*

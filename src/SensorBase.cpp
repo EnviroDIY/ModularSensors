@@ -599,13 +599,11 @@ bool Sensor::update() {
 
 
 // This is a helper function to check if the power needs to be turned on
-bool Sensor::checkPowerOn(bool debug) {
-    if (debug) {
-        MS_DBG(F("Checking power status:  Power to"),
-               getSensorNameAndLocation());
-    }
+bool Sensor::checkPowerOn() {
+    MS_DBG(F("Checking power status for"), getSensorNameAndLocation());
+
     if (_powerPin < 0 && _powerPin2 < 0) {
-        if (debug) { MS_DBG(F("is not controlled by this library.")); }
+        MS_DBG(F("is not controlled by this library."));
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         // Set the status bit for sensor power attempt (bit 1) and success (bit
@@ -617,7 +615,15 @@ bool Sensor::checkPowerOn(bool debug) {
     bool pp2_off = isPinLow(_powerPin2);
 
     if (pp1_off || pp2_off) {
-        if (debug) { MS_DBG(F("was off.")); }
+        MS_DBG(F("Power to"), getSensorNameAndLocation(), F("was off."));
+        if (_powerPin >= 0) {
+            MS_DBG(F("Pin"), _powerPin, F("was"),
+                   pp1_off ? F("LOW") : F("HIGH"));
+        }
+        if (_powerPin2 >= 0) {
+            MS_DBG(F("Pin"), _powerPin2, F("was"),
+                   pp2_off ? F("LOW") : F("HIGH"));
+        }
         // Unset time of power on, in-case it was set to a value
         _millisPowerOn = 0;
         // Unset the activation time
@@ -631,7 +637,7 @@ bool Sensor::checkPowerOn(bool debug) {
                         MEASUREMENT_SUCCESSFUL);
         return false;
     } else {
-        if (debug) { MS_DBG(F("was on.")); }
+        MS_DBG(F("Power to"), getSensorNameAndLocation(), F("was on."));
         // Mark the power-on time, just in case it  had not been marked
         if (_millisPowerOn == 0) _millisPowerOn = millis();
         // Set the status bit for sensor power attempt (bit 1) and success
@@ -643,24 +649,20 @@ bool Sensor::checkPowerOn(bool debug) {
 
 
 // This checks to see if enough time has passed for warm-up
-bool Sensor::isWarmedUp(bool debug) {
+bool Sensor::isWarmedUp() {
     // If the sensor doesn't have power, then it will never be warmed up,
     // so the warm up time is essentially already passed.
     if (!getStatusBit(POWER_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("does not have power and cannot warm up!"));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("does not have power and cannot warm up!"));
         return true;
     }
 
     uint32_t elapsed_since_power_on = millis() - _millisPowerOn;
     // If the sensor has power and enough time has elapsed, it's warmed up
     if (elapsed_since_power_on > _warmUpTime_ms) {
-        if (debug) {
-            MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
-                   getSensorNameAndLocation(), F("should be warmed up!"));
-        }
+        MS_DBG(F("It's been"), elapsed_since_power_on, F("ms, and"),
+               getSensorNameAndLocation(), F("should be warmed up!"));
         return true;
     } else {
         // If the sensor has power but the time hasn't passed, we still need to
@@ -681,34 +683,28 @@ void Sensor::waitForWarmUp() {
 
 
 // This checks to see if enough time has passed for stability
-bool Sensor::isStable(bool debug) {
+bool Sensor::isStable() {
     // If the sensor failed to activate, it will never stabilize, so the
     // stabilization time is essentially already passed
     if (!getStatusBit(WAKE_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("is not active and cannot stabilize!"));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("is not active and cannot stabilize!"));
         return true;
     }
 
     // If we're taking a repeat measurement, we may have already waited for
     // stabilization after the initial wake, so we can skip this wait.
     if (_currentRetries != 0) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("is retrying and doesn't need to stabilize again."));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("is retrying and doesn't need to stabilize again."));
         return true;
     }
 
     uint32_t elapsed_since_wake_up = millis() - _millisSensorActivated;
     // If the sensor has been activated and enough time has elapsed, it's stable
     if (elapsed_since_wake_up > _stabilizationTime_ms) {
-        if (debug) {
-            MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
-                   getSensorNameAndLocation(), F("should be stable!"));
-        }
+        MS_DBG(F("It's been"), elapsed_since_wake_up, F("ms, and"),
+               getSensorNameAndLocation(), F("should be stable!"));
         return true;
     } else {
         // If the sensor has been activated but the time hasn't passed, we still
@@ -729,14 +725,12 @@ void Sensor::waitForStability() {
 
 
 // This checks to see if enough time has passed for measurement completion
-bool Sensor::isMeasurementComplete(bool debug) {
+bool Sensor::isMeasurementComplete() {
     // If a measurement failed to start, the sensor will never return a result,
     // so the measurement time is essentially already passed
     if (!getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        if (debug) {
-            MS_DBG(getSensorNameAndLocation(),
-                   F("is not measuring and will not return a value!"));
-        }
+        MS_DBG(getSensorNameAndLocation(),
+               F("is not measuring and will not return a value!"));
         return true;
     }
 
@@ -744,11 +738,9 @@ bool Sensor::isMeasurementComplete(bool debug) {
     // If the sensor is measuring and enough time has elapsed, the reading is
     // finished
     if (elapsed_since_meas_start > _measurementTime_ms) {
-        if (debug) {
-            MS_DBG(F("It's been"), elapsed_since_meas_start,
-                   F("ms, and measurement by"), getSensorNameAndLocation(),
-                   F("should be complete!"));
-        }
+        MS_DBG(F("It's been"), elapsed_since_meas_start,
+               F("ms, and measurement by"), getSensorNameAndLocation(),
+               F("should be complete!"));
         return true;
     } else {
         // If the sensor is measuring but the time hasn't passed, we still need
