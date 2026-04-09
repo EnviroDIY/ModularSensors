@@ -1943,7 +1943,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // MS_ALWAYS_FLUSH_PUBLISHERS
         bool forceFlush = Logger::startTesting || MS_ALWAYS_FLUSH_PUBLISHERS;
 
-        // Sync the clock at noon
+        // Sync the clock at noon or if the time is suspect
         bool clockSyncNeeded = (Logger::markedLocalUnixTime != 0 &&
                                 Logger::markedLocalUnixTime % 86400 == 43200) ||
             !isRTCSane();
@@ -1951,24 +1951,33 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
             clockSyncNeeded || forceFlush;
 
         if (_logModem != nullptr && connectionNeeded) {
+            // Only power and wake the modem if we need to publish to remotes,
+            // do a clock sync, or are forcing a flush of the publisher buffers.
             MS_DBG(F("Waking up"), _logModem->getModemName(), F("..."));
+            // NOTE: modemWake() powers up the modem if it's not powered up
+            // already
             if (_logModem->modemWake()) {
-                // Connect to the network
                 extendedWatchDog::resetWatchDog();
+                // Connect to the network
                 MS_DBG(F("Connecting to the Internet..."));
                 if (_logModem->connectInternet(240000L)) {
-                    // Publish data to remotes
                     extendedWatchDog::resetWatchDog();
+                    MS_DBG(F("Modem connected to internet."));
+                    // Publish data to remotes
                     publishDataToRemotes(forceFlush);
                     extendedWatchDog::resetWatchDog();
 
+                    // Sync the clock if needed and publish metadata
                     if (clockSyncNeeded) {
-                        MS_DBG(F("Running a daily clock sync..."));
+                        MS_DBG(F("Attempting to synchronize the clock with "
+                                 "NIST..."));
                         loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                                 epochStart::unix_epoch);
                         MS_DBG(F("Current logger time after sync is"),
                                formatDateTime_ISO8601(getNowLocalEpoch()));
                         extendedWatchDog::resetWatchDog();
+                        // NOTE: This is the only time we publish **metadata**
+                        // to remotes during a normal logging cycle
                         MS_DBG(
                             F("Publishing configuration metadata to remotes"));
                         publishMetadataToRemotes();
@@ -1978,25 +1987,31 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                     // Update the modem metadata
                     MS_DBG(F("Updating modem metadata..."));
                     _logModem->updateModemMetadata();
+                    extendedWatchDog::resetWatchDog();
 
                     // Disconnect from the network
                     MS_DBG(F("Disconnecting from the Internet..."));
                     _logModem->disconnectInternet();
+                    extendedWatchDog::resetWatchDog();
                 } else {
                     MS_DBG(F("Could not connect to the internet!"));
                     extendedWatchDog::resetWatchDog();
                 }
+            } else {
+                PRINTOUT(F("Could not wake the modem!"));
+                extendedWatchDog::resetWatchDog();
             }
-            // Turn the modem off
+            // Gracefully turn the modem off (even if we couldn't wake it, in
+            // case it was already on for some reason)
             _logModem->modemSleepPowerDown();
         } else if (_logModem != nullptr) {
-            MS_DBG(F("Nobody needs it so publishing without connecting..."));
+            MS_DBG(F("Nobody needs it so publishing to internal buffers "
+                     "without connecting..."));
             // Call publish function without connection
             extendedWatchDog::resetWatchDog();
             publishDataToRemotes(false);  // can't flush without a connection
             extendedWatchDog::resetWatchDog();
         }
-
 
         // Cut power from the SD card - without additional housekeeping wait
         // TODO(SRGDamia1):  Do some sort of verification that minimum 1 sec has
@@ -2004,6 +2019,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // although it seems very unlikely based on my testing that less than
         // one second would be taken up in publishing data to remotes.
         turnOffSDcard(false);
+        extendedWatchDog::resetWatchDog();
 
         // Turn off the LED
         alertOff();
@@ -2015,6 +2031,13 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
         // Acknowledge testing button if pressed
         Logger::startTesting = false;
     } else {
+        // If we were woken up by something other than the clock, print out
+        // some information about the wake-up and then go back to sleep.
+        MS_DEEP_DBG(F("Woke up by something other than the clock or testing "
+                      "button..."));
+        // MS_DEEP_DBG(F("The most recent reset cause was"),
+        //             mcuBoard.getLastResetCode(), '(',
+        //             mcuBoard.getLastResetCause(), ")\n");
         MS_DEEP_DBG(F("No action taken, not logging."));
     }
 

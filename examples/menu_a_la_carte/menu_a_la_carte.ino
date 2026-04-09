@@ -96,7 +96,7 @@ SoftwareSerial_ExtInts softSerial1(softSerialRx, softSerialTx);
 /** Start [softwarewire] */
 // A software I2C (Wire) instance using Testato's SoftwareWire
 // To use SoftwareWire, you must also set a define for the sensor you want to
-// use Software I2C for, ie:
+// use Software I2C for, i.e.:
 //   `#define MS_RAIN_SOFTWAREWIRE`
 //   `#define MS_PALEOTERRA_SOFTWAREWIRE`
 // or set the build flag(s):
@@ -4153,10 +4153,15 @@ void loop() {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
 
-    // Assuming we were woken up by the clock, check if the current time is an
+    // If bench testing is enabled and button was pressed, do the bench test
+    if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
+        dataLogger.benchTestingMode();
+    }
+
+    // If we were woken up by the clock, check if the current time is an
     // even interval of the logging interval
     // We're only doing anything at all if the battery is above 3.4V
-    if (dataLogger.checkInterval() && getBatteryVoltage() > 3.4) {
+    else if (dataLogger.checkInterval() && getBatteryVoltage() > 3.4) {
         // Flag to notify that we're in already awake and logging a point
         Logger::isLoggingNow = true;
         extendedWatchDog::resetWatchDog();
@@ -4177,6 +4182,7 @@ void loop() {
         // function is run, the modem will not be powered and will not
         // return a signal strength reading.
         if (getBatteryVoltage() > 3.55) modem.modemPowerUp();
+        extendedWatchDog::resetWatchDog();
 
 #if defined(BUILD_TEST_ALTSOFTSERIAL)
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
@@ -4188,11 +4194,10 @@ void loop() {
 
         // Do a complete update on the variable array.
         // This this includes powering all of the sensors, getting updated
-        // values, and turing them back off.
-        // NOTE:  The wake function for each sensor should force sensor setup
-        // to run if the sensor was not previously set up.
+        // values, and turning them back off.
+        // NOTE:  The wake function for each sensor should force sensor setup to
+        // run if the sensor was not previously set up.
         varArray.completeUpdate();
-
         extendedWatchDog::resetWatchDog();
 
 #if defined(BUILD_TEST_ALTSOFTSERIAL)
@@ -4207,35 +4212,88 @@ void loop() {
         dataLogger.logToSD();
         extendedWatchDog::resetWatchDog();
 
-        // Connect to the network
-        // Again, we're only doing this if the battery is doing well
-        if (getBatteryVoltage() > 3.55) {
-            extendedWatchDog::resetWatchDog();
-            if (modem.connectInternet()) {
-                extendedWatchDog::resetWatchDog();
-                // Publish data to remotes
-                PRINTOUT(F("Modem connected to internet."));
-                dataLogger.publishDataToRemotes();
+// Print out the sensor data
+#if !defined(MS_SILENT)
+        PRINTOUT(" ");
+        varArray.printVariableData(&MS_OUTPUT);
+#if defined(MS_2ND_OUTPUT)
+        varArray.printVariableData(&MS_2ND_OUTPUT);
+#endif
+        PRINTOUT(" ");
+#endif
 
-                // Sync the clock at noon
+        // Flush the publisher buffers (if any) if we have been invoked by the
+        // testing button, otherwise follow settings from
+        // MS_ALWAYS_FLUSH_PUBLISHERS
+        bool forceFlush = Logger::startTesting || MS_ALWAYS_FLUSH_PUBLISHERS;
+
+        // Sync the clock at noon or if the time is suspect
+        bool clockSyncNeeded = (Logger::markedLocalUnixTime != 0 &&
+                                Logger::markedLocalUnixTime % 86400 == 43200) ||
+            !loggerClock::isRTCSane();
+        bool connectionNeeded = dataLogger.checkRemotesConnectionNeeded() ||
+            clockSyncNeeded || forceFlush;
+
+        // Connect to the network
+        // We're only doing this if the battery is doing well and a connection
+        // is needed
+        if (getBatteryVoltage() > 3.55 && connectionNeeded) {
+            extendedWatchDog::resetWatchDog();
+            if (modem.modemWake()) {
                 extendedWatchDog::resetWatchDog();
-                if ((Logger::markedLocalUnixTime != 0 &&
-                     Logger::markedLocalUnixTime % 86400 == 43200) ||
-                    !loggerClock::isRTCSane()) {
-                    PRINTOUT(F("Running a daily clock sync..."));
-                    loggerClock::setRTClock(modem.getNISTTime(), 0,
-                                            epochStart::unix_epoch);
+                if (modem.connectInternet(240000L)) {
                     extendedWatchDog::resetWatchDog();
+                    PRINTOUT(F("Modem connected to internet."));
+                    // Publish data to remotes
+                    dataLogger.publishDataToRemotes(forceFlush);
+                    extendedWatchDog::resetWatchDog();
+
+                    // Sync the clock if needed
+                    if (clockSyncNeeded) {
+                        PRINTOUT(F("Attempting to synchronize the clock with "
+                                   "NIST..."));
+                        loggerClock::setRTClock(modem.getNISTTime(), 0,
+                                                epochStart::unix_epoch);
+                        PRINTOUT(F("Current logger time after sync is"),
+                                 Logger::formatDateTime_ISO8601(
+                                     Logger::getNowLocalEpoch()));
+                        extendedWatchDog::resetWatchDog();
+                        // NOTE: This is the only time we publish **metadata**
+                        // to remotes during a normal logging cycle
+                        PRINTOUT(
+                            F("Publishing configuration metadata to remotes"));
+                        dataLogger.publishMetadataToRemotes();
+                        extendedWatchDog::resetWatchDog();
+                    }
+
+                    // Update the modem metadata
+                    PRINTOUT(F("Updating modem metadata..."));
                     modem.updateModemMetadata();
                     extendedWatchDog::resetWatchDog();
-                }
 
-                // Disconnect from the network
-                modem.disconnectInternet();
+                    // Disconnect from the network
+                    PRINTOUT(F("Disconnecting from the Internet..."));
+                    modem.disconnectInternet();
+                    extendedWatchDog::resetWatchDog();
+                } else {
+                    PRINTOUT(F("Could not connect to the internet!"));
+                    extendedWatchDog::resetWatchDog();
+                }
+            } else {
+                PRINTOUT(F("Could not wake the modem!"));
                 extendedWatchDog::resetWatchDog();
             }
-            // Turn the modem off
+            // Gracefully turn the modem off (even if we couldn't wake it, in
+            // case it was already on for some reason)
             modem.modemSleepPowerDown();
+            extendedWatchDog::resetWatchDog();
+        } else if (getBatteryVoltage() > 3.55) {
+            PRINTOUT(F("Nobody needs it so publishing to internal buffers "
+                       "without connecting..."));
+            // Call publish function without connection
+            extendedWatchDog::resetWatchDog();
+            dataLogger.publishDataToRemotes(
+                false);  // can't flush without a connection
             extendedWatchDog::resetWatchDog();
         }
 
@@ -4249,19 +4307,8 @@ void loop() {
 
         // Unset flag
         Logger::isLoggingNow = false;
-    }
-
-    // Check if it was instead the testing interrupt that woke us up
-    if (Logger::startTesting) {
-#if defined(BUILD_TEST_ALTSOFTSERIAL)
-        // Start the stream for the modbus sensors, if your RS485 adapter bleeds
-        // current from data pins when powered off & you stop modbus serial
-        // connection with digitalWrite(5, LOW), below.
-        // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
-        altSoftSerial.begin(9600);
-#endif
-
-        dataLogger.benchTestingMode();
+        // Acknowledge testing button if pressed
+        Logger::startTesting = false;
     }
 
 #if defined(BUILD_TEST_ALTSOFTSERIAL)
