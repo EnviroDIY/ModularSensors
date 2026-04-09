@@ -230,6 +230,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - References to the EnviroDIY data portal.
 - All defines from example sketches.
   - Defining values to be used by TinyGSM and/or the MQTT library here in addition to any defines in ModSensorConfig.h or in a build configuration can lead to One Definition Rule violations because the define values are used when creating the classes from the templates in TinyGSM.
+- Removed the non-functional debugging input arguments for sensor timing.
 
 ### Fixed
 
@@ -237,6 +238,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Correctly retry NIST sync on XBees when a not-sane timestamp is returned.
 - Improved ADC bit-width handling with explicit type casting for safer arithmetic operations.
 - Enhanced null-pointer validation and error handling across analog voltage reading paths.
+- Fixed the function to check whether a pin was currently low - used to check if a sensor is powered.
+  It was checking for the level of the input register of the pin, not the output.
+  For AVR processors, this didn't matter, but it does matter for SAMD processors.
 
 ***
 

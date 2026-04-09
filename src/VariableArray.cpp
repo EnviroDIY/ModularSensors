@@ -154,8 +154,7 @@ inline bool VariableArray::shouldWakeSensor(uint8_t sensorIndex, bool wake,
                                             bool deepDebugTiming) {
     bool wakeAttempted =
         _sensorList[sensorIndex]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1;
-    return wake && !wakeAttempted &&
-        _sensorList[sensorIndex]->isWarmedUp(deepDebugTiming);
+    return wake && !wakeAttempted && _sensorList[sensorIndex]->isWarmedUp();
 }
 
 // Helper function to check if sensor is ready to start measurements
@@ -361,7 +360,7 @@ bool VariableArray::sensorsWake() {
     while (nSensorsAwake < _sensorCount) {
         for (uint8_t i = 0; i < _sensorCount; i++) {
             if (_sensorList[i]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 0 &&
-                _sensorList[i]->isWarmedUp(deepDebugTiming)) {
+                _sensorList[i]->isWarmedUp()) {
                 MS_DBG(F("    Wake up of"),
                        _sensorList[i]->getSensorNameAndLocation(), F("..."));
 
@@ -562,7 +561,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
             // measurement was either started or finished ...
             if (isSensorReadyToMeasure(i)) {
                 // .. check if it's stable
-                if (_sensorList[i]->isStable(deepDebugTiming)) {
+                if (_sensorList[i]->isStable()) {
                     MS_DBG(cycCount, F("--->> Starting reading on"), sName,
                            F("..."));
 
@@ -583,11 +582,11 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
             // if measurements have been started, whether or not
             // successfully...
             // We aren't checking if the measurement start was successful;
-            // isMeasurementComplete(deepDebugTiming) will do that.
+            // isMeasurementComplete() will do that.
             if (isMeasurementAttempted(i)) {
                 // If a measurement is finished, get the result and tick up
                 // the number of finished measurements.
-                if (_sensorList[i]->isMeasurementComplete(deepDebugTiming)) {
+                if (_sensorList[i]->isMeasurementComplete()) {
                     // Get the value
                     MS_DBG(cycCount,
                            F("--->> Collected result of reading from"), sName,
