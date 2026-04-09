@@ -150,8 +150,7 @@ inline bool VariableArray::isSensorWakeFailure(uint8_t sensorIndex, bool wake) {
 }
 
 // Helper function to check if sensor should be woken up
-inline bool VariableArray::shouldWakeSensor(uint8_t sensorIndex, bool wake,
-                                            bool deepDebugTiming) {
+inline bool VariableArray::shouldWakeSensor(uint8_t sensorIndex, bool wake) {
     bool wakeAttempted =
         _sensorList[sensorIndex]->getStatusBit(Sensor::WAKE_ATTEMPTED) == 1;
     return wake && !wakeAttempted && _sensorList[sensorIndex]->isWarmedUp();
@@ -260,12 +259,6 @@ bool VariableArray::canPowerDownSensor(uint8_t sensorIndex) {
 bool VariableArray::setupSensors() {
     bool success = true;
 
-    // #ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    // bool deepDebugTiming = true;
-    // #else
-    // bool deepDebugTiming = false;
-    // #endif
-
     MS_DBG(F("Beginning setup for sensors and variables..."));
 
     // Now run all the set-up functions
@@ -335,12 +328,6 @@ bool VariableArray::sensorsWake() {
     MS_DBG(F("Waking sensors..."));
     bool    success       = true;
     uint8_t nSensorsAwake = 0;
-
-#ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    bool deepDebugTiming = true;
-#else
-    bool deepDebugTiming = false;
-#endif
 
     // Check for any sensors that are awake outside of being sent a "wake"
     // command
@@ -436,13 +423,6 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                                    bool powerDown) {
     bool    success           = true;
     uint8_t nSensorsCompleted = 0;
-
-#ifdef MS_VARIABLEARRAY_DEBUG_DEEP
-    bool deepDebugTiming = true;
-#else
-    bool deepDebugTiming = false;
-#endif
-
     MS_DBG(F("Using internal sensor list for measurements..."));
 
 #if defined(MS_VARIABLEARRAY_DEBUG) || defined(MS_VARIABLEARRAY_DEBUG_DEEP)
@@ -542,7 +522,7 @@ bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                     _sensorList[i]->_measurementsToAverage;
             }
 
-            if (shouldWakeSensor(i, wake, deepDebugTiming)) {
+            if (shouldWakeSensor(i, wake)) {
                 MS_DBG(i, F("--->> Waking"), sName, F("..."));
 
                 // Make a single attempt to wake the sensor after it is

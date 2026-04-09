@@ -343,10 +343,9 @@ class VariableArray {
      *
      * @param sensorIndex Index of the sensor in _sensorList to check
      * @param wake Whether we are currently in wake mode
-     * @param deepDebugTiming Whether to use deep debug timing
      * @return True if sensor should be woken up
      */
-    bool shouldWakeSensor(uint8_t sensorIndex, bool wake, bool deepDebugTiming);
+    bool shouldWakeSensor(uint8_t sensorIndex, bool wake);
 
     /**
      * @brief Check if a sensor is ready to start measurements.
