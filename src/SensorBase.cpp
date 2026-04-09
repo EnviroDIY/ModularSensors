@@ -812,7 +812,35 @@ bool Sensor::isPinLow(int8_t pin) {
     if (pin < 0) {
         return false;  // Unconfigured pins are treated as not LOW
     }
-    uint8_t bitMask   = digitalPinToBitMask(pin);
-    uint8_t portValue = *portInputRegister(digitalPinToPort(pin));
-    return (portValue & bitMask) == 0;
+
+#if defined(ARDUINO_ARCH_SAMD)
+    // get the port for the pin (A-D) from the pin description in the variant
+    // file
+    EPortType port = g_APinDescription[pin].ulPort;
+    // get the pin within the port for the pin from the pin description in the
+    // variant file
+    uint32_t ulPin = g_APinDescription[pin].ulPin;
+    // convert the pin within the port to a bit mask for that pin
+    uint32_t pinMask = (1ul << ulPin);
+    // get the current value of the output register for that port from the PORT
+    uint32_t pin_state = (PORT->Group[port].OUT.reg & pinMask);
+    // the pin is LOW if the output register for the port has a 0 for that pin
+    bool pin_is_low = (pin_state == 0);
+#elif (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
+    // get the port for the pin (A-D) using the digitalPinToPort macro
+    uint8_t port = digitalPinToPort(pin);
+    // get the current value of the port register for that port using the
+    // portOutputRegister macro
+    uint8_t portValue = *portOutputRegister(port);
+    // get the bit mask for the pin
+    uint8_t bitMask = digitalPinToBitMask(pin);
+    // get the current value of the output register for that port from the PORT
+    uint8_t pin_state = (portValue & bitMask);
+    // the pin is LOW if the output register for the port has a 0 for that pin
+    bool pin_is_low = (pin_state == 0);
+#else
+    bool pin_is_low = false;
+#endif
+
+    return pin_is_low;
 }
