@@ -2,13 +2,28 @@
 Language: Cpp
 # BasedOnStyle:  Google
 AccessModifierOffset: -3
+ColumnLimit: 80
+DisableFormat: false
+Standard: Cpp11
+TabWidth: 4
+UseTab: Never
+
 AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: false
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
+AlignArrayOfStructures: Right
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
 AlignEscapedNewlines: Left
+# AlignOperands: AlignAfterOperator
 AlignOperands: false
 AlignTrailingComments: true
+
 AllowAllArgumentsOnNextLine: true
 AllowAllConstructorInitializersOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -19,33 +34,40 @@ AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: WithoutElse
 AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: true
-AlwaysBreakAfterDefinitionReturnType: None
-AlwaysBreakAfterReturnType: None
+
 AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
+
 BinPackArguments: true
-BinPackParameters: true
+BinPackParameters: BinPack
+
 BreakAfterJavaFieldAnnotations: false
+BreakAfterReturnType: Automatic
+BreakArrays: false
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Attach
 BreakBeforeInheritanceComma: false
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: false
+# BreakBinaryOperations: RespectPrecedence
+BreakBinaryOperations: Never
 BreakConstructorInitializers: BeforeColon
+BreakFunctionDefinitionParameters: false
 BreakInheritanceList: BeforeColon
 BreakStringLiterals: true
-ColumnLimit: 80
+
 CommentPragmas: '^ IWYU pragma:'
+
 CompactNamespaces: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
+
 ConstructorInitializerIndentWidth: 4
+
 ContinuationIndentWidth: 4
 Cpp11BracedListStyle: true
 DerivePointerAlignment: false
-DisableFormat: false
+
 EmptyLineAfterAccessModifier: Leave
 EmptyLineBeforeAccessModifier: Leave
-ExperimentalAutoDetectBinPacking: false
+
 FixNamespaceComments: true
 ForEachMacros:
   - foreach
@@ -64,6 +86,7 @@ IncludeCategories:
   - Regex: '.*'
     Priority: 1
 IncludeIsMainRegex: '([-_](test|unittest))?$'
+
 IndentAccessModifiers: false
 IndentCaseBlocks: false
 IndentCaseLabels: true
@@ -72,19 +95,24 @@ IndentGotoLabels: true
 IndentPPDirectives: None
 IndentWidth: 4
 IndentWrappedFunctionNames: false
+
+InsertBraces: false
+InsertNewlineAtEOF: true
 InsertTrailingCommas: None
-JavaScriptQuotes: Leave
-JavaScriptWrapImports: true
-KeepEmptyLinesAtTheStartOfBlocks: false
+
+KeepEmptyLines:
+  AtEndOfFile: false
+  AtStartOfBlock: false
+  AtStartOfFile: false
+MaxEmptyLinesToKeep: 2
+
 MacroBlockBegin: ''
 MacroBlockEnd: ''
-MaxEmptyLinesToKeep: 2
+
 NamespaceIndentation: None
-# ObjCBinPackProtocolList: Auto
-ObjCBlockIndentWidth: 2
-ObjCSpaceAfterProperty: false
-ObjCSpaceBeforeProtocolList: true
+
 PackConstructorInitializers: CurrentLine
+
 PenaltyBreakAssignment: 25
 PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 300
@@ -92,15 +120,20 @@ PenaltyBreakFirstLessLess: 120
 PenaltyBreakString: 1000
 PenaltyBreakTemplateDeclaration: 10
 PenaltyExcessCharacter: 600
-PenaltyReturnTypeOnItsOwnLine: 50
+PenaltyReturnTypeOnItsOwnLine: 500
+
 PointerAlignment: Left
 PointerBindsToType: true
 QualifierAlignment: Left
 ReferenceAlignment: Left
+
 ReflowComments: true
+
 SeparateDefinitionBlocks: Leave
+
 SortIncludes: false
 SortUsingDeclarations: true
+
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: true
@@ -121,7 +154,4 @@ SpacesInLineCommentPrefix:
   Minimum: 1
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
-Standard: Cpp11
-TabWidth: 4
-UseTab: Never
 ---

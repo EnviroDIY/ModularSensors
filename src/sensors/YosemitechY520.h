@@ -96,7 +96,11 @@
  * {{ @ref YosemitechY520_Cond::YosemitechY520_Cond }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; conductivity should have 1
+/// @brief Minimum conductivity; 1 µS/cm
+#define Y520_COND_MIN_USCM 1
+/// @brief Maximum conductivity; 200000 µS/cm (200 mS/cm)
+#define Y520_COND_MAX_USCM 200000
+/// @brief Decimal places in string representation; conductivity should have 1
 /// - resolution is 0.1 µS/cm.
 #define Y520_COND_RESOLUTION 1
 /// @brief Sensor variable number; conductivity is stored in sensorValues[0].
@@ -123,7 +127,11 @@
  * {{ @ref YosemitechY520_Temp::YosemitechY520_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 1 -
+/// @brief Minimum temperature; 0°C
+#define Y520_TEMP_MIN_C 0
+/// @brief Maximum temperature; 50°C
+#define Y520_TEMP_MAX_C 50
+/// @brief Decimal places in string representation; temperature should have 1 -
 /// resolution is 0.1°C.
 #define Y520_TEMP_RESOLUTION 1
 /// @brief Sensor variable number; temperature is stored in sensorValues[1].
@@ -194,7 +202,7 @@ class YosemitechY520 : public YosemitechParent {
     /**
      * @brief Destroy the Yosemitech Y520 object
      */
-    ~YosemitechY520() {}
+    ~YosemitechY520() override = default;
 };
 
 
@@ -222,23 +230,12 @@ class YosemitechY520_Cond : public Variable {
     explicit YosemitechY520_Cond(YosemitechY520* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y520_COND_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y520_COND_VAR_NUM,
-                   (uint8_t)Y520_COND_RESOLUTION, Y520_COND_VAR_NAME,
-                   Y520_COND_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY520_Cond object.
-     *
-     * @note This must be tied with a parent YosemitechY520 before it can be
-     * used.
-     */
-    YosemitechY520_Cond()
-        : Variable((uint8_t)Y520_COND_VAR_NUM, (uint8_t)Y520_COND_RESOLUTION,
-                   Y520_COND_VAR_NAME, Y520_COND_UNIT_NAME,
-                   Y520_COND_DEFAULT_CODE) {}
+        : Variable(parentSense, Y520_COND_VAR_NUM, Y520_COND_RESOLUTION,
+                   Y520_COND_VAR_NAME, Y520_COND_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY520_Cond object - no action needed.
      */
-    ~YosemitechY520_Cond() {}
+    ~YosemitechY520_Cond() override = default;
 };
 
 
@@ -266,23 +263,12 @@ class YosemitechY520_Temp : public Variable {
     explicit YosemitechY520_Temp(YosemitechY520* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = Y520_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)Y520_TEMP_VAR_NUM,
-                   (uint8_t)Y520_TEMP_RESOLUTION, Y520_TEMP_VAR_NAME,
-                   Y520_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new YosemitechY520_Temp object.
-     *
-     * @note This must be tied with a parent YosemitechY520 before it can be
-     * used.
-     */
-    YosemitechY520_Temp()
-        : Variable((uint8_t)Y520_TEMP_VAR_NUM, (uint8_t)Y520_TEMP_RESOLUTION,
-                   Y520_TEMP_VAR_NAME, Y520_TEMP_UNIT_NAME,
-                   Y520_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, Y520_TEMP_VAR_NUM, Y520_TEMP_RESOLUTION,
+                   Y520_TEMP_VAR_NAME, Y520_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the YosemitechY520_Temp object - no action needed.
      */
-    ~YosemitechY520_Temp() {}
+    ~YosemitechY520_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY520_H_

@@ -12,12 +12,12 @@
 #include "ClockSupport.h"
 
 // Initialize the static members
-int16_t loggerModem::_priorRSSI           = -9999;
-int16_t loggerModem::_priorSignalPercent  = -9999;
-float   loggerModem::_priorModemTemp      = -9999;
-float   loggerModem::_priorBatteryState   = -9999;
-float   loggerModem::_priorBatteryPercent = -9999;
-float   loggerModem::_priorBatteryVoltage = -9999;
+int16_t loggerModem::_priorRSSI           = MS_INVALID_VALUE;
+int16_t loggerModem::_priorSignalPercent  = MS_INVALID_VALUE;
+float   loggerModem::_priorModemTemp      = MS_INVALID_VALUE;
+float   loggerModem::_priorBatteryState   = MS_INVALID_VALUE;
+float   loggerModem::_priorBatteryPercent = MS_INVALID_VALUE;
+float   loggerModem::_priorBatteryVoltage = MS_INVALID_VALUE;
 
 // Constructor
 loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
@@ -43,9 +43,6 @@ loggerModem::loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
       _max_at_response_time_ms(max_at_response_time_ms),
       _modemName("unspecified modem") {}
 
-// Destructor
-loggerModem::~loggerModem() {}
-
 
 void loggerModem::setModemLED(int8_t modemLEDPin) {
     _modemLEDPin = modemLEDPin;
@@ -54,22 +51,22 @@ void loggerModem::setModemLED(int8_t modemLEDPin) {
         digitalWrite(_modemLEDPin, LOW);
     }
 }
-void loggerModem::modemLEDOn(void) {
+void loggerModem::modemLEDOn() {
     if (_modemLEDPin >= 0) {
         pinMode(_modemLEDPin, OUTPUT);
         digitalWrite(_modemLEDPin, HIGH);
     }
 }
-void loggerModem::modemLEDOff(void) {
+void loggerModem::modemLEDOff() {
     if (_modemLEDPin >= 0) { digitalWrite(_modemLEDPin, LOW); }
 }
 
-String loggerModem::getModemName(void) {
+String loggerModem::getModemName() {
     return _modemName;
 }
 
 // @todo Implement this for all modems
-String loggerModem::getModemDevId(void) {
+String loggerModem::getModemDevId() {
     return _modemName + F(" Sn ") + _modemSerialNumber + F(" HwVer ") +
         _modemHwVersion + F(" FwVer ") + _modemFwVersion;
 }
@@ -78,7 +75,7 @@ void loggerModem::setModemTimeZone(int8_t timeZone) {
     _modemUTCOffset = timeZone;
 }
 
-void loggerModem::modemPowerUp(void) {
+void loggerModem::modemPowerUp() {
     if (_powerPin >= 0) {
         if (_modemSleepRqPin >= 0) {
             // For most modules, the sleep pin should be held high during power
@@ -102,7 +99,7 @@ void loggerModem::modemPowerUp(void) {
     }
 }
 
-void loggerModem::modemPowerDown(void) {
+void loggerModem::modemPowerDown() {
     if (_powerPin >= 0) {
         MS_DBG(F("Turning off power to"), getModemName(), F("with pin"),
                _powerPin);
@@ -115,7 +112,7 @@ void loggerModem::modemPowerDown(void) {
     }
 }
 
-bool loggerModem::modemSetup(void) {
+bool loggerModem::modemSetup() {
     // NOTE:  Set flag FIRST to stop infinite loop between modemSetup() and
     // modemWake()
     bool success  = true;
@@ -180,7 +177,7 @@ bool loggerModem::modemSetup(void) {
 }
 
 // Nicely put the modem to sleep and power down
-bool loggerModem::modemSleep(void) {
+bool loggerModem::modemSleep() {
     bool success = true;
     MS_DBG(F("Putting"), getModemName(), F("to sleep."));
 
@@ -189,7 +186,7 @@ bool loggerModem::modemSleep(void) {
     // process of turning on and thus status pin isn't valid yet.  In that case,
     // we wouldn't yet know it's coming on and so we'd mistakenly assume it's
     // already off and not turn it back off. This only applies to modules with a
-    // pulse wake (ie, non-zero wake time). For all modules that do pulse on,
+    // pulse wake (i.e., non-zero wake time). For all modules that do pulse on,
     // where possible I've selected a pulse time that is sufficient to wake but
     // not quite long enough to put it to sleep and am using AT commands to
     // sleep.  This *should* keep everything lined up.
@@ -206,7 +203,7 @@ bool loggerModem::modemSleep(void) {
 }
 
 // Nicely put the modem to sleep and power down
-bool loggerModem::modemSleepPowerDown(void) {
+bool loggerModem::modemSleepPowerDown() {
     bool     success = true;
     uint32_t start   = millis();
     MS_DBG(F("Turning"), getModemName(), F("off."));
@@ -259,7 +256,7 @@ bool loggerModem::modemSleepPowerDown(void) {
 }
 
 // Perform a hard/panic reset for when the modem is completely unresponsive
-bool loggerModem::modemHardReset(void) {
+bool loggerModem::modemHardReset() {
     if (_modemResetPin >= 0) {
         MS_DBG(F("Doing a hard reset on the modem by setting pin"),
                _modemResetPin, _resetLevel ? F("HIGH") : F("LOW"), F("for"),
@@ -284,7 +281,7 @@ void loggerModem::setModemResetLevel(bool level) {
 }
 
 
-void loggerModem::setModemPinModes(void) {
+void loggerModem::setModemPinModes() {
     // Set-up pin modes
     if (_statusPin >= 0) {
         MS_DEEP_DBG(F("Initializing pin"), _statusPin,
@@ -326,20 +323,20 @@ void loggerModem::setMetadataPolling(uint8_t pollingBitmask) {
 }
 
 
-bool loggerModem::updateModemMetadata(void) {
+bool loggerModem::updateModemMetadata() {
     bool success = true;
 
     // Unset whatever we had previously
-    loggerModem::_priorRSSI           = -9999;
-    loggerModem::_priorSignalPercent  = -9999;
-    loggerModem::_priorBatteryState   = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorBatteryPercent = -9999;
-    loggerModem::_priorModemTemp      = -9999;
+    loggerModem::_priorRSSI           = MS_INVALID_VALUE;
+    loggerModem::_priorSignalPercent  = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryState   = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryPercent = MS_INVALID_VALUE;
+    loggerModem::_priorBatteryVoltage = MS_INVALID_VALUE;
+    loggerModem::_priorModemTemp      = MS_INVALID_VALUE;
 
     // Initialize variable
-    int16_t rssi     = -9999;
-    int16_t percent  = -9999;
+    int16_t rssi     = MS_INVALID_VALUE;
+    int16_t percent  = MS_INVALID_VALUE;
     int8_t  state    = 99;
     int8_t  bpercent = -99;
     int16_t volt     = 9999;
@@ -356,9 +353,9 @@ bool loggerModem::updateModemMetadata(void) {
             success &= getModemSignalQuality(rssi, percent);
             loggerModem::_priorRSSI          = rssi;
             loggerModem::_priorSignalPercent = percent;
-            if (rssi != 0 && rssi != -9999) break;
+            if (rssi != 0 && rssi != MS_INVALID_VALUE) break;
             delay(250);
-        } while ((rssi == 0 || rssi == -9999) &&
+        } while ((rssi == 0 || rssi == MS_INVALID_VALUE) &&
                  millis() - startMillis < 15000L && success);
         MS_DBG(F("CURRENT RSSI:"), rssi);
         MS_DBG(F("CURRENT Percent signal strength:"), percent);
@@ -379,17 +376,20 @@ bool loggerModem::updateModemMetadata(void) {
         if (state != 99)
             loggerModem::_priorBatteryState = static_cast<float>(state);
         else
-            loggerModem::_priorBatteryState = static_cast<float>(-9999);
+            loggerModem::_priorBatteryState =
+                static_cast<float>(MS_INVALID_VALUE);
 
         if (bpercent != -99)
             loggerModem::_priorBatteryPercent = static_cast<float>(bpercent);
         else
-            loggerModem::_priorBatteryPercent = static_cast<float>(-9999);
+            loggerModem::_priorBatteryPercent =
+                static_cast<float>(MS_INVALID_VALUE);
 
         if (volt != 9999)
             loggerModem::_priorBatteryVoltage = static_cast<float>(volt);
         else
-            loggerModem::_priorBatteryVoltage = static_cast<float>(-9999);
+            loggerModem::_priorBatteryVoltage =
+                static_cast<float>(MS_INVALID_VALUE);
     } else {
         MS_DBG(F("Polling for all modem battery parameters is disabled"));
     }

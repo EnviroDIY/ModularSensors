@@ -30,9 +30,6 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream, int8_t powerPin,
       _apn(apn) {
 }
 
-// Destructor
-SIMComSIM800::~SIMComSIM800() {}
-
 MS_MODEM_EXTRA_SETUP(SIMComSIM800);
 MS_IS_MODEM_AWAKE(SIMComSIM800);
 MS_MODEM_WAKE(SIMComSIM800);
@@ -41,12 +38,12 @@ MS_MODEM_CONNECT_INTERNET(SIMComSIM800);
 MS_MODEM_DISCONNECT_INTERNET(SIMComSIM800);
 MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM800);
 
-MS_MODEM_CREATE_CLIENT(SIMComSIM800);
-MS_MODEM_DELETE_CLIENT(SIMComSIM800);
-MS_MODEM_CREATE_SECURE_CLIENT(SIMComSIM800);
-MS_MODEM_DELETE_SECURE_CLIENT(SIMComSIM800);
+MS_MODEM_CREATE_CLIENT(SIMComSIM800, Sim800);
+MS_MODEM_DELETE_CLIENT(SIMComSIM800, Sim800);
+MS_MODEM_CREATE_SECURE_CLIENT(SIMComSIM800, Sim800);
+MS_MODEM_DELETE_SECURE_CLIENT(SIMComSIM800, Sim800);
 
-MS_MODEM_GET_NIST_TIME(SIMComSIM800);
+MS_MODEM_GET_NIST_TIME(SIMComSIM800, Sim800);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SIMComSIM800);
 MS_MODEM_GET_MODEM_BATTERY_DATA(SIMComSIM800);
@@ -54,7 +51,7 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SIMComSIM800);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool SIMComSIM800::modemWakeFxn(void) {
+bool SIMComSIM800::modemWakeFxn() {
     // Must power on and then pulse on
     if (_modemSleepRqPin >= 0) {
         MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"),
@@ -68,9 +65,10 @@ bool SIMComSIM800::modemWakeFxn(void) {
 }
 
 
-bool SIMComSIM800::modemSleepFxn(void) {
+bool SIMComSIM800::modemSleepFxn() {
     if (_modemSleepRqPin >= 0) {
-        // Must have access to `PWRKEY` pin to sleep
+        // Must have access to `PWRKEY` (_modemSleepRqPin) pin to wake up; don't
+        // sleep without it.
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM800 to power down"));
@@ -79,6 +77,6 @@ bool SIMComSIM800::modemSleepFxn(void) {
         return res;
     } else {  // DON'T go to sleep if we can't wake up!
         gsmModem.stream.flush();
-        return true;
+        return true;  // nothing's wrong with sleeping, we just won't do it!
     }
 }

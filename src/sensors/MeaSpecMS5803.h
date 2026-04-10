@@ -144,7 +144,11 @@
  * {{ @ref MeaSpecMS5803_Temp::MeaSpecMS5803_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 2 -
+/// @brief Minimum temperature in degrees Celsius.
+#define MS5803_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define MS5803_TEMP_MAX_C 85.0
+/// @brief Decimal places in string representation; temperature should have 2 -
 /// resolution is <0.01°C.
 #define MS5803_TEMP_RESOLUTION 2
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
@@ -165,7 +169,7 @@
  * @anchor sensor_ms5803_pressure
  * @name Pressure
  * The pressure variable from a Measurement Specialties MS5803
- *   - Range is 0 to 14 bar
+ *   - Range is 0 to 14 bar (0 to 14000 mbar)
  *   - Accuracy between 0 and +40°C is:
  *      - 14ba: ±20mbar
  *      - 2ba: ±1.5mbar
@@ -183,7 +187,11 @@
  * {{ @ref MeaSpecMS5803_Pressure::MeaSpecMS5803_Pressure }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pressure should have 3.
+/// @brief Minimum pressure in millibar.
+#define MS5803_PRESSURE_MIN_MBAR 0.0
+/// @brief Maximum pressure in millibar.
+#define MS5803_PRESSURE_MAX_MBAR 14000.0
+/// @brief Decimal places in string representation; pressure should have 3.
 #define MS5803_PRESSURE_RESOLUTION 3
 /// @brief Sensor variable number; pressure is stored in sensorValues[1].
 #define MS5803_PRESSURE_VAR_NUM 1
@@ -235,7 +243,7 @@ class MeaSpecMS5803 : public Sensor {
     /**
      * @brief Destroy the MeaSpecMS5803 object
      */
-    ~MeaSpecMS5803();
+    ~MeaSpecMS5803() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -249,16 +257,11 @@ class MeaSpecMS5803 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    String getSensorLocation() override;
+
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -300,23 +303,13 @@ class MeaSpecMS5803_Temp : public Variable {
     explicit MeaSpecMS5803_Temp(MeaSpecMS5803* parentSense,
                                 const char*    uuid = "",
                                 const char* varCode = MS5803_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)MS5803_TEMP_VAR_NUM,
-                   (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
-                   MS5803_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeaSpecMS5803_Temp object.
-     *
-     * @note This must be tied with a parent MeaSpecMS5803 before it can be
-     * used.
-     */
-    MeaSpecMS5803_Temp()
-        : Variable((uint8_t)MS5803_TEMP_VAR_NUM,
-                   (uint8_t)MS5803_TEMP_RESOLUTION, MS5803_TEMP_VAR_NAME,
-                   MS5803_TEMP_UNIT_NAME, MS5803_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, MS5803_TEMP_VAR_NUM, MS5803_TEMP_RESOLUTION,
+                   MS5803_TEMP_VAR_NAME, MS5803_TEMP_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Destroy the MeaSpecMS5803_Temp object - no action needed.
      */
-    ~MeaSpecMS5803_Temp() {}
+    ~MeaSpecMS5803_Temp() override = default;
 };
 
 
@@ -339,31 +332,18 @@ class MeaSpecMS5803_Pressure : public Variable {
      * @param uuid A universally unique identifier (UUID or GUID) for the
      * variable; optional with the default value of an empty string.
      * @param varCode A short code to help identify the variable in files;
-     * optional with a default value of th a default value of
-     * MeaSpecMS5803Pressure
+     * optional with a default value of "MeaSpecMS5803Pressure"
      */
     explicit MeaSpecMS5803_Pressure(
         MeaSpecMS5803* parentSense, const char* uuid = "",
         const char* varCode = MS5803_PRESSURE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)MS5803_PRESSURE_VAR_NUM,
-                   (uint8_t)MS5803_PRESSURE_RESOLUTION,
-                   MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME, varCode,
-                   uuid) {}
-    /**
-     * @brief Construct a new MeaSpecMS5803_Pressure object.
-     *
-     * @note This must be tied with a parent MeaSpecMS5803 before it can be
-     * used.
-     */
-    MeaSpecMS5803_Pressure()
-        : Variable((uint8_t)MS5803_PRESSURE_VAR_NUM,
-                   (uint8_t)MS5803_PRESSURE_RESOLUTION,
-                   MS5803_PRESSURE_VAR_NAME, MS5803_PRESSURE_UNIT_NAME,
-                   MS5803_PRESSURE_DEFAULT_CODE) {}
+        : Variable(parentSense, MS5803_PRESSURE_VAR_NUM,
+                   MS5803_PRESSURE_RESOLUTION, MS5803_PRESSURE_VAR_NAME,
+                   MS5803_PRESSURE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the MeaSpecMS5803_Pressure object - no action needed.
      */
-    ~MeaSpecMS5803_Pressure() {}
+    ~MeaSpecMS5803_Pressure() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MEASPECMS5803_H_

@@ -52,6 +52,18 @@
 /**@{*/
 
 /**
+ * @anchor sensor_atlas_ph_config
+ * @name Configuration Defines
+ * Defines to configure and set the address of the Atlas pH sensor
+ */
+/**@{*/
+#ifndef ATLAS_PH_I2C_ADDR
+/// @brief The default I2C address of the Atlas pH sensor is 0x63 (99)
+#define ATLAS_PH_I2C_ADDR 0x63
+#endif
+/**@}*/
+
+/**
  * @anchor sensor_atlas_ph_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the Atlas pH sensor
@@ -62,16 +74,6 @@
 #define ATLAS_PH_NUM_VARIABLES 1
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define ATLAS_PH_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_atlas_ph_config
- * @name Configuration Defines
- * Defines to configure and set the address of the Atlas pH sensor
- */
-/**@{*/
-/// @brief The default I2C address of the Atlas pH sensor is 0x63 (99)
-#define ATLAS_PH_I2C_ADDR 0x63
 /**@}*/
 
 /**
@@ -113,7 +115,11 @@
  * {{ @ref AtlasScientificpH_pH::AtlasScientificpH_pH }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; pH should have 3 -
+/// @brief Minimum pH value.
+#define ATLAS_PH_MIN 0.001
+/// @brief Maximum pH value.
+#define ATLAS_PH_MAX 14.000
+/// @brief Decimal places in string representation; pH should have 3 -
 /// resolution is 0.001.
 #define ATLAS_PH_RESOLUTION 3
 /// @brief Sensor variable number; pH is stored in sensorValues[0].
@@ -199,11 +205,10 @@ class AtlasScientificpH : public AtlasParent {
                       ATLAS_PH_WARM_UP_TIME_MS, ATLAS_PH_STABILIZATION_TIME_MS,
                       ATLAS_PH_MEASUREMENT_TIME_MS,
                       ATLAS_PH_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the Atlas Scientific pH object
      */
-    ~AtlasScientificpH() {}
+    ~AtlasScientificpH() override = default;
 };
 
 
@@ -233,25 +238,14 @@ class AtlasScientificpH_pH : public Variable {
     explicit AtlasScientificpH_pH(AtlasScientificpH* parentSense,
                                   const char*        uuid = "",
                                   const char* varCode = ATLAS_PH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)ATLAS_PH_VAR_NUM,
-                   (uint8_t)ATLAS_PH_RESOLUTION, ATLAS_PH_VAR_NAME,
-                   ATLAS_PH_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new AtlasScientificpH_pH object.
-     *
-     * @note This must be tied with a parent AtlasScientificpH before it can be
-     * used.
-     */
-    AtlasScientificpH_pH()
-        : Variable((uint8_t)ATLAS_PH_VAR_NUM, (uint8_t)ATLAS_PH_RESOLUTION,
-                   ATLAS_PH_VAR_NAME, ATLAS_PH_UNIT_NAME,
-                   ATLAS_PH_DEFAULT_CODE) {}
+        : Variable(parentSense, ATLAS_PH_VAR_NUM, ATLAS_PH_RESOLUTION,
+                   ATLAS_PH_VAR_NAME, ATLAS_PH_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the AtlasScientificpH_pH object - no action needed.
      */
-    ~AtlasScientificpH_pH() {}
+    ~AtlasScientificpH_pH() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICPH_H_
 
-// cSpell:ignore AtlasScientificpH AtlaspH
+// cSpell:words AtlasScientificpH AtlaspH

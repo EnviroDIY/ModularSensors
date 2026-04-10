@@ -26,9 +26,6 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream, int8_t powerPin,
 {
 }
 
-// Destructor
-EspressifESP8266::~EspressifESP8266() {}
-
 MS_IS_MODEM_AWAKE(EspressifESP8266);
 MS_MODEM_WAKE(EspressifESP8266);
 
@@ -36,18 +33,18 @@ MS_MODEM_CONNECT_INTERNET(EspressifESP8266, ESPRESSIF_RECONNECT_TIME_MS);
 MS_MODEM_DISCONNECT_INTERNET(EspressifESP8266);
 MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);
 
-MS_MODEM_CREATE_CLIENT(EspressifESP8266);
-MS_MODEM_DELETE_CLIENT(EspressifESP8266);
-MS_MODEM_CREATE_SECURE_CLIENT(EspressifESP8266);
-MS_MODEM_DELETE_SECURE_CLIENT(EspressifESP8266);
+MS_MODEM_CREATE_CLIENT(EspressifESP8266, ESP8266);
+MS_MODEM_DELETE_CLIENT(EspressifESP8266, ESP8266);
+MS_MODEM_CREATE_SECURE_CLIENT(EspressifESP8266, ESP8266);
+MS_MODEM_DELETE_SECURE_CLIENT(EspressifESP8266, ESP8266);
 
-MS_MODEM_GET_NIST_TIME(EspressifESP8266);
+MS_MODEM_GET_NIST_TIME(EspressifESP8266, ESP8266);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP8266);
 MS_MODEM_GET_MODEM_BATTERY_DATA(EspressifESP8266);
 MS_MODEM_GET_MODEM_TEMPERATURE_DATA(EspressifESP8266);
 
-bool EspressifESP8266::modemSleepFxn(void) {
+bool EspressifESP8266::modemSleepFxn() {
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake
     // from deep sleep.  We'll also put it in deep sleep before yanking power.
     if (_modemResetPin >= 0 || _powerPin >= 0) {
@@ -67,9 +64,13 @@ bool EspressifESP8266::modemSleepFxn(void) {
 }
 
 // Set up the light-sleep status pin, if applicable
-bool EspressifESP8266::extraModemSetup(void) {
+bool EspressifESP8266::extraModemSetup() {
     if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
-    gsmModem.init();
+    bool success = gsmModem.init();
+    // Attempt to get the modem name even without a successful init
+    // The full make and model won't be returned, but it will at least be
+    // something that identifies the modem as an ESP8266, which is helpful for
+    // debugging.
     _modemName = gsmModem.getModemName();
-    return true;
+    return success;
 }

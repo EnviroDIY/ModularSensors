@@ -18,27 +18,30 @@ const char* S3PresignedPublisher::contentLengthHeader = "\r\nContent-Length: ";
 const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 
 // Constructors
-S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
+// Primary constructor with all parameters
+S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
+                                           const char* caCertName,
+                                           String (*getUrlFxn)(String),
+                                           String (*getFileNameFxn)())
+    : dataPublisher(baseLogger, inClient) {
+    if (caCertName) setCACertName(caCertName);
+    if (getUrlFxn) setURLUpdateFunction(getUrlFxn);
+    if (getFileNameFxn) setFileUpdateFunction(getFileNameFxn);
+}
+
+// Delegating constructors
 S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
                                            const char* caCertName,
                                            String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)(void),
-                                           int sendEveryX)
-    : dataPublisher(baseLogger, sendEveryX) {
-    setCACertName(caCertName);
-    setURLUpdateFunction(getUrlFxn);
-    setFileUpdateFunction(getFileNameFxn);
-}
+                                           String (*getFileNameFxn)())
+    : S3PresignedPublisher(baseLogger, nullptr, caCertName, getUrlFxn,
+                           getFileNameFxn) {}
 S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
                                            String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)(void),
-                                           int sendEveryX)
-    : dataPublisher(baseLogger, inClient, sendEveryX) {
-    setURLUpdateFunction(getUrlFxn);
-    setFileUpdateFunction(getFileNameFxn);
-}
-// Destructor
-S3PresignedPublisher::~S3PresignedPublisher() {}
+                                           String (*getFileNameFxn)())
+    : S3PresignedPublisher(baseLogger, inClient, nullptr, getUrlFxn,
+                           getFileNameFxn) {}
+S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
 
 
 void S3PresignedPublisher::setPort(int port) {
@@ -51,8 +54,7 @@ void S3PresignedPublisher::setHost(const char* host) {
 void S3PresignedPublisher::setURLUpdateFunction(String (*getUrlFxn)(String)) {
     _getUrlFxn = getUrlFxn;
 }
-void S3PresignedPublisher::setFileUpdateFunction(
-    String (*getFileNameFxn)(void)) {
+void S3PresignedPublisher::setFileUpdateFunction(String (*getFileNameFxn)()) {
     _getFileNameFxn = getFileNameFxn;
 }
 
@@ -371,9 +373,9 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         did_respond = outClient->readBytes(tempBuffer, 12);
         // Process the HTTP response code
         // The first 9 characters should be "HTTP/1.1 "
-        if (did_respond > 0) {
+        if (did_respond >= 12) {
             char responseCode_char[4];
-            memcpy(responseCode_char, tempBuffer + 9, 3);
+            memcpy(responseCode_char, tempBuffer + HTTP_VERSION_PREFIX_LEN, 3);
             // Null terminate the string
             memset(responseCode_char + 3, '\0', 1);
             responseCode = atoi(responseCode_char);

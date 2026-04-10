@@ -89,7 +89,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientSaraR4.h"
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
@@ -140,36 +140,37 @@ class DigiXBeeLTEBypass : public DigiXBee {
     /**
      * @brief Destroy the Digi XBee LTE Bypass object - no action needed
      */
-    ~DigiXBeeLTEBypass();
+    ~DigiXBeeLTEBypass() override = default;
 
-    bool modemWake(void) override;
+    bool modemWake() override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    void disconnectInternet() override;
 
-    virtual Client* createClient() override;
-    virtual void    deleteClient(Client* client);
-    virtual Client* createSecureClient() override;
-    virtual void    deleteSecureClient(Client* client);
-    virtual Client* createSecureClient(
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) override;
-    virtual Client*
-    createSecureClient(const char* pskIdent, const char* psKey,
-                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    virtual Client*
-    createSecureClient(const char* pskTableName,
-                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+    Client* createClient() override;
+    void    deleteClient(Client* client) override;
+    Client* createSecureClient() override;
+    void    deleteSecureClient(Client* client) override;
+    Client* createSecureClient(SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) override;
+    Client* createSecureClient(
+        const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    Client* createSecureClient(
+        const char* pskTableName,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
-    uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime() override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
     bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                int16_t& milliVolts) override;
-    float getModemChipTemperature(void) override;
+    float getModemChipTemperature() override;
 
-    bool modemHardReset(void) override;
+    bool modemHardReset() override;
 
 #ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -178,10 +179,10 @@ class DigiXBeeLTEBypass : public DigiXBee {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmSaraR4 gsmModem;
 
  protected:
-    bool isInternetAvailable(void) override;
+    bool isInternetAvailable() override;
     /**
      * @copybrief loggerModem::extraModemSetup()
      *
@@ -191,8 +192,8 @@ class DigiXBeeLTEBypass : public DigiXBee {
      *
      * @return True if the extra setup succeeded.
      */
-    bool extraModemSetup(void) override;
-    bool isModemAwake(void) override;
+    bool extraModemSetup() override;
+    bool isModemAwake() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

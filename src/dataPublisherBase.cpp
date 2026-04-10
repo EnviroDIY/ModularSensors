@@ -22,26 +22,29 @@ const char* dataPublisher::putHeader  = "PUT ";
 const char* dataPublisher::HTTPtag    = " HTTP/1.1";
 const char* dataPublisher::hostHeader = "\r\nHost: ";
 
-// Constructors
-dataPublisher::dataPublisher() {}
-
-dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX)
-    : _baseLogger(&baseLogger),
-      _inClient(nullptr),
-      _sendEveryX(sendEveryX) {
-    _baseModem =
-        _baseLogger->registerDataPublisher(this);  // register self with logger
-}
+// Primary constructor
 dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
-                             int sendEveryX)
+                             int sendEveryX, uint8_t startupTransmissions)
     : _baseLogger(&baseLogger),
       _inClient(inClient),
-      _sendEveryX(sendEveryX) {
+      _sendEveryX(sendEveryX),
+      _startupTransmissions(startupTransmissions < 1 ? 1
+                                                     : startupTransmissions) {
     _baseModem =
         _baseLogger->registerDataPublisher(this);  // register self with logger
 }
-// Destructor
-dataPublisher::~dataPublisher() {}
+// Constructors
+dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX,
+                             uint8_t startupTransmissions)
+    : dataPublisher(baseLogger, nullptr, sendEveryX, startupTransmissions) {}
+// Default constructor with explicit initialization to ensure all members are
+// initialized
+dataPublisher::dataPublisher()
+    : _baseLogger(nullptr),
+      _baseModem(nullptr),
+      _inClient(nullptr),
+      _sendEveryX(1),
+      _startupTransmissions(DEFAULT_STARTUP_TRANSMISSIONS) {}
 
 
 // Sets the client
@@ -67,6 +70,25 @@ void dataPublisher::setModemPointer(loggerModem& modemPointer) {
 // data transmissions
 void dataPublisher::setSendInterval(int sendEveryX) {
     _sendEveryX = sendEveryX;
+}
+
+
+// Get the number of startup transmissions
+uint8_t dataPublisher::getStartupTransmissions() const {
+    return _startupTransmissions;
+}
+
+
+// Set the number of startup transmissions to send immediately after logging
+void dataPublisher::setStartupTransmissions(uint8_t count) {
+    // Ensure minimum of 1 transmission
+    if (count < 1) {
+        MS_DBG(F("Startup transmissions count too low, setting to 1"));
+        _startupTransmissions = 1;
+    } else {
+        _startupTransmissions = count;
+        MS_DBG(F("Startup transmissions set to:"), _startupTransmissions);
+    }
 }
 
 
@@ -180,7 +202,7 @@ void dataPublisher::txBufferFlush(bool debug_flush) {
     }
 }
 
-bool dataPublisher::connectionNeeded(void) {
+bool dataPublisher::connectionNeeded() {
     // connection is always needed unless publisher has special logic
     return true;
 }

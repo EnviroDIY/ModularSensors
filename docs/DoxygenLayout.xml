@@ -15,7 +15,6 @@
 		</tab>
 		<tab type="usergroup" title="Getting Started" url="@ref page_getting_started">
 			<tab type="user" url="@ref page_getting_started" title="Getting Started" />
-			<tab type="user" url="@ref page_library_dependencies" title="Library Dependencies" />
 			<tab type="user" url="@ref page_physical_dependencies" title="Physical Dependencies" />
 			<tab type="user" url="@ref page_library_terminology" title="Terminology" />
 			<tab type="user" url="@ref page_other_notes" title="Other Sensor and Modem Notes" />

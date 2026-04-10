@@ -153,7 +153,11 @@
  * {{ @ref MaximDS18_Temp::MaximDS18_Temp }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; temperature should have 4.
+/// @brief Minimum temperature in degrees Celsius.
+#define DS18_TEMP_MIN_C -55.0
+/// @brief Maximum temperature in degrees Celsius.
+#define DS18_TEMP_MAX_C 125.0
+/// @brief Decimal places in string representation; temperature should have 4.
 #define DS18_TEMP_RESOLUTION 4
 /// @brief Sensor variable number; temperature is stored in sensorValues[0].
 #define DS18_TEMP_VAR_NUM 0
@@ -167,6 +171,10 @@
 #define DS18_TEMP_UNIT_NAME "degreeCelsius"
 /// @brief Default variable short code; "DS18Temp"
 #define DS18_TEMP_DEFAULT_CODE "DS18Temp"
+/// @brief Value returned when DS18 cannot get a good measurement
+#define DS18_BAD_MEASUREMENT_VALUE 85.0f
+/// @brief Value returned when DS18 sensor is not properly connected
+#define DS18_DISCONNECTED_VALUE -127.0f
 /**@}*/
 
 /* clang-format off */
@@ -225,7 +233,7 @@ class MaximDS18 : public Sensor {
     /**
      * @brief Destroy the Maxim DS18 object
      */
-    ~MaximDS18();
+    ~MaximDS18() override = default;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -238,28 +246,12 @@ class MaximDS18 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    bool setup() override;
 
-    /**
-     * @brief Tell the sensor to start a single measurement, if needed.
-     *
-     * This also sets the #_millisMeasurementRequested timestamp.
-     *
-     * @note This function does NOT include any waiting for the sensor to be
-     * warmed up or stable!
-     *
-     * @return True if the start measurement function completed
-     * successfully. successfully.
-     */
-    bool startSingleMeasurement(void) override;
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    String getSensorLocation() override;
+
+    bool startSingleMeasurement() override;
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -314,22 +306,12 @@ class MaximDS18_Temp : public Variable {
      */
     explicit MaximDS18_Temp(MaximDS18* parentSense, const char* uuid = "",
                             const char* varCode = DS18_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)DS18_TEMP_VAR_NUM,
-                   (uint8_t)DS18_TEMP_RESOLUTION, DS18_TEMP_VAR_NAME,
-                   DS18_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MaximDS18_Temp object.
-     *
-     * @note This must be tied with a parent MaximDS18 before it can be used.
-     */
-    MaximDS18_Temp()
-        : Variable((uint8_t)DS18_TEMP_VAR_NUM, (uint8_t)DS18_TEMP_RESOLUTION,
-                   DS18_TEMP_VAR_NAME, DS18_TEMP_UNIT_NAME,
-                   DS18_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, DS18_TEMP_VAR_NUM, DS18_TEMP_RESOLUTION,
+                   DS18_TEMP_VAR_NAME, DS18_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the MaximDS18_Temp object - no action needed.
      */
-    ~MaximDS18_Temp() {}
+    ~MaximDS18_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_MAXIMDS18_H_

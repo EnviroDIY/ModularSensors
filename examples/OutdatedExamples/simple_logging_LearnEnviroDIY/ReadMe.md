@@ -6,7 +6,7 @@ The processor then goes to sleep between readings.
 This example calls on two of the sensors available in this library.
 The example may be run exactly as written.
 
-This is the example you should use to deploy a logger somewhere where you don't want or have access to a way of streaming live data and you won't want to upload data to the Monitor My Watershed data portal.
+Use this example to deploy a logger when you cannot stream live data or do not want to upload data to Monitor My Watershed.
 
 _______
 
@@ -40,16 +40,17 @@ _______
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging_LearnEnviroDIY/platformio.ini) file in the examples/simple_logging_LearnEnviroDIY folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
   - Without this, the program won't compile.
-- Open [simple_logging_LearnEnviroDIY.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging_LearnEnviroDIY/simple_logging_LearnEnviroDIY.ino) and save it to your computer.  Put it into the src directory of your project.
+- Open [simple_logging_LearnEnviroDIY.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/simple_logging_LearnEnviroDIY/simple_logging_LearnEnviroDIY.ino) and save it to your computer.
+  Put it into the src directory of your project.
   - Delete main.cpp in that folder.
 
 ### Set the logger ID<!--! {#example_learn_envirodiy_logger_id} -->
 
-- Change the "XXXX" in this section of code to the loggerID assigned by Stroud:
+- Change the text `YourLoggerID` in this section of code to your logger ID or serial number:
 
 ```cpp
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char *LoggerID = "XXXX";
+const char *LoggerID = "YourLoggerID";
 ```
 
 ### Upload!<!--! {#example_learn_envirodiy_upload} -->

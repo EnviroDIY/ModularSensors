@@ -87,7 +87,7 @@
  * This will _fry_ any board like the Mayfly that uses 3.3V logic.
  * You would need a voltage shifter in between the Mayfly and the MAX485 to make it work.
  *
- * The sensor constructor requires as input: the sensor modbus address, a stream instance for data (ie, ```Serial```), and one or two power pins.
+ * The sensor constructor requires as input: the sensor modbus address, a stream instance for data (i.e., ```Serial```), and one or two power pins.
  * The Arduino pin controlling the receive and data enable on your RS485-to-TTL adapter and the number of readings to average are optional.
  * (Use -1 for the second power pin and -1 for the enable pin if these don't apply and you want to average more than one reading.)
  * For all of these sensors except pH, Yosemitech strongly recommends averaging 10 readings for each measurement.
@@ -168,7 +168,7 @@ class YosemitechParent : public Sensor {
      * average before giving a "final" result from the sensor; optional with a
      * default value of 1.
      * @param model The model of Yosemitech sensor.
-     * @param sensName The name of the sensor.  Defaults to "SDI12-Sensor".
+     * @param sensName The name of the sensor.  Defaults to "Yosemitech-Sensor".
      * @param numVariables The number of variable results returned by the
      * sensor. Defaults to 2.
      * @param warmUpTime_ms The time in ms between when the sensor is powered on
@@ -207,12 +207,9 @@ class YosemitechParent : public Sensor {
     /**
      * @brief Destroy the Yosemitech Parent object - no action taken
      */
-    virtual ~YosemitechParent();
+    ~YosemitechParent() override = default;
 
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -225,29 +222,27 @@ class YosemitechParent : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
     /**
-     * @copydoc Sensor::wake()
-     */
-    bool wake(void) override;
-    /**
-     * @brief Puts the sensor to sleep, if necessary.
+     * @brief Wakes the sensor, starts measurements, and activates brushes.
      *
-     * This also un-sets the #_millisSensorActivated timestamp (sets it to 0).
-     * This does NOT power down the sensor!
+     * Unlike base Sensor::wake(), this starts measurements and activates the
+     * brushes (where applicable).  Yosemitech sensors do not start to stabilize
+     * until after starting measurements.  So we activate the sensor as part of
+     * the wake and then must wait the stabilization time + 1 measurement time
+     * before requesting the first result.
      *
-     * @return True if the sleep function completed successfully.
+     * @return True if the wake function completed successfully.
      */
-    bool sleep(void) override;
-
-    // Override these to use two power pins
-    void powerUp(void) override;
-    void powerDown(void) override;
-
+    bool wake() override;
     /**
-     * @copydoc Sensor::addSingleMeasurementResult()
+     * @brief Stop measurements and empty and flush the stream before sleeping.
+     *
+     * @return True if sleep was successful.
      */
-    bool addSingleMeasurementResult(void) override;
+    bool sleep() override;
+
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -273,12 +268,8 @@ class YosemitechParent : public Sensor {
      * pin.
      */
     int8_t _RS485EnablePin;
-    /**
-     * @brief Private reference to the power pin fro the RS-485 adapter.
-     */
-    int8_t _powerPin2;
 };
 
 #endif  // SRC_SENSORS_YOSEMITECHPARENT_H_
 
-// cSpell:ignore ysensor
+// cSpell:words ysensor

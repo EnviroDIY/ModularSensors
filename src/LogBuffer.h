@@ -13,28 +13,9 @@
 #ifndef SRC_LOGBUFFER_H_
 #define SRC_LOGBUFFER_H_
 
-#ifndef MS_LOG_DATA_BUFFER_SIZE
-#ifdef ARDUINO_AVR_MEGA2560
-#define MS_LOG_DATA_BUFFER_SIZE 512
-#elif defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_NANO)
-#define MS_LOG_DATA_BUFFER_SIZE 256
-#elif defined(__AVR_ATmega1284P__)
-#define MS_LOG_DATA_BUFFER_SIZE 2048
-#else
-/**
- * @brief Log Data Buffer
- *
- * This determines how much RAM is reserved to buffer log records before
- * transmission. Each record consumes 4 bytes for the timestamp plus 4 bytes
- * for each logged variable. Increasing this value too far can crash the
- * device! The number of log records buffered is controlled by sendEveryX.
- *
- * This can be changed by setting the build flag MS_LOG_DATA_BUFFER_SIZE when
- * compiling. 8192 bytes is a safe value for the Mayfly 1.1 with six variables.
- */
-#define MS_LOG_DATA_BUFFER_SIZE 8192
-#endif
-#endif
+// Include ModSensorConfig.h which defines MS_LOG_DATA_BUFFER_SIZE
+// (set automatically in KnownProcessors.h for supported boards)
+#include "ModSensorConfig.h"
 
 #include <stddef.h>
 #include <inttypes.h>
@@ -54,7 +35,7 @@ class LogBuffer {
     /**
      * @brief Destroys the buffer.
      */
-    virtual ~LogBuffer();
+    virtual ~LogBuffer() = default;
 
     /**
      * @brief Sets the number of variables the buffer will store in each record.
@@ -69,26 +50,26 @@ class LogBuffer {
      *
      * @return The variable count.
      */
-    uint8_t getNumVariables(void);
+    uint8_t getNumVariables();
 
     /**
      * @brief Clears all records from the log.
      */
-    void clear(void);
+    void clear();
 
     /**
      * @brief Gets the number of records currently in the log.
      *
      * @return The number of records.
      */
-    int getNumRecords(void);
+    int getNumRecords();
 
     /**
      * @brief Computes the percentage full of the buffer.
      *
      * @return The current percent full.
      */
-    uint8_t getPercentFull(void);
+    uint8_t getPercentFull();
 
     /**
      * @brief Adds a new record with the given timestamp.

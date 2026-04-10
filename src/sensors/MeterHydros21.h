@@ -127,8 +127,12 @@
  * {{ @ref MeterHydros21_Cond::MeterHydros21_Cond }}
  */
 /**@{*/
+/// @brief Minimum conductivity; 0 µS/cm
+#define HYDROS21_COND_MIN_USCM 0
+/// @brief Maximum conductivity; 120000 µS/cm (120 mS/cm)
+#define HYDROS21_COND_MAX_USCM 120000
 /**
- * @brief Decimals places in string representation; conductivity should have 1.
+ * @brief Decimal places in string representation; conductivity should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.001 mS/cm = 1 µS/cm
@@ -158,8 +162,12 @@
  * {{ @ref MeterHydros21_Temp::MeterHydros21_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; -11°C
+#define HYDROS21_TEMP_MIN_C -11
+/// @brief Maximum temperature; 49°C
+#define HYDROS21_TEMP_MAX_C 49
 /**
- * @brief Decimals places in string representation; temperature should have 2.
+ * @brief Decimal places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging  - resolution is 0.1°C
@@ -189,8 +197,12 @@
  * {{ @ref MeterHydros21_Depth::MeterHydros21_Depth }}
  */
 /**@{*/
+/// @brief Minimum depth; 0 m (0 millimeter)
+#define HYDROS21_DEPTH_MIN_MM 0
+/// @brief Maximum depth; 10 m (10000 millimeters)
+#define HYDROS21_DEPTH_MAX_MM 10000
 /**
- * @brief Decimals places in string representation; depth should have 1.
+ * @brief Decimal places in string representation; depth should have 1.
  *
  * 0 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 2 mm
@@ -273,11 +285,10 @@ class MeterHydros21 : public SDI12Sensors {
               "MeterHydros21", HYDROS21_NUM_VARIABLES, HYDROS21_WARM_UP_TIME_MS,
               HYDROS21_STABILIZATION_TIME_MS, HYDROS21_MEASUREMENT_TIME_MS,
               HYDROS21_EXTRA_WAKE_TIME_MS, HYDROS21_INC_CALC_VARIABLES) {}
-
     /**
      * @brief Destroy the Meter Hydros 21 object
      */
-    ~MeterHydros21() {}
+    ~MeterHydros21() override = default;
 };
 
 
@@ -304,23 +315,13 @@ class MeterHydros21_Cond : public Variable {
     explicit MeterHydros21_Cond(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_COND_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HYDROS21_COND_VAR_NUM,
-                   (uint8_t)HYDROS21_COND_RESOLUTION, HYDROS21_COND_VAR_NAME,
-                   HYDROS21_COND_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeterHydros21_Cond object.
-     *
-     * @note This must be tied with a parent MeterHydros21 before it can be
-     * used.
-     */
-    MeterHydros21_Cond()
-        : Variable((uint8_t)HYDROS21_COND_VAR_NUM,
-                   (uint8_t)HYDROS21_COND_RESOLUTION, HYDROS21_COND_VAR_NAME,
-                   HYDROS21_COND_UNIT_NAME, HYDROS21_COND_DEFAULT_CODE) {}
+        : Variable(parentSense, HYDROS21_COND_VAR_NUM, HYDROS21_COND_RESOLUTION,
+                   HYDROS21_COND_VAR_NAME, HYDROS21_COND_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the MeterHydros21_Cond object - no action needed.
      */
-    ~MeterHydros21_Cond() {}
+    ~MeterHydros21_Cond() override = default;
 };
 
 
@@ -347,23 +348,13 @@ class MeterHydros21_Temp : public Variable {
     explicit MeterHydros21_Temp(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HYDROS21_TEMP_VAR_NUM,
-                   (uint8_t)HYDROS21_TEMP_RESOLUTION, HYDROS21_TEMP_VAR_NAME,
-                   HYDROS21_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeterHydros21_Temp object.
-     *
-     * @note This must be tied with a parent MeterHydros21 before it can be
-     * used.
-     */
-    MeterHydros21_Temp()
-        : Variable((uint8_t)HYDROS21_TEMP_VAR_NUM,
-                   (uint8_t)HYDROS21_TEMP_RESOLUTION, HYDROS21_TEMP_VAR_NAME,
-                   HYDROS21_TEMP_UNIT_NAME, HYDROS21_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, HYDROS21_TEMP_VAR_NUM, HYDROS21_TEMP_RESOLUTION,
+                   HYDROS21_TEMP_VAR_NAME, HYDROS21_TEMP_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the MeterHydros21_Temp object - no action needed.
      */
-    ~MeterHydros21_Temp() {}
+    ~MeterHydros21_Temp() override = default;
 };
 
 
@@ -390,23 +381,13 @@ class MeterHydros21_Depth : public Variable {
     explicit MeterHydros21_Depth(
         MeterHydros21* parentSense, const char* uuid = "",
         const char* varCode = HYDROS21_DEPTH_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)HYDROS21_DEPTH_VAR_NUM,
-                   (uint8_t)HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
+        : Variable(parentSense, HYDROS21_DEPTH_VAR_NUM,
+                   HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
                    HYDROS21_DEPTH_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeterHydros21_Depth object.
-     *
-     * @note This must be tied with a parent MeterHydros21 before it can be
-     * used.
-     */
-    MeterHydros21_Depth()
-        : Variable((uint8_t)HYDROS21_DEPTH_VAR_NUM,
-                   (uint8_t)HYDROS21_DEPTH_RESOLUTION, HYDROS21_DEPTH_VAR_NAME,
-                   HYDROS21_DEPTH_UNIT_NAME, HYDROS21_DEPTH_DEFAULT_CODE) {}
     /**
      * @brief Destroy the MeterHydros21_Depth object - no action needed.
      */
-    ~MeterHydros21_Depth() {}
+    ~MeterHydros21_Depth() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_METERHYDROS21_H_

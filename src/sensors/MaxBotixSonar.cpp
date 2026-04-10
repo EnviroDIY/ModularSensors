@@ -16,37 +16,34 @@ MaxBotixSonar::MaxBotixSonar(Stream* stream, int8_t powerPin, int8_t triggerPin,
                              bool convertCm)
     : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
              HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
-             measurementsToAverage),
-      _maxRange(maxRange),
-      _triggerPin(triggerPin),
-      _convertCm(convertCm),
-      _stream(stream) {}
-
-
-MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
-                             int16_t maxRange, uint8_t measurementsToAverage,
-                             bool convertCm)
-    : Sensor("MaxBotixMaxSonar", HRXL_NUM_VARIABLES, HRXL_WARM_UP_TIME_MS,
-             HRXL_STABILIZATION_TIME_MS, HRXL_MEASUREMENT_TIME_MS, powerPin, -1,
              measurementsToAverage, HRXL_INC_CALC_VARIABLES),
       _maxRange(maxRange),
       _triggerPin(triggerPin),
       _convertCm(convertCm),
-      _stream(&stream) {}
+      _stream(stream) {
+    setMaxRetries(MAXBOTIX_DEFAULT_MEASUREMENT_RETRIES);
+}
 
-// Destructor
-MaxBotixSonar::~MaxBotixSonar() {}
+// Delegating constructor
+MaxBotixSonar::MaxBotixSonar(Stream& stream, int8_t powerPin, int8_t triggerPin,
+                             int16_t maxRange, uint8_t measurementsToAverage,
+                             bool convertCm)
+    : MaxBotixSonar(&stream, powerPin, triggerPin, maxRange,
+                    measurementsToAverage, convertCm) {}
 
 
 // unfortunately, we really cannot know where the stream is attached.
-String MaxBotixSonar::getSensorLocation(void) {
+String MaxBotixSonar::getSensorLocation() {
     // attach the trigger pin to the stream number
-    String loc = "sonarStream_trigger" + String(_triggerPin);
+    String loc;
+    loc.reserve(25);  // Reserve for "sonarStream_trigger" + pin number
+    loc = F("sonarStream_trigger");
+    loc += _triggerPin;
     return loc;
 }
 
 
-bool MaxBotixSonar::setup(void) {
+bool MaxBotixSonar::setup() {
     // Set up the trigger, if applicable
     if (_triggerPin >= 0) {
         pinMode(_triggerPin, OUTPUT);
@@ -62,7 +59,7 @@ bool MaxBotixSonar::setup(void) {
 
 
 // Parsing and tossing the header lines in the wake-up
-bool MaxBotixSonar::wake(void) {
+bool MaxBotixSonar::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
@@ -93,46 +90,90 @@ bool MaxBotixSonar::wake(void) {
         MS_DBG(i, '-', headerLine);
     }
     // Clear anything else out of the stream buffer
-    auto junkChars = static_cast<uint8_t>(_stream->available());
-    if (junkChars) {
-        MS_DBG(F("Dumping"), junkChars,
-               F("characters from MaxBotix stream buffer"));
-        for (uint8_t i = 0; i < junkChars; i++) {
-#ifdef MS_MAXBOTIXSONAR_DEBUG
-            MS_SERIAL_OUTPUT.print(_stream->read());
-#else
-            _stream->read();
-#endif
-        }
-#ifdef MS_MAXBOTIXSONAR_DEBUG
-        PRINTOUT(" ");
-#endif
-    }
+    dumpBuffer();
 
     return true;
 }
 
 // The function to put the sensor to sleep
 // Different from the standard in that empties and flushes the stream.
-bool MaxBotixSonar::sleep(void) {
+bool MaxBotixSonar::sleep() {
     // empty then flush the buffer
     while (_stream->available()) { _stream->read(); }
     _stream->flush();
     return Sensor::sleep();
-};
+}
 
 
-bool MaxBotixSonar::addSingleMeasurementResult(void) {
+bool MaxBotixSonar::startSingleMeasurement() {
+    // Sensor::startSingleMeasurement() checks that if it's awake/active and
+    // sets the timestamp and status bits.  If it returns false, there's no
+    // reason to go on.
+    if (!Sensor::startSingleMeasurement()) return false;
+
+    dumpBuffer();  // dump anything stuck in the stream buffer
+
+    // If the sonar is running on a trigger, activate it
+    if (_triggerPin >= 0) {
+        MS_DBG(F("  Triggering Sonar with"), _triggerPin);
+        digitalWrite(_triggerPin, HIGH);
+        delayMicroseconds(30);  // Trigger must be held high for >20 µs
+        digitalWrite(_triggerPin, LOW);
+
+        // Update the time that a measurement was requested
+        // For MaxBotix, we're actively triggering so mark time as now
+        _millisMeasurementRequested = millis();
+    }
+
+    return true;
+}
+
+
+bool MaxBotixSonar::addSingleMeasurementResult() {
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
+
     // Initialize values
     bool    success = false;
-    int16_t result  = -9999;
+    int16_t result  = MS_INVALID_VALUE;
 
-    // Clear anything out of the stream buffer
-    auto junkChars = static_cast<uint8_t>(_stream->available());
-    if (junkChars) {
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    // Ask for a result and let the stream timeout be our "wait" for the
+    // measurement
+    result = static_cast<int16_t>(_stream->parseInt());
+    _stream->read();  // Throw away the carriage return
+    MS_DBG(F("  Sonar Range:"), result);
+
+    // Check if result is valid
+    // If it cannot obtain a result, the sonar sends a value just above its max
+    // range. If the result becomes garbled or the sonar is disconnected,
+    // parseInt returns 0. These sensors cannot read 0, so we know 0 is bad.
+    if (result <= 0 || result >= _maxRange) {
+        MS_DBG(F("  Bad or Suspicious Result, Retry #"), _currentRetries + 1);
+        result = MS_INVALID_VALUE;
+    } else {
+        MS_DBG(F("  Good result found"));
+        // convert result from cm to mm if convertCm is set to true
+        if (_convertCm) { result *= 10; }
+        success = true;
+        verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
+    }
+
+    // dump anything left in the stream buffer
+    dumpBuffer();
+
+    // Return success value when finished
+    return finalizeMeasurementAttempt(success);
+}
+
+
+void MaxBotixSonar::dumpBuffer() {
+    auto junkChars = _stream->available();
+    if (junkChars > 0) {
         MS_DBG(F("Dumping"), junkChars,
                F("characters from MaxBotix stream buffer:"));
-        for (uint8_t i = 0; i < junkChars; i++) {
+        while (_stream->available()) {
 #ifdef MS_MAXBOTIXSONAR_DEBUG
             MS_SERIAL_OUTPUT.print(_stream->read());
 #else
@@ -143,61 +184,4 @@ bool MaxBotixSonar::addSingleMeasurementResult(void) {
         PRINTOUT(" ");
 #endif
     }
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        uint8_t rangeAttempts = 0;
-        while (success == false && rangeAttempts < 25) {
-            // If the sonar is running on a trigger, activating the trigger
-            // should in theory happen within the startSingleMeasurement
-            // function.  Because we're really taking up to 25 measurements
-            // for each "single measurement" until a valid value is returned
-            // and the measurement time is <166ms, we'll actually activate
-            // the trigger here.
-            if (_triggerPin >= 0) {
-                MS_DBG(F("  Triggering Sonar with"), _triggerPin);
-                digitalWrite(_triggerPin, HIGH);
-                delayMicroseconds(30);  // Trigger must be held high for >20 µs
-                digitalWrite(_triggerPin, LOW);
-            }
-
-            // Immediately ask for a result and let the stream timeout be our
-            // "wait" for the measurement.
-            result = static_cast<uint16_t>(_stream->parseInt());
-            _stream->read();  // To throw away the carriage return
-            MS_DBG(F("  Sonar Range:"), result);
-            rangeAttempts++;
-
-            // If it cannot obtain a result, the sonar is supposed to send a
-            // value just above its max range. If the result becomes garbled or
-            // the sonar is disconnected, the parseInt function returns 0.
-            // Luckily, these sensors are not capable of reading 0, so we also
-            // know the 0 value is bad.
-            if (result <= 0 || result >= _maxRange) {
-                MS_DBG(F("  Bad or Suspicious Result, Retry Attempt #"),
-                       rangeAttempts);
-                result = -9999;
-            } else {
-                MS_DBG(F("  Good result found"));
-                // convert result from cm to mm if convertCm is set to true
-                if (_convertCm == true) { result *= 10; }
-                success = true;
-            }
-        }
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
-    }
-
-    verifyAndAddMeasurementResult(HRXL_VAR_NUM, result);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    // Return values shows if we got a not-obviously-bad reading
-    return success;
 }

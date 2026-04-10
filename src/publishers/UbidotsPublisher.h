@@ -35,7 +35,7 @@
 
 
 // ============================================================================
-//  Functions for the EnviroDIY data portal receivers.
+//  Functions for Ubidots
 // ============================================================================
 /**
  * @brief The UbidotsPublisher subclass of dataPublisher for publishing data
@@ -47,9 +47,43 @@ class UbidotsPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new Ubidots Publisher object with no members set.
+     * @brief Construct a new Ubidots Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     * @param authenticationToken The authentication token from Ubidots, either
+     * the Organization's Integration Token (under Users > Organization menu,
+     * visible by Admin only) OR the STEM User's Device Token (under the
+     * specific device's setup panel).
+     * @param deviceID The device API Label from Ubidots, derived from the
+     * user-specified device name.
      */
-    UbidotsPublisher();
+    UbidotsPublisher(Logger& baseLogger, Client* inClient,
+                     const char* authenticationToken, const char* deviceID);
+    /**
+     * @brief Construct a new Ubidots Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param authenticationToken The authentication token from Ubidots, either
+     * the Organization's Integration Token (under Users > Organization menu,
+     * visible by Admin only) OR the STEM User's Device Token (under the
+     * specific device's setup panel).
+     * @param deviceID The device API Label from Ubidots, derived from the
+     * user-specified device name.
+     */
+    UbidotsPublisher(Logger& baseLogger, const char* authenticationToken,
+                     const char* deviceID);
+    /**
+     * @brief Construct a new Ubidots Publisher object
+     *
+     * @param baseLogger The logger supplying the data to be published
+     * @param inClient An Arduino client instance to use to print data to.
+     * Allows the use of any type of client and multiple clients tied to a
+     * single TinyGSM modem instance
+     */
+    UbidotsPublisher(Logger& baseLogger, Client* inClient);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
@@ -58,59 +92,17 @@ class UbidotsPublisher : public dataPublisher {
      * logger.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
      */
-    explicit UbidotsPublisher(Logger& baseLogger, int sendEveryX = 1);
+    explicit UbidotsPublisher(Logger& baseLogger);
     /**
-     * @brief Construct a new Ubidots Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * @brief Construct a new Ubidots Publisher object with all members set to
+     * defaults or null.
      */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1);
+    UbidotsPublisher();
     /**
-     * @brief Construct a new Ubidots Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param authenticationToken The authentication token from Ubidots, either
-     * the Organization's Integration Token (under Users > Organization menu,
-     * visible by Admin only) OR the STEM User's Device Token (under the
-     * specific device's setup panel).
-     * @param deviceID The device API Label from Ubidots, derived from the
-     * user-specified device name.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
+     * @brief Destroy the Ubidots Publisher object
      */
-    UbidotsPublisher(Logger& baseLogger, const char* authenticationToken,
-                     const char* deviceID, int sendEveryX = 1);
-    /**
-     * @brief Construct a new Ubidots Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param authenticationToken The authentication token from Ubidots, either
-     * the Organization's Integration Token (under Users > Organization menu,
-     * visible by Admin only) OR the STEM User's Device Token (under the
-     * specific device's setup panel).
-     * @param deviceID The device API Label from Ubidots, derived from the
-     * user-specified device name.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. NOTE: not implemented by this publisher!
-     */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient,
-                     const char* authenticationToken, const char* deviceID,
-                     int sendEveryX = 1);
-    /**
-     * @brief Destroy the EnviroDIY Publisher object
-     */
-    virtual ~UbidotsPublisher();
+    ~UbidotsPublisher() override = default;
 
     // Returns the data destination
     /**
@@ -119,7 +111,7 @@ class UbidotsPublisher : public dataPublisher {
      *
      * @return The URL or HOST to receive published data
      */
-    String getEndpoint(void) override {
+    String getEndpoint() override {
         return String(ubidotsHost);
     }
 
@@ -166,7 +158,7 @@ class UbidotsPublisher : public dataPublisher {
 
     // Post Data to Ubidots
     /**
-     * @brief Utilize an attached modem to open a a TCP connection to the
+     * @brief Utilize an attached modem to open a TCP connection to the
      * Ubidots API and then stream out a post request over
      * that connection.
      *

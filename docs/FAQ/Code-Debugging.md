@@ -8,7 +8,8 @@ When using PlatformIO or other build systems that allow you to define build flag
 
 - `-D MS_SERIAL_OUTPUT=SerialX` to define a serial or other stream to use for all printout, debugging or otherwise
 - `-D MS_2ND_OUTPUT=SerialX` to define a second serial to output identical debugging output to
-  - This is very helpful for boards that use a built-in USB adapter.  Assigning a secondary output that can be attached to a secondary TTL-to-USB adapter can make debugging much easier.
+  - This is very helpful for boards that use a built-in USB adapter.
+    Assigning a secondary output that can be attached to a secondary TTL-to-USB adapter can make debugging much easier.
 - `-D MS_SILENT` to suppress *ALL* output.
 
 There is also a debugging - and sometimes deep debugging - define for each component.
@@ -16,7 +17,7 @@ The debugging flags are generally named as MS_xxx_DEBUG`, where xxxxx is the nam
 
 ## Arduino IDE<!--! {#code_debugging_arduino} -->
 
-For intense _code_ debugging for any individual component of the library (sensor communication, modem communication, variable array functions, etc), open the source file header (\*.h), for that component.
+For intense **code** debugging for any individual component of the library (sensor communication, modem communication, variable array functions, etc), open the source file header (\*.h) for that component.
 Find the line `// #define MS_xxx_DEBUG`, where xxxxx is the name of the header file to debug - in all caps with spaces removed.
 Remove the two comment slashes from that line.
 Then recompile and upload your code.

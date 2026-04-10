@@ -178,7 +178,7 @@ class Logger {
     /**
      * @brief Destroy the Logger object - takes no action.
      */
-    virtual ~Logger();
+    virtual ~Logger() = default;
 
     // ===================================================================== //
     /**
@@ -223,25 +223,41 @@ class Logger {
     }
 
     /**
-     * @brief Set the number of initial datapoints to log (and publish) at
-     * 1-minute intervals before beginning logging on the regular logging
-     * interval.
+     * @brief Set the number of startup measurements to take at 1-minute
+     * intervals before beginning logging on the regular logging interval.
      *
-     * @param initialShortIntervals The number of 1-minute intervals. This
-     * number of transmissions will be performed with an interval of 1 minute
-     * regardless of the programmed interval. Useful for fast field
-     * verification.
+     * Whether the data is published or not depends on the settings of the data
+     * publishers.
+     *
+     * @param startupMeasurements The number of measurements to take at
+     * 1-minute intervals regardless of the programmed interval. Useful for
+     * fast field verification.
      */
-    void setinitialShortIntervals(int16_t initialShortIntervals);
+    void setStartupMeasurements(int16_t startupMeasurements);
     /**
-     * @brief Get the number of 1-minute intervals at the start before logging
-     * on the regular logging interval
+     * @brief Get the remaining number of startup measurements
      *
-     * @return The number of 1-minute intervals at the start before logging
-     * on the regular logging interval
+     * @return The remaining number of startup measurements
+     */
+    int16_t getStartupMeasurements() {
+        return _startupMeasurements;
+    }
+    // Backwards-compatibility shims
+    /**
+     * @brief Deprecated alias for setStartupMeasurements
+     * @param initialShortIntervals The number of startup measurements
+     * @m_deprecated_since{0,38,0} use setStartupMeasurements
+     */
+    void setinitialShortIntervals(int16_t initialShortIntervals) {
+        setStartupMeasurements(initialShortIntervals);
+    }
+    /**
+     * @brief Deprecated alias for getStartupMeasurements
+     * @return The remaining number of startup measurements
+     * @m_deprecated_since{0,38,0} use getStartupMeasurements
      */
     int16_t getinitialShortIntervals() {
-        return _remainingShortIntervals;
+        return getStartupMeasurements();
     }
 
     /**
@@ -388,9 +404,9 @@ class Logger {
      * Because this sets the pin mode, this function should only be called
      * during the `setup()` or `loop()` portion of an Arduino program.
      *
-     * Once in testing mode, the logger will attempt to connect the the internet
+     * Once in testing mode, the logger will attempt to connect to the internet
      * and take 25 measurements spaced at 5 second intervals writing the results
-     * to the main output destination (ie, Serial).  Testing mode cannot be
+     * to the main output destination (i.e., Serial).  Testing mode cannot be
      * entered while the logger is taking a scheduled measurement.  No data is
      * written to the SD card in testing mode.
      *
@@ -463,10 +479,10 @@ class Logger {
      */
     int16_t _loggingIntervalMinutes = 5;
     /**
-     * @brief The initial number of samples to log at an interval of 1 minute
+     * @brief The number of startup measurements to log at 1-minute intervals
      * for fast field verification
      */
-    int8_t _remainingShortIntervals = 5;
+    int16_t _startupMeasurements = 5;
     /**
      * @brief Digital pin number on the mcu controlling the SD card slave
      * select.
@@ -736,7 +752,7 @@ class Logger {
      *
      * @return True if any remotes need a connection.
      */
-    bool checkRemotesConnectionNeeded(void);
+    bool checkRemotesConnectionNeeded();
     /**
      * @brief Publish data to all registered data publishers.
      *
@@ -749,7 +765,7 @@ class Logger {
      *
      * @m_deprecated_since{0,22,5}
      */
-    void sendDataToRemotes(void);
+    void sendDataToRemotes();
     /**
      * @brief Publish **metadata** to all registered data publishers.
      *
@@ -801,7 +817,7 @@ class Logger {
      * @return The timezone data is be saved to the SD card in.  This
      * is not be the same as the timezone of the real time clock.
      */
-    static int8_t getLoggerTimeZone(void);
+    static int8_t getLoggerTimeZone();
 
     /**
      * @brief A passthrough to loggerClock::setRTCOffset(int8_t offsetHours);
@@ -826,7 +842,7 @@ class Logger {
      *
      * @return The offset of the real-time clock (RTC) from UTC in hours
      */
-    static int8_t getRTCTimeZone(void);
+    static int8_t getRTCTimeZone();
     /**
      * @brief Set the offset between the built-in clock and the time zone
      * where the data is being recorded.
@@ -846,7 +862,7 @@ class Logger {
      * @return The offset between the built-in clock and the time
      * zone where the data is being recorded.
      */
-    static int8_t getTZOffset(void);
+    static int8_t getTZOffset();
 
     /**
      * @brief Get the current epoch time from the RTC and correct it to the
@@ -953,19 +969,19 @@ class Logger {
      * @return True if the current time on the RTC passes sanity range
      * checking
      */
-    static bool isRTCSane(void);
+    static bool isRTCSane();
 
     /**
      * @brief Set static variables for the date/time
      *
-     * This is needed so that all data outputs (SD, EnviroDIY, serial printing,
+     * This is needed so that all data outputs (SD, publishers, serial printing,
      * etc) print the same time for updating the sensors - even though the
      * routines to update the sensors and to output the data may take several
      * seconds.  It is not currently possible to output the instantaneous time
      * an individual sensor was updated, just a single marked time.  By custom,
      * this should be called before updating the sensors, not after.
      */
-    static void markTime(void);
+    static void markTime();
 
     /**
      * @brief Check if the CURRENT time is an even interval of the logging rate
@@ -973,21 +989,21 @@ class Logger {
      * @return True if the current time on the RTC is an even interval
      * of the logging rate.
      */
-    bool checkInterval(void);
+    bool checkInterval();
 
     /**
      * @brief Check if the MARKED time is an even interval of the logging rate -
      * That is the value saved in the static variable markedLocalUnixTime.
      *
      * This should be used in conjunction with markTime() to ensure that all
-     * data outputs from a single data update session (SD, EnviroDIY, serial
+     * data outputs from a single data update session (SD, publishers, serial
      * printing, etc) have the same timestamp even though the update routine may
      * take several (or many) seconds.
      *
      * @return True if the marked time is an even interval of the
      * logging rate.
      */
-    bool checkMarkedInterval(void);
+    bool checkMarkedInterval();
 
  protected:
     /**
@@ -1102,7 +1118,7 @@ class Logger {
      *
      * Use loggerClock::rtcISR() in new code!
      */
-    static void wakeISR(void);
+    static void wakeISR();
 
     /**
      * @brief Put the mcu to sleep to conserve battery life and handle
@@ -1112,10 +1128,10 @@ class Logger {
      *
      * @warning During sleep, the I2C/Wire interface is disabled and the SCL and
      * SDA pins are forced low to save power. Any attempt to communicate with an
-     * I2C device during sleep (ie, thorough an interrupt) will cause the board
-     * to hang indefinitely.
+     * I2C device during sleep (i.e., through an interrupt) will cause the
+     * board to hang indefinitely.
      */
-    void systemSleep(void);
+    void systemSleep();
 
 #if defined(ARDUINO_ARCH_SAMD)
  public:
@@ -1216,7 +1232,7 @@ class Logger {
      *
      * @return The name of the file data is currently being saved to.
      */
-    String getFileName(void) {
+    String getFileName() {
         return _fileName;
     }
 
@@ -1232,11 +1248,21 @@ class Logger {
     virtual void printFileHeader(Stream* stream);
 
     /**
-     * @brief Print a comma separated list of values of sensor data -
-     * including the time in the logging timezone -  out over an Arduino stream
+     * @brief Print a comma separated list of the values of the variables in the
+     * underlying variable array - along with the logged time in the logger's
+     * timezone -  out over an Arduino stream
      *
      * @param stream An Arduino stream instance - expected to be an SdFat file -
      * but could also be the "main" Serial port for debugging.
+     */
+    void printVariableValuesCSV(Stream* stream);
+
+    /**
+     * @brief Print a comma separated list of values of variable data -
+     * including the time in the logging timezone -  out over an Arduino stream
+     *
+     * @m_deprecated_since{0,38,0} Use printVariableValuesCSV() instead.
+     * @param stream An Arduino stream instance
      */
     void printSensorDataCSV(Stream* stream);
 
@@ -1248,7 +1274,7 @@ class Logger {
      *
      * @return True if the SD card is ready
      */
-    bool initializeSDCard(void);
+    bool initializeSDCard();
 
     /**
      * @brief Create a file on the SD card and set the created, modified, and
@@ -1319,7 +1345,7 @@ class Logger {
      * @return True if the file was successfully accessed or created
      * _and_ data appended to it.
      */
-    bool logToSD(void);
+    bool logToSD();
 
     /**
      * @brief Generate a file name with the current date and time appended to
@@ -1357,7 +1383,7 @@ class Logger {
      *
      * @note This cannot be called until *after* the RTC is started
      */
-    void generateAutoFileName(void);
+    void generateAutoFileName();
 
     /**
      * @brief This function is used to automatically mark files as
@@ -1411,7 +1437,7 @@ class Logger {
      * @brief The interrupt service routine called when an interrupt is detected
      * on the pin assigned for "testing" mode.
      */
-    static void testingISR(void);
+    static void testingISR();
 
     /**
      * @brief Execute bench testing mode if enabled.
@@ -1423,7 +1449,7 @@ class Logger {
      * to the internet.  It then powers up all sensors tied to variable in the
      * internal variable array.  The logger then updates readings from all
      * sensors 25 times with a 5 second wait in between.  All results are output
-     * to the "main" output - ie Serial - and NOT to the SD card.  After 25
+     * to the "main" output - i.e., Serial - and NOT to the SD card.  After 25
      * measurements, the sensors are put to sleep, the modem is disconnected
      * from the internet, and the logger goes back to sleep.
      *

@@ -129,8 +129,12 @@
  * {{ @ref SensirionSHT4x_Humidity::SensirionSHT4x_Humidity }}
  */
 /**@{*/
+/// @brief Minimum relative humidity in percent.
+#define SHT4X_HUMIDITY_MIN_RH 0.0
+/// @brief Maximum relative humidity in percent.
+#define SHT4X_HUMIDITY_MAX_RH 100.0
 /**
- * @brief Decimals places in string representation; humidity should have 2 (0.01
+ * @brief Decimal places in string representation; humidity should have 2 (0.01
  * % RH).
  *
  * @note This resolution is some-what silly in light of the ± 1.8 % RH accuracy.
@@ -160,9 +164,13 @@
  * {{ @ref SensirionSHT4x_Temp::SensirionSHT4x_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define SHT4X_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define SHT4X_TEMP_MAX_C 125.0
 /**
- * @brief Decimals places in string representation; humidity should have 2 (0.01
- * °C).
+ * @brief Decimal places in string representation; temperature should have 2
+ * (0.01 °C).
  *
  * @note This resolution is some-what silly in light of the ± 0.2°C accuracy.
  */
@@ -253,14 +261,14 @@ class SensirionSHT4x : public Sensor {
     /**
      * @brief Destroy the SensirionSHT4x object - no action needed.
      */
-    ~SensirionSHT4x();
+    ~SensirionSHT4x() override = default;
 
     /**
      * @brief Report the I2C address of the SHT4x - which is always 0x44.
      *
      * @return Text describing how the sensor is attached to the mcu.
      */
-    String getSensorLocation(void) override;
+    String getSensorLocation() override;
 
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
@@ -272,12 +280,9 @@ class SensirionSHT4x : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    bool addSingleMeasurementResult() override;
 
     /**
      * @copydoc Sensor::sleep()
@@ -285,7 +290,7 @@ class SensirionSHT4x : public Sensor {
      * If opted for, we run the SHT4x's internal heater for 1s before going to
      * sleep.
      */
-    bool sleep(void) override;
+    bool sleep() override;
 
  private:
     /**
@@ -293,7 +298,7 @@ class SensirionSHT4x : public Sensor {
      */
     bool _useHeater;
     /**
-     * @brief Internal reference the the Adafruit BME object
+     * @brief Internal instance of the Adafruit SHT4x object
      */
     Adafruit_SHT4x sht4x_internal;
     /**
@@ -325,23 +330,13 @@ class SensirionSHT4x_Humidity : public Variable {
     explicit SensirionSHT4x_Humidity(
         SensirionSHT4x* parentSense, const char* uuid = "",
         const char* varCode = SHT4X_HUMIDITY_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)SHT4X_HUMIDITY_VAR_NUM,
-                   (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
+        : Variable(parentSense, SHT4X_HUMIDITY_VAR_NUM,
+                   SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
                    SHT4X_HUMIDITY_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new SensirionSHT4x_Humidity object.
-     *
-     * @note This must be tied with a parent SensirionSHT4x before it can be
-     * used.
-     */
-    SensirionSHT4x_Humidity()
-        : Variable((uint8_t)SHT4X_HUMIDITY_VAR_NUM,
-                   (uint8_t)SHT4X_HUMIDITY_RESOLUTION, SHT4X_HUMIDITY_VAR_NAME,
-                   SHT4X_HUMIDITY_UNIT_NAME, SHT4X_HUMIDITY_DEFAULT_CODE) {}
     /**
      * @brief Destroy the SensirionSHT4x_Humidity object - no action needed.
      */
-    ~SensirionSHT4x_Humidity() {}
+    ~SensirionSHT4x_Humidity() override = default;
 };
 
 
@@ -367,25 +362,14 @@ class SensirionSHT4x_Temp : public Variable {
     explicit SensirionSHT4x_Temp(SensirionSHT4x* parentSense,
                                  const char*     uuid = "",
                                  const char* varCode  = SHT4X_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)SHT4X_TEMP_VAR_NUM,
-                   (uint8_t)SHT4X_TEMP_RESOLUTION, SHT4X_TEMP_VAR_NAME,
-                   SHT4X_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new SensirionSHT4x_Temp object.
-     *
-     * @note This must be tied with a parent SensirionSHT4x before it can be
-     * used.
-     */
-    SensirionSHT4x_Temp()
-        : Variable((uint8_t)SHT4X_TEMP_VAR_NUM, (uint8_t)SHT4X_TEMP_RESOLUTION,
-                   SHT4X_TEMP_VAR_NAME, SHT4X_TEMP_UNIT_NAME,
-                   SHT4X_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, SHT4X_TEMP_VAR_NUM, SHT4X_TEMP_RESOLUTION,
+                   SHT4X_TEMP_VAR_NAME, SHT4X_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the SensirionSHT4x_Temp object - no action needed.
      */
-    ~SensirionSHT4x_Temp() {}
+    ~SensirionSHT4x_Temp() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_SENSIRIONSHT4X_H_
 
-// cSpell:ignore preconfigured
+// cSpell:words preconfigured

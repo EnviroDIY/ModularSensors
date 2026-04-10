@@ -87,6 +87,7 @@ archive/
 compile_tests/
 logger_test*/
 ex_one_offs/*
+filters/*
 runDoxygen.bat
 docs/examples/*
 docs/examples.dox_x

@@ -26,7 +26,7 @@
       "name": "Adafruit NeoPixel",
       "owner": "adafruit",
       "url": "https://github.com/adafruit/Adafruit_NeoPixel",
-      "version": "~1.15.1",
+      "version": "~1.15.4",
       "note": "Adafruit NeoPixel, for boards with a built in NeoPixel",
       "authors": ["Adafruit"],
       "frameworks": "arduino"

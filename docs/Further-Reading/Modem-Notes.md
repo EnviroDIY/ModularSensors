@@ -29,7 +29,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 | Digi XBee3 LTE Cat 1 AT&T (Telit LE866A1-NA)  |           DigiXBeeCellularTransparent            |
 |              Digi XBee S6B WiFi               |                   DigiXBeeWifi                   |
 |               Espressif ESP8266               |                 EspressifESP8266                 |
-|                Espressif ESP32                |                 EspressifESP32                 |
+|                Espressif ESP32                |                 EspressifESP32                   |
 |                 Quectel BG96                  |                   QuectelBG96                    |
 |       Mikroe LTE IOT 2 Click (_BG96_)¹        |                   QuectelBG96                    |
 |         Dragino NB IOT Bee (_BG96_)¹          |                   QuectelBG96                    |
@@ -165,7 +165,7 @@ You should set the argument `useCTSforStatus` to `false` in the bee constructor
 
 <sup>7</sup> I _strongly_ recommend running two new wires along the back of the Mayfly to connect pin 5 of the XBee socket to pin A4 and pin 18 of the XBee socket to A3.
 This will enable you to use A4 as the reset pin and A3 as the sleep request pin.
-With those connections made, the Dragino BG96 becomes the _**only**_ LTE module that can be run using only the 500mA regulator on the Mayfly (ie, without a separate battery connection for the modem).
+With those connections made, the Dragino BG96 becomes the _**only**_ LTE module that can be run using only the 500mA regulator on the Mayfly (i.e., without a separate battery connection for the modem).
 
 <sup>8</sup> This module is no longer produced or sold.
 
@@ -195,7 +195,8 @@ Here are the pin numbers to use for modules that can be attached directly to an 
 |       Sodaq UBee LTE-M (u-blox SARA R410M)        |  23   |   19   | A5<sup>3</sup> |       20       |
 |         Sodaq UBee 3G (u-blox SARA U201)          |  23   |   19   | A5<sup>3</sup> |       20       |
 
-¹ This assumes you have not changed solder jumper 18.  If you have switched SJ18 to connect bee pin one directly to 3.3V, use -1.
+¹ This assumes you have not changed solder jumper 18.
+If you have switched SJ18 to connect bee pin one directly to 3.3V, use -1.
 
 ² The Digi XBee reports ON/SLEEP_N on pin 13, but this is not connected to a Mayfly pin by default.
 You can use the XBee's `CTS` pin (pin 12) which is connected to Mayfly pin 19 by default and set the argument `useCTSforStatus` to `true` in the bee constructor.

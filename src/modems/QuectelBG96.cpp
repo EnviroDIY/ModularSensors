@@ -30,9 +30,6 @@ QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
       _apn(apn) {
 }
 
-// Destructor
-QuectelBG96::~QuectelBG96() {}
-
 MS_MODEM_EXTRA_SETUP(QuectelBG96);
 MS_IS_MODEM_AWAKE(QuectelBG96);
 MS_MODEM_WAKE(QuectelBG96);
@@ -41,12 +38,12 @@ MS_MODEM_CONNECT_INTERNET(QuectelBG96);
 MS_MODEM_DISCONNECT_INTERNET(QuectelBG96);
 MS_MODEM_IS_INTERNET_AVAILABLE(QuectelBG96);
 
-MS_MODEM_CREATE_CLIENT(QuectelBG96);
-MS_MODEM_DELETE_CLIENT(QuectelBG96);
-MS_MODEM_CREATE_SECURE_CLIENT(QuectelBG96);
-MS_MODEM_DELETE_SECURE_CLIENT(QuectelBG96);
+MS_MODEM_CREATE_CLIENT(QuectelBG96, BG96);
+MS_MODEM_DELETE_CLIENT(QuectelBG96, BG96);
+MS_MODEM_CREATE_SECURE_CLIENT(QuectelBG96, BG96);
+MS_MODEM_DELETE_SECURE_CLIENT(QuectelBG96, BG96);
 
-MS_MODEM_GET_NIST_TIME(QuectelBG96);
+MS_MODEM_GET_NIST_TIME(QuectelBG96, BG96);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(QuectelBG96);
 MS_MODEM_GET_MODEM_BATTERY_DATA(QuectelBG96);
@@ -54,7 +51,7 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(QuectelBG96);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool QuectelBG96::modemWakeFxn(void) {
+bool QuectelBG96::modemWakeFxn() {
     // Must power on and then pulse on
     if (_modemSleepRqPin >= 0) {
         MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"),
@@ -69,7 +66,7 @@ bool QuectelBG96::modemWakeFxn(void) {
 }
 
 
-bool QuectelBG96::modemSleepFxn(void) {
+bool QuectelBG96::modemSleepFxn() {
     if (_modemSleepRqPin >= 0) {
         // BG96 must have access to `PWRKEY` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
@@ -82,7 +79,7 @@ bool QuectelBG96::modemSleepFxn(void) {
     return true;  // DON'T go to sleep if we can't wake up!
 }
 
-bool QuectelBG96::modemHardReset(void) {
+bool QuectelBG96::modemHardReset() {
     digitalWrite(_modemSleepRqPin, !_wakeLevel);  // set the wake pin high
     bool success = loggerModem::modemHardReset();
     if (success) { return gsmModem.waitResponse(10000L, GF("RDY")) == 1; }

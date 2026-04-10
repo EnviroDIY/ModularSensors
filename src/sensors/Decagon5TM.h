@@ -124,16 +124,19 @@
 /**
  * @anchor sensor_fivetm_ea
  * @name EA
- * The EA variable from a Meter ECH2O
- * - Range is 0 – 1 m3/m3 (0 – 100% VWC)
- * - Accuracy for generic calibration equation: ± 0.03 m3/m3 (± 3% VWC) typical
- * - Accuracy for medium-specific calibration: ± 0.02 m3/m3 (± 2% VWC)
+ * The Apparent Dielectric Permittivity (EA) variable from a Meter ECH2O
+ * Accuracy is ± 1 Ka from 1 – 40 (soil range);
+ *             ± 15% from 40 – 80 Soil.
  *
  * {{ @ref Decagon5TM_Ea::Decagon5TM_Ea }}
  */
 /**@{*/
+/// @brief Minimum electrical permittivity in farads per meter.
+#define TM_EA_MIN_FPM 1.0
+/// @brief Maximum electrical permittivity in farads per meter.
+#define TM_EA_MAX_FPM 80.0
 /**
- * @brief Decimals places in string representation; EA should have 5
+ * @brief Decimal places in string representation; EA should have 5
  *
  * 4 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.0008 m3/m3 (0.08% VWC)
@@ -164,8 +167,12 @@
  * {{ @ref Decagon5TM_Temp::Decagon5TM_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature in degrees Celsius.
+#define TM_TEMP_MIN_C -40.0
+/// @brief Maximum temperature in degrees Celsius.
+#define TM_TEMP_MAX_C 50.0
 /**
- * @brief Decimals places in string representation; temperature should have 2
+ * @brief Decimal places in string representation; temperature should have 2
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.1°C.
@@ -196,8 +203,12 @@
  * {{ @ref Decagon5TM_VWC::Decagon5TM_VWC }}
  */
 /**@{*/
+/// @brief Minimum volumetric water content in percent.
+#define TM_VWC_MIN_PCT 0.0
+/// @brief Maximum volumetric water content in percent.
+#define TM_VWC_MAX_PCT 100.0
 /**
- * @brief Decimals places in string representation; VWC should have 3
+ * @brief Decimal places in string representation; VWC should have 3
  *
  * 2 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.0008 m3/m3 (0.08% VWC)
@@ -283,7 +294,7 @@ class Decagon5TM : public SDI12Sensors {
     /**
      * @brief Destroy the Decagon 5TM object
      */
-    ~Decagon5TM() {}
+    ~Decagon5TM() override = default;
 
     /**
      * @copydoc SDI12Sensors::getResults(bool verify_crc)
@@ -315,21 +326,12 @@ class Decagon5TM_Ea : public Variable {
      */
     explicit Decagon5TM_Ea(Decagon5TM* parentSense, const char* uuid = "",
                            const char* varCode = TM_EA_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TM_EA_VAR_NUM,
-                   (uint8_t)TM_EA_RESOLUTION, TM_EA_VAR_NAME, TM_EA_UNIT_NAME,
-                   varCode, uuid) {}
-    /**
-     * @brief Construct a new Decagon5TM_Ea object.
-     *
-     * @note This must be tied with a parent Decagon5TM before it can be used.
-     */
-    Decagon5TM_Ea()
-        : Variable((uint8_t)TM_EA_VAR_NUM, (uint8_t)TM_EA_RESOLUTION,
-                   TM_EA_VAR_NAME, TM_EA_UNIT_NAME, TM_EA_DEFAULT_CODE) {}
+        : Variable(parentSense, TM_EA_VAR_NUM, TM_EA_RESOLUTION, TM_EA_VAR_NAME,
+                   TM_EA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Decagon5TM_Ea object - no action needed.
      */
-    ~Decagon5TM_Ea() {}
+    ~Decagon5TM_Ea() override = default;
 };
 
 
@@ -355,21 +357,12 @@ class Decagon5TM_Temp : public Variable {
      */
     explicit Decagon5TM_Temp(Decagon5TM* parentSense, const char* uuid = "",
                              const char* varCode = TM_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TM_TEMP_VAR_NUM,
-                   (uint8_t)TM_TEMP_RESOLUTION, TM_TEMP_VAR_NAME,
-                   TM_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new Decagon5TM_Temp object.
-     *
-     * @note This must be tied with a parent Decagon5TM before it can be used.
-     */
-    Decagon5TM_Temp()
-        : Variable((uint8_t)TM_TEMP_VAR_NUM, (uint8_t)TM_TEMP_RESOLUTION,
-                   TM_TEMP_VAR_NAME, TM_TEMP_UNIT_NAME, TM_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, TM_TEMP_VAR_NUM, TM_TEMP_RESOLUTION,
+                   TM_TEMP_VAR_NAME, TM_TEMP_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Decagon5TM_Temp object - no action needed.
      */
-    ~Decagon5TM_Temp() {}
+    ~Decagon5TM_Temp() override = default;
 };
 
 
@@ -395,23 +388,14 @@ class Decagon5TM_VWC : public Variable {
      */
     explicit Decagon5TM_VWC(Decagon5TM* parentSense, const char* uuid = "",
                             const char* varCode = TM_VWC_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TM_VWC_VAR_NUM,
-                   (uint8_t)TM_VWC_RESOLUTION, TM_VWC_VAR_NAME,
-                   TM_VWC_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new Decagon5TM_VWC object.
-     *
-     * @note This must be tied with a parent Decagon5TM before it can be used.
-     */
-    Decagon5TM_VWC()
-        : Variable((uint8_t)TM_VWC_VAR_NUM, (uint8_t)TM_VWC_RESOLUTION,
-                   TM_VWC_VAR_NAME, TM_VWC_UNIT_NAME, TM_VWC_DEFAULT_CODE) {}
+        : Variable(parentSense, TM_VWC_VAR_NUM, TM_VWC_RESOLUTION,
+                   TM_VWC_VAR_NAME, TM_VWC_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the Decagon5TM_VWC object - no action needed.
      */
-    ~Decagon5TM_VWC() {}
+    ~Decagon5TM_VWC() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_DECAGON5TM_H_
 
-// cSpell:ignore fivetm matric
+// cSpell:words fivetm matric

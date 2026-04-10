@@ -6,7 +6,7 @@
  * @author Written By: Neil Hancock
  * Edited by Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the TIINA219 sensor subclass and the variale subclasses
+ * @brief Contains the TIINA219 sensor subclass and the variable subclasses
  * TIINA219_Current, TIINA219_Voltage, and TIINA219_Power.
  *
  * These are for the Texas Instruments INA219 current/voltage sensor.
@@ -24,7 +24,7 @@
  * @tableofcontents
  * @m_footernavigation
  *
- * @section sensor_ina219_intro Intruduction
+ * @section sensor_ina219_intro Introduction
  *
  * The [TI INA219](http://www.ti.com/product/INA219) is a bi-directional,
  * high-side, current/power monitor that communicates with the board via I2C.
@@ -34,7 +34,7 @@
  * of this sensor can be increased to increase sensitivity (at the expense of
  * range) but this library assumes the maximum range.
  *
- * Commuincation between the INA219 and the mcu is managed by the
+ * Communications between the INA219 and the mcu are managed by the
  * [Adafruit INA219 Library](https://github.com/adafruit/Adafruit_INA219)
  *
  * @note Software I2C is *not* supported for the INA219.
@@ -87,6 +87,16 @@
 /**@{*/
 
 /**
+ * @anchor sensor_ina219_config
+ * @name Configuration Defines
+ * Defines to set the address of the INA219.
+ */
+/**@{*/
+/// @brief The default address of the INA219
+#define INA219_ADDRESS_BASE 0x40
+/**@}*/
+
+/**
  * @anchor sensor_ina219_var_counts
  * @name Sensor Variable Counts
  * The number of variables that can be returned by the INA219
@@ -96,16 +106,6 @@
 #define INA219_NUM_VARIABLES 3
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define INA219_INC_CALC_VARIABLES 0
-/**@}*/
-
-/**
- * @anchor sensor_ina219_config
- * @name Configuration Defines
- * Defines to set the address of the INA219.
- */
-/**@{*/
-/// @brief The default address of the INA219
-#define INA219_ADDRESS_BASE 0x40
 /**@}*/
 
 /**
@@ -119,7 +119,7 @@
 /**
  * @brief Sensor::_stabilizationTime_ms; the INA219 is stable after 4000ms.
  *
- * Stable numbers can be acheived after 500ms, but waiting up to 4s gave more
+ * Stable numbers can be achieved after 500ms, but waiting up to 4s gave more
  * consistent numbers based on tests using INA219timingTest.ino
  */
 #define INA219_STABILIZATION_TIME_MS 4000
@@ -141,16 +141,18 @@
  * - Range is between +/-0.4 Amps and +/-3.2 Amps
  * - Absolute accuracy is range dependent, and approx 2LSB (R accuracy
  * unknown)
+ * - Resolution is 12-bit
+ *     - 0.8mA using +/-3.2 Amp range
+ *     - 0.1mA using +/-0.4 Amp range
  *
  * {{ @ref TIINA219_Current::TIINA219_Current }}
  */
 /**@{*/
-/**
- * @brief Decimals places in string representation; current should have 1.
- *  - resolution is 12-bit
- *     - 0.8mA using +/-3.2 Amp range
- *     - 0.1mA using +/-0.4 Amp range
- */
+/// @brief Minimum current in amps (negative for reverse current).
+#define INA219_CURRENT_MIN_A -3.2
+/// @brief Maximum current in amps.
+#define INA219_CURRENT_MAX_A 3.2
+/// @brief Decimal places in string representation; current should have 1.
 #define INA219_CURRENT_MA_RESOLUTION 1
 /// @brief Sensor variable number; current is stored in sensorValues[0].
 #define INA219_CURRENT_MA_VAR_NUM 0
@@ -175,8 +177,12 @@
  * {{ @ref TIINA219_Voltage::TIINA219_Voltage }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; bus voltage should have 4 -
-/// resolution is 0.001V.
+/// @brief Minimum bus voltage in volts.
+#define INA219_BUS_VOLTAGE_MIN_V 0
+/// @brief Maximum bus voltage in volts.
+#define INA219_BUS_VOLTAGE_MAX_V 26
+/// @brief Decimal places in string representation; bus voltage should have 3 -
+/// resolution is 0.004V.
 #define INA219_BUS_VOLTAGE_RESOLUTION 3
 /// @brief Sensor variable number; bus voltage is stored in sensorValues[1].
 #define INA219_BUS_VOLTAGE_VAR_NUM 1
@@ -199,7 +205,11 @@
  * {{ @ref TIINA219_Power::TIINA219_Power }}
  */
 /**@{*/
-/// @brief Decimals places in string representation; power draw should have 2 -
+/// @brief Minimum power in milliwatts.
+#define INA219_POWER_MW_MIN_MW 0
+/// @brief Maximum power in milliwatts.
+#define INA219_POWER_MW_MAX_MW 102400
+/// @brief Decimal places in string representation; power draw should have 2 -
 /// resolution is 0.01mW.
 #define INA219_POWER_MW_RESOLUTION 2
 /// @brief Sensor variable number; power draw is stored in sensorValues[2].
@@ -238,7 +248,7 @@ class TIINA219 : public Sensor {
      * Use -1 if it is continuously powered.
      * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
      * between measurements.
-     * @param i2cAddressHex The I2C address of the BME280; can be any number
+     * @param i2cAddressHex The I2C address of the INA219; can be any number
      * between 0x40 and 0x4F.  The default value is 0x40.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
@@ -255,7 +265,7 @@ class TIINA219 : public Sensor {
      * Use -1 if it is continuously powered.
      * - The INA219 requires input voltage of 3.0-5.5V, which can be turned off
      * between measurements.
-     * @param i2cAddressHex The I2C address of the BME280; can be any number
+     * @param i2cAddressHex The I2C address of the INA219; can be any number
      * between 0x40 and 0x4F.  The default value is 0x40.
      * @param measurementsToAverage The number of measurements to take and
      * average before giving a "final" result from the sensor; optional with a
@@ -267,7 +277,7 @@ class TIINA219 : public Sensor {
     /**
      * @brief Destroy the TI INA219 object
      */
-    ~TIINA219();
+    ~TIINA219() override = default;
 
     /**
      * @brief Wake the sensor up and read the calibration coefficient from it.
@@ -279,7 +289,7 @@ class TIINA219 : public Sensor {
      *
      * @return True if the wake function completed successfully.
      */
-    bool wake(void) override;
+    bool wake() override;
     /**
      * @brief Do any one-time preparations needed before the sensor will be able
      * to take readings.
@@ -290,16 +300,11 @@ class TIINA219 : public Sensor {
      *
      * @return True if the setup was successful.
      */
-    bool setup(void) override;
-    /**
-     * @copydoc Sensor::getSensorLocation()
-     */
-    String getSensorLocation(void) override;
+    bool setup() override;
 
-    /**
-     * @copydoc Sensor::addSingleMeasurementResult()
-     */
-    bool addSingleMeasurementResult(void) override;
+    String getSensorLocation() override;
+
+    bool addSingleMeasurementResult() override;
 
  private:
     /**
@@ -339,24 +344,13 @@ class TIINA219_Current : public Variable {
     explicit TIINA219_Current(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_CURRENT_MA_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                   (uint8_t)INA219_CURRENT_MA_RESOLUTION,
-                   INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
-                   varCode, uuid) {}
-    /**
-     * @brief Construct a new TIINA219_Current object.
-     *
-     * @note This must be tied with a parent TIINA219 before it can be used.
-     */
-    TIINA219_Current()
-        : Variable((uint8_t)INA219_CURRENT_MA_VAR_NUM,
-                   (uint8_t)INA219_CURRENT_MA_RESOLUTION,
-                   INA219_CURRENT_MA_VAR_NAME, INA219_CURRENT_MA_UNIT_NAME,
-                   INA219_CURRENT_MA_DEFAULT_CODE) {}
+        : Variable(parentSense, INA219_CURRENT_MA_VAR_NUM,
+                   INA219_CURRENT_MA_RESOLUTION, INA219_CURRENT_MA_VAR_NAME,
+                   INA219_CURRENT_MA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the TIINA219_Current object - no action needed.
      */
-    ~TIINA219_Current() {}
+    ~TIINA219_Current() override = default;
 };
 
 
@@ -382,24 +376,13 @@ class TIINA219_Voltage : public Variable {
     explicit TIINA219_Voltage(
         TIINA219* parentSense, const char* uuid = "",
         const char* varCode = INA219_BUS_VOLTAGE_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
-                   INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
-                   varCode, uuid) {}
-    /**
-     * @brief Construct a new TIINA219_Voltage object.
-     *
-     * @note This must be tied with a parent TIINA219 before it can be used.
-     */
-    TIINA219_Voltage()
-        : Variable((uint8_t)INA219_BUS_VOLTAGE_VAR_NUM,
-                   (uint8_t)INA219_BUS_VOLTAGE_RESOLUTION,
-                   INA219_BUS_VOLTAGE_VAR_NAME, INA219_BUS_VOLTAGE_UNIT_NAME,
-                   INA219_BUS_VOLTAGE_DEFAULT_CODE) {}
+        : Variable(parentSense, INA219_BUS_VOLTAGE_VAR_NUM,
+                   INA219_BUS_VOLTAGE_RESOLUTION, INA219_BUS_VOLTAGE_VAR_NAME,
+                   INA219_BUS_VOLTAGE_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the TIINA219_Voltage object - no action needed.
      */
-    ~TIINA219_Voltage() {}
+    ~TIINA219_Voltage() override = default;
 };
 
 /**
@@ -433,24 +416,15 @@ class TIINA219_Power : public Variable {
      */
     explicit TIINA219_Power(TIINA219* parentSense, const char* uuid = "",
                             const char* varCode = INA219_POWER_MW_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)INA219_POWER_MW_VAR_NUM,
-                   (uint8_t)INA219_POWER_MW_RESOLUTION,
-                   INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME, varCode,
-                   uuid) {}
-    /**
-     * @brief Construct a new TIINA219_Power object.
-     *
-     * @note This must be tied with a parent TIINA219 before it can be used.
-     */
-    TIINA219_Power()
-        : Variable((uint8_t)INA219_POWER_MW_VAR_NUM,
-                   (uint8_t)INA219_POWER_MW_RESOLUTION,
-                   INA219_POWER_MW_VAR_NAME, INA219_POWER_MW_UNIT_NAME,
-                   INA219_POWER_MW_DEFAULT_CODE) {}
+        : Variable(parentSense, INA219_POWER_MW_VAR_NUM,
+                   INA219_POWER_MW_RESOLUTION, INA219_POWER_MW_VAR_NAME,
+                   INA219_POWER_MW_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the TIINA219_Power object - no action needed.
      */
-    ~TIINA219_Power() {}
+    ~TIINA219_Power() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_TIINA219_H_
+
+// cSpell:words TIINA219

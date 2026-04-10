@@ -34,8 +34,9 @@ _______
 - Replace the contents of the platformio.ini for your new project with the [platformio.ini](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/single_sensor/platformio.ini) file in the examples/single_sensor folder on GitHub.
   - It is important that your PlatformIO configuration has the lib_ldf_mode and build flags set as they are in the example.
   - Without this, the program won't compile.
-- Open [single_sensor.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/single_sensor/single_sensor.ino) and save it to your computer.  Put it into the src directory of your project.
-  - Delete main.cpp in that folder.
+- Open [single_sensor.ino](https://raw.githubusercontent.com/EnviroDIY/ModularSensors/master/examples/single_sensor/single_sensor.ino) and save it to your computer.
+- Put it into the src directory of your project.
+- Delete main.cpp in that folder.
 
 ### Upload!<!--! {#example_single_sensor_upload} -->
 

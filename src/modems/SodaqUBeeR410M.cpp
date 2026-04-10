@@ -51,9 +51,6 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
 }
 #endif
 
-// Destructor
-SodaqUBeeR410M::~SodaqUBeeR410M() {}
-
 MS_IS_MODEM_AWAKE(SodaqUBeeR410M);
 MS_MODEM_WAKE(SodaqUBeeR410M);
 
@@ -61,12 +58,12 @@ MS_MODEM_CONNECT_INTERNET(SodaqUBeeR410M);
 MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeR410M);
 MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeR410M);
 
-MS_MODEM_CREATE_CLIENT(SodaqUBeeR410M);
-MS_MODEM_DELETE_CLIENT(SodaqUBeeR410M);
-MS_MODEM_CREATE_SECURE_CLIENT(SodaqUBeeR410M);
-MS_MODEM_DELETE_SECURE_CLIENT(SodaqUBeeR410M);
+MS_MODEM_CREATE_CLIENT(SodaqUBeeR410M, SaraR4);
+MS_MODEM_DELETE_CLIENT(SodaqUBeeR410M, SaraR4);
+MS_MODEM_CREATE_SECURE_CLIENT(SodaqUBeeR410M, SaraR4);
+MS_MODEM_DELETE_SECURE_CLIENT(SodaqUBeeR410M, SaraR4);
 
-MS_MODEM_GET_NIST_TIME(SodaqUBeeR410M);
+MS_MODEM_GET_NIST_TIME(SodaqUBeeR410M, SaraR4);
 
 MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeR410M);
 MS_MODEM_GET_MODEM_BATTERY_DATA(SodaqUBeeR410M);
@@ -74,7 +71,7 @@ MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SodaqUBeeR410M);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
-bool SodaqUBeeR410M::modemWakeFxn(void) {
+bool SodaqUBeeR410M::modemWakeFxn() {
     // SARA R4/N4 series must power on and then pulse on
     if (_modemSleepRqPin >= 0) {
         MS_DBG(F("Sending a"), _wakePulse_ms, F("ms"),
@@ -86,7 +83,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
         // before ending pulse
         if (_statusPin >= 0) {
             uint32_t startTimer = millis();
-            // 0.15-3.2s pulse for wake on SARA R4/N4 (ie, max is 3.2s)
+            // 0.15-3.2s pulse for wake on SARA R4/N4 (i.e., max is 3.2s)
             // Wait no more than 3.2s
             while (digitalRead(_statusPin) != static_cast<int>(_statusLevel) &&
                    millis() - startTimer < 3200L) {}
@@ -116,18 +113,7 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
 // The baud rate setting is NOT saved to non-volatile memory, so it must
 // be changed every time after loosing power.
 #if F_CPU == 8000000L
-        if (_powerPin >= 0) {
-            MS_DBG(F("Waiting for UART to become active and requesting a "
-                     "slower baud rate."));
-            delay(_max_at_response_time_ms +
-                  250);  // Must wait for UART port to become active
-            _modemSerial->begin(115200);
-            gsmModem.setBaud(9600);
-            _modemSerial->end();
-            _modemSerial->begin(9600);
-            gsmModem.sendAT(GF("E0"));
-            gsmModem.waitResponse();
-        }
+        if (_powerPin >= 0) { configureLowBaudRate(); }
 #endif
         return true;
     } else {
@@ -136,23 +122,22 @@ bool SodaqUBeeR410M::modemWakeFxn(void) {
 }
 
 
-bool SodaqUBeeR410M::modemSleepFxn(void) {
+bool SodaqUBeeR410M::modemSleepFxn() {
+    bool res = true;
+    // Only go to sleep if we can wake up!
     if (_modemSleepRqPin >= 0) {
         // R410 must have access to `PWR_ON` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking u-blox R410M to power down"));
-        bool res = gsmModem.poweroff();
-        gsmModem.stream.flush();
-        return res;
-    } else {  // DON'T go to sleep if we can't wake up!
-        gsmModem.stream.flush();
-        return true;
+        res = gsmModem.poweroff();
     }
+    gsmModem.stream.flush();
+    return res;
 }
 
 
-bool SodaqUBeeR410M::modemHardReset(void) {
+bool SodaqUBeeR410M::modemHardReset() {
     if (_modemResetPin >= 0) {
         MS_DBG(F("Doing a hard reset on the modem by setting pin"),
                _modemResetPin, _resetLevel ? F("HIGH") : F("LOW"), F("for"),
@@ -162,16 +147,7 @@ bool SodaqUBeeR410M::modemHardReset(void) {
         delay(_resetPulse_ms);
         digitalWrite(_modemResetPin, !_resetLevel);
 #if F_CPU == 8000000L
-        MS_DBG(F("Waiting for UART to become active and requesting a slower "
-                 "baud rate."));
-        delay(_max_at_response_time_ms +
-              250);  // Must wait for UART port to become active
-        _modemSerial->begin(115200);
-        gsmModem.setBaud(9600);
-        _modemSerial->end();
-        _modemSerial->begin(9600);
-        gsmModem.sendAT(GF("E0"));
-        gsmModem.waitResponse();
+        configureLowBaudRate();
 #endif
         return gsmModem.init();
     } else {
@@ -180,14 +156,30 @@ bool SodaqUBeeR410M::modemHardReset(void) {
     }
 }
 
-bool SodaqUBeeR410M::extraModemSetup(void) {
+bool SodaqUBeeR410M::extraModemSetup() {
     bool success = gsmModem.init();
     _modemName   = gsmModem.getModemName();
     // Turn on network indicator light
     // Pin 16 = GPIO1, function 2 = network status indication
     gsmModem.sendAT(GF("+UGPIOC=16,2"));
-    gsmModem.waitResponse();
+    success &= gsmModem.waitResponse() == 1;
     return success;
 }
+
+
+#if F_CPU == 8000000L
+void SodaqUBeeR410M::configureLowBaudRate() {
+    MS_DBG(F("Waiting for UART to become active and requesting a slower "
+             "baud rate."));
+    delay(_max_at_response_time_ms +
+          250);  // Must wait for UART port to become active
+    _modemSerial->begin(115200);
+    gsmModem.setBaud(9600);
+    _modemSerial->end();
+    _modemSerial->begin(9600);
+    gsmModem.sendAT(GF("E0"));
+    gsmModem.waitResponse();  // allowed to fail
+}
+#endif
 
 // cSpell:ignore UGPIOC

@@ -13,18 +13,6 @@
  * ======================================================================= */
 
 // ==========================================================================
-//  Defines for TinyGSM
-// ==========================================================================
-/** Start [defines] */
-#ifndef TINY_GSM_RX_BUFFER
-#define TINY_GSM_RX_BUFFER 64
-#endif
-#ifndef TINY_GSM_YIELD_MS
-#define TINY_GSM_YIELD_MS 2
-#endif
-/** End [defines] */
-
-// ==========================================================================
 //  Include the libraries required for any data logger
 // ==========================================================================
 /** Start [includes] */
@@ -43,7 +31,7 @@
 // The name of this program file
 const char* sketchName = "logging_to_ThingSpeak.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "XXXXX";
+const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
 // Your logger's timezone.
@@ -55,7 +43,7 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;       // Pin for the green LED
 const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (ie, button pin)
+const int8_t  buttonPin  = 21;      // Pin for debugging mode (i.e., button pin)
 const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
 // Mayfly 0.x D31 = A7
 // Set the wake pin to -1 if you do not want the main processor to sleep.
@@ -88,8 +76,8 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* wifiId  = "xxxxx";  // The WiFi access point
-const char* wifiPwd = "xxxxx";  // The password for connecting to WiFi
+const char* wifiId  = "YourWiFiSSID";  // The WiFi access point
+const char* wifiPwd = "YourWiFiPassword";       // The WiFi password
 
 // Create the loggerModem object
 EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
@@ -102,13 +90,13 @@ EspressifESP8266 modem = modemESP;
 // ==========================================================================
 //  Using the Processor as a Sensor
 // ==========================================================================
-/** Start [processor_sensor] */
+/** Start [processor_stats] */
 #include <sensors/ProcessorStats.h>
 
 // Create the main processor chip "sensor" - for general metadata
 const char*    mcuBoardVersion = "v1.1";
 ProcessorStats mcuBoard(mcuBoardVersion);
-/** End [processor_sensor] */
+/** End [processor_stats] */
 
 
 // ==========================================================================
@@ -130,7 +118,6 @@ MaximDS3231 ds3231(1);
 
 const int8_t  OBS3Power = sensorPowerPin;  // Power pin (-1 if unconnected)
 const uint8_t OBS3NumberReadings = 10;
-const uint8_t ADSi2c_addr        = 0x48;  // The I2C address of the ADS1115 ADC
 // Campbell OBS 3+ *Low* Range Calibration in Volts
 const int8_t OBSLowADSChannel = 0;  // ADS channel for *low* range output
 const float  OBSLow_A         = 0.000E+00;  // "A" value (X^2) [*low* range]
@@ -139,7 +126,7 @@ const float  OBSLow_C         = 0.000E+00;  // "C" value [*low* range]
 
 // Create a Campbell OBS3+ *low* range sensor object
 CampbellOBS3 osb3low(OBS3Power, OBSLowADSChannel, OBSLow_A, OBSLow_B, OBSLow_C,
-                     ADSi2c_addr, OBS3NumberReadings);
+                     OBS3NumberReadings);
 
 
 // Campbell OBS 3+ *High* Range Calibration in Volts
@@ -150,7 +137,7 @@ const float  OBSHigh_C         = 0.000E+00;  // "C" value [*high* range]
 
 // Create a Campbell OBS3+ *high* range sensor object
 CampbellOBS3 osb3high(OBS3Power, OBSHighADSChannel, OBSHigh_A, OBSHigh_B,
-                      OBSHigh_C, ADSi2c_addr, OBS3NumberReadings);
+                      OBSHigh_C, OBS3NumberReadings);
 /** End [obs3] */
 
 
@@ -249,7 +236,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
 // Reads the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == -9999) mcuBoard.update();
+    if (mcuBoard.sensorValues[0] == MS_INVALID_VALUE) mcuBoard.update();
     return mcuBoard.sensorValues[0];
 }
 /** End [working_functions] */
@@ -362,3 +349,5 @@ void loop() {
     }
 }
 /** End [loop] */
+
+// cSpell: words TurbHigh TurbLow setRESTAPIKey

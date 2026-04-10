@@ -19,17 +19,17 @@ bool Decagon5TM::getResults(bool verify_crc) {
     float temp = sensorValues[TM_TEMP_VAR_NUM];
 
     // Set up the float variables for calculated variable
-    float VWC = -9999;
+    float VWC = MS_INVALID_VALUE;
 
     // Calculate the VWC from EA using the Topp equation
     // range check
     if (ea < 0 || ea > 350) {
         MS_DBG(F("WARNING:  Ea results out of range (0-350)!  Cannot calculate "
                  "VWC"));
-        ea = -9999;
+        ea = MS_INVALID_VALUE;
     }
     // calculate
-    if (ea != -9999) {
+    if (ea != MS_INVALID_VALUE) {
         VWC = (4.3e-6 * (ea * ea * ea)) - (5.5e-4 * (ea * ea)) +
             (2.92e-2 * ea) - 5.3e-2;
         VWC *= 100;  // Convert to actual percent
@@ -46,9 +46,10 @@ bool Decagon5TM::getResults(bool verify_crc) {
 
     // VWC = 3.879e-4*raw-0.6956;  // equation for mineral soils
 
-    // range check on temp; range is - 40°C to + 50°C
+    // range check on temp; range is - 40°C to + 50°C (with 10°C margin beyond
+    // spec)
     if (temp < -50 || temp > 60) {
-        temp = -9999;
+        temp = MS_INVALID_VALUE;
         MS_DBG(F("WARNING:  temperature results out of range (-50-60)!"));
     }
 
@@ -57,5 +58,5 @@ bool Decagon5TM::getResults(bool verify_crc) {
     verifyAndAddMeasurementResult(TM_EA_VAR_NUM, ea);
     verifyAndAddMeasurementResult(TM_VWC_VAR_NUM, VWC);
 
-    return success && temp != -9999;
+    return success && temp != MS_INVALID_VALUE;
 }

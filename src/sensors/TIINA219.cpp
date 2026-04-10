@@ -17,29 +17,32 @@ TIINA219::TIINA219(TwoWire* theI2C, int8_t powerPin, uint8_t i2cAddressHex,
     : Sensor("TIINA219", INA219_NUM_VARIABLES, INA219_WARM_UP_TIME_MS,
              INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage),
+      ina219_phy(i2cAddressHex),
       _i2cAddressHex(i2cAddressHex),
-      _i2c(theI2C) {}
+      _i2c(theI2C != nullptr ? theI2C : &Wire) {}
 TIINA219::TIINA219(int8_t powerPin, uint8_t i2cAddressHex,
                    uint8_t measurementsToAverage)
     : Sensor("TIINA219", INA219_NUM_VARIABLES, INA219_WARM_UP_TIME_MS,
              INA219_STABILIZATION_TIME_MS, INA219_MEASUREMENT_TIME_MS, powerPin,
              -1, measurementsToAverage, INA219_INC_CALC_VARIABLES),
+      ina219_phy(i2cAddressHex),
       _i2cAddressHex(i2cAddressHex),
       _i2c(&Wire) {}
-// Destructor
-TIINA219::~TIINA219() {}
 
 
-String TIINA219::getSensorLocation(void) {
-    String address = F("I2C_0x");
+String TIINA219::getSensorLocation() {
+    String address;
+    address.reserve(10);  // Reserve for "I2C_0x" + 2 hex chars
+    address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool TIINA219::setup(void) {
+bool TIINA219::setup() {
     bool wasOn;
-    Sensor::setup();  // this will set pin modes and the setup status bit
+    bool setupSuccess =
+        Sensor::setup();  // this will set pin modes and the setup status bit
 
     // This sensor needs power for setup!
     delay(10);
@@ -49,67 +52,78 @@ bool TIINA219::setup(void) {
         waitForWarmUp();
     }
 
-    ina219_phy.begin(_i2c);
+    bool success = setupSuccess && ina219_phy.begin(_i2c);
 
     // Turn the power back off it it had been turned on
     if (!wasOn) { powerDown(); }
 
-    return true;
+    if (!success) {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // UN-set the set-up bit (bit 0) since setup failed!
+        clearStatusBit(SETUP_SUCCESSFUL);
+    }
+    return success;
 }
 
 
-bool TIINA219::wake(void) {
+bool TIINA219::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
     // Begin/Init needs to be rerun after every power-up to set the calibration
     // coefficient for the INA219 (see p21 of datasheet)
-    ina219_phy.begin(_i2c);
-
-    return true;
-}
-
-
-bool TIINA219::addSingleMeasurementResult(void) {
-    bool success = false;
-
-    // Initialize float variables
-    float current_mA = -9999;
-    float busV_V     = -9999;
-    float power_mW   = -9999;
-
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
-        MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        // Read values
-        current_mA = ina219_phy.getCurrent_mA();
-        if (isnan(current_mA)) current_mA = -9999;
-        busV_V = ina219_phy.getBusVoltage_V();
-        if (isnan(busV_V)) busV_V = -9999;
-        power_mW = ina219_phy.getPower_mW();
-        if (isnan(power_mW)) power_mW = -9999;
-
-        success = true;
-
-        MS_DBG(F("  Current [mA]:"), current_mA);
-        MS_DBG(F("  Bus Voltage [V]:"), busV_V);
-        MS_DBG(F("  Power [mW]:"), power_mW);
-    } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+    bool success = ina219_phy.begin(_i2c);
+    if (!success) {
+        // Set the status error bit (bit 7)
+        setStatusBit(ERROR_OCCURRED);
+        // Make sure that the wake time and wake success bit (bit 4) are
+        // unset
+        _millisSensorActivated = 0;
+        clearStatusBit(WAKE_SUCCESSFUL);
     }
-
-    verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
-    verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);
-    verifyAndAddMeasurementResult(INA219_POWER_MW_VAR_NUM, power_mW);
-
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
 
     return success;
 }
+
+
+bool TIINA219::addSingleMeasurementResult() {
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
+
+    bool  success    = false;
+    float current_mA = MS_INVALID_VALUE;
+    float busV_V     = MS_INVALID_VALUE;
+    float power_mW   = MS_INVALID_VALUE;
+
+    MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
+
+    // Read values
+    current_mA = ina219_phy.getCurrent_mA();
+    success    = ina219_phy.success();
+    busV_V     = ina219_phy.getBusVoltage_V();
+    success &= ina219_phy.success();
+    power_mW = ina219_phy.getPower_mW();
+    success &= ina219_phy.success();
+
+    // Only success if I2C read succeeded and none of the values are NaN
+    success = success && !isnan(current_mA) && !isnan(busV_V) &&
+        !isnan(power_mW);
+
+    MS_DBG(F("  Current [mA]:"), current_mA);
+    MS_DBG(F("  Bus Voltage [V]:"), busV_V);
+    MS_DBG(F("  Power [mW]:"), power_mW);
+
+    if (success) {
+        verifyAndAddMeasurementResult(INA219_CURRENT_MA_VAR_NUM, current_mA);
+        verifyAndAddMeasurementResult(INA219_BUS_VOLTAGE_VAR_NUM, busV_V);
+        verifyAndAddMeasurementResult(INA219_POWER_MW_VAR_NUM, power_mW);
+    }
+
+
+    // Return success value when finished
+    return finalizeMeasurementAttempt(success);
+}
+
+// cSpell:ignore TIINA219

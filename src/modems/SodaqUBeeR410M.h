@@ -135,7 +135,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClient.h"
+#include "TinyGsmClientSaraR4.h"
 #include "LoggerModem.h"
 
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
@@ -219,12 +219,10 @@
  * @brief The loggerModem subclass for the
  * [LTE-M](@ref modem_ubee_ltem) [Sodaq UBee](@ref modem_ublox) based on the
  * u-blox SARA R410M LTE-M cellular module.  This can be also used for any other
- * breakout of the the u-blox R4 or N4 series modules.
+ * breakout of the u-blox R4 or N4 series modules.
  */
 class SodaqUBeeR410M : public loggerModem {
  public:
-    // Constructor/Destructor
-
 #if F_CPU == 8000000L
     /**
      * @brief Construct a new Sodaq UBee R410M object
@@ -299,36 +297,37 @@ class SodaqUBeeR410M : public loggerModem {
     /**
      * @brief Destroy the Sodaq UBee R410M object - no action needed
      */
-    ~SodaqUBeeR410M();
+    ~SodaqUBeeR410M() override = default;
 
-    bool modemWake(void) override;
+    bool modemWake() override;
 
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet(void) override;
+    void disconnectInternet() override;
 
-    virtual Client* createClient() override;
-    virtual void    deleteClient(Client* client);
-    virtual Client* createSecureClient() override;
-    virtual void    deleteSecureClient(Client* client);
-    virtual Client* createSecureClient(
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) override;
-    virtual Client*
-    createSecureClient(const char* pskIdent, const char* psKey,
-                       SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    virtual Client*
-    createSecureClient(const char* pskTableName,
-                       SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+    Client* createClient() override;
+    void    deleteClient(Client* client) override;
+    Client* createSecureClient() override;
+    void    deleteSecureClient(Client* client) override;
+    Client* createSecureClient(SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) override;
+    Client* createSecureClient(
+        const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    Client* createSecureClient(
+        const char* pskTableName,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
 
-    uint32_t getNISTTime(void) override;
+    uint32_t getNISTTime() override;
 
     bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
     bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                int16_t& milliVolts) override;
-    float getModemChipTemperature(void) override;
+    float getModemChipTemperature() override;
 
-    bool modemHardReset(void) override;
+    bool modemHardReset() override;
 
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
@@ -337,7 +336,7 @@ class SodaqUBeeR410M : public loggerModem {
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsm gsmModem;
+    TinyGsmSaraR4 gsmModem;
 
 #if F_CPU == 8000000L
     /**
@@ -348,15 +347,29 @@ class SodaqUBeeR410M : public loggerModem {
 #endif
 
  protected:
-    bool isInternetAvailable(void) override;
-    bool modemSleepFxn(void) override;
-    bool modemWakeFxn(void) override;
-    bool extraModemSetup(void) override;
-    bool isModemAwake(void) override;
+    bool isInternetAvailable() override;
+    bool modemSleepFxn() override;
+    bool modemWakeFxn() override;
+    bool extraModemSetup() override;
+    bool isModemAwake() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN
+
+#if F_CPU == 8000000L || defined(DOXYGEN)
+    /**
+     * @brief Configure modem to use a lower baud rate (9600) for slow
+     * processors.
+     *
+     * This helper method encapsulates the baud rate switching logic needed for
+     * F_CPU == 8000000L to slow down the R4/N4's default 115200 baud rate. The
+     * baud rate setting is NOT saved to non-volatile memory, so it must be
+     * changed every time after losing power.
+     */
+    void configureLowBaudRate();
+#endif
 };
+
 /**@}*/
 #endif  // SRC_MODEMS_SODAQUBEER410M_H_
 

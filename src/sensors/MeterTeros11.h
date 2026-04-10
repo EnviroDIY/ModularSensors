@@ -139,11 +139,14 @@
  * The raw VWC counts variable from a Meter Teros 11
  * - Range and accuracy of the raw count values are not specified
  *
+ * @todo Find and define minimum and maximum raw count measurement range from a
+ * Meter Teros 11.
+ *
  * {{ @ref MeterTeros11_Count::MeterTeros11_Count }}
  */
 /**@{*/
 /**
- * @brief Decimals places in string representation; EA should have 1.
+ * @brief Decimal places in string representation; EA should have 1.
  */
 #define TEROS11_COUNT_RESOLUTION 1
 /// @brief Sensor variable number; EA is stored in sensorValues[0].
@@ -172,8 +175,12 @@
  * {{ @ref MeterTeros11_Temp::MeterTeros11_Temp }}
  */
 /**@{*/
+/// @brief Minimum temperature; -40°C
+#define TEROS11_TEMP_MIN_C -40
+/// @brief Maximum temperature; 60°C
+#define TEROS11_TEMP_MAX_C 60
 /**
- * @brief Decimals places in string representation; temperature should have 2.
+ * @brief Decimal places in string representation; temperature should have 2.
  *
  * 1 is reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.1°C
@@ -205,8 +212,12 @@
  * {{ @ref MeterTeros11_Ea::MeterTeros11_Ea }}
  */
 /**@{*/
+/// @brief Minimum EA; 1 (air)
+#define TEROS11_EA_MIN 1
+/// @brief Maximum EA; 80 (water)
+#define TEROS11_EA_MAX 80
 /**
- * @brief Decimals places in string representation; EA should have 5.
+ * @brief Decimal places in string representation; EA should have 5.
  *
  * 4 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - resolution is 0.00001
@@ -242,8 +253,12 @@
  * {{ @ref MeterTeros11_VWC::MeterTeros11_VWC }}
  */
 /**@{*/
+/// @brief Minimum VWC; 0% (0.0 m3/m3)
+#define TEROS11_VWC_MIN_PCT 0
+/// @brief Maximum VWC; 100% (1.0 m3/m3, soilless media calibration)
+#define TEROS11_VWC_MAX_PCT 100
 /**
- * @brief Decimals places in string representation; VWC should have 3.
+ * @brief Decimal places in string representation; VWC should have 3.
  *
  * 2 are reported, adding extra digit to resolution to allow the proper number
  * of significant figures for averaging - Resolution is 0.001 m3/m3 (0.1% VWC)
@@ -330,7 +345,7 @@ class MeterTeros11 : public SDI12Sensors {
     /**
      * @brief Destroy the Meter Teros 11 object
      */
-    ~MeterTeros11() {}
+    ~MeterTeros11() override = default;
 
     /**
      * @copydoc SDI12Sensors::getResults(bool verify_crc)
@@ -364,22 +379,13 @@ class MeterTeros11_Count : public Variable {
     explicit MeterTeros11_Count(
         MeterTeros11* parentSense, const char* uuid = "",
         const char* varCode = TEROS11_COUNT_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TEROS11_COUNT_VAR_NUM,
-                   (uint8_t)TEROS11_COUNT_RESOLUTION, TEROS11_COUNT_VAR_NAME,
-                   TEROS11_COUNT_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeterTeros11_Count object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_Count()
-        : Variable((uint8_t)TEROS11_COUNT_VAR_NUM,
-                   (uint8_t)TEROS11_COUNT_RESOLUTION, TEROS11_COUNT_VAR_NAME,
-                   TEROS11_COUNT_UNIT_NAME, TEROS11_COUNT_DEFAULT_CODE) {}
+        : Variable(parentSense, TEROS11_COUNT_VAR_NUM, TEROS11_COUNT_RESOLUTION,
+                   TEROS11_COUNT_VAR_NAME, TEROS11_COUNT_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the MeterTeros11_Count object - no action needed.
      */
-    ~MeterTeros11_Count() {}
+    ~MeterTeros11_Count() override = default;
 };
 
 
@@ -406,22 +412,13 @@ class MeterTeros11_Temp : public Variable {
      */
     explicit MeterTeros11_Temp(MeterTeros11* parentSense, const char* uuid = "",
                                const char* varCode = TEROS11_TEMP_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TEROS11_TEMP_VAR_NUM,
-                   (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
-                   TEROS11_TEMP_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeterTeros11_Temp object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_Temp()
-        : Variable((uint8_t)TEROS11_TEMP_VAR_NUM,
-                   (uint8_t)TEROS11_TEMP_RESOLUTION, TEROS11_TEMP_VAR_NAME,
-                   TEROS11_TEMP_UNIT_NAME, TEROS11_TEMP_DEFAULT_CODE) {}
+        : Variable(parentSense, TEROS11_TEMP_VAR_NUM, TEROS11_TEMP_RESOLUTION,
+                   TEROS11_TEMP_VAR_NAME, TEROS11_TEMP_UNIT_NAME, varCode,
+                   uuid) {}
     /**
      * @brief Destroy the MeterTeros11_Temp object - no action needed.
      */
-    ~MeterTeros11_Temp() {}
+    ~MeterTeros11_Temp() override = default;
 };
 
 
@@ -449,22 +446,12 @@ class MeterTeros11_Ea : public Variable {
      */
     explicit MeterTeros11_Ea(MeterTeros11* parentSense, const char* uuid = "",
                              const char* varCode = TEROS11_EA_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TEROS11_EA_VAR_NUM,
-                   (uint8_t)TEROS11_EA_RESOLUTION, TEROS11_EA_VAR_NAME,
-                   TEROS11_EA_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeterTeros11_Ea object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_Ea()
-        : Variable((uint8_t)TEROS11_EA_VAR_NUM, (uint8_t)TEROS11_EA_RESOLUTION,
-                   TEROS11_EA_VAR_NAME, TEROS11_EA_UNIT_NAME,
-                   TEROS11_EA_DEFAULT_CODE) {}
+        : Variable(parentSense, TEROS11_EA_VAR_NUM, TEROS11_EA_RESOLUTION,
+                   TEROS11_EA_VAR_NAME, TEROS11_EA_UNIT_NAME, varCode, uuid) {}
     /**
      * @brief Destroy the MeterTeros11_Ea object - no action needed.
      */
-    ~MeterTeros11_Ea() {}
+    ~MeterTeros11_Ea() override = default;
 };
 
 
@@ -491,22 +478,13 @@ class MeterTeros11_VWC : public Variable {
      */
     explicit MeterTeros11_VWC(MeterTeros11* parentSense, const char* uuid = "",
                               const char* varCode = TEROS11_VWC_DEFAULT_CODE)
-        : Variable(parentSense, (uint8_t)TEROS11_VWC_VAR_NUM,
-                   (uint8_t)TEROS11_VWC_RESOLUTION, TEROS11_VWC_VAR_NAME,
-                   TEROS11_VWC_UNIT_NAME, varCode, uuid) {}
-    /**
-     * @brief Construct a new MeterTeros11_VWC object.
-     *
-     * @note This must be tied with a parent MeterTeros11 before it can be used.
-     */
-    MeterTeros11_VWC()
-        : Variable((uint8_t)TEROS11_VWC_VAR_NUM,
-                   (uint8_t)TEROS11_VWC_RESOLUTION, TEROS11_VWC_VAR_NAME,
-                   TEROS11_VWC_UNIT_NAME, TEROS11_VWC_DEFAULT_CODE) {}
+        : Variable(parentSense, TEROS11_VWC_VAR_NUM, TEROS11_VWC_RESOLUTION,
+                   TEROS11_VWC_VAR_NAME, TEROS11_VWC_UNIT_NAME, varCode, uuid) {
+    }
     /**
      * @brief Destroy the MeterTeros11_VWC object - no action needed.
      */
-    ~MeterTeros11_VWC() {}
+    ~MeterTeros11_VWC() override = default;
 };
 /**@}*/
 #endif  // SRC_SENSORS_METERTEROS11_H_

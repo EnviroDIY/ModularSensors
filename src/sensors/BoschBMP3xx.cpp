@@ -25,18 +25,18 @@ BoschBMP3xx::BoschBMP3xx(int8_t powerPin, Mode mode,
       _filterCoeffEnum(filterCoeff),
       _standbyEnum(timeStandby),
       _i2cAddressHex(i2cAddressHex) {}
-// Destructor
-BoschBMP3xx::~BoschBMP3xx() {}
 
 
-String BoschBMP3xx::getSensorLocation(void) {
-    String address = F("I2C_0x");
+String BoschBMP3xx::getSensorLocation() {
+    String address;
+    address.reserve(10);  // Reserve for "I2C_0x" + 2 hex chars
+    address = F("I2C_0x");
     address += String(_i2cAddressHex, HEX);
     return address;
 }
 
 
-bool BoschBMP3xx::setup(void) {
+bool BoschBMP3xx::setup() {
     bool retVal =
         Sensor::setup();  // this will set pin modes and the setup status bit
 
@@ -68,8 +68,8 @@ bool BoschBMP3xx::setup(void) {
     // The enum values for oversampling match with the values of osr_p and osr_t
     auto typ_measurementTime_us = static_cast<uint32_t>(
         234 +
-        1 * (392 + (pow(2, static_cast<int>(_pressureOversampleEnum))) * 2020) +
-        1 * (163 + (pow(2, static_cast<int>(_tempOversampleEnum))) * 2020));
+        1 * (392 + (1U << static_cast<int>(_pressureOversampleEnum)) * 2020) +
+        1 * (163 + (1U << static_cast<int>(_tempOversampleEnum)) * 2020));
     float max_measurementTime_us = static_cast<float>(typ_measurementTime_us) *
         1.18;
     // Set the sensor measurement time to the safety-factored max time
@@ -105,32 +105,31 @@ bool BoschBMP3xx::setup(void) {
                  "recommended"));
     }
 
-
     // convert the standby time enum value into the time between readouts from
     // the BMP's
     // ADC NOTE:  The ADC will return repeated values if the ADC's ODR (output
     // data rate) is set faster than the actual measurement time, given
     // oversampling.
-    float _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
+    float timeStandby_ms = 5.0f * (1U << static_cast<int>(_standbyEnum));
     // warn if an impossible sampling rate is selected
-    if ((_timeStandby_ms < max_measurementTime_us / 1000) &&
+    if ((timeStandby_ms < max_measurementTime_us / 1000) &&
         _mode == NORMAL_MODE) {
-        MS_DBG(F("The selected standby time of"), _timeStandby_ms,
+        MS_DBG(F("The selected standby time of"), timeStandby_ms,
                F("between ADC samples is less than the expected max of"),
                _measurementTime_ms,
                F("ms needed for temperature and pressure oversampling."));
         // bump up the standby time to a possible value
-        while (5.0f * pow(2, static_cast<int>(_standbyEnum)) <
+        while (5.0f * (1U << static_cast<int>(_standbyEnum)) <
                max_measurementTime_us / 1000) {
             _standbyEnum =
                 static_cast<TimeStandby>(static_cast<int>(_standbyEnum) + 1);
 #if defined(MS_DEBUGGING_STD)
-            _timeStandby_ms = 5.0f * pow(2, static_cast<int>(_standbyEnum));
+            timeStandby_ms = 5.0f * (1U << static_cast<int>(_standbyEnum));
 #endif
-            MS_DBG(_standbyEnum, _timeStandby_ms,
+            MS_DBG(_standbyEnum, timeStandby_ms,
                    static_cast<int>(max_measurementTime_us / 1000));
         }
-        MS_DBG(F("A standby time of"), _timeStandby_ms,
+        MS_DBG(F("A standby time of"), timeStandby_ms,
                F("ms between reading will be used."));
     }
 
@@ -138,13 +137,13 @@ bool BoschBMP3xx::setup(void) {
     // the value of the enum is the power of the number of samples
     if (_filterCoeffEnum != IIR_FILTER_OFF && _mode == NORMAL_MODE) {
         MS_DBG(F("BMP388/390's IIR filter will only be fully initialized"),
-               pow(2, static_cast<int>(_filterCoeffEnum)) * _timeStandby_ms,
+               (1U << static_cast<int>(_filterCoeffEnum)) * timeStandby_ms,
                F("ms after power on"));
     }
     if (_filterCoeffEnum != IIR_FILTER_OFF && _mode == FORCED_MODE) {
         MS_DBG(
             F("BMP388/390's IIR filter will only be fully initialized after"),
-            pow(2, static_cast<int>(_filterCoeffEnum)), F("samples"));
+            (1U << static_cast<int>(_filterCoeffEnum)), F("samples"));
     }
 
     if (_mode == FORCED_MODE) {
@@ -163,33 +162,39 @@ bool BoschBMP3xx::setup(void) {
                  "trim parameters"));
         success = bmp_internal.begin(_i2cAddressHex);
 
-        // Set up oversampling and filter initialization
-        // Using the filter selection recommended for "Weather monitoring
-        // (lowest power)" in table 10 of the sensor datasheet
+        if (success) {
+            // The sea level pressure is used for calculating altitude. This is
+            // stored as a parameter of the bmp_internal object and only needs
+            // to be sent once at setup, not repeated at wake, even if we're not
+            // continuously powered.
+            MS_DBG(F("Setting sea level atmospheric pressure to"),
+                   MS_SEA_LEVEL_PRESSURE_HPA);
+            bmp_internal.setSeaLevelPressure(MS_SEA_LEVEL_PRESSURE_HPA);
 
-        // Oversampling setting
-        MS_DBG(F("Sending BMP3xx oversampling settings"));
-        bmp_internal.setTempOversampling(_tempOversampleEnum);
-        bmp_internal.setPresOversampling(_pressureOversampleEnum);
+            // Oversampling settings - these settings are sent to the BMP3xx and
+            // need to be repeated at wake if we're not continuously powered
+            MS_DBG(F("Sending BMP3xx oversampling settings"));
+            bmp_internal.setTempOversampling(_tempOversampleEnum);
+            bmp_internal.setPresOversampling(_pressureOversampleEnum);
 
-        // Coefficient of the filter (in samples)
-        MS_DBG(F("Sending BMP3xx IIR Filter settings"));
-        bmp_internal.setIIRFilter(_filterCoeffEnum);
-
-        MS_DBG(F("Setting sea level atmospheric pressure to"),
-               SEALEVELPRESSURE_HPA);
-        bmp_internal.setSeaLevelPressure(SEALEVELPRESSURE_HPA);
-
-        // if we plan to operate in normal mode, set that up and begin sampling
-        // at the specified intervals
-        // if we're going to operate in forced mode, this isn't needed
-        if (_mode == NORMAL_MODE) {
-            // Standby time between samples in normal sampling mode - doesn't
-            // apply in forced mode
-            MS_DBG(F(
-                "Sending BMP3xx stand-by time and starting normal conversion"));
-            bmp_internal.setTimeStandby(_standbyEnum);
-            bmp_internal.startNormalConversion();
+            // if we plan to operate in normal mode, set that up, configure
+            // standby time and filtering, and begin sampling at the specified
+            // intervals if we're going to operate in forced mode, this isn't
+            // needed
+            if (_mode == NORMAL_MODE) {
+                // Coefficient of the filter (in samples)
+                MS_DBG(F("Sending BMP3xx IIR Filter settings"));
+                bmp_internal.setIIRFilter(_filterCoeffEnum);
+                // Standby time between samples in normal sampling mode -
+                // doesn't apply in forced mode
+                MS_DBG(F("Sending BMP3xx stand-by time and starting normal "
+                         "conversion"));
+                bmp_internal.setTimeStandby(_standbyEnum);
+                bmp_internal.startNormalConversion();
+            }
+        } else {
+            MS_DBG(F("Failed to connect to BMP3xx, attempt"), ntries + 1,
+                   F("of 5"));
         }
         ntries++;
     }
@@ -208,14 +213,18 @@ bool BoschBMP3xx::setup(void) {
 }
 
 
-bool BoschBMP3xx::wake(void) {
+bool BoschBMP3xx::wake() {
     // Sensor::wake() checks if the power pin is on and sets the wake timestamp
     // and status bits.  If it returns false, there's no reason to go on.
     if (!Sensor::wake()) return false;
 
-    // if the power has gone off, we need to re-read the coefficients,
-    // we don't need to do anything if always powered.
-    // NOTE:  only forced sampling is supported with switched power
+    // If the power has gone off, we need to re-read the coefficients and
+    // reconfigure the oversampling settings, since the sensor will have lost
+    // its memory of those things.  If the power has not gone off, then the
+    // sensor will still have those things set and we don't need to do anything.
+    // NOTE:  Only forced sampling with the IIR filter disabled is supported
+    // with switched power.  There's no reason to resend the IIR filter and
+    // standby settings because those only apply to continuous power.
     if (_powerPin >= 0) {  // Run begin fxn because it returns true or false
                            // for success in contact
         // Make 5 attempts
@@ -227,11 +236,8 @@ bool BoschBMP3xx::wake(void) {
                   "trim parameters"));
             success = bmp_internal.begin(_i2cAddressHex);
 
-            // Set up oversampling and filter initialization
-            // Using the filter selection recommended for "Weather monitoring
-            // (lowest power)" in table 10 of the sensor datasheet
-
-            // Oversampling setting
+            // Oversampling settings - these settings are sent to the BMP3xx and
+            // need to be repeated at wake if we're not continuously powered
             MS_DBG(F("Sending BMP3xx oversampling settings"));
             bmp_internal.setTempOversampling(_tempOversampleEnum);
             bmp_internal.setPresOversampling(_pressureOversampleEnum);
@@ -253,7 +259,7 @@ bool BoschBMP3xx::wake(void) {
 }
 
 
-bool BoschBMP3xx::startSingleMeasurement(void) {
+bool BoschBMP3xx::startSingleMeasurement() {
     // Sensor::startSingleMeasurement() checks that if it's awake/active and
     // sets the timestamp and status bits.  If it returns false, there's no
     // reason to go on.
@@ -270,51 +276,41 @@ bool BoschBMP3xx::startSingleMeasurement(void) {
         _millisMeasurementRequested = millis();
     }
 
+    // NOTE: There's no way of knowing of a failure here so we always return
+    // true.
+    // There's no condition where we would need to bump the number of completed
+    // measurement attempts here.
     return true;
 }
 
 
-bool BoschBMP3xx::addSingleMeasurementResult(void) {
-    bool success = false;
+bool BoschBMP3xx::addSingleMeasurementResult() {
+    // Perform common initialization checks
+    if (!initializeMeasurementResult()) { return false; }
 
-    // Initialize float variables
-    float temp  = -9999;
-    float press = -9999;
-    float alt   = -9999;
+    bool  success = false;
+    float temp    = MS_INVALID_VALUE;
+    float press   = MS_INVALID_VALUE;
+    float alt     = MS_INVALID_VALUE;
 
-    // Check a measurement was *successfully* started (status bit 6 set)
-    // Only go on to get a result if it was
-    if (getStatusBit(MEASUREMENT_SUCCESSFUL)) {
+
+    // Read values
+    success = bmp_internal.getMeasurements(temp, press, alt);
+
+    if (success) {
         MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-
-        // Read values
-        success = bmp_internal.getMeasurements(temp, press, alt);
-
-        // Assume that if all three are 0, really a failed response
-        // May also return a very negative temp when receiving a bad response
-        if (!success) {
-            temp  = -9999;
-            press = -9999;
-            alt   = -9999;
-        }
-
         MS_DBG(F("  Temperature:"), temp, F("°C"));
         MS_DBG(F("  Barometric Pressure:"), press, F("Pa"));
         MS_DBG(F("  Calculated Altitude:"), alt, F("m ASL"));
+        verifyAndAddMeasurementResult(BMP3XX_TEMP_VAR_NUM, temp);
+        verifyAndAddMeasurementResult(BMP3XX_PRESSURE_VAR_NUM, press);
+        verifyAndAddMeasurementResult(BMP3XX_ALTITUDE_VAR_NUM, alt);
     } else {
-        MS_DBG(getSensorNameAndLocation(), F("is not currently measuring!"));
+        MS_DBG(F("Failed to read data from"), getSensorNameAndLocation());
     }
 
-    verifyAndAddMeasurementResult(BMP3XX_TEMP_VAR_NUM, temp);
-    verifyAndAddMeasurementResult(BMP3XX_PRESSURE_VAR_NUM, press);
-    verifyAndAddMeasurementResult(BMP3XX_ALTITUDE_VAR_NUM, alt);
-
-    // Unset the time stamp for the beginning of this measurement
-    _millisMeasurementRequested = 0;
-    // Unset the status bits for a measurement request (bits 5 & 6)
-    clearStatusBits(MEASUREMENT_ATTEMPTED, MEASUREMENT_SUCCESSFUL);
-
-    return success;
+    // Return success value when finished
+    return finalizeMeasurementAttempt(success);
 }
 
-// cSpell:ignore oversample SEALEVELPRESSURE
+// cSpell:words oversample

@@ -21,7 +21,7 @@
 #define SERIAL_BAUD 115200
 // The pin of the SDI-12 data bus
 #define DATA_PIN 7
-// The // Sensor power pin (or -1 if not switching power)
+// The Sensor power pin (or -1 if not switching power)
 #define POWER_PIN 22
 
 // Define the SDI-12 bus
@@ -33,8 +33,7 @@ char   oldAddress = '!';  // invalid address as placeholder
 
 // this checks for activity at a particular address
 // expects a char, '0'-'9', 'a'-'z', or 'A'-'Z'
-boolean
-checkActive(byte i) {  // this checks for activity at a particular address
+boolean checkActive(byte i) {
     Serial.print("Checking address ");
     Serial.print(static_cast<char>(i));
     Serial.print("...");
