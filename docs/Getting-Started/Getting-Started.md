@@ -47,7 +47,7 @@ That home page can be accessed from the PlatformIO menu.
 
 ## Library Installation<!--! {#page_getting_started_libraries} -->
 
-Before you can use this library, you'll need to install it and all of its [dependencies](https://github.com/EnviroDIY/ModularSensors/wiki/Library-Dependencies) so your compiler in the IDE can find them.
+Before you can use this library, you'll need to install it and all of its [dependencies](https://envirodiy.github.io/ModularSensors/page_library_dependencies.html) so your compiler in the IDE can find them.
 Because this library has a large number of dependencies, I, again, _very, **very** strongly_ suggest using [PlatformIO](https://platformio.org/).
 If you use PlatformIO, the library will automatically be installed when you list it in your dependencies in your project's platformio.ini file.
 If you really must use the Arduino IDE, this library and all its dependencies can be downloaded in one large zip file downloadable with each Modular Sensors release.
@@ -142,7 +142,7 @@ It is also over 1500 lines long.
 
 ## Deploying your Station<!--! {#page_getting_started_deploying} -->
 
-To start getting data from the wild, you'll need some [stuff](https://github.com/EnviroDIY/ModularSensors/wiki/Physical-Dependencies) to power your logger and keep it safe from the elements.
+To start getting data from the wild, you'll need some [stuff](https://envirodiy.github.io/ModularSensors/page_physical_dependencies.html) to power your logger and keep it safe from the elements.
 There are [video instructions](https://www.envirodiy.org/videos/) on the EnviroDIY website showing how to prepare and install a typical steam-side logger box and seniors.
 
 <!--! @section page_getting_started_other Other Helpful Pages to Get Started -->
