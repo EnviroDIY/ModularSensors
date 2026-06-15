@@ -451,7 +451,9 @@
 // These provide fallbacks when board-specific settings aren't available
 #ifndef MS_PROCESSOR_ADC_RESOLUTION
 // Fallback ADC resolution based on processor architecture
-#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
+#if defined(ADC_RESOLUTION)
+#define MS_PROCESSOR_ADC_RESOLUTION ADC_RESOLUTION
+#elif defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
 #define MS_PROCESSOR_ADC_RESOLUTION 10
 #elif defined(ARDUINO_ARCH_SAMD)
 #define MS_PROCESSOR_ADC_RESOLUTION 12
