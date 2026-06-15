@@ -1361,6 +1361,8 @@ bool Logger::initializeSDCard() {
     // see https://github.com/arduino/ArduinoCore-samd/pull/292
     // The Adafruit SAMD core does NOT automatically manage the SPI speed, so
     // this needs to be set.
+    MS_DEEP_DBG(F("Setting up SD card with SS pin"), _SDCardSSPin);
+    MS_DEEP_DBG(F("SPI speed: 12 MHz"));
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
                                (uint8_t)(DEDICATED_SPI), SD_SCK_MHZ(12),
                                &SDCARD_SPI);
@@ -1369,13 +1371,16 @@ bool Logger::initializeSDCard() {
     // The SPI library of the Adafruit/Arduino AVR core will automatically
     // adjust the full speed of the SPI clock down to whatever the board can
     // handle.
+    MS_DEEP_DBG(F("Setting up SD card with SS pin"), _SDCardSSPin);
+    MS_DEEP_DBG(F("SPI speed:"), SPI_FULL_SPEED / 1000000, "MHz");
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
                                (uint8_t)(DEDICATED_SPI), SPI_FULL_SPEED,
                                &SDCARD_SPI);
 #endif
 
     if (!sd.begin(customSdConfig)) {
-        PRINTOUT(F("Error: SD card failed to initialize or is missing."));
+        PRINTOUT(F("Error: SD card with SS pin"), _SDCardSSPin,
+                 F("failed to initialize or is missing."));
         PRINTOUT(F("Data will not be saved!"));
         return false;
     } else {
