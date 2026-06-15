@@ -1378,7 +1378,7 @@ bool Logger::initializeSDCard() {
                                &SDCARD_SPI);
 #endif
 
-    if (!sd.begin(customSdConfig)) {
+    if (!sd.cardBegin(customSdConfig)) {
         PRINTOUT(F("Error: SD card with SS pin"), _SDCardSSPin,
                  F("failed to initialize or is missing."));
         PRINTOUT(F("Data will not be saved!"));
@@ -1388,8 +1388,21 @@ bool Logger::initializeSDCard() {
         MS_DBG(F("Successfully connected to SD Card with card/slave select on "
                  "pin"),
                _SDCardSSPin);
-        return true;
     }
+
+    if (!sd.volumeBegin()) {
+        PRINTOUT(F("Error: Could not access volume of SD card with SS pin"),
+                 _SDCardSSPin);
+        PRINTOUT(F("Data will not be saved!"));
+        return false;
+    } else {
+        // skip everything else if there's no SD card, otherwise it might hang
+        MS_DBG(F("Successfully accessed volume of SD Card with card/slave "
+                 "select on pin"),
+               _SDCardSSPin);
+    }
+
+    return true;
 }
 
 // This function is used to automatically mark files as
@@ -1588,7 +1601,10 @@ void Logger::testingISR() {
 void Logger::benchTestingMode(bool sleepBeforeReturning) {
     // If bench testing is not enabled, return now. Allows the function body to
     // be compiled out if this functionality is disabled.
-    if (!(MS_LOGGERBASE_BUTTON_BENCH_TEST)) return;
+    if (!(MS_LOGGERBASE_BUTTON_BENCH_TEST)) {
+        MS_DEEP_DBG(F("Bench testing is not enabled."));
+        return;
+    }
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
