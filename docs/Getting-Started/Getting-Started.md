@@ -49,7 +49,7 @@ That home page can be accessed from the PlatformIO menu.
 
 ## Library Installation<!--! {#page_getting_started_libraries} -->
 
-Before you can use this library, you'll need to install it and all of its so your compiler in the IDE can find them.
+Before you can use this library, you'll need to install it and all of its dependencies so your compiler in the IDE can find them.
 It is **crucial** that you get the correct version of each dependency to work with the version of the Modular Sensors library you are using.
 If you have mismatched versions of the library and its dependencies your logger program will almost certainly fail to compile or function.
 
@@ -59,10 +59,10 @@ This library and all its dependencies can be downloaded in one large zip file do
 To find the zip, open the [releases page on GitHub](https://github.com/EnviroDIY/ModularSensors/releases).
 Find the "Assets" section of the latest release.
 From there click on the file `ModularSensors_Dependencies_#.#.#.zip` to download it.
-In your the Arduino Software (IDE), import that zip file following the Arduino Docs instructions for ["Manual Installation"](https://docs.arduino.cc/software/ide-v1/tutorials/installing-libraries/).
+In the Arduino Software (IDE), import that zip file following the Arduino Docs instructions for ["Manual Installation"](https://docs.arduino.cc/software/ide-v1/tutorials/installing-libraries/).
 You _cannot_ directly import the zip using the Arduino Library Manager because it contains multiple libraries.
 
-To update this library for the Arduino IDE, you should delete all files in you library folder (or move them to a backup directory) and reinstall everything from a new zip.
+To update this library for the Arduino IDE, you should delete all files in your library folder (or move them to a backup directory) and reinstall everything from a new zip.
 **Do not allow the Arduino IDE to automatically update your libraries!**
 
 ### PlatformIO<!--! {#page_getting_started_libraries_pio} -->
