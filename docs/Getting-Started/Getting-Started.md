@@ -9,6 +9,8 @@
 - [Getting Started](#getting-started)
   - [IDE and Driver Installation](#ide-and-driver-installation)
   - [Library Installation](#library-installation)
+    - [Arduino IDE](#arduino-ide)
+    - [PlatformIO](#platformio)
   - [Setting the Clock](#setting-the-clock)
   - [Writing Your Logger Program](#writing-your-logger-program)
   - [Modifying the Examples](#modifying-the-examples)
@@ -47,10 +49,37 @@ That home page can be accessed from the PlatformIO menu.
 
 ## Library Installation<!--! {#page_getting_started_libraries} -->
 
-Before you can use this library, you'll need to install it and all of its [dependencies](https://envirodiy.github.io/ModularSensors/page_library_dependencies.html) so your compiler in the IDE can find them.
-Because this library has a large number of dependencies, I, again, _very, **very** strongly_ suggest using [PlatformIO](https://platformio.org/).
-If you use PlatformIO, the library will automatically be installed when you list it in your dependencies in your project's platformio.ini file.
-If you really must use the Arduino IDE, this library and all its dependencies can be downloaded in one large zip file downloadable with each Modular Sensors release.
+Before you can use this library, you'll need to install it and all of its so your compiler in the IDE can find them.
+It is **crucial** that you get the correct version of each dependency to work with the version of the Modular Sensors library you are using.
+If you have mismatched versions of the library and its dependencies your logger program will almost certainly fail to compile or function.
+
+### Arduino IDE<!--! {#page_getting_started_libraries_arduino} -->
+
+This library and all its dependencies can be downloaded in one large zip file downloadable with each Modular Sensors release.
+To find the zip, open the [releases page on GitHub](https://github.com/EnviroDIY/ModularSensors/releases).
+Find the "Assets" section of the latest release.
+From there click on the file `ModularSensors_Dependencies_#.#.#.zip` to download it.
+In your the Arduino Software (IDE), import that zip file following the Arduino Docs instructions for ["Manual Installation"](https://docs.arduino.cc/software/ide-v1/tutorials/installing-libraries/).
+You _cannot_ directly import the zip using the Arduino Library Manager because it contains multiple libraries.
+
+To update this library for the Arduino IDE, you should delete all files in you library folder (or move them to a backup directory) and reinstall everything from a new zip.
+**Do not allow the Arduino IDE to automatically update your libraries!**
+
+### PlatformIO<!--! {#page_getting_started_libraries_pio} -->
+
+If you use PlatformIO, the library will automatically be installed when you list it in the [library dependencies section of your project's platformio.ini file](https://docs.platformio.org/en/latest/projectconf/sections/env/options/library/lib_deps.html).
+You should specify exactly the version of the library that you want to install.
+For example:
+
+```ini
+...
+[env:your_env]
+...
+lib_deps =
+    envirodiy/EnviroDIY_ModularSensors@#.#.#
+```
+
+PlatformIO should install the correct version of each of the dependencies for you.
 
 ## Setting the Clock<!--! {#page_getting_started_clock} -->
 
@@ -100,8 +129,8 @@ Again, it's easiest to let PlatformIO set everything up in a new folder.
 lib_deps = EnviroDIY_ModularSensors
 lib_ldf_mode = deep
 build_flags =
-    -DSDI12_EXTERNAL_PCINT
-    -DNEOSWSERIAL_EXTERNAL_PCINT
+    -D SDI12_EXTERNAL_PCINT
+    -D NEOSWSERIAL_EXTERNAL_PCINT
 ```
 
 - Download the "ino" file for whatever example you think will be most similar to what you'll be doing.
