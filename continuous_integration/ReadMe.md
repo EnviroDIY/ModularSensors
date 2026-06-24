@@ -12,13 +12,7 @@
   - This is run as a pre-commit hook
 
 - generate_job_matrix.py
-  - A python script to generate a series of shell scripts to splice apart the menu a la carte example and run each sensor, modem, and publisher as indivudual testing jobs on a number of different processors.
-
-- install-deps-arsuino-cli.sh
-  - A shell script to install all Arduino library dependencies on the GitHub actions runner used for CI testing.
-
-- install-deps-platformio.sh
-  - A shell script to install all PlatformIO library dependencies on the GitHub actions runner used for CI testing.
+  - A python script to generate a series of shell scripts to splice apart the menu a la carte example and run each sensor, modem, and publisher as individual testing jobs on a number of different processors.
 
 - continuous_integration/platformio.ini
   - PlatformIO environments for CI testing
