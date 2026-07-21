@@ -2102,6 +2102,9 @@ void Logger::makeInitialConnections() {
         MS_DBG(F("Powering down modem after clock sync."));
         _logModem->disconnectInternet();
         _logModem->modemSleepPowerDown();
+    } else {
+        PRINTOUT(F("No modem is attached, so no initial internet connection or "
+                   "clock sync will be attempted."));
     }
     extendedWatchDog::resetWatchDog();
 }
