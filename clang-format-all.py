@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 import argparse
 import logging
+from typing import List
 
 # modified from https://github.com/thebigG/clang_format_all/blob/main/src/clang_format_all/clang_format_all.py
 
@@ -111,7 +112,7 @@ def format_all_walk_recursive(root_dir: str, exclude_files=None, file_extensions
                     logger.info('"%s": parsed successfully.', path)
 
 
-def get_all_files(root_dir: str) -> []:
+def get_all_files(root_dir: str) -> List:
     files_array = []
     for root, dirs, files in os.walk(root_dir):
         if dirs:
@@ -122,12 +123,12 @@ def get_all_files(root_dir: str) -> []:
     return files_array
 
 
-def get_resolved_paths(unresolved_paths: [str]) -> [str]:
+def get_resolved_paths(unresolved_paths: List[str]) -> List[str]:
     resolved_paths = []
     for p in unresolved_paths:
         resolved_paths += get_all_files(str(Path(p).resolve()))
 
-    return set(resolved_paths)
+    return list(set(resolved_paths))
 
 
 def main():
