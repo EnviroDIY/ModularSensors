@@ -636,13 +636,17 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
 // the LOGGER's offset as the time zone offset in the string.
 // Code modified from parts of the SparkFun RV-8803 library.
 String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
-    return loggerClock::formatDateTime_ISO8601(
-        epochSeconds, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
+    return TimeUtils::formatISO8601(
+        epochTime(epochSeconds, Logger::_loggerUTCOffset * 3600,
+                  Logger::_loggerEpoch),
+        Logger::_loggerUTCOffset);
 }
 void Logger::formatDateTime(char* buffer, const char* fmt,
                             time_t epochSeconds) {
-    loggerClock::formatDateTime(buffer, fmt, epochSeconds,
-                                Logger::_loggerEpoch);
+    TimeUtils::formatDateTime(
+        buffer, fmt,
+        epochTime(epochSeconds, Logger::_loggerUTCOffset * 3600,
+                  Logger::_loggerEpoch));
 }
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane() {
