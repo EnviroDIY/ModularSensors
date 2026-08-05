@@ -63,6 +63,15 @@
   },
   "dependencies": [
     {
+      "name": "EpochTime",
+      "owner": "envirodiy",
+      "url": "https://github.com/EnviroDIY/EpochTime",
+      "version": "~1.0.0",
+      "note": "An Arduino library for converting between time in parts as used by core gmtime functions and epoch time (Unix time).",
+      "authors": ["Sara Damiano"],
+      "frameworks": "arduino"
+    },
+    {
       "name": "EnviroDIY_DS3231",
       "owner": "envirodiy",
       "library id": "2079",
@@ -115,7 +124,7 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "https://github.com/EnviroDIY/TinyGSM",
+      "version": "https://github.com/EnviroDIY/TinyGSM.git",
       "version_note": "~0.13.0",
       "note": "A small Arduino library for GPRS modules.",
       "authors": ["Volodymyr Shymanskyy", "Sara Damiano"],
@@ -291,7 +300,7 @@
       "owner": "robtillaart",
       "library id": "6205",
       "url": "https://github.com/RobTillaart/MS5837",
-      "version": "~0.3.2",
+      "version": "~0.3.3",
       "note": "Arduino library for the MS5837 temperature and pressure sensor and compatibles",
       "authors": ["Rob Tillaart"],
       "frameworks": "arduino"
