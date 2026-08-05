@@ -313,4 +313,4 @@ After completing the [steps for putting all boards to sleep](#steps-for-putting-
 - Re-set the pin modes for the RTC wake pin, SD card SS pin, SD card power pin, button pin, and LED pin.
   - The pins were all set to tri-state to save power.
 
-<!-- cspell: ignore SLEEPCFG SLEEPMODE INTFLAG RSTC INEN PULLEN RESETN VQFN TQFP WLCSP TFBGA DIRCLR MAINVREG systick -->
+<!-- cSpell:ignore SLEEPCFG SLEEPMODE INTFLAG RSTC INEN PULLEN RESETN VQFN TQFP WLCSP TFBGA DIRCLR MAINVREG systick -->

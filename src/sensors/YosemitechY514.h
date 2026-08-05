@@ -277,4 +277,4 @@ class YosemitechY514_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY514_H_
 
-// cSpell:words Wipered Y514Chloro UGPL
+// cSpell:ignore Wipered Y514Chloro UGPL

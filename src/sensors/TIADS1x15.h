@@ -595,4 +595,4 @@ typedef TIADS1x15_Voltage ExternalVoltage_Volt;
 
 #endif  // SRC_SENSORS_TIADS1X15_H_
 
-// cSpell:words GAIN_TWOTHIRDS
+// cSpell:ignore GAIN_TWOTHIRDS

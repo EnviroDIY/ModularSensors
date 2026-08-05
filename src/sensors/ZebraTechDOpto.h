@@ -367,4 +367,4 @@ class ZebraTechDOpto_DOmgL : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_ZEBRATECHDOPTO_H_
 
-// cSpell:words Pololu
+// cSpell:ignore Pololu

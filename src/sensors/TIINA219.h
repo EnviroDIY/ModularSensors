@@ -427,4 +427,4 @@ class TIINA219_Power : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_TIINA219_H_
 
-// cSpell:words TIINA219
+// cSpell:ignore TIINA219

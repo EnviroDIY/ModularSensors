@@ -286,4 +286,4 @@ class YosemitechY511_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY511_H_
 
-// cSpell:words Wipered
+// cSpell:ignore Wipered

@@ -1375,4 +1375,4 @@ Our first release of the modular sensors library to support easily logging data 
 
 <!--! @m_footernavigation -->
 
-<!-- cspell:words isnan GPST arounds strcat strcpy PULLUP TIINA Wextra setinitialShortIntervals RSeries AnalogElecConductivity Konst SensorEC -->
+<!-- cSpell:ignore isnan GPST arounds strcat strcpy PULLUP TIINA Wextra setinitialShortIntervals RSeries AnalogElecConductivity Konst SensorEC -->

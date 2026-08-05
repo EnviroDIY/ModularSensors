@@ -491,4 +491,4 @@ void loop() {
 }
 /** End [loop] */
 
-// cspell: words baro
+// cSpell:ignore baro

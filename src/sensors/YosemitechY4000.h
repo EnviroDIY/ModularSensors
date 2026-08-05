@@ -670,4 +670,4 @@ class YosemitechY4000_BGA : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY4000_H_
 
-// cSpell:words Y4000Chloro MGPL USCM UGPL
+// cSpell:ignore Y4000Chloro MGPL USCM UGPL

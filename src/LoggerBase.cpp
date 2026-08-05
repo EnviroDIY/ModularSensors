@@ -2110,4 +2110,4 @@ void Logger::makeInitialConnections() {
 }
 
 // cSpell:ignore prtout1 DFLLVAL DFLLSYNC
-// cspell: ignore DIRCLR INEN PULLEN HIBCFG BRAMCFG MAINVREG FRZCLK BODSE
+// cSpell:ignore DIRCLR INEN PULLEN HIBCFG BRAMCFG MAINVREG FRZCLK BODSE

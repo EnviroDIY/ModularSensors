@@ -350,4 +350,4 @@ void loop() {
 }
 /** End [loop] */
 
-// cSpell: words TurbHigh TurbLow setRESTAPIKey
+// cSpell:ignore TurbHigh TurbLow setRESTAPIKey

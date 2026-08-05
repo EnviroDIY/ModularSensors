@@ -313,4 +313,4 @@ bool BoschBMP3xx::addSingleMeasurementResult() {
     return finalizeMeasurementAttempt(success);
 }
 
-// cSpell:words oversample
+// cSpell:ignore oversample

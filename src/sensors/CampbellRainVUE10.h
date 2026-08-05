@@ -462,4 +462,4 @@ class CampbellRainVUE10_RainRateMax : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_CAMPBELLRAINVUE10_H_
 
-// cSpell:words RAINRATEAVE RAINRATEMAX INPH
+// cSpell:ignore RAINRATEAVE RAINRATEMAX INPH

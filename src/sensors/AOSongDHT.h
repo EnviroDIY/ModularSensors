@@ -385,4 +385,4 @@ class AOSongDHT_HI : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_AOSONGDHT_H_
 
-// cSpell:words DHTHI
+// cSpell:ignore DHTHI

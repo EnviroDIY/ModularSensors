@@ -452,4 +452,4 @@ bool TIADS1x15::addSingleMeasurementResult() {
     return finalizeMeasurementAttempt(success);
 }
 
-// cspell:words GAIN_TWOTHIRDS
+// cSpell:ignore GAIN_TWOTHIRDS

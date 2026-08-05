@@ -523,4 +523,4 @@
 
 #endif
 
-// cSpell:words Tatu Moja Adalogger Duemilanove Esplora
+// cSpell:ignore Tatu Moja Adalogger Duemilanove Esplora

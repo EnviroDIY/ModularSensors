@@ -361,4 +361,4 @@ void loop() {
 }
 /** End [loop] */
 
-// cspell: words modemXBWF
+// cSpell:ignore modemXBWF

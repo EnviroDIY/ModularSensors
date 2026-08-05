@@ -4326,12 +4326,12 @@ void loop() {
 /** End [complex_loop] */
 
 
-// cspell: words EDBG XBCT XBLTEB XBWF SVZM BatterymV Atlasp oversample
-// cspell: words asco2voltage atlasGrav Hayashi emas PMID temperatureCoef
-// cspell: words ClariVUESDI12address RainVUESDI12address Turb CTDSDI
-// cspell: words RDOSDI TROLLSDI acculev nanolev TMSDI ELEC fivetm tallyi
-// cspell: words kmph TIINA Chloro Fluoroscein PTSA BTEX analogECPower anlg
-// cspell: words spcond Relia NEOPIXEL RESTAPI autobauding xbeec CFUN UMNOPROF
-// cspell: words URAT PHEC GAIN_TWOTHIRDS anbPHEC OBSADS CTDNReadings rdoDOmgL
-// cspell: words ANALOGELECCONDUCTIVITY_RSERIES_OHMS analogECADS
-// cspell: words ANALOGELECCONDUCTIVITY_KONST
+// cSpell:ignore EDBG XBCT XBLTEB XBWF SVZM BatterymV Atlasp oversample
+// cSpell:ignore asco2voltage atlasGrav Hayashi emas PMID temperatureCoef
+// cSpell:ignore ClariVUESDI12address RainVUESDI12address Turb CTDSDI
+// cSpell:ignore RDOSDI TROLLSDI acculev nanolev TMSDI ELEC fivetm tallyi
+// cSpell:ignore kmph TIINA Chloro Fluoroscein PTSA BTEX analogECPower anlg
+// cSpell:ignore spcond Relia NEOPIXEL RESTAPI autobauding xbeec CFUN UMNOPROF
+// cSpell:ignore URAT PHEC GAIN_TWOTHIRDS anbPHEC OBSADS CTDNReadings rdoDOmgL
+// cSpell:ignore ANALOGELECCONDUCTIVITY_RSERIES_OHMS analogECADS
+// cSpell:ignore ANALOGELECCONDUCTIVITY_KONST

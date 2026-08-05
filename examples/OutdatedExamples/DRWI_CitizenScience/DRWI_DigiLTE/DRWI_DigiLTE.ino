@@ -417,4 +417,4 @@ void loop() {
 }
 /** End [loop] */
 
-// cspell: ignore XBCT digilte Turb
+// cSpell:ignore XBCT digilte Turb

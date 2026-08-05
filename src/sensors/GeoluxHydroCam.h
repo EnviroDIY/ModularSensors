@@ -502,4 +502,4 @@ class GeoluxHydroCam_ByteError : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_GEOLUXHYDROCAM_H_
 
-// cSpell:words dataloggers QQVGA QVGA QXGA UXGA autofocusing
+// cSpell:ignore dataloggers QQVGA QVGA QXGA UXGA autofocusing

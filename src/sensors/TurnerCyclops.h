@@ -1336,5 +1336,5 @@ class TurnerCyclops_RedChlorophyll : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_TURNERCYCLOPS_H_
 
-// cSpell:words fluorophores BTEX PTSA Pyrenetetrasulfonic Tetrasodium
-// cSpell:words Ethylbenzene Prozyme sensor_cyclops_calib UGPL
+// cSpell:ignore fluorophores BTEX PTSA Pyrenetetrasulfonic Tetrasodium
+// cSpell:ignore Ethylbenzene Prozyme sensor_cyclops_calib UGPL

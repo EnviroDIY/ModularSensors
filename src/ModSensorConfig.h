@@ -548,7 +548,7 @@ static_assert(MS_AWS_IOT_MAX_CONNECTION_TIME > 0 &&
 //==============================================================
 
 
-// cSpell:words SEALEVELPRESSURE
+// cSpell:ignore SEALEVELPRESSURE
 
 
 #endif  // SRC_MODSENSORCONFIG_H_

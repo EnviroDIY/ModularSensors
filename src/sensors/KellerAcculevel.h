@@ -298,4 +298,4 @@ class KellerAcculevel_Height : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_KELLERACCULEVEL_H_
 
-// cSpell:words kellerAccuPress kellerAccuTemp kellerAccuHeight
+// cSpell:ignore kellerAccuPress kellerAccuTemp kellerAccuHeight

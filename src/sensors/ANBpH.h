@@ -974,4 +974,4 @@ class ANBpH_StatusCode : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_ANB_SENSORS_PH_H_
 
-// cSpell:words millisiemenPerCentimeter ppth SPCOND
+// cSpell:ignore millisiemenPerCentimeter ppth SPCOND

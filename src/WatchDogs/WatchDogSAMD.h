@@ -169,4 +169,4 @@ class extendedWatchDogSAMD {
 
 #endif  // SRC_WATCHDOGS_WATCHDOGSAMD_H_
 
-// cSpell:words ULP32KOSC
+// cSpell:ignore ULP32KOSC

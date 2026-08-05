@@ -1604,4 +1604,4 @@ If you need more help in writing a complex loop, the [double_logger example prog
 
 <!--! @include{lineno} menu_a_la_carte/menu_a_la_carte.ino -->
 
-<!-- cspell: ignore PCINT RSTB SVZM AREF RESETN UMNOPROF URAT -->
+<!-- cSpell:ignore PCINT RSTB SVZM AREF RESETN UMNOPROF URAT -->

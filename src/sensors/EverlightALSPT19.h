@@ -441,4 +441,4 @@ class EverlightALSPT19_Illuminance : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_EVERLIGHTALSPT19_H_
 
-// cSpell:words microamperes
+// cSpell:ignore microamperes

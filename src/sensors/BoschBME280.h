@@ -489,4 +489,4 @@ class BoschBME280_Altitude : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBME280_H_
 
-// cSpell:words hectopascals
+// cSpell:ignore hectopascals

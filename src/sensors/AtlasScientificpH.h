@@ -248,4 +248,4 @@ class AtlasScientificpH_pH : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_ATLASSCIENTIFICPH_H_
 
-// cSpell:words AtlasScientificpH AtlaspH
+// cSpell:ignore AtlasScientificpH AtlaspH

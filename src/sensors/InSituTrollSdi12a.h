@@ -386,4 +386,4 @@ typedef InSituTrollSdi12a_Depth    InsituTrollSdi12a_Depth;
 
 #endif  // SRC_SENSORS_INSITUTROLLSDI12_H_
 
-// cSpell:words ITROLL ITROLLA
+// cSpell:ignore ITROLL ITROLLA

@@ -207,4 +207,4 @@ class GroPointParent : public Sensor {
 
 #endif  // SRC_SENSORS_GROPOINTPARENT_H_
 
-// cSpell:words GPLPX gsensor
+// cSpell:ignore GPLPX gsensor

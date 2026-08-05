@@ -274,4 +274,4 @@ class YosemitechY513_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_YOSEMITECHY513_H_
 
-// cSpell:words UGPL
+// cSpell:ignore UGPL

@@ -360,4 +360,4 @@ class MaxBotixSonar_Range : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_MAXBOTIXSONAR_H_
 
-// cSpell:words max_botix
+// cSpell:ignore max_botix

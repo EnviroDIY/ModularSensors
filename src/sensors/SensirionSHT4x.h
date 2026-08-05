@@ -372,4 +372,4 @@ class SensirionSHT4x_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_SENSIRIONSHT4X_H_
 
-// cSpell:words preconfigured
+// cSpell:ignore preconfigured

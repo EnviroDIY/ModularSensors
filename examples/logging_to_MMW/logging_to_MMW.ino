@@ -353,4 +353,4 @@ void loop() {
 }
 /** End [loop] */
 
-// cspell: ignore XBCT
+// cSpell:ignore XBCT

@@ -690,4 +690,4 @@ class BoschBMP3xx_Altitude : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_BOSCHBMP3XX_H_
 
-// cSpell:words oversample osrs_p DDIO bmp3xxtimingTest hectopascals
+// cSpell:ignore oversample osrs_p DDIO bmp3xxtimingTest hectopascals

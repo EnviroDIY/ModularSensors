@@ -225,4 +225,4 @@ class MaximDS3231_Temp : public Variable {
 /**@}*/
 #endif  // SRC_SENSORS_MAXIMDS3231_H_
 
-// cSpell:words temperatureDatalogger
+// cSpell:ignore temperatureDatalogger
