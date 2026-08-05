@@ -129,14 +129,14 @@ String ProcessorStats::getLastResetCause() {
     uint16_t lastResetCause = getLastResetCode();
     uint8_t  reset_cause    = static_cast<uint8_t>(lastResetCause);
     switch (reset_cause) {
-        case RSTC_RCAUSE_POR: return "Power On Reset";
-        case RSTC_RCAUSE_BODCORE: return "Brown Out CORE Detector Reset";
-        case RSTC_RCAUSE_BODVDD: return "Brown Out VDD Detector Reset";
-        case RSTC_RCAUSE_NVM: return "NVM Reset";
-        case RSTC_RCAUSE_EXT: return "External Reset";
-        case RSTC_RCAUSE_WDT: return "Watchdog Reset";
-        case RSTC_RCAUSE_SYST: return "System Reset Request";
-        case RSTC_RCAUSE_BACKUP: {
+        case RSTC_RCAUSE_POR /*1*/: return "Power On Reset";
+        case RSTC_RCAUSE_BODCORE /*2*/: return "Brown Out CORE Detector Reset";
+        case RSTC_RCAUSE_BODVDD /*4*/: return "Brown Out VDD Detector Reset";
+        case RSTC_RCAUSE_NVM /*8*/: return "NVM Reset";
+        case RSTC_RCAUSE_EXT /*16*/: return "External Reset";
+        case RSTC_RCAUSE_WDT /*32*/: return "Watchdog Reset";
+        case RSTC_RCAUSE_SYST /*64*/: return "System Reset Request";
+        case RSTC_RCAUSE_BACKUP /*128*/: {
             uint8_t backupExitSource =
                 static_cast<uint8_t>(lastResetCause >> 8);
             String resetCauseString = bitRead(lastResetCause,
@@ -213,11 +213,11 @@ uint8_t ProcessorStats::getLastResetCode() {
 String ProcessorStats::getLastResetCause() {
     uint8_t lastResetCause = getLastResetCode();
     switch (lastResetCause) {
-        case PORF: return "Power On Reset";
-        case EXTRF: return "External Reset";
-        case BORF: return "Brown Out Detector Reset";
-        case WDRF: return "Watchdog Reset";
-        case JTRF: return "JTAG Reset Request";
+        case PORF /*0*/: return "Power On Reset";
+        case EXTRF /*1*/: return "External Reset";
+        case BORF /*2*/: return "Brown Out Detector Reset";
+        case WDRF /*3*/: return "Watchdog Reset";
+        case JTRF /*4*/: return "JTAG Reset Request";
         default: return "unknown";
     }
 }
