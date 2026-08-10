@@ -3163,7 +3163,9 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // ==========================================================================
 
 
-#else
+#elif defined(BUILD_TEST_PRE_NAMED_VARS) ||  \
+    (!defined(BUILD_TEST_CREATE_IN_ARRAY) && \
+     !defined(BUILD_TEST_SEPARATE_UUIDS))
 //^^ BUILD_TEST_PRE_NAMED_VARS
 /** Start [variables_pre_named] */
 // Version 3: Fill array with already created and named variable pointers
@@ -4102,6 +4104,7 @@ void setup() {
 //  Arduino Loop Function
 // ==========================================================================
 #ifndef BUILD_TEST_COMPLEX_LOOP
+// #if defined(BUILD_TEST_SIMPLE_LOOP)
 // Use this short loop for simple data logging and sending
 /** Start [simple_loop] */
 void loop() {
@@ -4141,6 +4144,7 @@ void loop() {
 /** End [simple_loop] */
 
 #else
+// #if defined(BUILD_TEST_COMPLEX_LOOP)
 /** Start [complex_loop] */
 // Use this long loop when you want to do something special
 // Because of the way alarms work on the RTC, it will wake the processor and
