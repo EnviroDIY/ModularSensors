@@ -122,3 +122,4 @@ docs/header.html
 installWorkingDependencies.bat
 tests/SL099_certificates/*
 tests/test_certificates/*
+run_CI_pipeline.bat

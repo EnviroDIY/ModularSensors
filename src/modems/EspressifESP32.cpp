@@ -49,7 +49,7 @@ bool EspressifESP32::modemSleepFxn() {
     // from deep sleep.  We'll also put it in deep sleep before yanking power.
     if (_modemResetPin >= 0 || _powerPin >= 0) {
         MS_DBG(F("Requesting deep sleep for ESP32"));
-        bool retVal = gsmModem.poweroff();
+        bool retVal = gsmModem.powerOff();
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }

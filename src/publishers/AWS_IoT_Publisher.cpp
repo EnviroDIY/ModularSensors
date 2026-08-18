@@ -9,7 +9,7 @@
  */
 
 #include "AWS_IoT_Publisher.h"
-#include <TinyGsmEnums.h>
+#include <TinyGsmSSL.tpp>
 
 
 // ============================================================================
