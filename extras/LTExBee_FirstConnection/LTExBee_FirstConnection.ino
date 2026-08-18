@@ -191,7 +191,7 @@ void loop() {
 
 
     // Shut down
-    gsmModem.poweroff();
+    gsmModem.powerOff();
     DBG("Powering down.");
 
     while (1) {

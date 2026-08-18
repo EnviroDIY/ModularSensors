@@ -71,7 +71,7 @@ bool QuectelBG96::modemSleepFxn() {
         // BG96 must have access to `PWRKEY` pin to sleep
         // Easiest to just go to sleep with the AT command rather than using
         // pins
-        bool res = gsmModem.poweroff();
+        bool res = gsmModem.powerOff();
         gsmModem.stream.flush();
         return res;
     }

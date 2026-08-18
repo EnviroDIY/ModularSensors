@@ -94,7 +94,7 @@ bool SequansMonarch::modemSleepFxn() {
         // Easiest to just go to sleep with the AT command rather than using
         // pins The only way to wake from this is via a hard reset
         MS_DBG(F("Asking Sequans Monarch to power down"));
-        bool retVal = gsmModem.poweroff();
+        bool retVal = gsmModem.powerOff();
         // Also going to pull the RTS high if it's connected
         // Only doing this so as not to get the library confused because it will
         // check this pin as an indication of whether the board is awake even if

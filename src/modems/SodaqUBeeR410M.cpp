@@ -130,7 +130,7 @@ bool SodaqUBeeR410M::modemSleepFxn() {
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking u-blox R410M to power down"));
-        res = gsmModem.poweroff();
+        res = gsmModem.powerOff();
     }
     gsmModem.stream.flush();
     return res;

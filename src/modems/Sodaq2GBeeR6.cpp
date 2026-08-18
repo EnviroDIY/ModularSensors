@@ -43,7 +43,7 @@ bool Sodaq2GBeeR6::modemWakeFxn() {
 bool Sodaq2GBeeR6::modemSleepFxn() {
     // Ask the SIM800 to shut down nicely
     MS_DBG(F("Asking SIM800 on GPRSBeeR6 to power down"));
-    bool success = gsmModem.poweroff();
+    bool success = gsmModem.powerOff();
     if (_vRefPin >= 0) {
         MS_DBG(F("Disabling voltage reference for GPRSBeeR6 on pin"), _vRefPin);
         pinMode(_vRefPin, OUTPUT);

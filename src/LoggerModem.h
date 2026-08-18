@@ -33,17 +33,21 @@
 #ifdef MS_LOGGERMODEM_DEBUG
 #define MS_DEBUGGING_STD "LoggerModem"
 #endif
+#ifdef MS_LOGGERMODEM_DEBUG_DEEP
+#define MS_DEBUGGING_DEEP "LoggerModem"
+#endif
 
 // Include the debugger
 #include "ModSensorDebugger.h"
 // Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
+#undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
 #include "VariableBase.h"
 #include <Arduino.h>
 #include <Client.h>
-#include <TinyGsmEnums.h>
+#include <TinyGsmSSL.tpp>
 
 
 /**
@@ -355,7 +359,7 @@ class loggerModem {
                 uint32_t wakeDelayTime_ms, uint32_t max_at_response_time_ms);
 
     /**
-     * @brief Destroy the logger Modem object - no action taken.
+     * @brief Destroy the logger modem object - no action taken.
      */
     virtual ~loggerModem() = default;
 
