@@ -127,11 +127,22 @@ class loggerModem {
     // Multiple overloads for createSecureClient matching CommMixin signatures
     virtual Client* createSecureClient(uint8_t mux = 0) = 0;
     virtual Client* createSecureClient(
+        uint8_t mux, SSLAuthMode sslAuthMode,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) = 0;
+    virtual Client* createSecureClient(
         SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
         const char* CAcertName = nullptr, const char* clientCertName = nullptr,
         const char* clientKeyName = nullptr) = 0;
     virtual Client* createSecureClient(
+        uint8_t mux, const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    virtual Client* createSecureClient(
         const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    virtual Client* createSecureClient(
+        uint8_t mux, const char* pskTableName,
         SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
     virtual Client* createSecureClient(
         const char* pskTableName,
@@ -300,6 +311,14 @@ class loggerModemImpl
     using loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
                                SecureClientType_T>::isInternetAvailable;
     using loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
+                               SecureClientType_T>::createClient;
+    using loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
+                               SecureClientType_T>::deleteClient;
+    using loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
+                               SecureClientType_T>::createSecureClient;
+    using loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
+                               SecureClientType_T>::deleteSecureClient;
+    using loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
                                SecureClientType_T>::getNISTTime;
     using loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
                                SecureClientType_T>::setModemTimeZone;
@@ -342,82 +361,6 @@ class loggerModemImpl
             pinMode(this->_modemLEDPin, OUTPUT);
             digitalWrite(this->_modemLEDPin, LOW);
         }
-    }
-
-    /* ===================================================================== */
-    /* Client Management Adapters                                           */
-    /* ===================================================================== */
-    /**
-     * @brief Create a client - adapter to cast return type
-     *
-     * The base class uses Client* while the mixin uses ClientType*.
-     * This adapter creates the client directly and returns it as Client*.
-     *
-     * @param mux Multiplexing channel to use (default 0)
-     * @return A new client object (as Client*)
-     */
-    Client* createClient(uint8_t mux = 0) override {
-        return new ClientType(gsmModem, mux);
-    }
-
-    /**
-     * @brief Create a secure client with default parameters - adapter to cast
-     * return type
-     *
-     * @param mux Multiplexing channel to use (default 0)
-     * @return A new secure client object (as Client*)
-     */
-    Client* createSecureClient(uint8_t mux = 0) override {
-        return new SecureClientType(gsmModem, mux);
-    }
-
-    /**
-     * @brief Create a secure client with certificate authentication - adapter
-     * to cast return type
-     *
-     * @param sslAuthMode The SSL authentication mode
-     * @param sslVersion The SSL version to use
-     * @param CAcertName CA certificate name
-     * @param clientCertName Client certificate name
-     * @param clientKeyName Client key name
-     * @return A new secure client object (as Client*)
-     */
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override {
-        return new SecureClientType(gsmModem, sslAuthMode, sslVersion,
-                                    CAcertName, clientCertName, clientKeyName);
-    }
-
-    /**
-     * @brief Create a secure client with PSK authentication - adapter to cast
-     * return type
-     *
-     * @param pskIdent Pre-shared key identity
-     * @param psKey Pre-shared key
-     * @param sslVersion The SSL version to use
-     * @return A new secure client object (as Client*)
-     */
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override {
-        return new SecureClientType(gsmModem, pskIdent, psKey, sslVersion);
-    }
-
-    /**
-     * @brief Create a secure client with PSK table - adapter to cast return
-     * type
-     *
-     * @param pskTableName Pre-shared key table name
-     * @param sslVersion The SSL version to use
-     * @return A new secure client object (as Client*)
-     */
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override {
-        return new SecureClientType(gsmModem, pskTableName, sslVersion);
     }
 
  public:

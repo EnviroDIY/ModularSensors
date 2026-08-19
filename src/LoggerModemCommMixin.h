@@ -348,7 +348,7 @@ class loggerModemCommMixin {
      * @note ALL modems MUST support client creation. Every TinyGSM modem does.
      * We do not need two flavors of this function dependent on capabilities.
      */
-    ClientType* createClient(uint8_t mux = 0) {
+    Client* createClient(uint8_t mux = 0) {
         // Use the new keyword to create a new client on the **heap**
         return new ClientType(derived()->gsmModem, mux);
     }
@@ -359,6 +359,10 @@ class loggerModemCommMixin {
      * delete the created client from a pointer to the parent because the
      * Arduino core's client class doesn't have a virtual destructor.
      *
+     * @warning CRITICAL: This function MUST only be called with Client*
+     * pointers that were created by the corresponding createClient() function.
+     * Passing a Client* created by createSecureClient() will cause undefined
+     * behavior.
      * Always match create/delete pairs:
      * - createClient() -> deleteClient()
      * - createSecureClient() -> deleteSecureClient()
@@ -399,35 +403,85 @@ class loggerModemCommMixin {
      * @param mux Multiplexing channel to use, defaults to 0
      * @return A new secure client object
      */
-    SecureClientType* createSecureClient(uint8_t mux = 0) {
+    Client* createSecureClient(uint8_t mux = 0) {
         return createSecureClient(
             mux, typename TinyGsmCapabilities::has_ssl<GsmModemType>::type());
     }
-
  protected:
     /**
      * @brief The create secure client function for modems that support SSL
      * @param mux Multiplexing channel to use, defaults to 0
      * @return A new secure client object
      */
-    SecureClientType* createSecureClient(uint8_t mux,
-                                         TinyGsmCapabilities::true_type) {
+    Client* createSecureClient(uint8_t mux, TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived()->gsmModem, mux);
     }
-
     /**
      * @brief The create secure client function for modems that do not support
      * SSL
      * @return A null pointer
      */
-    SecureClientType* createSecureClient(uint8_t,
-                                         TinyGsmCapabilities::false_type) {
+    Client* createSecureClient(uint8_t, TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
  public:
     /**
      * @brief Create a new secure client object with certificate specification
+     * and a multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
+     *
+     * @param mux Multiplexing channel to use
+     * @param sslAuthMode The SSL authentication mode to use
+     * @param sslVersion The SSL version to use
+     * @param CAcertName The name of the CA certificate to use
+     * @param clientCertName The name of the client certificate to use
+     * @param clientKeyName The name of the client key to use
+     *
+     * @return A new secure client object
+     */
+    Client* createSecureClient(uint8_t mux, SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) {
+        return createSecureClient(
+            mux, sslAuthMode, sslVersion, CAcertName, clientCertName,
+            clientKeyName,
+            typename TinyGsmCapabilities::can_specify_certs<
+                GsmModemType>::type());
+    }
+ protected:
+    /**
+     * @brief The create secure client function for modems with SSL capabilities
+     * that can specify certificates
+     * @copydetails createSecureClient(uint8_t, SSLAuthMode, SSLVersion, const
+     * char*, const char*, const char*)
+     */
+    Client* createSecureClient(uint8_t mux, SSLAuthMode sslAuthMode,
+                               SSLVersion sslVersion, const char* CAcertName,
+                               const char* clientCertName,
+                               const char* clientKeyName,
+                               TinyGsmCapabilities::true_type) {
+        return new SecureClientType(derived()->gsmModem, sslAuthMode,
+                                    sslVersion, CAcertName, clientCertName,
+                                    clientKeyName);
+    }
+    /**
+     * @brief The create secure client function for modems that do not support
+     * SSL with certificate specification
+     * @return A null pointer
+     */
+    Client* createSecureClient(uint8_t, SSLAuthMode, SSLVersion, const char*,
+                               const char*, const char*,
+                               TinyGsmCapabilities::false_type) {
+        return nullptr;
+    }
+
+ public:
+    /**
+     * @brief Create a new secure client object with certificate specification
+     * and default multiplexing channel.
      * @warning Be sure to delete this object when you're done with it!
      *
      * @param sslAuthMode The SSL authentication mode to use
@@ -438,16 +492,16 @@ class loggerModemCommMixin {
      *
      * @return A new secure client object
      */
-    SecureClientType* createSecureClient(
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) {
+    Client* createSecureClient(SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) {
         return createSecureClient(
             sslAuthMode, sslVersion, CAcertName, clientCertName, clientKeyName,
             typename TinyGsmCapabilities::can_specify_certs<
                 GsmModemType>::type());
     }
-
  protected:
     /**
      * @brief The create secure client function for modems with SSL capabilities
@@ -455,31 +509,74 @@ class loggerModemCommMixin {
      * @copydetails createSecureClient(SSLAuthMode, SSLVersion, const char*,
      * const char*, const char*)
      */
-    SecureClientType* createSecureClient(SSLAuthMode sslAuthMode,
-                                         SSLVersion  sslVersion,
-                                         const char* CAcertName,
-                                         const char* clientCertName,
-                                         const char* clientKeyName,
-                                         TinyGsmCapabilities::true_type) {
+    Client* createSecureClient(SSLAuthMode sslAuthMode, SSLVersion sslVersion,
+                               const char* CAcertName,
+                               const char* clientCertName,
+                               const char* clientKeyName,
+                               TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived()->gsmModem, sslAuthMode,
                                     sslVersion, CAcertName, clientCertName,
                                     clientKeyName);
     }
-
     /**
      * @brief The create secure client function for modems that do not support
      * SSL with certificate specification
      * @return A null pointer
      */
-    SecureClientType* createSecureClient(SSLAuthMode, SSLVersion, const char*,
-                                         const char*, const char*,
-                                         TinyGsmCapabilities::false_type) {
+    Client* createSecureClient(SSLAuthMode, SSLVersion, const char*,
+                               const char*, const char*,
+                               TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
  public:
     /**
-     * @brief Create a new secure client object with PSK credentials
+     * @brief Create a new secure client object with PSK credentials and a
+     * multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
+     *
+     * @param mux Multiplexing channel to use
+     * @param pskIdent The pre-shared key identity
+     * @param psKey The pre-shared key
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
+    Client* createSecureClient(uint8_t mux, const char* pskIdent,
+                               const char* psKey,
+                               SSLVersion  sslVersion = SSLVersion::TLS1_2) {
+        return createSecureClient(
+            mux, pskIdent, psKey, sslVersion,
+            typename TinyGsmCapabilities::can_specify_certs<
+                GsmModemType>::type());
+    }
+ protected:
+    /**
+     * @brief The create secure client function for modems with SSL capabilities
+     * that support certificates specification
+     * @copydetails createSecureClient(uint8_t, const char*, const char*,
+     * SSLVersion)
+     */
+    Client* createSecureClient(uint8_t mux, const char* pskIdent,
+                               const char* psKey, SSLVersion sslVersion,
+                               TinyGsmCapabilities::true_type) {
+        return new SecureClientType(derived()->gsmModem, mux, pskIdent, psKey,
+                                    sslVersion);
+    }
+    /**
+     * @brief The create secure client function for modems that do not support
+     * SSL certificates specification
+     * @return A null pointer
+     */
+    Client* createSecureClient(uint8_t, const char*, const char*, SSLVersion,
+                               TinyGsmCapabilities::false_type) {
+        return nullptr;
+    }
+
+ public:
+    /**
+     * @brief Create a new secure client object with PSK credentials and default
+     * multiplexing channel.
      * @warning Be sure to delete this object when you're done with it!
      *
      * @param pskIdent The pre-shared key identity
@@ -488,42 +585,81 @@ class loggerModemCommMixin {
      *
      * @return A new secure client object
      */
-    SecureClientType* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) {
+    Client* createSecureClient(const char* pskIdent, const char* psKey,
+                               SSLVersion sslVersion = SSLVersion::TLS1_2) {
         return createSecureClient(
             pskIdent, psKey, sslVersion,
             typename TinyGsmCapabilities::can_specify_certs<
                 GsmModemType>::type());
     }
-
  protected:
     /**
      * @brief The create secure client function for modems with SSL capabilities
      * that support certificates specification
      * @copydetails createSecureClient(const char*, const char*, SSLVersion)
      */
-    SecureClientType* createSecureClient(const char* pskIdent,
-                                         const char* psKey,
-                                         SSLVersion  sslVersion,
-                                         TinyGsmCapabilities::true_type) {
+    Client* createSecureClient(const char* pskIdent, const char* psKey,
+                               SSLVersion sslVersion,
+                               TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived()->gsmModem, pskIdent, psKey,
                                     sslVersion);
     }
-
     /**
      * @brief The create secure client function for modems that do not support
      * SSL certificates specification
      * @return A null pointer
      */
-    SecureClientType* createSecureClient(const char*, const char*, SSLVersion,
-                                         TinyGsmCapabilities::false_type) {
+    Client* createSecureClient(const char*, const char*, SSLVersion,
+                               TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
  public:
     /**
-     * @brief Create a new secure client object with PSK table name
+     * @brief Create a new secure client object with PSK table name and a
+     * multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
+     *
+     * @param muxChannel The multiplexing channel to use
+     * @param pskTableName The pre-shared key table name - for modems that
+     * require PSK's in a "table" format
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
+    Client* createSecureClient(uint8_t mux, const char* pskTableName,
+                               SSLVersion sslVersion = SSLVersion::TLS1_2) {
+        return createSecureClient(
+            mux, pskTableName, sslVersion,
+            typename TinyGsmCapabilities::can_specify_certs<
+                GsmModemType>::type());
+    }
+ protected:
+    /**
+     * @brief The create secure client function for modems with SSL capabilities
+     * that can specify certificates
+     * @copydetails createSecureClient(uint8_t, const char*, SSLVersion)
+     */
+    Client* createSecureClient(uint8_t mux, const char* pskTableName,
+                               SSLVersion sslVersion,
+                               TinyGsmCapabilities::true_type) {
+        return new SecureClientType(derived()->gsmModem, mux, pskTableName,
+                                    sslVersion);
+    }
+    /**
+     * @brief The create secure client function for modems that do not support
+     * SSL with certificate specification
+     * @return A null pointer
+     */
+    Client* createSecureClient(uint8_t, const char*, SSLVersion,
+                               TinyGsmCapabilities::false_type) {
+        return nullptr;
+    }
+
+ public:
+    /**
+     * @brief Create a new secure client object with PSK table name and default
+     * multiplexing channel.
      * @warning Be sure to delete this object when you're done with it!
      *
      * @param pskTableName The pre-shared key table name - for modems that
@@ -532,34 +668,31 @@ class loggerModemCommMixin {
      *
      * @return A new secure client object
      */
-    SecureClientType* createSecureClient(
-        const char* pskTableName, SSLVersion sslVersion = SSLVersion::TLS1_2) {
+    Client* createSecureClient(const char* pskTableName,
+                               SSLVersion  sslVersion = SSLVersion::TLS1_2) {
         return createSecureClient(
             pskTableName, sslVersion,
             typename TinyGsmCapabilities::can_specify_certs<
                 GsmModemType>::type());
     }
-
  protected:
     /**
      * @brief The create secure client function for modems with SSL capabilities
      * that can specify certificates
      * @copydetails createSecureClient(const char*, SSLVersion)
      */
-    SecureClientType* createSecureClient(const char* pskTableName,
-                                         SSLVersion  sslVersion,
-                                         TinyGsmCapabilities::true_type) {
+    Client* createSecureClient(const char* pskTableName, SSLVersion sslVersion,
+                               TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived()->gsmModem, pskTableName,
                                     sslVersion);
     }
-
     /**
      * @brief The create secure client function for modems that do not support
      * SSL with certificate specification
      * @return A null pointer
      */
-    SecureClientType* createSecureClient(const char*, SSLVersion,
-                                         TinyGsmCapabilities::false_type) {
+    Client* createSecureClient(const char*, SSLVersion,
+                               TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
@@ -570,34 +703,38 @@ class loggerModemCommMixin {
      * delete the created client from a pointer to the parent because the
      * Arduino core's client class doesn't have a virtual destructor.
      *
+     * @warning CRITICAL: This function MUST only be called with Client*
+     * pointers that were created by the corresponding createSecureClient()
+     * function. Passing a Client* created by createClient() will cause
+     * undefined behavior.
      * Always match create/delete pairs:
      * - createClient() -> deleteClient()
      * - createSecureClient() -> deleteSecureClient()
      *
      * @param client The client to delete
      */
-    virtual void deleteSecureClient(SecureClientType* client) {
+    virtual void deleteSecureClient(Client* client) {
         deleteSecureClient(
             client,
             typename TinyGsmCapabilities::has_ssl<GsmModemType>::type());
     }
-
  protected:
     /**
      * @brief The delete secure client function for modems with SSL capabilities
      */
-    void deleteSecureClient(SecureClientType* client,
-                            TinyGsmCapabilities::true_type) {
+    void deleteSecureClient(Client* client, TinyGsmCapabilities::true_type) {
+        // WARNING: This static_cast is safe ONLY if the client was created by
+        // createSecureClient(). Mismatched create/delete calls will cause
+        // undefined behavior.
         delete static_cast<SecureClientType*>(client);
     }
-
     /**
      * @brief The delete secure client function for modems that do not support
      * SSL
      */
-    void deleteSecureClient(SecureClientType*,
-                            TinyGsmCapabilities::false_type) {}
+    void deleteSecureClient(Client*, TinyGsmCapabilities::false_type) {}
     /**@}*/
+
 
     /* ===================================================================== */
     /* NIST and Network Time Protocol (NTP) synchronization                  */
