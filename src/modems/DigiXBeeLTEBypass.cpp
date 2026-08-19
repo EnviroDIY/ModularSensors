@@ -10,41 +10,26 @@
 
 // Included Dependencies
 #include "DigiXBeeLTEBypass.h"
-#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
                                      int8_t statusPin, bool useCTSStatus,
                                      int8_t modemResetPin,
                                      int8_t modemSleepRqPin, const char* apn)
-    : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
-               modemSleepRqPin),
-#ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      _apn(apn) {
+    : DigiXBee<TinyGsmSaraR4,                        // Modem Type
+               TinyGsmSaraR4::GsmClientSaraR4,       // TCP Client Type
+               TinyGsmSaraR4::GsmClientSecureSaraR4  // SSL Client
+                                                     // Type
+               >(modemStream, powerPin, statusPin, useCTSStatus, modemResetPin,
+                 modemSleepRqPin),
+
+      _apn(apn) {}
+
+
+bool DigiXBeeLTEBypass::connectWithCredentials() {
+    return gsmModem.gprsConnect(_apn, "", "");
 }
 
-MS_IS_MODEM_AWAKE(DigiXBeeLTEBypass);
-MS_MODEM_WAKE(DigiXBeeLTEBypass);
-
-MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
-MS_MODEM_DISCONNECT_INTERNET(DigiXBeeLTEBypass);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
-
-MS_MODEM_CREATE_CLIENT(DigiXBeeLTEBypass, SaraR4);
-MS_MODEM_DELETE_CLIENT(DigiXBeeLTEBypass, SaraR4);
-MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeLTEBypass, SaraR4);
-MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeLTEBypass, SaraR4);
-
-MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass, SaraR4);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
-MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeLTEBypass);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeLTEBypass);
 
 bool DigiXBeeLTEBypass::extraModemSetup() {
     bool success = false;

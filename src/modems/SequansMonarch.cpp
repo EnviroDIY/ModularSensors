@@ -10,44 +10,30 @@
 
 // Included Dependencies
 #include "SequansMonarch.h"
-#include "LoggerModemMacros.h"
 
 // Constructor
 SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
                                int8_t statusPin, int8_t modemResetPin,
                                int8_t modemSleepRqPin, const char* apn)
-    : loggerModem(powerPin, statusPin, VZM20Q_STATUS_LEVEL, modemResetPin,
-                  VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS, modemSleepRqPin,
-                  VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS,
-                  VZM20Q_STATUS_TIME_MS, VZM20Q_DISCONNECT_TIME_MS,
-                  VZM20Q_WAKE_DELAY_MS, VZM20Q_AT_RESPONSE_TIME_MS),
-#ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      _apn(apn) {
+    : loggerModemImpl<
+          TinyGsmSequansMonarch,                           // Modem Type
+          TinyGsmSequansMonarch::GsmClientSequansMonarch,  // TCP Client Type
+          TinyGsmSequansMonarch::GsmClientSecureSequansMonarch,  // SSL Client
+                                                                 // Type
+          false  // signal quality is RSSI
+          >(modemStream, powerPin, statusPin, VZM20Q_STATUS_LEVEL,
+            modemResetPin, VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS,
+            modemSleepRqPin, VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS,
+            VZM20Q_STATUS_TIME_MS, VZM20Q_DISCONNECT_TIME_MS,
+            VZM20Q_WAKE_DELAY_MS, VZM20Q_AT_RESPONSE_TIME_MS),
+
+      _apn(apn) {}
+
+
+bool SequansMonarch::connectWithCredentials() {
+    return gsmModem.gprsConnect(_apn, "", "");
 }
 
-
-MS_IS_MODEM_AWAKE(SequansMonarch);
-MS_MODEM_WAKE(SequansMonarch);
-
-MS_MODEM_CONNECT_INTERNET(SequansMonarch);
-MS_MODEM_DISCONNECT_INTERNET(SequansMonarch);
-MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
-
-MS_MODEM_CREATE_CLIENT(SequansMonarch, SequansMonarch);
-MS_MODEM_DELETE_CLIENT(SequansMonarch, SequansMonarch);
-MS_MODEM_CREATE_SECURE_CLIENT(SequansMonarch, SequansMonarch);
-MS_MODEM_DELETE_SECURE_CLIENT(SequansMonarch, SequansMonarch);
-
-MS_MODEM_GET_NIST_TIME(SequansMonarch, SequansMonarch);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SequansMonarch);
-MS_MODEM_GET_MODEM_BATTERY_DATA(SequansMonarch);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SequansMonarch);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean

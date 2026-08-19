@@ -124,7 +124,7 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "https://github.com/EnviroDIY/TinyGSM.git",
+      "version": "https://github.com/EnviroDIY/TinyGSM.git#develop",
       "version_note": "~0.13.0",
       "note": "A small Arduino library for GPRS modules.",
       "authors": ["Volodymyr Shymanskyy", "Sara Damiano"],

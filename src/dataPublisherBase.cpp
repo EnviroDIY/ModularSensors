@@ -219,7 +219,7 @@ Client* dataPublisher::createClient() {
 void dataPublisher::deleteClient(Client* client) {
     if (_baseModem != nullptr) {
         MS_DBG(F("Attempting to delete the client"));
-        return _baseModem->deleteClient(client);
+        _baseModem->deleteClient(client);
     }
 }
 

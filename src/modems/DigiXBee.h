@@ -109,7 +109,7 @@
 #undef MS_DEBUGGING_STD
 
 // Include other in-library and external dependencies
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 /** @ingroup modem_digi */
 /**@{*/
@@ -196,7 +196,13 @@
  * @note The ZigBee, 900mHZ, and other radio-based XBee's are **not**
  * supported.
  */
-class DigiXBee : public loggerModem {
+template <typename GsmModemType_T, typename ClientType_T,
+          typename SecureClientType_T>
+class DigiXBee : public loggerModemImpl<GsmModemType_T,      // Modem Type
+                                        ClientType_T,        // TCP Client Type
+                                        SecureClientType_T,  // SSL Client Type
+                                        true  // signal quality is RSSI
+                                        > {
  public:
     /**
      * @brief Construct a new Digi XBee object
@@ -216,16 +222,43 @@ class DigiXBee : public loggerModem {
      *
      * @see loggerModem::loggerModem
      */
-    DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-             int8_t modemResetPin, int8_t modemSleepRqPin);
+    DigiXBee(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+             bool useCTSStatus, int8_t modemResetPin, int8_t modemSleepRqPin)
+        : loggerModemImpl<GsmModemType_T,      // Modem Type
+                          ClientType_T,        // TCP Client Type
+                          SecureClientType_T,  // SSL Client Type
+                          true                 // signal quality is RSSI
+                          >(modemStream, powerPin, statusPin, !useCTSStatus,
+                            modemResetPin, XBEE_RESET_LEVEL,
+                            XBEE_RESET_PULSE_MS, modemSleepRqPin,
+                            XBEE_WAKE_LEVEL, XBEE_WAKE_PULSE_MS,
+                            XBEE_STATUS_TIME_MS, XBEE_DISCONNECT_TIME_MS,
+                            XBEE_WAKE_DELAY_MS, XBEE_AT_RESPONSE_TIME_MS) {}
     /**
      * @brief Destroy the Digi XBee object - no action taken
      */
     ~DigiXBee() override = default;
 
  protected:
-    bool modemSleepFxn() override;
-    bool modemWakeFxn() override;
+    bool modemSleepFxn() override {
+        if (this->_modemSleepRqPin >= 0) {
+            MS_DBG(F("Setting pin"), this->_modemSleepRqPin,
+                   !this->_wakeLevel ? F("HIGH") : F("LOW"), F("to put"),
+                   this->_modemName, F("to sleep"));
+            digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
+        }
+        return true;
+    }
+
+    bool modemWakeFxn() override {
+        if (this->_modemSleepRqPin >= 0) {
+            MS_DBG(F("Setting pin"), this->_modemSleepRqPin,
+                   this->_wakeLevel ? F("HIGH") : F("LOW"), F("to wake"),
+                   this->_modemName);
+            digitalWrite(this->_modemSleepRqPin, this->_wakeLevel);
+        }
+        return true;
+    }
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEE_H_

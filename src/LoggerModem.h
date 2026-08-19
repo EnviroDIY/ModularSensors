@@ -5,10 +5,10 @@
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the loggerModem class and the variable subclasses
- * Modem_RSSI, Modem_SignalPercent, Modem_BatteryState, Modem_BatteryPercent,
- * and Modem_BatteryVoltage - all of which are implemented as "calculated"
- * variables.
+ * @brief Contains type type-erased loggerModem class and the variable
+ * subclasses Modem_RSSI, Modem_SignalPercent, Modem_BatteryState,
+ * Modem_BatteryPercent, and Modem_BatteryVoltage - all of which are implemented
+ * as "calculated" variables.
  */
 /**
  * @defgroup the_modems Supported Modems and Communication Modules
@@ -39,14 +39,20 @@
 
 // Include the debugger
 #include "ModSensorDebugger.h"
+
 // Undefine the debugger label[s]
 #undef MS_DEBUGGING_STD
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
 #include "VariableBase.h"
+
 #include <Arduino.h>
 #include <Client.h>
+
+// Include the TinyGSM capabilities file to check what the modem can do
+#include <TinyGsmCapabilities.h>
+// Include TinyGsmSSL for SSLAuthMode and SSLVersion enums
 #include <TinyGsmSSL.tpp>
 
 
@@ -253,70 +259,7 @@
 #define MODEM_TEMPERATURE_DEFAULT_CODE "modemTemp"
 /**@}*/
 
-#ifdef MS_CHECK_MODEM_TIMING
-/**
- * @anchor modem_activation
- * @name Modem Active Time
- * The active time from a modem-like device.
- *
- * @note This is only a testing/development diagnostic.
- *
- * {{ @ref Modem_ActivationDuration::Modem_ActivationDuration }}
- */
-/**@{*/
-/// @brief Decimal places in string representation; total active time should
-/// have 3.
-#define MODEM_ACTIVATION_RESOLUTION 3
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
-/// activation time polling.
-#define MODEM_ACTIVATION_ENABLE_BITMASK 0b01000000
-/// @brief Variable name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "timeElapsed"
-#define MODEM_ACTIVATION_VAR_NAME "timeElapsed"
-/// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "second"
-#define MODEM_ACTIVATION_UNIT_NAME "second"
-/// @brief Default variable short code; "modemActiveSec"
-#define MODEM_ACTIVATION_DEFAULT_CODE "modemActiveSec"
-/**@}*/
 
-/**
- * @anchor modem_power
- * @name Modem Power Time
- * The total powered time from a modem-like device.
- *
- * @note This is only a testing/development diagnostic.
- *
- * {{ @ref Modem_PoweredDuration::Modem_PoweredDuration }}
- */
-/**@{*/
-/// @brief Decimal places in string representation; total powered time should
-/// have 3.
-#define MODEM_POWERED_RESOLUTION 3
-/// @brief The bit mask for loggerModem::_pollModemMetaData to enable modem
-/// power time polling
-#define MODEM_POWERED_ENABLE_BITMASK 0b10000000
-/// @brief Variable name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
-/// "timeElapsed"
-#define MODEM_POWERED_VAR_NAME "timeElapsed"
-/// @brief Variable unit name in
-/// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/units/); "second"
-#define MODEM_POWERED_UNIT_NAME "second"
-/// @brief Default variable short code; "modemPoweredSec"
-#define MODEM_POWERED_DEFAULT_CODE "modemPoweredSec"
-/**@}*/
-#endif
-/**@}*/
-
-
-/* ===========================================================================
- * Functions for the modem class
- * This is basically a wrapper for TinyGsm with power control added
- * ========================================================================= */
-
-// template <class Derived, typename modemType, typename modemClientType>
 /**
  * @brief The loggerModem class provides an internet connection for the
  * logger and supplies an Arduino Client instance to use to publish data.
@@ -330,66 +273,55 @@
  * TinyGSM is available here:  https://github.com/vshymanskyy/TinyGSM
  *
  * @ingroup base_classes
+ *
+ * This class provides a common type-erased interface that allows LoggerBase and
+ * other non-template code to hold pointers to modem objects regardless of their
+ * specific template instantiation. All public-facing modem functionality
+ * must be declared as virtual functions in this base class.  This allows
+ * non-template code to interact with modem objects without knowing their
+ * specific template parameters.
  */
 class loggerModem {
  public:
-    /**
-     * @brief Construct a new loggerModem object.
-     *
-     * @param powerPin @copybrief loggerModem::_powerPin
-     * @param statusPin @copybrief loggerModem::_statusPin
-     * @param statusLevel @copybrief loggerModem::_statusLevel
-     * @param modemResetPin @copybrief loggerModem::_modemResetPin
-     * @param resetLevel @copybrief loggerModem::_resetLevel
-     * @param resetPulse_ms @copybrief loggerModem::_resetPulse_ms
-     * @param modemSleepRqPin @copybrief loggerModem::_modemSleepRqPin
-     * @param wakeLevel @copybrief loggerModem::_wakeLevel
-     * @param wakePulse_ms @copybrief loggerModem::_wakePulse_ms
-     * @param max_status_time_ms @copybrief loggerModem::_statusTime_ms
-     * @param max_disconnectTime_ms @copybrief loggerModem::_disconnectTime_ms
-     * @param wakeDelayTime_ms @copybrief loggerModem::_wakeDelayTime_ms
-     * @param max_at_response_time_ms @copybrief #_max_at_response_time_ms
-     *
-     * @see @ref modem_ctor_variables
-     */
-    loggerModem(int8_t powerPin, int8_t statusPin, bool statusLevel,
-                int8_t modemResetPin, bool resetLevel, uint32_t resetPulse_ms,
-                int8_t modemSleepRqPin, bool wakeLevel, uint32_t wakePulse_ms,
-                uint32_t max_status_time_ms, uint32_t max_disconnectTime_ms,
-                uint32_t wakeDelayTime_ms, uint32_t max_at_response_time_ms);
-
-    /**
-     * @brief Destroy the logger modem object - no action taken.
-     */
     virtual ~loggerModem() = default;
 
+
+    /**
+     * @anchor modem_setup_functions
+     * @name Functions related to the modem setup and identification
+     *
+     * These are similar to the like-named Sensor functions.
+     */
+    /**@{*/
     /**
      * @brief Set an LED to turn on (pin will be `HIGH`) when the modem is on.
      *
      * @param modemLEDPin The digital pin number for the LED
      */
-    void setModemLED(int8_t modemLEDPin);
-
+    virtual void setModemLED(int8_t modemLEDPin) = 0;
     /**
      * @brief Get the modem name.
      *
+     * @note This returns the internally stored name of the modem without
+     * re-querying the hardware.
+     *
      * @return The modem name
      */
-    String getModemName();
-
+    virtual String getModemName() = 0;
     /**
-     * @brief Get a detailed printable description of the modem.
+     * @brief Get the modem device ID.
      *
-     * @note These values are polled for and cached in memory till needed
+     * @note This returns the internally stored device ID of the modem without
+     * re-querying the hardware.
      *
      * @return The concatenated name, hardware version, firmware
      * version, and serial number of the modem.
      *
      * @todo Implement this for modems other than the XBee WiFi
      */
-    String getModemDevId();
+    virtual String getModemDevId() = 0;
     /**
-     * @brief Set the timezone that the modem will attempt to sync itself to.
+     * @brief Set the UTC offset for the modem to use internally in NTP syncing
      *
      * This doesn't *have* to be the same as the RTC or logger timezone, but
      * you'd be stupid to make it different.
@@ -399,11 +331,10 @@ class loggerModem {
      * connection will fail because the certificates will not be within their
      * specified valid time ranges.
      *
-     * @param timeZone The timezone that the modem will attempt to sync itself
-     * to.
+     * @param timeZone UTC offset in hours that the modem will attempt to sync
+     * itself to
      */
-    void setModemTimeZone(int8_t timeZone);
-
+    virtual void setModemTimeZone(int8_t timeZone) = 0;
     /**
      * @brief Set up the modem before first use.
      *
@@ -412,7 +343,7 @@ class loggerModem {
      *
      * @return True if setup was successful
      */
-    virtual bool modemSetup();
+    virtual bool modemSetup() = 0;
     /**
      * @brief Retained for backwards compatibility; use modemSetup() in new
      * code.
@@ -424,14 +355,32 @@ class loggerModem {
     bool setup() {
         return modemSetup();
     }
+    /**@}*/
+
 
     /**
      * @anchor modem_power_functions
-     * @name Functions related to the modem power and activity state
-     *
-     * These are similar to the like-named Sensor functions.
+     * @name Modem power management
+     * Functions to power up or down the modem, wake it from sleep, or put it
+     * to sleep.
      */
     /**@{*/
+    /**
+     * @brief Power up the modem.
+     *
+     * If there's a power pin, this sets that pin high to power the modem. If
+     * there's a sleep request pin, it is set to the "not wake" level before
+     * power up.
+     */
+    virtual void modemPowerUp() = 0;
+    /**
+     * @brief Cut power to the modem by setting the modem power pin low.
+     *
+     * @note modemPowerDown() simply kills power, while modemSleepPowerDown()
+     * allows for graceful shut down.  You should use modemSleepPowerDown()
+     * whenever possible.
+     */
+    virtual void modemPowerDown() = 0;
     /**
      * @brief Wake up the modem.
      *
@@ -439,8 +388,6 @@ class loggerModem {
      * runs the specific modem's wake function, tests for responsiveness to AT
      * commands, and then re-runs the TinyGSM init() if necessary.  If the modem
      * fails to respond, this attempts a "hard" pin reset if possible.
-     *
-     * For most modules, this function is created by the #MS_MODEM_WAKE macro.
      *
      * @return True if the modem is responsive and ready for action.
      */
@@ -456,26 +403,13 @@ class loggerModem {
     bool wake() {
         return modemWake();
     }
-
-    /**
-     * @brief Power the modem by setting the modem power pin high.
-     */
-    virtual void modemPowerUp();
-    /**
-     * @brief Cut power to the modem by setting the modem power pin low.
-     *
-     * @note modemPowerDown() simply kills power, while modemSleepPowerDown()
-     * allows for graceful shut down.  You should use modemSleepPowerDown()
-     * whenever possible.
-     */
-    virtual void modemPowerDown();
     /**
      * @brief Request that the modem enter its lowest possible power state.
      *
      * @return True if the modem has successfully entered low power
      * state
      */
-    virtual bool modemSleep();
+    virtual bool modemSleep() = 0;
     /**
      * @brief Request that the modem enter its lowest possible power state and
      * then set the power pin low after the modem has indicated it has
@@ -487,8 +421,7 @@ class loggerModem {
      * @return True if the modem has successfully entered low power
      * state _and_ then powered off
      */
-    virtual bool modemSleepPowerDown();
-    /**@}*/
+    virtual bool modemSleepPowerDown() = 0;
 
     /**
      * @brief Use the modem reset pin specified in the constructor to perform a
@@ -501,7 +434,27 @@ class loggerModem {
      * reset failed to fix the communication issue or because a reset is not
      * possible with the current pin/modem configuration.
      */
-    virtual bool modemHardReset();
+    virtual bool modemHardReset() = 0;
+    /**
+     * @brief Check if the modem was awake using all possible means.
+     *
+     * If possible, we always want to check if the modem was awake before
+     * attempting to wake it up.  Most cellular modules are woken and put to
+     * sleep by identical pulses on a sleep or "power" pin.  We don't want to
+     * accidentally pulse an already on modem to off.
+     *
+     * @note It's possible that the status pin is on, but the modem is actually
+     * mid-shutdown.  In that case, we'll mistakenly skip re-waking it.  This
+     * only applies to modules with a pulse wake (i.e., non-zero wake time). For
+     * all modules that do pulse on, where possible I've selected a pulse time
+     * that is sufficient to wake but not quite long enough to put it to sleep
+     * and am using AT commands to sleep.  This *should* keep everything lined
+     * up.
+     *
+     * @return True if the modem is already awake; false otherwise.
+     */
+    virtual bool isModemAwake() = 0;
+    /**@}*/
 
 
     /**
@@ -521,7 +474,7 @@ class loggerModem {
      *
      * @param level The active level of the pin (`LOW` or `HIGH`)
      */
-    void setModemStatusLevel(bool level);
+    virtual void setModemStatusLevel(bool level) = 0;
 
     /**
      * @brief Set the pin level to be used to wake the modem.
@@ -533,7 +486,7 @@ class loggerModem {
      * @param level The pin level (`LOW` or `HIGH`) of the pin while waking
      * the modem.
      */
-    void setModemWakeLevel(bool level);
+    virtual void setModemWakeLevel(bool level) = 0;
 
     /**
      * @brief Set the pin level to be used to reset the modem.
@@ -545,49 +498,114 @@ class loggerModem {
      * @param level The pin level (`LOW` or `HIGH`) of the pin while
      * resetting the modem.
      */
-    void setModemResetLevel(bool level);
+    virtual void setModemResetLevel(bool level) = 0;
     /**@}*/
 
+
     /**
-     * @anchor modem_internet_functions
-     * @name Functions for internet connectivity
+     * @anchor modem_connection_functions
+     * @name Functions for internet connection and disconnection
+     * Functions for managing internet connection and determining connectivity
+     * status.
      */
     /**@{*/
     /**
-     * @brief Wait for the modem to successfully register on the cellular
-     * network and then request that it establish either EPS or GPRS data
-     * connection.
+     * @brief Wait for the modem to successfully connect to the internet -
+     * either WiFi or cellular data.
      *
      * @param maxConnectionTime The maximum length of time in milliseconds to
-     * wait for network registration and data sconnection.  Defaults to 50,000ms
+     * wait for network registration and data connection.  Defaults to 50,000ms
      * (50s).
-     * @return True if EPS or GPRS data connection has been
-     * established.  False if the modem was unresponsive, unable to register
-     * with the cellular network, or unable to establish a EPS or GPRS
-     * connection.
+     * @return True if data connection has been established.  False if the modem
+     * was unresponsive, unable to register with the network, or unable to
+     * establish an internet connection.
      */
     virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) = 0;
     /**
-     * @brief Detach from EPS or GPRS data connection and then deregister from
-     * the cellular network.
+     * @brief Disconnect from the internet
      */
     virtual void disconnectInternet() = 0;
-
     /**
-     * @brief Create a new client object using the default socket number
-     *
-     * @return A new client object
+     * @brief Check whether there is an active internet connection available.
+     * @return True if there is an active data connection to the internet; false
+     * otherwise
      */
-    virtual Client* createClient() = 0;
+    virtual bool isInternetAvailable() = 0;
+    /**@}*/
+
 
     /**
-     * @brief Create a new secure client object using the default socket number
+     * @anchor modem_client_functions
+     * @name Functions for creating standard TCP clients
+     */
+    /**@{*/
+    /**
+     * @brief Create a new client object
+     * @warning Be sure to delete this object when you're done with it!
+     * @param mux Multiplexing channel to use, defaults to 0
+     * @return A new client object
+     *
+     * @note ALL modems MUST support client creation. Every TinyGSM modem does.
+     * We do not need two flavors of this function dependent on capabilities.
+     */
+    virtual Client* createClient(uint8_t mux = 0) = 0;
+    /**
+     * @brief Attempts to delete a created TinyGsmClient object. We need to do
+     * this to close memory leaks from the create client because we can't
+     * delete the created client from a pointer to the parent because the
+     * Arduino core's client class doesn't have a virtual destructor.
+     *
+     * @warning CRITICAL: This function MUST only be called with Client*
+     * pointers that were created by the corresponding createClient() function.
+     * Passing a Client* created by createSecureClient() will cause undefined
+     * behavior.
+     * Always match create/delete pairs:
+     * - createClient() -> deleteClient()
+     * - createSecureClient() -> deleteSecureClient()
+     *
+     * @param client The client to delete
+     */
+    virtual void deleteClient(Client* client) = 0;
+
+    /**@}*/
+
+
+    /**
+     * @anchor modem_ssl_client_functions
+     * @name Functions for creating secured (TLS/SSL) clients
+     */
+    /**@{*/
+    /**
+     * @brief Create a new secure client object
+     * @warning Be sure to delete this object when you're done with it!
+     * @param mux Multiplexing channel to use, defaults to 0
+     * @return A new secure client object
+     */
+    virtual Client* createSecureClient(uint8_t mux = 0) = 0;
+
+    /**
+     * @brief Create a new secure client object with certificate specification
+     * and a multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
+     *
+     * @param mux Multiplexing channel to use
+     * @param sslAuthMode The SSL authentication mode to use
+     * @param sslVersion The SSL version to use
+     * @param CAcertName The name of the CA certificate to use
+     * @param clientCertName The name of the client certificate to use
+     * @param clientKeyName The name of the client key to use
      *
      * @return A new secure client object
      */
-    virtual Client* createSecureClient() = 0;
+    virtual Client* createSecureClient(
+        uint8_t mux, SSLAuthMode sslAuthMode,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2,
+        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
+        const char* clientKeyName = nullptr) = 0;
     /**
-     * @brief Create a new secure client object using the default socket number
+     * @brief Create a new secure client object with certificate specification
+     * and default multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
      *
      * @param sslAuthMode The SSL authentication mode to use
      * @param sslVersion The SSL version to use
@@ -601,8 +619,26 @@ class loggerModem {
         SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
         const char* CAcertName = nullptr, const char* clientCertName = nullptr,
         const char* clientKeyName = nullptr) = 0;
+
     /**
-     * @brief Create a new secure client object using the default socket number
+     * @brief Create a new secure client object with PSK credentials and a
+     * multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
+     *
+     * @param mux Multiplexing channel to use
+     * @param pskIdent The pre-shared key identity
+     * @param psKey The pre-shared key
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
+    virtual Client* createSecureClient(
+        uint8_t mux, const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    /**
+     * @brief Create a new secure client object with PSK credentials and default
+     * multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
      *
      * @param pskIdent The pre-shared key identity
      * @param psKey The pre-shared key
@@ -613,8 +649,26 @@ class loggerModem {
     virtual Client* createSecureClient(
         const char* pskIdent, const char* psKey,
         SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+
     /**
-     * @brief Create a new secure client object using the default socket number
+     * @brief Create a new secure client object with PSK table name and a
+     * multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
+     *
+     * @param muxChannel The multiplexing channel to use
+     * @param pskTableName The pre-shared key table name - for modems that
+     * require PSK's in a "table" format
+     * @param sslVersion The SSL version to use
+     *
+     * @return A new secure client object
+     */
+    virtual Client* createSecureClient(
+        uint8_t mux, const char* pskTableName,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
+    /**
+     * @brief Create a new secure client object with PSK table name and default
+     * multiplexing channel.
+     * @warning Be sure to delete this object when you're done with it!
      *
      * @param pskTableName The pre-shared key table name - for modems that
      * require PSK's in a "table" format
@@ -625,34 +679,39 @@ class loggerModem {
     virtual Client* createSecureClient(
         const char* pskTableName,
         SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
-    /**
-     * @brief Attempts to delete a created TinyGsmClient object. We need to do
-     * this to close memory leaks from the create client because we can't delete
-     * the created client from a pointer to the parent because the Arduino
-     * core's client class doesn't have a virtual destructor.
-     *
-     * @param client The client to delete
-     */
-    virtual void deleteClient(Client* client) = 0;
+
     /**
      * @brief Attempts to delete a created TinyGsmSecureClient object. We need
      * to do this to close memory leaks from the create client because we can't
      * delete the created client from a pointer to the parent because the
      * Arduino core's client class doesn't have a virtual destructor.
      *
+     * @warning CRITICAL: This function MUST only be called with Client*
+     * pointers that were created by the corresponding createSecureClient()
+     * function. Passing a Client* created by createClient() will cause
+     * undefined behavior.
+     * Always match create/delete pairs:
+     * - createClient() -> deleteClient()
+     * - createSecureClient() -> deleteSecureClient()
+     *
      * @param client The client to delete
      */
     virtual void deleteSecureClient(Client* client) = 0;
+    /**@}*/
+
 
     /**
-     * @brief Get the time from NIST via TIME protocol (rfc868).
+     * @anchor modem_time_sync_functions
+     * @name Functions for NTP and NIST time synchronization
+     * Functions for synchronizing the modem's internal time via NTP or NIST
+     * time servers.
+     */
+    /**@{*/
+    /**
+     * @brief Get the time from NIST via NTP on those modems that support it or
+     * using the NIST time protocol over TCP (RFC-868) for those that don't.
      *
-     * This would be much more efficient if done over UDP, but I'm doing it over
-     * TCP because I don't have a UDP library for all the modems.
-     *
-     * @note The return is the number of seconds since Jan 1, 1970 IN UTC
-     *
-     * @return The number of seconds since Jan 1, 1970 IN UTC
+     * @return Unix timestamp (seconds since Jan 1, 1970 UTC)
      */
     virtual uint32_t getNISTTime() = 0;
     /**@}*/
@@ -672,43 +731,71 @@ class loggerModem {
     /**@{*/
 
     /**
-     * @brief Query the modem for the current signal quality and write the
-     * results to the supplied non-constant references.
+     * @brief Get the signal quality from the modem
      *
-     * @param rssi A reference to an int16_t which will be set with the received
-     * signal strength indicator
-     * @param percent A reference to an int16_t which will be set with the
-     * "percent" signal strength
-     * @return True indicates that the communication with the modem was
-     * successful and the values referenced by the pointers should be valid.
+     * @remark We can't distinguish between a bad modem response, no modem
+     * response, and a real response from the modem of no service/signal.
+     * The TinyGSM getSignalQuality function returns the same "no signal" value
+     * (99 CSQ or 0 RSSI) in all 3 cases.
+     *
+     * @param rssi The reference to an int16_t which will be set with the
+     * received signal strength indicator.
+     * @param percent The reference to an int16_t which will be set with the
+     * "percent" signal strength.
+     * @return True if the communication with the modem was successful and the
+     * values referenced by the pointers should be valid; false otherwise.
      */
     virtual bool getModemSignalQuality(int16_t& rssi, int16_t& percent) = 0;
 
     /**
-     * @brief Query the modem for battery information and write the values to
-     * the supplied non-constant references.
+     * @brief Get the modem's battery information  - this may or may not be a
+     * valid values depending on the module and breakout.
      *
-     * @param chargeState A reference to an uint8_t which will be set with the
-     * current charge state (significance of value varies)
-     * @param percent A reference to an int8_t which will be set with the
-     * current charge percent - this may or may not be a valid value depending
-     * on the module and breakout.
-     * @param milliVolts A reference to an uint16_t which will be set with the
-     * current battery voltage in mV - this may or may not be a valid value
-     * depending on the module and breakout.
-     * @return True indicates that the communication with the modem was
-     * successful and the values referenced by the pointers should be valid.
+     * This populates the entered references with invalid values for modems
+     * where such data is not available.
+     *
+     * @warning This function does **not** use #MS_INVALID_VALUE for the invalid
+     * values! This is because of the size of the int variables and the
+     * standards within TinyGSM.
+     *
+     * @remark The battery values for the modem will only be valid if the modem
+     * is directly connected to a battery.  This is __not__ the way most modems
+     * are wired.  If the modem is not directly wired to a battery, this will
+     * return invalid data.
+     *
+     * @param chargeState The reference to an int8_t which will be set with the
+     * battery charge state - exactly the meaning of this varies by module, but
+     * it generally indicates whether the battery is currently charging or
+     * discharging.
+     * @param percent The reference to an int8_t which will be set with the
+     * percent battery charge
+     * @param milliVolts The reference to an int16_t which will be set with the
+     * battery voltage in millivolts
+     * @return True if the communication with the modem was successful and the
+     * values referenced by the pointers should be valid; false otherwise.
      */
     virtual bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                       int16_t& milliVolts) = 0;
     /**
      * @brief Get the current temperature provided by the modem module.
      *
-     * @return The temperature in degrees Celsius
+     * @remark This is **not** a measurement of the ambient temperature, it only
+     * reflects the temperature of the modem chip itself.  This temperature is
+     * expected to be above ambient temperature.
+     *
+     * @return The modem temperature in degrees Celsius
      */
     virtual float getModemChipTemperature() = 0;
+    /**@}*/
 
 
+    /**
+     * @anchor modem_polling_functions
+     * @name Modem polling functions
+     * Functions to enable or disable polling for modem metadata - using the
+     * modem like a sensor.
+     */
+    /**@{*/
     /**
      * @brief Enables metadata polling for one or more modem measured
      * variables. Setting this to 0b11111111 will enable polling for all modem
@@ -725,42 +812,65 @@ class loggerModem {
 
     /**
      * @brief Disables metadata polling for one or more modem measured
-     * variables.  Setting this to 0b11111111 will disable polling for all modem
-     * measured variables.
+     * variables.  Setting this to 0b11111111 will disable polling for all
+     * modem measured variables.
      *
-     * @param pollingBitmask The bitmask indicating which parameters to poll.
+     * @param pollingBitmask The bitmask indicating which parameters to disable.
      *
      * @see loggerModem::_pollModemMetaData
      *
-     * @note This will **not** enable polling for any unset bits in the
-     * provided bitmask.  It will only disable polling for those bits that are
-     * set.
+     * @note This will **not** enable polling for any unset bits in the provided
+     * bitmask.  It will only disable polling for those bits that are set.
      */
     void disableMetadataPolling(uint8_t pollingBitmask);
 
     /**
-     * @brief Sets the bitmask for modem metadata polling.
+     * @brief Sets the complete bitmask for modem metadata polling.
      *
      * This will enable polling for 1 bits and disable polling for 0 bits.
      * Setting this to 0 (0b00000000) will disable polling for all metadata
-     * parameters.  Setting it to 256 (0b11111111) will enable polling for all
+     * parameters.  Setting it to 255 (0b11111111) will enable polling for all
      * parameters.
      *
-     * @param pollingBitmask The bitmask indicating which parameters to poll.
+     * @param pollingBitmask The new polling bitmask.
      *
      * @see loggerModem::_pollModemMetaData
      */
     void setMetadataPolling(uint8_t pollingBitmask);
-
     /**
-     * @brief Query the modem for signal quality, battery, and temperature
-     * information and store the values to the static internal variables.
+     * @brief Update all stored modem metadata.
      *
-     * @return True indicates that the communication with the modem
-     * was successful and the values of the internal static variables should
-     * be valid.
+     * This polls the modem for signal quality, battery stats, and chip
+     * temperature based on the configured polling bitmask. The results are
+     * stored in static member variables for later retrieval by the static
+     * getter functions.
+     *
+     * @return True if all requested metadata was successfully polled; false
+     * otherwise
      */
     virtual bool updateModemMetadata();
+ protected:
+    /**
+     * @brief Polling mask for modem metadata
+     *
+     * An 8-bit code for the enabled modem polling variables
+     *
+     * Setting a bit to 0 will disable polling, to 1 will enable it.  By default
+     * no polling is enabled to save time and power by not requesting
+     * unnecessary information from the modem.  When modem measured variables
+     * are attached to a modem, polling for those results is automatically
+     * enabled.
+     *
+     * Bit | Variable Class | Relevent Define
+     * ----|----------------|----------------
+     *  0  | #Modem_RSSI | #MODEM_RSSI_ENABLE_BITMASK
+     *  1  | #Modem_SignalPercent | #MODEM_PERCENT_SIGNAL_ENABLE_BITMASK
+     *  2  | #Modem_BatteryState | #MODEM_BATTERY_STATE_ENABLE_BITMASK
+     *  3  | #Modem_BatteryPercent | #MODEM_BATTERY_PERCENT_ENABLE_BITMASK
+     *  4  | #Modem_BatteryVoltage | #MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK
+     *  5  | #Modem_Temp | #MODEM_TEMPERATURE_ENABLE_BITMASK
+     */
+    uint8_t _pollModemMetaData = 0;
     /**@}*/
 
     /**
@@ -768,12 +878,13 @@ class loggerModem {
      * @name Functions to return the current value of static member variables
      *
      * These functions do **NOT** query the modem for new values, they return
-     * the stored value.
+     * the stored value from the last poll.
      *
      * @note These must be static so that the modem variables can call
      * them.  (Non-static member functions cannot be called without an object.)
      */
     /**@{*/
+ public:
     /**
      * @brief Get the stored Modem RSSI value.
      *
@@ -788,7 +899,7 @@ class loggerModem {
      *
      * @note Does NOT query the modem for a new value.
      *
-     * @return The stored signal strength
+     * @return The stored signal strength as a percent
      */
     static float getModemSignalPercent();
 
@@ -797,12 +908,12 @@ class loggerModem {
      *
      * @note Does NOT query the modem for a new value.
      *
-     * @return The stored signal percent
+     * @return The stored battery charge state
      */
     static float getModemBatteryChargeState();
 
     /**
-     * @brief Get the stored modem battery charge percent object.
+     * @brief Get the stored modem battery charge percent.
      *
      * @note Does NOT query the modem for a new value.
      *
@@ -829,277 +940,6 @@ class loggerModem {
     static float getModemTemperature();
     /**@}*/
 
- protected:
-    /**
-     * @anchor modem_signal_functions
-     * @name Functions to convert between signal strength measurement types
-     */
-    /**@{*/
-    /**
-     * @brief Get approximate RSSI from CSQ (assuming no noise).
-     *
-     * The RSSI is estimated from a look-up assuming no noise.
-     *
-     * @param csq A "CSQ" (0-31) signal quality
-     * @return An RSSI in dBm, making assumptions about the
-     * conversion
-     */
-    static int16_t getRSSIFromCSQ(int16_t csq);
-    /**
-     * @brief Get signal percent from CSQ.
-     *
-     * The percent is grabbed from a look-up.
-     *
-     * @param csq A "CSQ" (0-31) signal quality
-     * @return The percent of maximum signal strength.
-     */
-    static int16_t getPctFromCSQ(int16_t csq);
-    /**
-     * @brief Get signal percent from CSQ.
-     *
-     * @param rssi The RSSI in dBm.
-     * @return The estimated percent of maximum signal strength.
-     */
-    static int16_t getPctFromRSSI(int16_t rssi);
-    /**@}*/
-
-    /**
-     * @anchor modem_helper_functions
-     * @name Helper functions
-     */
-    /**@{*/
-    /**
-     * @brief Turn on the modem LED/alert pin - sets it `HIGH`
-     */
-    void modemLEDOn();
-    /**
-     * @brief Turn off the modem LED/alert pin - sets it `LOW`
-     */
-    void modemLEDOff();
-    /**
-     * @brief Set the processor pin modes (input vs output, with and without
-     * pull-up) for all pins connected between the modem module and the mcu.
-     */
-    virtual void setModemPinModes();
-    /**@}*/
-
-    /**
-     * @anchor modem_virtual_functions
-     * @name Pure virtual functions for each modem to implement
-     */
-    /**@{*/
-    /**
-     * @brief Check whether there is an active internet connection available.
-     *
-     * @return True if there is an active data connection to the
-     * internet.
-     */
-    virtual bool isInternetAvailable() = 0;
-    /**
-     * @brief Perform the parts of the modem sleep process that are unique to a
-     * specific module, as opposed to the parts of setup that are common to all
-     * modem modules.
-     *
-     * @return True if the unique part of the sleep function ran
-     * successfully.
-     */
-    virtual bool modemSleepFxn() = 0;
-    /**
-     * @brief Perform the parts of the modem wake up process that are unique to
-     * a specific module, as opposed to the parts of setup that are common to
-     * all modem modules.
-     *
-     * @return True if the unique part of the wake function ran
-     * successfully - does _NOT_ indicate that the modem is now responsive.
-     */
-    virtual bool modemWakeFxn() = 0;
-    /**
-     * @brief Perform the parts of the modem set up process that are unique to a
-     * specific module, as opposed to the parts of setup that are common to all
-     * modem modules.
-     *
-     * For most modules, this function is created by the #MS_MODEM_EXTRA_SETUP
-     * macro which runs the TinyGSM modem init() and client init() functions.
-     *
-     * @return True if the extra setup succeeded.
-     */
-    virtual bool extraModemSetup() = 0;
-    /**
-     * @brief Check if the modem was awake using all possible means.
-     *
-     * If possible, we always want to check if the modem was awake before
-     * attempting to wake it up.  Most cellular modules are woken and put to
-     * sleep by identical pulses on a sleep or "power" pin.  We don't want to
-     * accidentally pulse an already on modem to off.
-     *
-     * For most modules, this function is created by the #MS_IS_MODEM_AWAKE
-     * macro.
-     *
-     * @note It's possible that the status pin is on, but the modem is actually
-     * mid-shutdown.  In that case, we'll mistakenly skip re-waking it.  This
-     * only applies to modules with a pulse wake (i.e., non-zero wake time). For
-     * all modules that do pulse on, where possible I've selected a pulse time
-     * that is sufficient to wake but not quite long enough to put it to sleep
-     * and am using AT commands to sleep.  This *should* keep everything lined
-     * up.
-     *
-     * @return True if the modem is already awake.
-     */
-    virtual bool isModemAwake() = 0;
-    /**@}*/
-
-    /**
-     * @brief Convert the 4 bytes returned on the NIST daytime protocol to the
-     * number of seconds since January 1, 1970 in UTC.
-     *
-     * NIST supplies a 4 byte response to any TCP connection made on port 37.
-     * This is the 32-bit number of seconds since January 1, 1970 00:00:00 UTC.
-     * The server closes the TCP connection immediately after sending the data,
-     * so there is no need to close it
-     *
-     * @param nistBytes 4 bytes from NIST
-     * @return the number of seconds since January 1, 1970 00:00:00
-     * UTC
-     */
-    static uint32_t parseNISTBytes(byte nistBytes[4]);
-
-    /**
-     * @anchor modem_ctor_variables
-     * @name Member variables set in the constructor
-     * These are all related to expected modem response times and the pin
-     * connections between the modem module and the logger MCU.
-     */
-    /**@{*/
-    /**
-     * @brief The digital pin number of the mcu pin controlling power to the
-     * modem (active `HIGH`).
-     *
-     * Should be set to a negative number if the modem should be continuously
-     * powered or the power cannot be controlled by the MCU.
-     */
-    int8_t _powerPin;
-    /**
-     * @brief The digital pin number of the mcu pin connected to the modem
-     * status output pin.
-     *
-     * Should be set to a negative number if the modem status pin cannot be
-     * read.
-     */
-    int8_t _statusPin;
-    /**
-     * @brief The level (`LOW` or `HIGH`) of the #_statusPin when the modem
-     * is active.
-     */
-    bool _statusLevel;
-    /**
-     * @brief The digital pin number of the pin on the mcu attached to the hard
-     * or panic reset pin of the modem.
-     *
-     * Should be set to a negative number if the modem reset pin is not
-     * connected to the MCU.
-     */
-    int8_t _modemResetPin;
-    /**
-     * @brief The level (`LOW` or `HIGH`) of the #_modemResetPin which will
-     * cause the modem to reset.
-     */
-    bool _resetLevel;
-    /**
-     * @brief The length of time in milliseconds at #_resetLevel needed on
-     * #_modemResetPin to reset the modem.
-     */
-    uint32_t _resetPulse_ms;
-    /**
-     * @brief The digital pin number of a pin on the mcu used to request the
-     * modem enter its lowest possible power state.
-     *
-     * Should be set to a negative number if there is no pin usable for deep
-     * sleep modes or it is not accessible to the MCU.
-     */
-    int8_t _modemSleepRqPin;
-    /**
-     * @brief The level (`LOW` or `HIGH`) on the #_modemSleepRqPin used to
-     * **wake** the modem.
-     */
-    bool _wakeLevel;
-    /**
-     * @brief The length of pulse in milliseconds at #_wakeLevel needed on the
-     * #_modemSleepRqPin to wake the modem.
-     *
-     * Set to 0 if the pin must be continuously held at #_wakeLevel to keep the
-     * modem active.
-     */
-    uint32_t _wakePulse_ms;
-    /**
-     * @brief The time in milliseconds between when #modemWake() is run and when
-     * the #_statusPin is expected to be at #_statusLevel.
-     */
-    uint32_t _statusTime_ms;
-    /**
-     * @brief The maximum length of time in milliseconds between when the modem
-     * is requested to enter lowest power state (#modemSleep()) and when it
-     * should have completed necessary steps to shut down.
-     */
-    uint32_t _disconnectTime_ms;
-    /**
-     * @brief The time in milliseconds between when the modem is powered and
-     * when it is able to receive a wake command.
-     *
-     * That is, the time that should be allowed between #modemPowerUp() and
-     * #modemWake().
-     */
-    uint32_t _wakeDelayTime_ms;
-    /**
-     * @brief The time in milliseconds between when the modem is awake and when
-     * its serial ports reach full functionality and are ready to accept AT
-     * commands.
-     *
-     * That is, the time that should be allowed between #modemWake() and
-     * init().  If the modem does not respond within this time frame (plus a
-     * 500ms buffer) a #modemHardReset() will be attempted.
-     */
-    uint32_t _max_at_response_time_ms;
-    /**@}*/
-
-    /**
-     * @anchor modem_flag_variables
-     * @name Flags and other member variables only used internally
-     */
-    /**@{*/
-    /**
-     * @brief The digital pin number of a pin on the mcu used to indicate the
-     * modem's current activity state.
-     *
-     * Intended to be a pin attached to a LED.
-     *
-     * Should be set to a negative number if no LED is available.
-     */
-    int8_t _modemLEDPin;
-
-    /**
-     * @brief The processor elapsed time when the power was turned on for the
-     * modem.
-     *
-     * The #_millisPowerOn value is set in the modemPowerUp()
-     * function.  It is un-set in the modemSleepPowerDown() function.
-     */
-    uint32_t _millisPowerOn = 0;
-
-    /**
-     * @brief The processor elapsed time when the a connection to the NIST time
-     * server was last attempted.
-     *
-     * NIST documentation is very clear that it must not be contacted more than
-     * once every 4 seconds.
-     */
-    uint32_t _lastNISTrequest = 0;
-    /**
-     * @brief Flag.  True indicates that the modem has already successfully
-     * completed setup.
-     */
-    bool _hasBeenSetup = false;
-    /**@}*/
-
     // NOTE:  These must be static so that the modem variables can call the
     // member functions that return them.  (Non-static member functions cannot
     // be called without an object.)
@@ -1108,6 +948,7 @@ class loggerModem {
      * @name Static member variables used to hold modem metadata
      */
     /**@{*/
+ protected:
     /**
      * @brief The last stored RSSI value
      *
@@ -1153,80 +994,6 @@ class loggerModem {
     // static float _priorActivationDuration;
     // static float _priorPoweredDuration;
     /**@}*/
-
-    /**
-     * @brief The modem name
-     *
-     * Set in the init() portion of the #modemSetup().
-     * Returned by #getModemName().
-     */
-    String _modemName = "unspecified modem";
-
-    // modemType gsmModem;
-    // modemClientType gsmClient;
-
-    // @todo: Implement these for all modems; most support it.
-
-    /**
-     * @brief The modem hardware version.
-     *
-     * Set in #modemSetup().
-     * Returned as a portion of the #getModemDevId().
-     *
-     * @todo Implement this for modems other than the XBee WiFi
-     */
-    String _modemHwVersion;
-    /**
-     * @brief The modem firmware version.
-     *
-     * Set in #modemSetup().
-     * Returned as a portion of the #getModemDevId().
-     *
-     * @todo Implement this for modems other than the XBee WiFi
-     */
-    String _modemFwVersion;
-    /**
-     * @brief The modem serial number.
-     *
-     * Set in #modemSetup().
-     * Returned as a portion of the #getModemDevId().
-     *
-     * @todo Implement this for modems other than the XBee WiFi
-     */
-    String _modemSerialNumber;
-
-    /**
-     * @brief The timezone that the modem will attempt to sync itself to.
-     *
-     * This doesn't *have* to be the same as the RTC or logger timezone, but
-     * you'd be stupid to make it different.
-     *
-     * @note This must be set for SSL connections to work! If the modem does not
-     * have an accurate internal time when attempting an SSL connection, the
-     * connection will fail because the certificates will not be within their
-     * specified valid time ranges.
-     */
-    int8_t _modemUTCOffset = 0;
-
-    /**
-     * @brief An 8-bit code for the enabled modem polling variables
-     *
-     * Setting a bit to 0 will disable polling, to 1 will enable it.  By default
-     * no polling is enabled to save time and power by not requesting
-     * unnecessary information from the modem.  When modem measured variables
-     * are attached to a modem, polling for those results is automatically
-     * enabled.
-     *
-     * Bit | Variable Class | Relevent Define
-     * ----|----------------|----------------
-     *  0  | #Modem_RSSI | #MODEM_RSSI_ENABLE_BITMASK
-     *  1  | #Modem_SignalPercent | #MODEM_PERCENT_SIGNAL_ENABLE_BITMASK
-     *  2  | #Modem_BatteryState | #MODEM_BATTERY_STATE_ENABLE_BITMASK
-     *  3  | #Modem_BatteryPercent | #MODEM_BATTERY_PERCENT_ENABLE_BITMASK
-     *  4  | #Modem_BatteryVoltage | #MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK
-     *  5  | #Modem_Temp | #MODEM_TEMPERATURE_ENABLE_BITMASK
-     */
-    uint8_t _pollModemMetaData = 0;
 };
 
 // Classes for the modem variables
