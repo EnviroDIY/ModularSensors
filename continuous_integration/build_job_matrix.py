@@ -4,11 +4,9 @@ Custom matrix builder for ModularSensors step 3 - Build Matrix.
 
 This script builds the ModularSensors-specific job matrix by:
 1. Reading the ModSensorConfig.h file from the src directory
-2. Loading the extra PlatformIO configuration
-3. Parsing boards from the PlatformIO configuration
-4. Reading build flags from the menu example file
-5. Assembling the job matrix with ModularSensors-specific combinations
-6. Returning the final filtered matrix
+2. Reading build flags from the menu example file
+3. Assembling the job matrix with ModularSensors-specific combinations
+4. Returning the final filtered matrix
 
 This is designed to be called from the CI pipeline as a custom builder.
 See: https://github.com/EnviroDIY/workflows
@@ -17,20 +15,14 @@ See: https://github.com/EnviroDIY/workflows
 import os
 import re
 import json
-from platformio.project.config import ProjectConfig
 
+# %%
 # Import helper functions from the CI pipeline
-from matrix_utils import dict_product, remove_duplicate_dicts
+from build_utils import dict_product, remove_nested_duplicates
 
+# %%
 # ModularSensors-specific configuration
 ms_config_file = "ModSensorConfig.h"
-
-non_acli_flag = [
-    "-Wall",
-    "-Wextra",
-    "-D SDI12_EXTERNAL_PCINT",
-    "-D NEOSWSERIAL_EXTERNAL_PCINT",
-]
 
 
 def build_custom_matrix(config: dict) -> list[dict]:
@@ -38,46 +30,20 @@ def build_custom_matrix(config: dict) -> list[dict]:
     Build the ModularSensors-specific job matrix.
 
     This is the main entry point called by the CI pipeline (3_build_matrix.py).
-
-    Args:
-        config: Dictionary containing:
-            - workspace_path: Root directory of the repository
-            - ci_path: Path to continuous_integration directory
-            - examples_path: Path to examples directory
-            - compiler_list: List of compilers (e.g., ["arduino-cli", "pio"])
-            - examples_to_build: List of examples to build
-            - boards: List of boards from environment (may be empty - will use pio_config)
-
-    Returns:
-        Final matrix as list of dictionaries with ModularSensors customizations applied
     """
+
+    # %%
     # Extract config values
     workspace_path = config.get("workspace_path", os.getcwd())
-    ci_path = config.get(
-        "ci_path", os.path.join(workspace_path, "continuous_integration")
-    )
     examples_path = config.get(
         "examples_path", os.path.join(workspace_path, "examples")
     )
     compiler_list = config.get("compiler_list", ["arduino-cli", "pio"])
-    examples_to_build = config.get("examples_to_build", [])
+    build_envs = config.get("build_envs", [])
+    build_fqbns = config.get("build_fqbns", [])
+    boards = build_envs + build_fqbns
 
     print("=== ModularSensors Custom Matrix Builder ===")
-
-    # %%
-    # Load and extend the PlatformIO configuration
-    pio_config_file = os.path.join(ci_path, "platformio.ini")
-    pio_config = ProjectConfig(pio_config_file)
-
-    pio_config_expanded = pio_config
-    pio_extra_config_file = os.path.join(ci_path, "platformio_extra_flags.ini")
-    if os.path.isfile(pio_extra_config_file):
-        pio_config_expanded.read(pio_extra_config_file)
-        print(f"Loaded extra PlatformIO configuration from platformio_extra_flags.ini")
-
-    # Parse the boards from the PlatformIO configuration
-    boards = list(pio_config.envs())
-    print(f"Found {len(boards)} boards from platformio.ini")
 
     # %%
     # Read build flags from the menu-a-la-carte example
@@ -209,6 +175,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
     assembled_matrix += non_menu_matrix
     print(f"Total matrix items with common examples: {len(assembled_matrix)}")
 
+    # %%
     mayfly_only_matrix = list(
         dict_product(
             {
@@ -231,6 +198,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         f"Total matrix items after adding Mayfly-specific examples: {len(assembled_matrix)}"
     )
 
+    # %%
     drwi_matrix = list(
         dict_product(
             {
@@ -255,10 +223,11 @@ def build_custom_matrix(config: dict) -> list[dict]:
     assembled_matrix += drwi_matrix
     print(f"Total matrix items after adding DRWI examples: {len(assembled_matrix)}")
 
+    # %%
     simple_expandable_lists = {
-        "All Sensor": all_sensor_flags,
-        "All Modem": all_modem_flags,
-        "All Publisher": all_publisher_flags,
+        "All Sensors": all_sensor_flags,
+        "All Modems": all_modem_flags,
+        "All Publishers": all_publisher_flags,
         "Array Types": array_flags,
         "Loop Types": loop_flags,
     }
@@ -294,6 +263,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         f"Total matrix items before adding special configurations: {len(assembled_matrix)}"
     )
 
+    # %%
     serial_sensor_flags = [
         flag
         for flag in all_sensor_flags
@@ -321,6 +291,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         f"Total matrix items after adding software serial configurations: {len(assembled_matrix)}"
     )
 
+    # %%
     software_wire_matrix = list(
         dict_product(
             {
@@ -365,6 +336,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         f"Total matrix items after adding I2C Rain software wire configurations: {len(assembled_matrix)}"
     )
 
+    # %%
     sdi_sensor_flags = [
         flag
         for flag in all_sensor_flags
@@ -447,7 +419,12 @@ def build_custom_matrix(config: dict) -> list[dict]:
             x["job_group"],
         ),
     )
-    final_matrix = remove_duplicate_dicts(assembled_matrix)
+    final_matrix = remove_nested_duplicates(assembled_matrix)
     print(f"Final filtered matrix: {len(final_matrix)}")
 
+    # %%
     return final_matrix
+
+
+# %%
+# cSpell:ignore fqbns PCINT Wextra
