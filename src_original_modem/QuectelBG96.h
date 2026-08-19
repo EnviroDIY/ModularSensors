@@ -1,16 +1,62 @@
 /**
- * @file QuectelBG96_Template_Example.h
+ * @file QuectelBG96.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Example of QuectelBG96 using the new template-based architecture
- *
- * This file demonstrates how to migrate from the macro-based approach to the
- * template-based approach. This is NOT yet integrated into the build - it's
- * a reference implementation showing the migration path.
+ * @brief Contains the QuectelBG96 subclass of loggerModem for Dragino,
+ * Nimbelink, or any other module based on the Quectel BG96.
  */
+/* clang-format off */
+/**
+ * @defgroup modem_bg96 Quectel BG96
+ *
+ * @ingroup the_modems
+ *
+ * @tableofcontents
+ * @m_footernavigation
+ *
+ * @section modem_bg96_notes Introduction
+ *
+ * The Quectel BG96 is another LTE CatM1/NB1 chip.
+ * This same constructor should work for most boards based on this chip,
+ * including the [Dragino](https://www.dragino.com/products/nb-iot/item/132-nb-iot-bee.html)
+ * and [Nimbelink](https://nimbelink.com/products/4g-lte-m-global-quectel/) boards.
+ *
+ * This is the **only** cellular module that I have found to function well on
+ * only a 500mA power supply - provided the cellular signal is strong and 2G
+ * fallback isn't required.
+ * To enable 2G fallback, expect power draws of up to 2A.
+ *
+ * @section modem_bg96_mayfly Connecting a BG96 to a Mayfly
+ *
+ * To my knowledge, there are not any Quectel BG96 modules available that can
+ * directly connect to a Mayfly.
+ * Although both the Dragino and Nimbelink boards linked above would fit the
+ * physical XBee footprint on the Mayfly, neither will work without some
+ * additional interface or other modifications.
+ * The Dragino module comes really close, but it will not actually work because
+ * the BG96 requires more power than the Mayfly can provide on its own but
+ * _cannot_ be connected directly to a LiPo because it cannot handle a voltage
+ * over 3.6V.
+ * The Nimbelink module has the same power supply problem, voltage reference
+ * problems, and requires 3 extra ground pins that aren't available on the Mayfly.
+ *
+ * @section modem_bg96_docs Manufacturer Documentation
+ * The module datasheet and AT commands are available here:
+ * https://www.quectel.com/product/bg96.htm
+ *
+ * @section modem_bg96_ctor Modem Constructor
+ * {{ @ref QuectelBG96::QuectelBG96 }}
+ *
+ * ___
+ * @section modem_bg96_examples Example Code
+ * The Quectel BG96 is used in the @menulink{quectel_bg96}.
+ *
+ * @menusnip{quectel_bg96}
+ */
+/* clang-format on */
 
 // Header Guards
 #ifndef SRC_MODEMS_QUECTELBG96_H_
@@ -126,15 +172,8 @@
 /**
  * @brief The loggerModem subclass for Dragino, Nimbelink, or any other module
  * based on the [Quectel BG96](@ref modem_bg96).
- *
- * This example demonstrates the NEW template-based approach.
  */
-class QuectelBG96
-    : public loggerModemImpl<TinyGsmBG96,                 // Modem Type
-                             TinyGsmBG96::GsmClientBG96,  // TCP Client Type
-                             TinyGsmBG96::GsmClientSecureBG96  // SSL Client
-                                                               // Type
-                             > {
+class QuectelBG96 : public loggerModem {
  public:
     /**
      * @brief Construct a new Quectel BG96 object
@@ -163,26 +202,51 @@ class QuectelBG96
      */
     ~QuectelBG96() override = default;
 
-    // NEW: Most functions are inherited from template!
-    // Only need to declare/override what's unique
+    bool modemWake() override;
 
-    // Hard reset has device-specific implementation
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
+    void disconnectInternet() override;
+
+    Client* createClient() override;
+    void    deleteClient(Client* client) override;
+    Client* createSecureClient() override;
+    void    deleteSecureClient(Client* client) override;
+    Client* createSecureClient(SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) override;
+    Client* createSecureClient(
+        const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
+    Client* createSecureClient(
+        const char* pskTableName,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
+
+    uint32_t getNISTTime() override;
+
+    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
+    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                               int16_t& milliVolts) override;
+    float getModemChipTemperature() override;
+
     bool modemHardReset() override;
 
-    // NOTE: gsmModem is now inherited from template as protected member!
-    // OLD: TinyGsmBG96 gsmModem; (was public)
-    // NEW: (inherited as protected from loggerModemImpl<TinyGsmBG96>)
+#ifdef MS_QUECTELBG96_DEBUG_DEEP
+    StreamDebugger _modemATDebugger;
+#endif
+
+    /**
+     * @brief Public reference to the TinyGSM modem.
+     */
+    TinyGsmBG96 gsmModem;
 
  protected:
-    // These are inherited from template with default implementations:
-    // - bool isInternetAvailable() override;
-    bool modemWakeFxn() override;
+    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
+    bool modemWakeFxn() override;
     bool extraModemSetup() override;
-    // - bool isModemAwake() override;
-
-    // Only override connectWithCredentials to provide APN
-    bool connectWithCredentials() override;
+    bool isModemAwake() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

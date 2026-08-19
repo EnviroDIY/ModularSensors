@@ -635,7 +635,7 @@
 /**
  * @brief Creates a getNISTTime() function for a specific modem subclass.
  *
- * This gets the time from NIST via TIME protocol (rfc868)
+ * This gets the time from NIST via TIME protocol (RFC-868)
  *
  * This would be much more efficient if done over UDP, but I'm doing it over TCP
  * because I don't have a UDP library for all the modems.
@@ -723,7 +723,7 @@
             /** Make TCP connection. */                                      \
             TinyGsm##TinyGSMType::GsmClient##TinyGSMType gsmClient(          \
                 gsmModem); /*new client, default mux*/                       \
-            MS_DBG(F("\nConnecting to NIST daytime Server"));                \
+            MS_DBG(F("\nConnecting to NIST time server"));                   \
             bool connectionMade = gsmClient.connect("time.nist.gov",         \
                                                     TIME_PROTOCOL_PORT, 15); \
                                                                              \
@@ -750,7 +750,7 @@
                         MS_DBG(F("Invalid/Zero NIST timestamp"));            \
                     }                                                        \
                 } else {                                                     \
-                    MS_DBG(F("NIST Time server did not respond!"));          \
+                    MS_DBG(F("NIST time server did not respond!"));          \
                     if (gsmClient.connected()) gsmClient.stop();             \
                 }                                                            \
             } else {                                                         \

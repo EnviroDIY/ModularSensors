@@ -210,7 +210,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         }
 
         /* Make TCP connection */
-        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        MS_DBG(F("\nConnecting to NIST time server"));
         bool connectionMade = false;
 
         /* This is the IP address of time-e-wwv.nist.gov  */
@@ -244,7 +244,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
                     MS_DBG(F("NIST response was invalid!"));
                 }
             } else {
-                MS_DBG(F("NIST Time server did not respond!"));
+                MS_DBG(F("NIST time server did not respond!"));
                 gsmClient.stop();
             }
         } else {

@@ -361,7 +361,7 @@ void DigiXBeeWifi::disconnectInternet() {
 }
 
 
-// Get the time from NIST via TIME protocol (rfc868)
+// Get the time from NIST via TIME protocol (RFC-868)
 uint32_t DigiXBeeWifi::getNISTTime() {
     // bail if not connected to the internet
     if (!isInternetAvailable()) {
@@ -384,7 +384,7 @@ uint32_t DigiXBeeWifi::getNISTTime() {
         // of data. FUTURE Users are *strongly* encouraged to upgrade to the
         // network time protocol (NTP), which is both more accurate and more
         // robust.
-        MS_DBG(F("\nConnecting to NIST daytime Server"));
+        MS_DBG(F("\nConnecting to NIST time server"));
         bool connectionMade = false;
 
         // These are is the IP address of time-[a,b,c,d]-wwv.nist.gov
@@ -394,7 +394,7 @@ uint32_t DigiXBeeWifi::getNISTTime() {
             IPAddress(132, 163, 97, 1), IPAddress(132, 163, 97, 2),
             IPAddress(132, 163, 97, 3), IPAddress(132, 163, 97, 4),
             IPAddress(132, 163, 97, 6), IPAddress(132, 163, 97, 8)};
-        MS_DBG(F("\nConnecting to NIST daytime Server at ip"), nistIPs[i],
+        MS_DBG(F("\nConnecting to NIST time server at ip"), nistIPs[i],
                F("attempt"), i, F("of"), NIST_SERVER_RETRYS);
 
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
@@ -424,7 +424,7 @@ uint32_t DigiXBeeWifi::getNISTTime() {
                     MS_DBG(F("NIST response was invalid!"));
                 }
             } else {
-                MS_DBG(F("NIST Time server did not respond!"));
+                MS_DBG(F("NIST time server did not respond!"));
                 gsmClient.stop();
             }
         } else {
