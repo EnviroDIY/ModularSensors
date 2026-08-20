@@ -48,23 +48,18 @@
  *
  * @tparam Derived The derived class type that uses this mixin
  */
-template <typename Derived>
+template <typename Derived, typename GsmModemType_T>
 class loggerModemSensingMixin {
- protected:
-    /**
-     * @brief Helper function to cast this pointer to derived type.
-     * @return Pointer to the derived class instance
-     */
-    Derived* derived() {
-        return static_cast<Derived*>(this);
-    }
+ public:
+    // Type aliases to avoid incomplete type issues
+    using GsmModemType = GsmModemType_T;
 
-    /**
-     * @brief Const helper function to cast this pointer to derived type.
-     * @return Const pointer to the derived class instance
-     */
-    const Derived* derivedConst() const {
-        return static_cast<const Derived*>(this);
+ protected:
+    inline Derived& derived() {
+        return static_cast<Derived&>(*this);
+    }
+    inline const Derived& derived() const {
+        return static_cast<const Derived&>(*this);
     }
 
     /* ===================================================================== */
@@ -88,8 +83,7 @@ class loggerModemSensingMixin {
     /* ===================================================================== */
  public:
     /**
-     * @brief Get the signal quality from the modem and write the values to the
-     * supplied non-constant references.
+     * @brief Get the signal quality from the modem
      *
      * @remark We can't distinguish between a bad modem response, no modem
      * response, and a real response from the modem of no service/signal.
@@ -105,9 +99,9 @@ class loggerModemSensingMixin {
      */
     virtual bool getModemSignalQuality(int16_t& rssi, int16_t& percent) {
         MS_DBG(F("Getting signal quality:"));
-        int16_t signalQual = derived()->gsmModem.getSignalQuality();
+        int16_t signalQual = derived().gsmModem.getSignalQuality();
         MS_DBG(F("Raw signal quality:"), signalQual);
-        derived()->convertSignalQuality(
+        derived().convertSignalQuality(
             signalQual, rssi, percent,
             typename Derived::SignalQualityIsRSSI::type());
         return true;
@@ -203,7 +197,8 @@ class loggerModemSensingMixin {
     /* ===================================================================== */
  public:
     /**
-     * @brief Get the modem's battery stats
+     * @brief Get the modem's battery information  - this may or may not be a
+     * valid values depending on the module and breakout.
      *
      * This populates the entered references with invalid values for modems
      * where such data is not available.
@@ -230,10 +225,9 @@ class loggerModemSensingMixin {
      */
     virtual bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
                                       int16_t& milliVolts) {
-        return derived()->getModemBatteryStats(
+        return getModemBatteryStats(
             chargeState, percent, milliVolts,
-            typename TinyGsmCapabilities::has_battery<
-                typename Derived::GsmModemType>::type());
+            typename TinyGsmCapabilities::has_battery<GsmModemType>::type());
     }
 
  protected:
@@ -246,8 +240,8 @@ class loggerModemSensingMixin {
                               int16_t& milliVolts,
                               TinyGsmCapabilities::true_type) {
         MS_DBG(F("Getting modem battery data:"));
-        return derived()->gsmModem.getBattStats(chargeState, percent,
-                                                milliVolts);
+        return derived().gsmModem.getBattStats(chargeState, percent,
+                                               milliVolts);
     }
 
     /**
@@ -273,12 +267,16 @@ class loggerModemSensingMixin {
     /**
      * @brief Get the current temperature provided by the modem module.
      *
+     * @remark This is **not** a measurement of the ambient temperature, it only
+     * reflects the temperature of the modem chip itself.  This temperature is
+     * expected to be above ambient temperature.
+     *
      * @return The modem temperature in degrees Celsius
      */
     virtual float getModemChipTemperature() {
-        return derived()->getModemChipTemperature(
+        return getModemChipTemperature(
             typename TinyGsmCapabilities::has_temperature<
-                typename Derived::GsmModemType>::type());
+                GsmModemType>::type());
     }
 
  protected:
@@ -289,7 +287,7 @@ class loggerModemSensingMixin {
      */
     float getModemChipTemperature(TinyGsmCapabilities::true_type) {
         MS_DBG(F("Getting temperature:"));
-        float temp = derived()->gsmModem.getTemperature();
+        float temp = derived().gsmModem.getTemperature();
         MS_DBG(F("Temperature:"), temp);
         return temp;
     }
@@ -303,280 +301,6 @@ class loggerModemSensingMixin {
         MS_DBG(F("This modem doesn't return temperature!"));
         return static_cast<float>(MS_INVALID_VALUE);
     }
-
-    /* ===================================================================== */
-    /* Update Modem Metadata                                                 */
-    /* ===================================================================== */
- public:
-    /**
-     * @brief Update all stored modem metadata.
-     *
-     * This polls the modem for signal quality, battery stats, and chip
-     * temperature based on the configured polling bitmask. The results are
-     * stored in static member variables for later retrieval by the static
-     * getter functions.
-     *
-     * @return True if all requested metadata was successfully polled; false
-     * otherwise
-     */
-    virtual bool updateModemMetadata() {
-        bool success = true;
-
-        // Unset whatever we had previously
-        derived()->_priorRSSI           = MS_INVALID_VALUE;
-        derived()->_priorSignalPercent  = MS_INVALID_VALUE;
-        derived()->_priorBatteryState   = MS_INVALID_VALUE;
-        derived()->_priorBatteryPercent = MS_INVALID_VALUE;
-        derived()->_priorBatteryVoltage = MS_INVALID_VALUE;
-        derived()->_priorModemTemp      = MS_INVALID_VALUE;
-
-        // Initialize variables
-        int16_t rssi     = MS_INVALID_VALUE;
-        int16_t percent  = MS_INVALID_VALUE;
-        int8_t  state    = 99;
-        int8_t  bpercent = -99;
-        int16_t volt     = 9999;
-
-        MS_DBG(F("Modem polling settings:"),
-               String(derived()->_pollModemMetaData, BIN));
-
-        if ((derived()->_pollModemMetaData & MODEM_RSSI_ENABLE_BITMASK) ==
-                MODEM_RSSI_ENABLE_BITMASK ||
-            (derived()->_pollModemMetaData &
-             MODEM_PERCENT_SIGNAL_ENABLE_BITMASK) ==
-                MODEM_PERCENT_SIGNAL_ENABLE_BITMASK) {
-            // Try for up to 15 seconds to get a valid signal quality
-            uint32_t startMillis = millis();
-            do {
-                success &= derived()->getModemSignalQuality(rssi, percent);
-                derived()->_priorRSSI          = rssi;
-                derived()->_priorSignalPercent = percent;
-                if (rssi != 0 && rssi != MS_INVALID_VALUE) break;
-                delay(250);
-            } while ((rssi == 0 || rssi == MS_INVALID_VALUE) &&
-                     millis() - startMillis < 15000L && success);
-            MS_DBG(F("CURRENT RSSI:"), rssi);
-            MS_DBG(F("CURRENT Percent signal strength:"), percent);
-        } else {
-            MS_DBG(F("Polling for both RSSI and signal strength is disabled"));
-        }
-
-        if ((derived()->_pollModemMetaData &
-             MODEM_BATTERY_STATE_ENABLE_BITMASK) ==
-                MODEM_BATTERY_STATE_ENABLE_BITMASK ||
-            (derived()->_pollModemMetaData &
-             MODEM_BATTERY_PERCENT_ENABLE_BITMASK) ==
-                MODEM_BATTERY_PERCENT_ENABLE_BITMASK ||
-            (derived()->_pollModemMetaData &
-             MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) ==
-                MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) {
-            success &= derived()->getModemBatteryStats(state, bpercent, volt);
-            MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
-            MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
-            MS_DBG(F("CURRENT Modem Battery Voltage:"), volt);
-            if (state != 99)
-                derived()->_priorBatteryState = static_cast<float>(state);
-            else
-                derived()->_priorBatteryState =
-                    static_cast<float>(MS_INVALID_VALUE);
-
-            if (bpercent != -99)
-                derived()->_priorBatteryPercent = static_cast<float>(bpercent);
-            else
-                derived()->_priorBatteryPercent =
-                    static_cast<float>(MS_INVALID_VALUE);
-
-            if (volt != 9999)
-                derived()->_priorBatteryVoltage = static_cast<float>(volt);
-            else
-                derived()->_priorBatteryVoltage =
-                    static_cast<float>(MS_INVALID_VALUE);
-        } else {
-            MS_DBG(F("Polling for all modem battery parameters is disabled"));
-        }
-
-        if ((derived()->_pollModemMetaData &
-             MODEM_TEMPERATURE_ENABLE_BITMASK) ==
-            MODEM_TEMPERATURE_ENABLE_BITMASK) {
-            derived()->_priorModemTemp = derived()->getModemChipTemperature();
-            MS_DBG(F("CURRENT Modem Chip Temperature:"),
-                   derived()->_priorModemTemp);
-        } else {
-            MS_DBG(F("Polling for modem chip temperature is disabled"));
-        }
-
-        return success;
-    }
-    /**@}*/
-
-    /* ===================================================================== */
-    /* Static Functions                                                      */
-    /* ===================================================================== */
-    /**
-     * @anchor modem_static_functions
-     * @name Functions to return the current value of static member variables
-     *
-     * These functions do **NOT** query the modem for new values, they return
-     * the stored value from the last poll.
-     *
-     * @note These must be static so that the modem variables can call
-     * them.  (Non-static member functions cannot be called without an object.)
-     */
-    /**@{*/
- public:
-    /**
-     * @brief Get the stored Modem RSSI value.
-     *
-     * @note Does NOT query the modem for a new value.
-     *
-     * @return The stored RSSI
-     */
-    static float getModemRSSI() {
-        float retVal = Derived::_priorRSSI;
-        MS_DEEP_DBG(F("PRIOR RSSI:"), retVal);
-        return retVal;
-    }
-
-    /**
-     * @brief Get the stored modem signal strength as a percent.
-     *
-     * @note Does NOT query the modem for a new value.
-     *
-     * @return The stored signal strength percent
-     */
-    static float getModemSignalPercent() {
-        float retVal = Derived::_priorSignalPercent;
-        MS_DEEP_DBG(F("PRIOR Percent signal strength:"), retVal);
-        return retVal;
-    }
-
-    /**
-     * @brief Get the stored modem battery charge state.
-     *
-     * @note Does NOT query the modem for a new value.
-     *
-     * @return The stored battery charge state
-     */
-    static float getModemBatteryChargeState() {
-        float retVal = Derived::_priorBatteryState;
-        MS_DEEP_DBG(F("PRIOR Modem Battery Charge State:"), retVal);
-        return retVal;
-    }
-
-    /**
-     * @brief Get the stored modem battery charge percent.
-     *
-     * @note Does NOT query the modem for a new value.
-     *
-     * @return The stored battery charge percent
-     */
-    static float getModemBatteryChargePercent() {
-        float retVal = Derived::_priorBatteryPercent;
-        MS_DEEP_DBG(F("PRIOR Modem Battery Charge Percentage:"), retVal);
-        return retVal;
-    }
-
-    /**
-     * @brief Get the stored modem battery voltage.
-     *
-     * @note Does NOT query the modem for a new value.
-     *
-     * @return The stored battery voltage in mV
-     */
-    static float getModemBatteryVoltage() {
-        float retVal = Derived::_priorBatteryVoltage;
-        MS_DEEP_DBG(F("PRIOR Modem Battery Voltage:"), retVal);
-        return retVal;
-    }
-
-    /**
-     * @brief Get the stored modem temperature.
-     *
-     * @note Does NOT query the modem for a new value.
-     *
-     * @return The stored temperature in degrees Celsius
-     */
-    static float getModemTemperature() {
-        float retVal = Derived::_priorModemTemp;
-        MS_DEEP_DBG(F("PRIOR Modem Chip Temperature:"), retVal);
-        return retVal;
-    }
-    /**@}*/
-
-    /* ===================================================================== */
-    /* Polling Control                                                       */
-    /* ===================================================================== */
- public:
-    /**
-     * @brief Enables metadata polling for one or more modem measured
-     * variables. Setting this to 0b11111111 will enable polling for all modem
-     * measured variables.
-     *
-     * @param pollingBitmask The bitmask indicating which parameters to poll.
-     *
-     * @see loggerModem::_pollModemMetaData
-     *
-     * @note This will **not** disable polling for any unset bits in the
-     * provided bitmask.  It will only enable those bits that are set.
-     */
-    void enableMetadataPolling(uint8_t pollingBitmask) {
-        derived()->_pollModemMetaData |= pollingBitmask;
-    }
-
-    /**
-     * @brief Disables metadata polling for one or more modem measured
-     * variables.  Setting this to 0b11111111 will disable polling for all
-     * modem measured variables.
-     *
-     * @param pollingBitmask The bitmask indicating which parameters to disable.
-     *
-     * @see loggerModem::_pollModemMetaData
-     *
-     * @note This will **not** enable polling for any unset bits in the provided
-     * bitmask.  It will only disable polling for those bits that are set.
-     */
-    void disableMetadataPolling(uint8_t pollingBitmask) {
-        derived()->_pollModemMetaData &= ~pollingBitmask;
-    }
-
-    /**
-     * @brief Sets the complete bitmask for modem metadata polling.
-     *
-     * This will enable polling for 1 bits and disable polling for 0 bits.
-     * Setting this to 0 (0b00000000) will disable polling for all metadata
-     * parameters.  Setting it to 255 (0b11111111) will enable polling for all
-     * parameters.
-     *
-     * @param pollingBitmask The new polling bitmask.
-     *
-     * @see loggerModem::_pollModemMetaData
-     */
-    void setPollingMask(uint8_t pollingBitmask) {
-        derived()->_pollModemMetaData = pollingBitmask;
-    }
-
- protected:
-    /**
-     * @brief Polling mask for modem metadata
-     *
-     * An 8-bit code for the enabled modem polling variables
-     *
-     * Setting a bit to 0 will disable polling, to 1 will enable it.  By default
-     * no polling is enabled to save time and power by not requesting
-     * unnecessary information from the modem.  When modem measured variables
-     * are attached to a modem, polling for those results is automatically
-     * enabled.
-     *
-     * Bit | Variable Class | Relevent Define
-     * ----|----------------|----------------
-     *  0  | #Modem_RSSI | #MODEM_RSSI_ENABLE_BITMASK
-     *  1  | #Modem_SignalPercent | #MODEM_PERCENT_SIGNAL_ENABLE_BITMASK
-     *  2  | #Modem_BatteryState | #MODEM_BATTERY_STATE_ENABLE_BITMASK
-     *  3  | #Modem_BatteryPercent | #MODEM_BATTERY_PERCENT_ENABLE_BITMASK
-     *  4  | #Modem_BatteryVoltage | #MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK
-     *  5  | #Modem_Temp | #MODEM_TEMPERATURE_ENABLE_BITMASK
-     */
-    uint8_t _pollModemMetaData = 0;
 };
 
 // cSpell:ignore bpercent

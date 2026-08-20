@@ -43,7 +43,7 @@
 
 // Include other in-library and external dependencies
 #include "TinyGsmClientBG96.h"
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 #ifdef MS_QUECTELBG96_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -126,8 +126,6 @@
 /**
  * @brief The loggerModem subclass for Dragino, Nimbelink, or any other module
  * based on the [Quectel BG96](@ref modem_bg96).
- *
- * This example demonstrates the NEW template-based approach.
  */
 class QuectelBG96
     : public loggerModemImpl<TinyGsmBG96,                 // Modem Type
@@ -163,23 +161,13 @@ class QuectelBG96
      */
     ~QuectelBG96() override = default;
 
-    // NEW: Most functions are inherited from template!
-    // Only need to declare/override what's unique
-
     // Hard reset has device-specific implementation
     bool modemHardReset() override;
 
-    // NOTE: gsmModem is now inherited from template as protected member!
-    // OLD: TinyGsmBG96 gsmModem; (was public)
-    // NEW: (inherited as protected from loggerModemImpl<TinyGsmBG96>)
-
  protected:
-    // These are inherited from template with default implementations:
-    // - bool isInternetAvailable() override;
+    // Implementation of the pure virtual functions from loggerModemImpl
     bool modemWakeFxn() override;
     bool modemSleepFxn() override;
-    bool extraModemSetup() override;
-    // - bool isModemAwake() override;
 
     // Only override connectWithCredentials to provide APN
     bool connectWithCredentials() override;

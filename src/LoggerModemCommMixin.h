@@ -39,6 +39,8 @@
 
 #include <Arduino.h>
 #include <Client.h>
+
+// Include the TinyGSM capabilities file to check what the modem can do
 #include <TinyGsmCapabilities.h>
 // Include TinyGsmSSL for SSLAuthMode and SSLVersion enums
 #include <TinyGsmSSL.tpp>
@@ -64,20 +66,11 @@ class loggerModemCommMixin {
     using SecureClientType = SecureClientType_T;
 
  protected:
-    /**
-     * @brief Helper function to cast this pointer to derived type.
-     * @return Pointer to the derived class instance
-     */
-    Derived* derived() {
-        return static_cast<Derived*>(this);
+    inline Derived& derived() {
+        return static_cast<Derived&>(*this);
     }
-
-    /**
-     * @brief Const helper function to cast this pointer to derived type.
-     * @return Const pointer to the derived class instance
-     */
-    const Derived* derivedConst() const {
-        return static_cast<const Derived*>(this);
+    inline const Derived& derived() const {
+        return static_cast<const Derived&>(*this);
     }
 
     /* ===================================================================== */
@@ -119,23 +112,23 @@ class loggerModemCommMixin {
 
         // Power up, if necessary
         bool wasPowered = true;
-        if (derived()->_millisPowerOn == 0) {
-            static_cast<loggerModemPowerMixin<Derived>*>(derived())
-                ->modemPowerUp();
+        if (derived()._millisPowerOn == 0) {
+            static_cast<loggerModemPowerMixin<Derived>&>(derived())
+                .modemPowerUp();
             wasPowered = false;
         }
 
         // Check if the modem was awake, wake it if not
-        bool wasAwake = static_cast<loggerModemPowerMixin<Derived>*>(derived())
-                            ->isModemAwake();
+        bool wasAwake = static_cast<loggerModemPowerMixin<Derived>&>(derived())
+                            .isModemAwake();
         if (!wasAwake) {
             MS_DBG(F("Waiting for modem to boot after power on ..."));
-            while (millis() - derived()->_millisPowerOn <
-                   derived()->_wakeDelayTime_ms) {  // wait
+            while (millis() - derived()._millisPowerOn <
+                   derived()._wakeDelayTime_ms) {  // wait
             }
             MS_DBG(F("Waking up the modem to connect to the internet ..."));
-            success &= static_cast<loggerModemPowerMixin<Derived>*>(derived())
-                           ->modemWake();
+            success &= static_cast<loggerModemPowerMixin<Derived>&>(derived())
+                           .modemWake();
         } else {
             MS_DBG(F("Modem was already awake and should be ready."));
         }
@@ -167,13 +160,13 @@ class loggerModemCommMixin {
      */
     bool connectInternet(uint32_t maxConnectionTime,
                          TinyGsmCapabilities::true_type) {
-        bool success = derived()->prepareForInternet();
+        bool success = derived().prepareForInternet();
         if (!success) return false;
 
         MS_START_DEBUG_TIMER
         MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,
                F("seconds for cellular network registration..."));
-        if (derived()->gsmModem.waitForNetwork(maxConnectionTime)) {
+        if (derived().gsmModem.waitForNetwork(maxConnectionTime)) {
             // for all cellular modems **except the XBee** we need to actively
             // connect to the APN using the gprsConnect function after we've
             // connected to the base cellular network.  The XBee stores the APN
@@ -184,7 +177,7 @@ class loggerModemCommMixin {
                        "XBee") == 0) {
                 MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER,
                        F("milliseconds.  Connecting to GPRS..."));
-                derived()->connectWithCredentials();
+                derived().connectWithCredentials();
             }
             MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,
                    F("milliseconds."));
@@ -211,24 +204,24 @@ class loggerModemCommMixin {
      */
     bool connectInternet(uint32_t maxConnectionTime,
                          TinyGsmCapabilities::false_type) {
-        bool success = derived()->prepareForInternet();
+        bool success = derived().prepareForInternet();
         if (!success) return false;
 
-        const uint32_t reconnectTime = derived()->autoReconnectTime();
+        const uint32_t reconnectTime = derived().autoReconnectTime();
         MS_START_DEBUG_TIMER
         MS_DBG(F("\nWaiting"), reconnectTime,
                F("ms to see if WiFi connects without sending new "
                  "credentials..."));
-        if (!(derived()->gsmModem.isNetworkConnected())) {
+        if (!(derived().gsmModem.isNetworkConnected())) {
             // If still not connected, send new credentials
-            if (!(derived()->gsmModem.waitForNetwork(reconnectTime))) {
+            if (!(derived().gsmModem.waitForNetwork(reconnectTime))) {
                 MS_DBG(F("Sending credentials..."));
                 for (uint8_t i = 0; i < 5; i++) {
-                    if (derived()->connectWithCredentials()) { break; }
+                    if (derived().connectWithCredentials()) { break; }
                 }
                 MS_DBG(F("Waiting up to"), maxConnectionTime / 1000,
                        F("seconds for connection"));
-                if (!derived()->gsmModem.waitForNetwork(maxConnectionTime)) {
+                if (!derived().gsmModem.waitForNetwork(maxConnectionTime)) {
                     MS_DBG(F("... WiFi connection failed"));
                     return false;
                 }
@@ -286,7 +279,7 @@ class loggerModemCommMixin {
      * cellular network.
      */
     void disconnectInternet(TinyGsmCapabilities::true_type) {
-        derived()->gsmModem.gprsDisconnect();
+        derived().gsmModem.gprsDisconnect();
     }
 
     /**
@@ -294,7 +287,7 @@ class loggerModemCommMixin {
      * WiFi) connectivity.
      */
     void disconnectInternet(TinyGsmCapabilities::false_type) {
-        derived()->gsmModem.networkDisconnect();
+        derived().gsmModem.networkDisconnect();
     }
 
  public:
@@ -316,7 +309,7 @@ class loggerModemCommMixin {
      * otherwise
      */
     bool isInternetAvailable(TinyGsmCapabilities::true_type) {
-        return derived()->gsmModem.isGprsConnected();
+        return derived().gsmModem.isGprsConnected();
     }
 
     /**
@@ -326,7 +319,7 @@ class loggerModemCommMixin {
      * otherwise
      */
     bool isInternetAvailable(TinyGsmCapabilities::false_type) {
-        return derived()->gsmModem.isNetworkConnected();
+        return derived().gsmModem.isNetworkConnected();
     }
     /**@}*/
 
@@ -350,7 +343,7 @@ class loggerModemCommMixin {
      */
     Client* createClient(uint8_t mux = 0) {
         // Use the new keyword to create a new client on the **heap**
-        return new ClientType(derived()->gsmModem, mux);
+        return new ClientType(derived().gsmModem, mux);
     }
 
     /**
@@ -369,22 +362,8 @@ class loggerModemCommMixin {
      *
      * @param client The client to delete
      */
-    virtual void deleteClient(ClientType* client) {
+    virtual void deleteClient(Client* client) {
         delete static_cast<ClientType*>(client);
-    }
-
-    /**
-     * @brief Delete a client from the modem's array of client pointers based on
-     * the multiplex socket number.
-     * @note This will work for both secure and unsecure clients.
-     * @param mux Multiplexing channel to use.
-     */
-    void deleteClient(uint8_t mux = 0) {
-        if (mux < Derived::GsmModemType::TcpConfig::kMuxCount &&
-            derived()->gsmModem.sockets[mux] != nullptr) {
-            delete (derived()->gsmModem.sockets[mux]);
-            derived()->gsmModem.sockets[mux] = nullptr;
-        }
     }
     /**@}*/
 
@@ -414,7 +393,7 @@ class loggerModemCommMixin {
      * @return A new secure client object
      */
     Client* createSecureClient(uint8_t mux, TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived()->gsmModem, mux);
+        return new SecureClientType(derived().gsmModem, mux);
     }
     /**
      * @brief The create secure client function for modems that do not support
@@ -463,7 +442,7 @@ class loggerModemCommMixin {
                                const char* clientCertName,
                                const char* clientKeyName,
                                TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived()->gsmModem, sslAuthMode,
+        return new SecureClientType(derived().gsmModem, mux, sslAuthMode,
                                     sslVersion, CAcertName, clientCertName,
                                     clientKeyName);
     }
@@ -514,9 +493,8 @@ class loggerModemCommMixin {
                                const char* clientCertName,
                                const char* clientKeyName,
                                TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived()->gsmModem, sslAuthMode,
-                                    sslVersion, CAcertName, clientCertName,
-                                    clientKeyName);
+        return new SecureClientType(derived().gsmModem, sslAuthMode, sslVersion,
+                                    CAcertName, clientCertName, clientKeyName);
     }
     /**
      * @brief The create secure client function for modems that do not support
@@ -560,7 +538,7 @@ class loggerModemCommMixin {
     Client* createSecureClient(uint8_t mux, const char* pskIdent,
                                const char* psKey, SSLVersion sslVersion,
                                TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived()->gsmModem, mux, pskIdent, psKey,
+        return new SecureClientType(derived().gsmModem, mux, pskIdent, psKey,
                                     sslVersion);
     }
     /**
@@ -601,7 +579,7 @@ class loggerModemCommMixin {
     Client* createSecureClient(const char* pskIdent, const char* psKey,
                                SSLVersion sslVersion,
                                TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived()->gsmModem, pskIdent, psKey,
+        return new SecureClientType(derived().gsmModem, pskIdent, psKey,
                                     sslVersion);
     }
     /**
@@ -643,7 +621,7 @@ class loggerModemCommMixin {
     Client* createSecureClient(uint8_t mux, const char* pskTableName,
                                SSLVersion sslVersion,
                                TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived()->gsmModem, mux, pskTableName,
+        return new SecureClientType(derived().gsmModem, mux, pskTableName,
                                     sslVersion);
     }
     /**
@@ -683,7 +661,7 @@ class loggerModemCommMixin {
      */
     Client* createSecureClient(const char* pskTableName, SSLVersion sslVersion,
                                TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived()->gsmModem, pskTableName,
+        return new SecureClientType(derived().gsmModem, pskTableName,
                                     sslVersion);
     }
     /**
@@ -782,8 +760,8 @@ class loggerModemCommMixin {
      * not possible to make a SSL connection.
      */
     bool syncNTP(TinyGsmCapabilities::true_type) {
-        return derived()->gsmModem.NTPServerSync("pool.ntp.org",
-                                                 derived()->_modemUTCOffset);
+        return derived().gsmModem.NTPServerSync("pool.ntp.org",
+                                                derived()._modemUTCOffset);
     }
 
     /**
@@ -809,7 +787,7 @@ class loggerModemCommMixin {
      * itself to
      */
     void setModemTimeZone(int8_t timeZone) {
-        derived()->_modemUTCOffset = timeZone;
+        derived()._modemUTCOffset = timeZone;
     }
 
  public:
@@ -835,13 +813,13 @@ class loggerModemCommMixin {
      * @return Unix timestamp (seconds since Jan 1, 1970 UTC)
      */
     uint32_t getNISTTime(TinyGsmCapabilities::true_type) {
-        derived()->gsmModem.NTPServerSync("pool.ntp.org", 0);
-        derived()->gsmModem.waitForTimeSync();
+        derived().gsmModem.NTPServerSync("pool.ntp.org", 0);
+        derived().gsmModem.waitForTimeSync();
 
         int seconds = 0, minutes = 0, hours = 0;
         int day = 0, month = 0, year = 0;
-        if (!derived()->gsmModem.getNetworkTime(&year, &month, &day, &hours,
-                                                &minutes, &seconds, 0)) {
+        if (!derived().gsmModem.getNetworkTime(&year, &month, &day, &hours,
+                                               &minutes, &seconds, 0)) {
             return 0;
         }
 
@@ -884,7 +862,7 @@ class loggerModemCommMixin {
      */
     uint32_t getNISTTime(TinyGsmCapabilities::false_type) {
         // create a client
-        ClientType* nistClient = derived()->createClient();
+        ClientType* nistClient = derived().createClient();
         // The NIST connection frequently opens and closes very quickly; so fast
         // that every module I've tested sometimes misses the response, so we
         // attempt multiple connections to increase the likelihood of
@@ -937,7 +915,7 @@ class loggerModemCommMixin {
                 if (nistParsed != 0) {
                     MS_DBG(F("Got non-zero NIST timestamp"));
                     // delete the NIST client so we don't have a memory leak!
-                    derived()->deleteClient(nistClient);
+                    derived().deleteClient(nistClient);
                     return nistParsed;
                 } else {
                     MS_DBG(F("Invalid/Zero NIST timestamp"));
@@ -947,7 +925,7 @@ class loggerModemCommMixin {
             }
         }
         // delete the NIST client so we don't have a memory leak!
-        derived()->deleteClient(nistClient);
+        derived().deleteClient(nistClient);
         return 0;
     }
 
