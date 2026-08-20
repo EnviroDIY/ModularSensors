@@ -10,18 +10,21 @@
 
 // Included Dependencies
 #include "SodaqUBeeR410M.h"
-#include "LoggerModemMacros.h"
 
 // Constructor
 #if F_CPU == 8000000L
 SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
                                int8_t statusPin, int8_t modemResetPin,
                                int8_t modemSleepRqPin, const char* apn)
-    : loggerModem(powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
-                  R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
-                  R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
-                  R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
-                  R410M_AT_RESPONSE_TIME_MS),
+    : loggerModemImpl<TinyGsmSaraR4,                         // Modem Type
+                      TinyGsmSaraR4::GsmClientSaraR4,        // TCP Client Type
+                      TinyGsmSaraR4::GsmClientSecureSaraR4,  // SSL Client Type
+                      false  // signal quality is RSSI
+                      >(modemStream, powerPin, statusPin, R410M_STATUS_LEVEL,
+                        modemResetPin, R410M_RESET_LEVEL, R410M_RESET_PULSE_MS,
+                        modemSleepRqPin, R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS,
+                        R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
+                        R410M_WAKE_DELAY_MS, R410M_AT_RESPONSE_TIME_MS),
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
       _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
       gsmModem(_modemATDebugger)
@@ -36,38 +39,24 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
 SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
                                int8_t statusPin, int8_t modemResetPin,
                                int8_t modemSleepRqPin, const char* apn)
-    : loggerModem(powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
-                  R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
-                  R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
-                  R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
-                  R410M_AT_RESPONSE_TIME_MS),
-#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      _apn(apn) {
+    : loggerModemImpl<TinyGsmSaraR4,                         // Modem Type
+                      TinyGsmSaraR4::GsmClientSaraR4,        // TCP Client Type
+                      TinyGsmSaraR4::GsmClientSecureSaraR4,  // SSL Client Type
+                      false  // signal quality is RSSI
+                      >(modemStream, powerPin, statusPin, R410M_STATUS_LEVEL,
+                        modemResetPin, R410M_RESET_LEVEL, R410M_RESET_PULSE_MS,
+                        modemSleepRqPin, R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS,
+                        R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
+                        R410M_WAKE_DELAY_MS, R410M_AT_RESPONSE_TIME_MS),
+
+      _apn(apn) {}
+
+
+bool SodaqUBeeR410M::connectWithCredentials() {
+    return gsmModem.gprsConnect(_apn, "", "");
 }
 #endif
 
-MS_IS_MODEM_AWAKE(SodaqUBeeR410M);
-MS_MODEM_WAKE(SodaqUBeeR410M);
-
-MS_MODEM_CONNECT_INTERNET(SodaqUBeeR410M);
-MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeR410M);
-MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeR410M);
-
-MS_MODEM_CREATE_CLIENT(SodaqUBeeR410M, SaraR4);
-MS_MODEM_DELETE_CLIENT(SodaqUBeeR410M, SaraR4);
-MS_MODEM_CREATE_SECURE_CLIENT(SodaqUBeeR410M, SaraR4);
-MS_MODEM_DELETE_SECURE_CLIENT(SodaqUBeeR410M, SaraR4);
-
-MS_MODEM_GET_NIST_TIME(SodaqUBeeR410M, SaraR4);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeR410M);
-MS_MODEM_GET_MODEM_BATTERY_DATA(SodaqUBeeR410M);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SodaqUBeeR410M);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean

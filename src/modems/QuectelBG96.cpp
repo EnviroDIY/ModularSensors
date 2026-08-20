@@ -35,51 +35,18 @@
 QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                          int8_t modemResetPin, int8_t modemSleepRqPin,
                          const char* apn)
-    : loggerModemImpl<TinyGsmBG96,                      // Modem Type
-                  TinyGsmBG96::GsmClientBG96,       // TCP Client Type
-                  TinyGsmBG96::GsmClientSecureBG96  // SSL Client Type
-                  >(modemStream, powerPin, statusPin, BG96_STATUS_LEVEL,
-                    modemResetPin, BG96_RESET_LEVEL, BG96_RESET_PULSE_MS,
-                    modemSleepRqPin, BG96_WAKE_LEVEL, BG96_WAKE_PULSE_MS,
-                    BG96_STATUS_TIME_MS, BG96_DISCONNECT_TIME_MS,
-                    BG96_WAKE_DELAY_MS, BG96_AT_RESPONSE_TIME_MS),
+    : loggerModemImpl<TinyGsmBG96,                       // Modem Type
+                      TinyGsmBG96::GsmClientBG96,        // TCP Client Type
+                      TinyGsmBG96::GsmClientSecureBG96,  // SSL Client Type
+                      false  // signal quality is RSSI
+                      >(modemStream, powerPin, statusPin, BG96_STATUS_LEVEL,
+                        modemResetPin, BG96_RESET_LEVEL, BG96_RESET_PULSE_MS,
+                        modemSleepRqPin, BG96_WAKE_LEVEL, BG96_WAKE_PULSE_MS,
+                        BG96_STATUS_TIME_MS, BG96_DISCONNECT_TIME_MS,
+                        BG96_WAKE_DELAY_MS, BG96_AT_RESPONSE_TIME_MS),
       _apn(apn) {}
 
-/* ===========================================================================
- * NOTE: The following functions are NO LONGER NEEDED because they're
- * provided by the template:
- * - extraModemSetup() - inherited from template
- * - isModemAwake() - inherited from template
- * - modemWake() - inherited from template
- * - connectInternet() - inherited from template (uses connectToNetwork
- * below)
- * - disconnectInternet() - inherited from template
- * - isInternetAvailable() - inherited from template
- * - getModemSignalQuality() - inherited from template
- * - getModemBatteryStats() - inherited from template
- * - getModemChipTemperature() - inherited from template
- *
- * OLD FILE (QuectelBG96.cpp) HAD:
- * MS_MODEM_EXTRA_SETUP(QuectelBG96);
- * MS_IS_MODEM_AWAKE(QuectelBG96);
- * MS_MODEM_WAKE(QuectelBG96);
- * MS_MODEM_CONNECT_INTERNET(QuectelBG96);
- * MS_MODEM_DISCONNECT_INTERNET(QuectelBG96);
- * MS_MODEM_IS_INTERNET_AVAILABLE(QuectelBG96);
- * MS_MODEM_GET_MODEM_SIGNAL_QUALITY(QuectelBG96);
- * MS_MODEM_GET_MODEM_BATTERY_DATA(QuectelBG96);
- * MS_MODEM_GET_MODEM_TEMPERATURE_DATA(QuectelBG96);
- *
- * All of these are gone! Replaced by template inheritance.
- * ===========================================================================
- */
 
-/**
- * @brief Override connectToNetwork to provide APN for GPRS connection.
- *
- * This is the only modem-specific network setup needed for BG96.
- * The template's connectInternet() handles everything else.
- */
 bool QuectelBG96::connectWithCredentials() {
     return gsmModem.gprsConnect(_apn, "", "");
 }

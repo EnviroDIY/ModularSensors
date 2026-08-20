@@ -10,43 +10,24 @@
 
 // Included Dependencies
 #include "DigiXBee3GBypass.h"
-#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
 DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream, int8_t powerPin,
                                    int8_t statusPin, bool useCTSStatus,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
                                    const char* apn)
-    : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
-               modemSleepRqPin),
-#ifdef MS_DIGIXBEE3GBYPASS_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      _apn(apn) {
+    : DigiXBee<TinyGsmUBLOX,                       // Modem Type
+               TinyGsmUBLOX::GsmClientUBLOX,       // TCP Client Type
+               TinyGsmUBLOX::GsmClientSecureUBLOX  // SSL Client
+                                                   // Type
+               >(modemStream, powerPin, statusPin, useCTSStatus, modemResetPin,
+                 modemSleepRqPin),
+
+      _apn(apn) {}
+
+bool DigiXBee3GBypass::connectWithCredentials() {
+    return gsmModem.gprsConnect(_apn, "", "");
 }
-
-MS_IS_MODEM_AWAKE(DigiXBee3GBypass);
-MS_MODEM_WAKE(DigiXBee3GBypass);
-
-MS_MODEM_CONNECT_INTERNET(DigiXBee3GBypass);
-MS_MODEM_DISCONNECT_INTERNET(DigiXBee3GBypass);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
-
-MS_MODEM_CREATE_CLIENT(DigiXBee3GBypass, UBLOX);
-MS_MODEM_DELETE_CLIENT(DigiXBee3GBypass, UBLOX);
-MS_MODEM_CREATE_SECURE_CLIENT(DigiXBee3GBypass, UBLOX);
-MS_MODEM_DELETE_SECURE_CLIENT(DigiXBee3GBypass, UBLOX);
-
-MS_MODEM_GET_NIST_TIME(DigiXBee3GBypass, UBLOX);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
-MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBee3GBypass);
-// NOTE:  Could actually get temperature from the Digi chip by entering command
-// mode
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBee3GBypass);
 
 bool DigiXBee3GBypass::extraModemSetup() {
     bool success = false;

@@ -10,39 +10,17 @@
 
 // Included Dependencies
 #include "EspressifESP8266.h"
-#include "LoggerModemMacros.h"
 
 // Constructors
 EspressifESP8266::EspressifESP8266(Stream* modemStream, int8_t powerPin,
                                    int8_t modemResetPin, const char* ssid,
                                    const char* pwd)
-    : Espressif(modemStream, powerPin, modemResetPin, ssid, pwd),
-#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP)
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger)
-#else
-      gsmModem(*modemStream)
-#endif
-{
-}
+    : Espressif<TinyGsmESP8266,                         // Modem Type
+                TinyGsmESP8266::GsmClientESP8266,       // TCP Client Type
+                TinyGsmESP8266::GsmClientSecureESP8266  // SSL Client
+                                                        // Type
+                >(modemStream, powerPin, modemResetPin, ssid, pwd) {}
 
-MS_IS_MODEM_AWAKE(EspressifESP8266);
-MS_MODEM_WAKE(EspressifESP8266);
-
-MS_MODEM_CONNECT_INTERNET(EspressifESP8266, ESPRESSIF_RECONNECT_TIME_MS);
-MS_MODEM_DISCONNECT_INTERNET(EspressifESP8266);
-MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);
-
-MS_MODEM_CREATE_CLIENT(EspressifESP8266, ESP8266);
-MS_MODEM_DELETE_CLIENT(EspressifESP8266, ESP8266);
-MS_MODEM_CREATE_SECURE_CLIENT(EspressifESP8266, ESP8266);
-MS_MODEM_DELETE_SECURE_CLIENT(EspressifESP8266, ESP8266);
-
-MS_MODEM_GET_NIST_TIME(EspressifESP8266, ESP8266);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP8266);
-MS_MODEM_GET_MODEM_BATTERY_DATA(EspressifESP8266);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(EspressifESP8266);
 
 bool EspressifESP8266::modemSleepFxn() {
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake

@@ -123,9 +123,7 @@
 #define MS_DEBUGGING_STD "SodaqUBeeR410M"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
+/// The modem type for the underlying TinyGSM library.
 #define TINY_GSM_MODEM_SARAR4
 
 // Include the debugger
@@ -138,9 +136,6 @@
 #include "TinyGsmClientSaraR4.h"
 #include "LoggerModemImpl.h"
 
-#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_ubee_ltem */
 /**@{*/
@@ -221,7 +216,14 @@
  * u-blox SARA R410M LTE-M cellular module.  This can be also used for any other
  * breakout of the u-blox R4 or N4 series modules.
  */
-class SodaqUBeeR410M : public loggerModemImpl {
+class SodaqUBeeR410M
+    : public loggerModemImpl<TinyGsmSaraR4,                   // Modem Type
+                             TinyGsmSaraR4::GsmClientSaraR4,  // TCP Client Type
+                             TinyGsmSaraR4::GsmClientSecureSaraR4,  // SSL
+                                                                    // Client
+                                                                    // Type
+                             false  // signal quality is RSSI
+                             > {
  public:
 #if F_CPU == 8000000L
     /**
@@ -299,44 +301,8 @@ class SodaqUBeeR410M : public loggerModemImpl {
      */
     ~SodaqUBeeR410M() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
     bool modemHardReset() override;
 
-#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmSaraR4 gsmModem;
 
 #if F_CPU == 8000000L
     /**
@@ -347,11 +313,12 @@ class SodaqUBeeR410M : public loggerModemImpl {
 #endif
 
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
-    bool isModemAwake() override;
+
+    // Only override connectWithCredentials to provide APN
+    bool connectWithCredentials() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

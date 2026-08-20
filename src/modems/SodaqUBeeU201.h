@@ -63,9 +63,7 @@
 #define MS_DEBUGGING_STD "SodaqUBeeU201"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
+/// The modem type for the underlying TinyGSM library.
 #define TINY_GSM_MODEM_UBLOX
 
 // Include the debugger
@@ -78,9 +76,6 @@
 #include "TinyGsmClientUBLOX.h"
 #include "LoggerModemImpl.h"
 
-#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_ubee_3g */
 /**@{*/
@@ -161,7 +156,13 @@
  * [Sodaq UBee](@ref modem_ublox) based on the u-blox SARA U201 2G/3G cellular
  * module.
  */
-class SodaqUBeeU201 : public loggerModemImpl {
+class SodaqUBeeU201
+    : public loggerModemImpl<TinyGsmUBLOX,                   // Modem Type
+                             TinyGsmUBLOX ::GsmClientUBLOX,  // TCP Client Type
+                             TinyGsmUBLOX ::GsmClientSecureUBLOX,  // SSL Client
+                                                                   // Type
+                             false  // signal quality is RSSI
+                             > {
  public:
     /**
      * @brief Construct a new Sodaq UBee U201 object
@@ -198,49 +199,13 @@ class SodaqUBeeU201 : public loggerModemImpl {
      */
     ~SodaqUBeeU201() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
-#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmUBLOX gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
-    bool isModemAwake() override;
+
+    // Only override connectWithCredentials to provide APN
+    bool connectWithCredentials() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

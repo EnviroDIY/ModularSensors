@@ -10,39 +10,17 @@
 
 // Included Dependencies
 #include "EspressifESP32.h"
-#include "LoggerModemMacros.h"
 
 // Constructors
 EspressifESP32::EspressifESP32(Stream* modemStream, int8_t powerPin,
                                int8_t modemResetPin, const char* ssid,
                                const char* pwd)
-    : Espressif(modemStream, powerPin, modemResetPin, ssid, pwd),
-#if defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger)
-#else
-      gsmModem(*modemStream)
-#endif
-{
-}
+    : Espressif<TinyGsmESP32,                       // Modem Type
+                TinyGsmESP32::GsmClientESP32,       // TCP Client Type
+                TinyGsmESP32::GsmClientSecureESP32  // SSL Client
+                                                    // Type
+                >(modemStream, powerPin, modemResetPin, ssid, pwd) {}
 
-MS_IS_MODEM_AWAKE(EspressifESP32);
-MS_MODEM_WAKE(EspressifESP32);
-
-MS_MODEM_CONNECT_INTERNET(EspressifESP32, ESPRESSIF_RECONNECT_TIME_MS);
-MS_MODEM_DISCONNECT_INTERNET(EspressifESP32);
-MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP32);
-
-MS_MODEM_CREATE_CLIENT(EspressifESP32, ESP32);
-MS_MODEM_DELETE_CLIENT(EspressifESP32, ESP32);
-MS_MODEM_CREATE_SECURE_CLIENT(EspressifESP32, ESP32);
-MS_MODEM_DELETE_SECURE_CLIENT(EspressifESP32, ESP32);
-
-MS_MODEM_GET_NIST_TIME(EspressifESP32, ESP32);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP32);
-MS_MODEM_GET_MODEM_BATTERY_DATA(EspressifESP32);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(EspressifESP32);
 
 bool EspressifESP32::modemSleepFxn() {
     // Use this if you have an MCU pin connected to the ESP's reset pin to wake

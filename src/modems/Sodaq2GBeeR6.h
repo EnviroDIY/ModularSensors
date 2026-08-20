@@ -80,9 +80,6 @@
 // Include other in-library and external dependencies
 #include "SIMComSIM800.h"
 
-#ifdef MS_SODAQ2GBEER6_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_gprsbee */
 /**@{*/

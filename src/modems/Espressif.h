@@ -175,7 +175,14 @@
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
  */
-class Espressif : public loggerModemImpl {
+template <typename GsmModemType_T, typename ClientType_T,
+          typename SecureClientType_T>
+class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
+                                         ClientType_T,        // TCP Client Type
+                                         SecureClientType_T,  // SSL Client
+                                                              // Type
+                                         true  // signal quality is RSSI
+                                         > {
  public:
     // Constructors/Destructor
     /**
@@ -196,7 +203,20 @@ class Espressif : public loggerModemImpl {
      * @see loggerModem::loggerModem
      */
     Espressif(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
-              const char* ssid, const char* pwd);
+              const char* ssid, const char* pwd)
+        : loggerModemImpl<GsmModemType_T,      // Modem Type
+                          ClientType_T,        // TCP Client Type
+                          SecureClientType_T,  // SSL Client Type
+                          true                 // signal quality is RSSI
+                          >(
+              modemStream, powerPin, -1, ESPRESSIF_STATUS_LEVEL, modemResetPin,
+              ESPRESSIF_RESET_LEVEL, ESPRESSIF_RESET_PULSE_MS, -1,
+              ESPRESSIF_WAKE_LEVEL, ESPRESSIF_WAKE_PULSE_MS,
+              ESPRESSIF_STATUS_TIME_MS, ESPRESSIF_DISCONNECT_TIME_MS,
+              ESPRESSIF_WAKE_DELAY_MS, ESPRESSIF_AT_RESPONSE_TIME_MS),
+          _modemStream(modemStream),
+          _ssid(ssid),
+          _pwd(pwd) {}
     /**
      * @brief Destroy the Espressif object - no action taken
      */
@@ -211,7 +231,52 @@ class Espressif : public loggerModemImpl {
     Stream* _modemStream;
 
  protected:
-    bool modemWakeFxn() override;
+    bool connectWithCredentials() override {
+        return this->gsmModem.networkConnect(this->_ssid, this->_pwd);
+    }
+
+    bool modemWakeFxn() override {
+        bool success = true;
+        if (this->_powerPin >= 0) {  // Turns on when power is applied
+            MS_DEEP_DBG(
+                F("Power pin"), this->_powerPin,
+                F("takes priority over reset pin, modem wakes on power on"));
+            if (this->_modemSleepRqPin >= 0) {
+                digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
+            }
+            success &= this->ESPwaitForBoot();
+            if (this->_modemSleepRqPin >= 0) {
+                digitalWrite(this->_modemSleepRqPin, this->_wakeLevel);
+            }
+            return success;
+        } else if (this->_modemResetPin >= 0) {
+            MS_DBG(F("Sending a reset pulse to pin"), this->_modemResetPin,
+                   F("to wake Espressif module from deep sleep"));
+            digitalWrite(this->_modemResetPin, LOW);
+            delay(this->_resetPulse_ms);
+            digitalWrite(this->_modemResetPin, HIGH);
+            if (this->_modemSleepRqPin >= 0) {
+                digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
+            }
+            success &= this->ESPwaitForBoot();
+            if (this->_modemSleepRqPin >= 0) {
+                digitalWrite(this->_modemSleepRqPin, this->_wakeLevel);
+            }
+            return success;
+        } else if (this->_modemSleepRqPin >= 0) {
+            MS_DBG(F("Setting pin"), this->_modemSleepRqPin,
+                   this->_wakeLevel ? F("HIGH") : F("LOW"),
+                   F("to wake Espressif module from light sleep"));
+            digitalWrite(this->_modemSleepRqPin, this->_wakeLevel);
+            return success;
+        } else {
+            MS_DEEP_DBG(F("No pins for waking the Espressif module. Hopefully "
+                          "it's in the "
+                          "state you want."));
+            return success;
+        }
+    }
+
 
  protected:
     /**
@@ -222,7 +287,29 @@ class Espressif : public loggerModemImpl {
      * @return True if text (assumed to be the start message) was received;
      * false if text was received after boot.
      */
-    bool        ESPwaitForBoot();
+    bool ESPwaitForBoot() {
+        // Wait for boot - finished when characters start coming
+        // NOTE: After every "hard" reset (either power off or via RST-B), the
+        // ESP sends out a boot log from the ROM on UART1 at 74880 baud.  We're
+        // not going to worry about the odd baud rate since we're simply
+        // throwing the characters away.
+        MS_DBG(F("Waiting for boot-up message from Espressif module"));
+        delay(200);  // It will take at least this long
+        uint32_t start   = millis();
+        bool     success = false;
+        while (!_modemStream->available() && millis() - start < 1000) {
+            // wait
+        }
+        if (_modemStream->available()) {
+            success = true;
+            // Read the boot log to empty it from the serial buffer
+            while (_modemStream->available()) {
+                _modemStream->read();
+                delay(2);
+            }
+        }
+        return success;
+    }
     const char* _ssid;  ///< Internal reference to the WiFi SSID
     const char* _pwd;   ///< Internal reference to the WiFi password
 };

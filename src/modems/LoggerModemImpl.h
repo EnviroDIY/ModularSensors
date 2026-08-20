@@ -431,7 +431,7 @@ class loggerModemImpl
         // Get modem info
         _modemHwVersion    = gsmModem.getModemModel();
         _modemFwVersion    = gsmModem.getModemRevision();
-        _modemSerialNumber = gsmModem.getIMEI();
+        _modemSerialNumber = gsmModem.getModemSerialNumber();
         MS_DBG(F("Modem HW:"), _modemHwVersion);
         MS_DBG(F("Modem FW:"), _modemFwVersion);
         MS_DBG(F("Modem SN:"), _modemSerialNumber);

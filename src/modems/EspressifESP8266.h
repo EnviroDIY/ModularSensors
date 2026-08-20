@@ -67,9 +67,7 @@
 #define MS_DEBUGGING_DEEP "EspressifESP8266"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
+/// The modem type for the underlying TinyGSM library.
 #define TINY_GSM_MODEM_ESP8266
 
 // Include the debugger
@@ -82,9 +80,6 @@
 #include "TinyGsmClientESP8266.h"
 #include "Espressif.h"
 
-#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_esp8266 */
 /**@{*/
@@ -97,7 +92,12 @@
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
  */
-class EspressifESP8266 : public Espressif {
+class EspressifESP8266
+    : public Espressif<TinyGsmESP8266,                    // Modem Type
+                       TinyGsmESP8266::GsmClientESP8266,  // TCP Client Type
+                       TinyGsmESP8266::GsmClientSecureESP8266  // SSL Client
+                                                               // Type
+                       > {
  public:
     // Constructors/Destructor
     /**
@@ -124,48 +124,9 @@ class EspressifESP8266 : public Espressif {
      */
     ~EspressifESP8266() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
-#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmESP8266 gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
     bool extraModemSetup() override;
-    bool isModemAwake() override;
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

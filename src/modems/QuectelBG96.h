@@ -30,9 +30,7 @@
 #define MS_DEBUGGING_DEEP "QuectelBG96"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
+/// The modem type for the underlying TinyGSM library.
 #define TINY_GSM_MODEM_BG96
 
 // Include the debugger
@@ -45,9 +43,6 @@
 #include "TinyGsmClientBG96.h"
 #include "LoggerModemImpl.h"
 
-#ifdef MS_QUECTELBG96_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_bg96 */
 /**@{*/
@@ -130,8 +125,9 @@
 class QuectelBG96
     : public loggerModemImpl<TinyGsmBG96,                 // Modem Type
                              TinyGsmBG96::GsmClientBG96,  // TCP Client Type
-                             TinyGsmBG96::GsmClientSecureBG96  // SSL Client
-                                                               // Type
+                             TinyGsmBG96::GsmClientSecureBG96,  // SSL Client
+                                                                // Type
+                             false  // signal quality is RSSI
                              > {
  public:
     /**
@@ -165,7 +161,6 @@ class QuectelBG96
     bool modemHardReset() override;
 
  protected:
-    // Implementation of the pure virtual functions from loggerModemImpl
     bool modemWakeFxn() override;
     bool modemSleepFxn() override;
 

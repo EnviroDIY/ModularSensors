@@ -84,9 +84,7 @@
 #define MS_DEBUGGING_STD "DigiXBeeCellularTransparent"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
+/// The modem type for the underlying TinyGSM library.
 #define TINY_GSM_MODEM_XBEE
 
 // Include the debugger
@@ -100,9 +98,6 @@
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
-#ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_digi_cellular */
 /**@{*/
@@ -119,7 +114,12 @@
  * stable used in bypass mode.  The Telit based Digi XBees (LTE Cat1 both
  * Verizon and AT&T) can only use this mode.
  */
-class DigiXBeeCellularTransparent : public DigiXBee {
+class DigiXBeeCellularTransparent
+    : public DigiXBee<TinyGsmXBee,                      // Modem Type
+                      TinyGsmXBee::GsmClientXBee,       // TCP Client Type
+                      TinyGsmXBee::GsmClientSecureXBee  // SSL Client
+                                                        // Type
+                      > {
  public:
     /**
      * @brief Construct a new Digi XBee Cellular Transparent object
@@ -161,47 +161,11 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      */
     ~DigiXBeeCellularTransparent() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
     uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
 
     bool updateModemMetadata() override;
 
-#ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmXBee gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemWakeFxn() override;
     bool modemSleepFxn() override;
     /**
@@ -214,7 +178,9 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      * @return True if the extra setup succeeded.
      */
     bool extraModemSetup() override;
-    bool isModemAwake() override;
+
+    // Only override connectWithCredentials to provide APN
+    bool connectWithCredentials() override;
 
  private:
     const char* _apn;   ///< Internal reference to the cellular APN

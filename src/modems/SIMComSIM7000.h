@@ -62,9 +62,7 @@
 #define MS_DEBUGGING_STD "SIMComSIM7000"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
+/// The modem type for the underlying TinyGSM library.
 #define TINY_GSM_MODEM_SIM7000SSL
 
 // Include the debugger
@@ -77,9 +75,6 @@
 #include "TinyGsmClientSIM7000SSL.h"
 #include "LoggerModemImpl.h"
 
-#ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_sim7000 */
 /**@{*/
@@ -161,7 +156,14 @@
  * @brief The loggerModem subclass for Botletics, And1, and other modules based
  * on the [SIMCOM SIM7000](@ref modem_sim7000).
  */
-class SIMComSIM7000 : public loggerModemImpl {
+class SIMComSIM7000
+    : public loggerModemImpl<
+          TinyGsmSim7000SSL,                             // Modem Type
+          TinyGsmSim7000SSL::GsmClientSim7000SSL,        // TCP Client Type
+          TinyGsmSim7000SSL::GsmClientSecureSim7000SSL,  // SSL Client
+                                                         // Type
+          false  // signal quality is RSSI
+          > {
  public:
     /**
      * @brief Construct a new SIMComSIM7000 object
@@ -190,49 +192,12 @@ class SIMComSIM7000 : public loggerModemImpl {
      */
     ~SIMComSIM7000() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
-#ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmSim7000SSL gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
-    bool extraModemSetup() override;
-    bool isModemAwake() override;
+
+    // Only override connectWithCredentials to provide APN
+    bool connectWithCredentials() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN
