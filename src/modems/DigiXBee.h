@@ -109,7 +109,7 @@
 #undef MS_DEBUGGING_STD
 
 // Include other in-library and external dependencies
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 /** @ingroup modem_digi */
 /**@{*/
@@ -196,7 +196,7 @@
  * @note The ZigBee, 900mHZ, and other radio-based XBee's are **not**
  * supported.
  */
-class DigiXBee : public loggerModem {
+class DigiXBee : public loggerModemImpl {
  public:
     /**
      * @brief Construct a new Digi XBee object

@@ -1,55 +1,47 @@
 /**
- * @file SIMComSIM7000.h
+ * @file SIMComSIM7080.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the SIMComSIM7000 subclass of loggerModem for
- * Botletics other modules based on the SIMCOM SIM7000.
+ * @brief Contains the SIMComSIM7080 subclass of loggerModem for
+ * Botletics other modules based on the SIMCOM SIM7080.
  */
 /* clang-format off */
 /**
- * @defgroup modem_sim7000 SIMCom SIM7000
+ * @defgroup modem_sim7080 SIMCom SIM7080
  *
  * @ingroup the_modems
  *
  * @tableofcontents
  * @m_footernavigation
  *
- * @section modem_sim7000_notes Introduction
+ * @section modem_sim7080_notes Introduction
  *
- * The SIMCom [SIM7000](https://simcom.ee/modules/iot/sim7000e/) Tri-Band
- * LTE-FDD and Dual-Band GPRS/EDGE module solution in a SMT type which
- * supports LTE CAT-M1(eMTC) and NB-IoT up to 375 kbps data transfer.
+ * The SIMCom [SIM7080G](http://www.simcom.com/product/SIM7080G.html)
+ * is a Multi-Band CAT-M and NB-IoT module solution in a SMT type.
  *
- * There are breakouts of several variants made by
- * [AND Technologies](http://www.and-global.com/) or
- * [Botletics](https://www.botletics.com/products/sim7000-shield).
- *
- * @section modem_sim7000_mayfly Connecting a SIM7000 to a Mayfly
- *
- * To my knowledge, there are not any SIM7000 modules available that can
- * directly connect to a Mayfly.
- *
- * @section modem_sim7000_docs Manufacturer Documentation
+ * @section modem_sim7080_docs Manufacturer Documentation
  * The module datasheet and AT commands are available here:
- * https://simcom.ee/modules/iot/sim7000e/
+ * http://www.simcom.com/product/SIM7080G.html
+ * @note You must create an account with SIMCOM to be able to download
+ * the documents.
  *
- * @section modem_sim7000_ctor Modem Constructor
- * {{ @ref SIMComSIM7000::SIMComSIM7000 }}
+ * @section modem_sim7080_ctor Modem Constructor
+ * {{ @ref SIMComSIM7080::SIMComSIM7080 }}
  *
  * ___
- * @section modem_sim7000_examples Example Code
- * The SIM7000 is used in the @menulink{sim_com_sim7000} example.
+ * @section modem_sim7080_examples Example Code
+ * The SIM7080 is used in the @menulink{sim_com_sim7080} example.
  *
- * @menusnip{sim_com_sim7000}
+ * @menusnip{sim_com_sim7080}
  */
 /* clang-format on */
 
 // Header Guards
-#ifndef SRC_MODEMS_SIMCOMSIM7000_H_
-#define SRC_MODEMS_SIMCOMSIM7000_H_
+#ifndef SRC_MODEMS_SIMCOMSIM7080_H_
+#define SRC_MODEMS_SIMCOMSIM7080_H_
 
 // Include the library config before anything else
 #include "ModSensorConfig.h"
@@ -58,14 +50,14 @@
 #include "ModSensorDebugConfig.h"
 
 // Define the print label[s] for the debugger
-#ifdef MS_SIMCOMSIM7000_DEBUG
-#define MS_DEBUGGING_STD "SIMComSIM7000"
+#ifdef MS_SIMCOMSIM7080_DEBUG
+#define MS_DEBUGGING_STD "SIMComSIM7080"
 #endif
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
-#define TINY_GSM_MODEM_SIM7000SSL
+#define TINY_GSM_MODEM_SIM7080
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -74,97 +66,100 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSIM7000SSL.h"
-#include "LoggerModem.h"
+#include "TinyGsmClientSIM7080.h"
+#include "LoggerModemImpl.h"
 
-#ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
+#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-/** @ingroup modem_sim7000 */
+/** @ingroup modem_sim7080 */
 /**@{*/
 
 /**
- * @anchor modem_sim7000_pins_timing
+ * @anchor modem_sim7080_pins_timing
  * @name Modem Pin Settings and Timing
- * The timing and pin level settings for a SIMCom SIM7000
+ * The timing and pin level settings for a SIMCom SIM7080
  */
 /**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
- * Status of the SIM7000 should be monitored on the `STATUS` pin, which is at a
+ * Status of the SIM7080G should be monitored on the `STATUS` pin, which is at a
  * high level when the module has powered on and the firmware goes ready.
  *
- * Time after end pulse until status pin becomes active is >4.5sec.
+ * Time after start of pulse until status pin becomes active is >1.8sec.
  */
-#define SIM7000_STATUS_LEVEL HIGH
+#define SIM7080_STATUS_LEVEL HIGH
 /**
  * @brief The loggerModem::_statusTime_ms.
- * @copydetails #SIM7000_STATUS_LEVEL
+ * @copydetails #SIM7080_STATUS_LEVEL
  */
-#define SIM7000_STATUS_TIME_MS 5000L
+#define SIM7080_STATUS_TIME_MS 1800L
 
 /**
  * @brief The loggerModem::_resetLevel.
  *
- * The active low level time impulse on `RESET` pin to reset SIM7000 is
- * minimum 252ms.
+ * The SIM7080G is reset using the `PWRKEY` **NOT** a separate `RESET` pin!
+ *
+ * To reset the module, the `PWRKEY` is held low for 12.6s.
  */
-#define SIM7000_RESET_LEVEL LOW
+#define SIM7080_RESET_LEVEL LOW
 /**
  * @brief The loggerModem::_resetPulse_ms.
- * @copydetails #SIM7000_RESET_LEVEL
+ * @copydetails #SIM7080_RESET_LEVEL
  */
-#define SIM7000_RESET_PULSE_MS 300
+#define SIM7080_RESET_PULSE_MS 12600L
 
 /**
  * @brief The loggerModem::_wakeLevel.
  *
- * The SIM7000 Module is switched on by a >1 second `LOW` pulse on the `PWRKEY`
+ * The SIM7080G Module is switched on by a >1 second `LOW` pulse on the `PWRKEY`
  * pin.
  *
  * @note Module is switched OFF by a >1.2 second `LOW` pulse on the `PWRKEY`
- * pin, so by using a pulse of >1 but <1.2 s to wake the SIM7000 and using AT
+ * pin, so by using a pulse of >1 but <1.2 s to wake the SIM7080G and using AT
  * commands to put it to sleep, we should always be in the correct state, but if
  * at all possible the status pin should be monitored to confirm.
+ *
+ * @note A pulse of >12.6s on the `PWRKEY` resets the module.
  */
-#define SIM7000_WAKE_LEVEL LOW
+#define SIM7080_WAKE_LEVEL LOW
 /**
  * @brief The loggerModem::_wakePulse_ms.
- * @copydetails #SIM7000_WAKE_LEVEL
+ * @copydetails #SIM7080_WAKE_LEVEL
  */
-#define SIM7000_WAKE_PULSE_MS 1100
+#define SIM7080_WAKE_PULSE_MS 1100
 /**
  * @brief The loggerModem::_wakeDelayTime_ms.
  *
- * Time after power on before `PWRKEY` on SIM7000 can be used is undocumented.
+ * Time after power on before `PWRKEY` on SIM7080 can be used is undocumented.
  * Using 1s.
  */
-#define SIM7000_WAKE_DELAY_MS 1000L
+#define SIM7080_WAKE_DELAY_MS 1000L
 /**
  * @brief The loggerModem::_max_at_response_time_ms.
  *
- * Time after end pulse until serial port on SIM7000 becomes active is >4.5sec.
+ * Time after end pulse until serial port on SIM7080 becomes active is >1.8sec.
  */
-#define SIM7000_AT_RESPONSE_TIME_MS 4500
+#define SIM7080_AT_RESPONSE_TIME_MS 1800
 
 /**
  * @brief The loggerModem::_disconnectTime_ms.
  *
- * SIM7000 power down (gracefully) takes 1.8-6.9 sec.
+ * SIM7080 power down (gracefully) takes 1.8-2 sec.
  */
-#define SIM7000_DISCONNECT_TIME_MS 7000L
+#define SIM7080_DISCONNECT_TIME_MS 2000L
 /**@}*/
 
 /**
- * @brief The loggerModem subclass for Botletics, And1, and other modules based
- * on the [SIMCOM SIM7000](@ref modem_sim7000).
+ * @brief The loggerModem subclass for modules based on the [SIMCOM
+ * SIM7080](@ref modem_sim7080).
  */
-class SIMComSIM7000 : public loggerModem {
+class SIMComSIM7080 : public loggerModemImpl {
  public:
     /**
-     * @brief Construct a new SIMComSIM7000 object
+     * @brief Construct a new SIMComSIM7080 object
      * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
@@ -174,21 +169,21 @@ class SIMComSIM7000 : public loggerModem {
      * @param powerPin @copydoc loggerModem::_powerPin
      * @param statusPin @copydoc loggerModem::_statusPin
      * This is the pin labeled `STATUS` in SIMCom's integration guide.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
-     * This is the pin labeled `RESET` in SIMCom's integration guide.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
      * This is the pin labeled `PWRKEY` in SIMCom's integration guide.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
      * @see loggerModem::loggerModem
+     *
+     * @note The SIM7080G does not have a `RESET` pin.  Resets are done using
+     * the `PWRKEY`.
      */
-    SIMComSIM7000(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                  int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char* apn);
+    SIMComSIM7080(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+                  int8_t modemSleepRqPin, const char* apn);
     /**
-     * @brief Destroy the SIMComSIM7000 object - no action needed
+     * @brief Destroy the SIMComSIM7080 object - no action needed
      */
-    ~SIMComSIM7000() override = default;
+    ~SIMComSIM7080() override = default;
 
     bool modemWake() override;
 
@@ -218,14 +213,14 @@ class SIMComSIM7000 : public loggerModem {
                                int16_t& milliVolts) override;
     float getModemChipTemperature() override;
 
-#ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
+#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsmSim7000SSL gsmModem;
+    TinyGsmSim7080 gsmModem;
 
  protected:
     bool isInternetAvailable() override;
@@ -238,6 +233,4 @@ class SIMComSIM7000 : public loggerModem {
     const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
-#endif  // SRC_MODEMS_SIMCOMSIM7000_H_
-
-// cSpell:ignore kbps
+#endif  // SRC_MODEMS_SIMCOMSIM7080_H_

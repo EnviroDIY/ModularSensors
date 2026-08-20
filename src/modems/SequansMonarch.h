@@ -80,7 +80,7 @@
 
 // Include other in-library and external dependencies
 #include "TinyGsmClientSequansMonarch.h"
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 #ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -190,7 +190,7 @@
  * @brief The loggerModem subclass for Nimbelink or other modules based on the
  * [Sequans Monarch VZM20Q](@ref modem_monarch).
  */
-class SequansMonarch : public loggerModem {
+class SequansMonarch : public loggerModemImpl {
  public:
     /**
      * @brief Construct a new Sequans Monarch object

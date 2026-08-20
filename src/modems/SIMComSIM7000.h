@@ -1,59 +1,55 @@
 /**
- * @file SIMComSIM800.h
+ * @file SIMComSIM7000.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the SIMComSIM800 subclass of loggerModem for Adafruit Fona
- * 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM
- * SIM800 or SIM900 modules and their variants.
+ * @brief Contains the SIMComSIM7000 subclass of loggerModem for
+ * Botletics other modules based on the SIMCOM SIM7000.
  */
 /* clang-format off */
 /**
- * @defgroup modem_sim800 SIMCom SIM800
+ * @defgroup modem_sim7000 SIMCom SIM7000
  *
  * @ingroup the_modems
  *
  * @tableofcontents
  * @m_footernavigation
  *
- * @section modem_sim800_notes Introduction
+ * @section modem_sim7000_notes Introduction
  *
- * There are a multitude of boards available that feature a variant of the
- * SIMCom SIM800 or the nearly identical SIM900, including the
- * [Adafruit Fona](whttps://www.adafruit.com/product/1946) Mini cellular GSM
- * breakout.
- * Almost all of those boards should work with ModularSensors as a generic
- * SIM800.
- * The one exception is the Sodaq GPRSBee **R6 and higher**, which has its own
- * [constructor](@ref modem_gprsbee).
- * The earlier Sodaq GPRSBees (i.e., R4) do use this version.
+ * The SIMCom [SIM7000](https://simcom.ee/modules/iot/sim7000e/) Tri-Band
+ * LTE-FDD and Dual-Band GPRS/EDGE module solution in a SMT type which
+ * supports LTE CAT-M1(eMTC) and NB-IoT up to 375 kbps data transfer.
  *
- * The SIM800 consumes up to 2A of power while connecting to the network.
- * That is 4x what a typical USB or Arduino board can supply, so expect to give
- * the module it's own independent power source.
+ * There are breakouts of several variants made by
+ * [AND Technologies](http://www.and-global.com/) or
+ * [Botletics](https://www.botletics.com/products/sim7000-shield).
  *
- * The Adafruit _3G_ Fona is not currently supported.
+ * @section modem_sim7000_mayfly Connecting a SIM7000 to a Mayfly
  *
- * @section modem_sim800_docs Manufacturer Documentation
+ * To my knowledge, there are not any SIM7000 modules available that can
+ * directly connect to a Mayfly.
+ *
+ * @section modem_sim7000_docs Manufacturer Documentation
  * The module datasheet and AT commands are available here:
- * https://simcom.ee/modules/gsm-gprs/sim800/
+ * https://simcom.ee/modules/iot/sim7000e/
  *
- * @section modem_sim800_ctor Modem Constructor
- * {{ @ref SIMComSIM800::SIMComSIM800 }}
+ * @section modem_sim7000_ctor Modem Constructor
+ * {{ @ref SIMComSIM7000::SIMComSIM7000 }}
  *
  * ___
- * @section modem_sim800_examples Example Code
- * The SIM800 is used in the @menulink{sim_com_sim800} example.
+ * @section modem_sim7000_examples Example Code
+ * The SIM7000 is used in the @menulink{sim_com_sim7000} example.
  *
- * @menusnip{sim_com_sim800}
+ * @menusnip{sim_com_sim7000}
  */
 /* clang-format on */
 
 // Header Guards
-#ifndef SRC_MODEMS_SIMCOMSIM800_H_
-#define SRC_MODEMS_SIMCOMSIM800_H_
+#ifndef SRC_MODEMS_SIMCOMSIM7000_H_
+#define SRC_MODEMS_SIMCOMSIM7000_H_
 
 // Include the library config before anything else
 #include "ModSensorConfig.h"
@@ -62,14 +58,14 @@
 #include "ModSensorDebugConfig.h"
 
 // Define the print label[s] for the debugger
-#ifdef MS_SIMCOMSIM800_DEBUG
-#define MS_DEBUGGING_STD "SIMComSIM800"
+#ifdef MS_SIMCOMSIM7000_DEBUG
+#define MS_DEBUGGING_STD "SIMComSIM7000"
 #endif
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
-#define TINY_GSM_MODEM_SIM800
+#define TINY_GSM_MODEM_SIM7000SSL
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -78,96 +74,97 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSIM800.h"
-#include "LoggerModem.h"
+#include "TinyGsmClientSIM7000SSL.h"
+#include "LoggerModemImpl.h"
 
-#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
+#ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-/** @ingroup modem_sim800 */
+/** @ingroup modem_sim7000 */
 /**@{*/
 
 /**
- * @anchor modem_sim800_pins_timing
+ * @anchor modem_sim7000_pins_timing
  * @name Modem Pin Settings and Timing
- * The timing and pin level settings for a SIMCom SIM800
+ * The timing and pin level settings for a SIMCom SIM7000
  */
 /**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
- * SIM800 status can be monitored on the `STATUS` pin which is active `HIGH`
- * Time after end pulse until status pin becomes active:
- *   - SIM800 - >3sec from start of 1s pulse
- *   - SIM900 - >2.2sec from end of pulse
+ * Status of the SIM7000 should be monitored on the `STATUS` pin, which is at a
+ * high level when the module has powered on and the firmware goes ready.
+ *
+ * Time after end pulse until status pin becomes active is >4.5sec.
  */
-#define SIM800_STATUS_LEVEL HIGH
+#define SIM7000_STATUS_LEVEL HIGH
 /**
  * @brief The loggerModem::_statusTime_ms.
- * @copydetails #SIM800_STATUS_LEVEL
+ * @copydetails #SIM7000_STATUS_LEVEL
  */
-#define SIM800_STATUS_TIME_MS 3000
+#define SIM7000_STATUS_TIME_MS 5000L
 
 /**
  * @brief The loggerModem::_resetLevel.
  *
- * SIM800 is reset with a >105ms low pulse on the `RESET_N` pin
+ * The active low level time impulse on `RESET` pin to reset SIM7000 is
+ * minimum 252ms.
  */
-#define SIM800_RESET_LEVEL LOW
+#define SIM7000_RESET_LEVEL LOW
 /**
  * @brief The loggerModem::_resetPulse_ms.
- * @copydetails #SIM800_RESET_LEVEL
+ * @copydetails #SIM7000_RESET_LEVEL
  */
-#define SIM800_RESET_PULSE_MS 105
+#define SIM7000_RESET_PULSE_MS 300
 
 /**
  * @brief The loggerModem::_wakeLevel.
  *
- * The SIM800 is switched on by a > 1 second `LOW` pulse on the `PWR_ON` pin.
- * Module is switched on by a 1-3 second `LOW` pulse on the `PWR_ON` pin.
+ * The SIM7000 Module is switched on by a >1 second `LOW` pulse on the `PWRKEY`
+ * pin.
  *
- * @note Please monitor the status so on and off are correct!
+ * @note Module is switched OFF by a >1.2 second `LOW` pulse on the `PWRKEY`
+ * pin, so by using a pulse of >1 but <1.2 s to wake the SIM7000 and using AT
+ * commands to put it to sleep, we should always be in the correct state, but if
+ * at all possible the status pin should be monitored to confirm.
  */
-#define SIM800_WAKE_LEVEL LOW
+#define SIM7000_WAKE_LEVEL LOW
 /**
  * @brief The loggerModem::_wakePulse_ms.
- * @copydetails #SIM800_WAKE_LEVEL
+ * @copydetails #SIM7000_WAKE_LEVEL
  */
-#define SIM800_WAKE_PULSE_MS 1100
-
+#define SIM7000_WAKE_PULSE_MS 1100
 /**
  * @brief The loggerModem::_wakeDelayTime_ms.
  *
- * Time after power on before `PWRKEY` on SIM800 can be used is >0.4sec.
+ * Time after power on before `PWRKEY` on SIM7000 can be used is undocumented.
+ * Using 1s.
  */
-#define SIM800_WAKE_DELAY_MS 450
+#define SIM7000_WAKE_DELAY_MS 1000L
 /**
  * @brief The loggerModem::_max_at_response_time_ms.
  *
- * Time after end pulse until serial port becomes active on SIM800 is >3sec from
- * start of 1s pulse.
+ * Time after end pulse until serial port on SIM7000 becomes active is >4.5sec.
  */
-#define SIM800_AT_RESPONSE_TIME_MS 3000
+#define SIM7000_AT_RESPONSE_TIME_MS 4500
 
 /**
  * @brief The loggerModem::_disconnectTime_ms.
  *
- * SIM800 power down (gracefully) takes >3sec.  We allow up to 15sec for
- * shutdown in case it is not monitored.
+ * SIM7000 power down (gracefully) takes 1.8-6.9 sec.
  */
-#define SIM800_DISCONNECT_TIME_MS 15000L
+#define SIM7000_DISCONNECT_TIME_MS 7000L
 /**@}*/
 
 /**
- * @brief The loggerModem subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4
- * and almost any other module based on the [SIMCOM SIM800 or SIM900 modules and
- * their variants](@ref modem_sim800).
+ * @brief The loggerModem subclass for Botletics, And1, and other modules based
+ * on the [SIMCOM SIM7000](@ref modem_sim7000).
  */
-class SIMComSIM800 : public loggerModem {
+class SIMComSIM7000 : public loggerModemImpl {
  public:
     /**
-     * @brief Construct a new SIMComSIM800 object
+     * @brief Construct a new SIMComSIM7000 object
      * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
@@ -185,12 +182,13 @@ class SIMComSIM800 : public loggerModem {
      *
      * @see loggerModem::loggerModem
      */
-    SIMComSIM800(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                 int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn);
+    SIMComSIM7000(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+                  int8_t modemResetPin, int8_t modemSleepRqPin,
+                  const char* apn);
     /**
-     * @brief Destroy the SIMComSIM800 object - no action taken
+     * @brief Destroy the SIMComSIM7000 object - no action needed
      */
-    ~SIMComSIM800() override = default;
+    ~SIMComSIM7000() override = default;
 
     bool modemWake() override;
 
@@ -220,14 +218,14 @@ class SIMComSIM800 : public loggerModem {
                                int16_t& milliVolts) override;
     float getModemChipTemperature() override;
 
-#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
+#ifdef MS_SIMCOMSIM7000_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsmSim800 gsmModem;
+    TinyGsmSim7000SSL gsmModem;
 
  protected:
     bool isInternetAvailable() override;
@@ -240,4 +238,6 @@ class SIMComSIM800 : public loggerModem {
     const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
-#endif  // SRC_MODEMS_SIMCOMSIM800_H_
+#endif  // SRC_MODEMS_SIMCOMSIM7000_H_
+
+// cSpell:ignore kbps

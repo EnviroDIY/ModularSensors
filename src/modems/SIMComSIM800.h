@@ -1,47 +1,59 @@
 /**
- * @file SIMComSIM7080.h
+ * @file SIMComSIM800.h
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Contains the SIMComSIM7080 subclass of loggerModem for
- * Botletics other modules based on the SIMCOM SIM7080.
+ * @brief Contains the SIMComSIM800 subclass of loggerModem for Adafruit Fona
+ * 2G, the Sodaq GPRSBeeR4 and almost any other module based on the SIMCOM
+ * SIM800 or SIM900 modules and their variants.
  */
 /* clang-format off */
 /**
- * @defgroup modem_sim7080 SIMCom SIM7080
+ * @defgroup modem_sim800 SIMCom SIM800
  *
  * @ingroup the_modems
  *
  * @tableofcontents
  * @m_footernavigation
  *
- * @section modem_sim7080_notes Introduction
+ * @section modem_sim800_notes Introduction
  *
- * The SIMCom [SIM7080G](http://www.simcom.com/product/SIM7080G.html)
- * is a Multi-Band CAT-M and NB-IoT module solution in a SMT type.
+ * There are a multitude of boards available that feature a variant of the
+ * SIMCom SIM800 or the nearly identical SIM900, including the
+ * [Adafruit Fona](whttps://www.adafruit.com/product/1946) Mini cellular GSM
+ * breakout.
+ * Almost all of those boards should work with ModularSensors as a generic
+ * SIM800.
+ * The one exception is the Sodaq GPRSBee **R6 and higher**, which has its own
+ * [constructor](@ref modem_gprsbee).
+ * The earlier Sodaq GPRSBees (i.e., R4) do use this version.
  *
- * @section modem_sim7080_docs Manufacturer Documentation
+ * The SIM800 consumes up to 2A of power while connecting to the network.
+ * That is 4x what a typical USB or Arduino board can supply, so expect to give
+ * the module it's own independent power source.
+ *
+ * The Adafruit _3G_ Fona is not currently supported.
+ *
+ * @section modem_sim800_docs Manufacturer Documentation
  * The module datasheet and AT commands are available here:
- * http://www.simcom.com/product/SIM7080G.html
- * @note You must create an account with SIMCOM to be able to download
- * the documents.
+ * https://simcom.ee/modules/gsm-gprs/sim800/
  *
- * @section modem_sim7080_ctor Modem Constructor
- * {{ @ref SIMComSIM7080::SIMComSIM7080 }}
+ * @section modem_sim800_ctor Modem Constructor
+ * {{ @ref SIMComSIM800::SIMComSIM800 }}
  *
  * ___
- * @section modem_sim7080_examples Example Code
- * The SIM7080 is used in the @menulink{sim_com_sim7080} example.
+ * @section modem_sim800_examples Example Code
+ * The SIM800 is used in the @menulink{sim_com_sim800} example.
  *
- * @menusnip{sim_com_sim7080}
+ * @menusnip{sim_com_sim800}
  */
 /* clang-format on */
 
 // Header Guards
-#ifndef SRC_MODEMS_SIMCOMSIM7080_H_
-#define SRC_MODEMS_SIMCOMSIM7080_H_
+#ifndef SRC_MODEMS_SIMCOMSIM800_H_
+#define SRC_MODEMS_SIMCOMSIM800_H_
 
 // Include the library config before anything else
 #include "ModSensorConfig.h"
@@ -50,14 +62,14 @@
 #include "ModSensorDebugConfig.h"
 
 // Define the print label[s] for the debugger
-#ifdef MS_SIMCOMSIM7080_DEBUG
-#define MS_DEBUGGING_STD "SIMComSIM7080"
+#ifdef MS_SIMCOMSIM800_DEBUG
+#define MS_DEBUGGING_STD "SIMComSIM800"
 #endif
 
 /**
  * @brief The modem type for the underlying TinyGSM library.
  */
-#define TINY_GSM_MODEM_SIM7080
+#define TINY_GSM_MODEM_SIM800
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -66,100 +78,96 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSIM7080.h"
-#include "LoggerModem.h"
+#include "TinyGsmClientSIM800.h"
+#include "LoggerModemImpl.h"
 
-#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
+#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
 #include <StreamDebugger.h>
 #endif
 
-/** @ingroup modem_sim7080 */
+/** @ingroup modem_sim800 */
 /**@{*/
 
 /**
- * @anchor modem_sim7080_pins_timing
+ * @anchor modem_sim800_pins_timing
  * @name Modem Pin Settings and Timing
- * The timing and pin level settings for a SIMCom SIM7080
+ * The timing and pin level settings for a SIMCom SIM800
  */
 /**@{*/
 /**
  * @brief The loggerModem::_statusLevel.
  *
- * Status of the SIM7080G should be monitored on the `STATUS` pin, which is at a
- * high level when the module has powered on and the firmware goes ready.
- *
- * Time after start of pulse until status pin becomes active is >1.8sec.
+ * SIM800 status can be monitored on the `STATUS` pin which is active `HIGH`
+ * Time after end pulse until status pin becomes active:
+ *   - SIM800 - >3sec from start of 1s pulse
+ *   - SIM900 - >2.2sec from end of pulse
  */
-#define SIM7080_STATUS_LEVEL HIGH
+#define SIM800_STATUS_LEVEL HIGH
 /**
  * @brief The loggerModem::_statusTime_ms.
- * @copydetails #SIM7080_STATUS_LEVEL
+ * @copydetails #SIM800_STATUS_LEVEL
  */
-#define SIM7080_STATUS_TIME_MS 1800L
+#define SIM800_STATUS_TIME_MS 3000
 
 /**
  * @brief The loggerModem::_resetLevel.
  *
- * The SIM7080G is reset using the `PWRKEY` **NOT** a separate `RESET` pin!
- *
- * To reset the module, the `PWRKEY` is held low for 12.6s.
+ * SIM800 is reset with a >105ms low pulse on the `RESET_N` pin
  */
-#define SIM7080_RESET_LEVEL LOW
+#define SIM800_RESET_LEVEL LOW
 /**
  * @brief The loggerModem::_resetPulse_ms.
- * @copydetails #SIM7080_RESET_LEVEL
+ * @copydetails #SIM800_RESET_LEVEL
  */
-#define SIM7080_RESET_PULSE_MS 12600L
+#define SIM800_RESET_PULSE_MS 105
 
 /**
  * @brief The loggerModem::_wakeLevel.
  *
- * The SIM7080G Module is switched on by a >1 second `LOW` pulse on the `PWRKEY`
- * pin.
+ * The SIM800 is switched on by a > 1 second `LOW` pulse on the `PWR_ON` pin.
+ * Module is switched on by a 1-3 second `LOW` pulse on the `PWR_ON` pin.
  *
- * @note Module is switched OFF by a >1.2 second `LOW` pulse on the `PWRKEY`
- * pin, so by using a pulse of >1 but <1.2 s to wake the SIM7080G and using AT
- * commands to put it to sleep, we should always be in the correct state, but if
- * at all possible the status pin should be monitored to confirm.
- *
- * @note A pulse of >12.6s on the `PWRKEY` resets the module.
+ * @note Please monitor the status so on and off are correct!
  */
-#define SIM7080_WAKE_LEVEL LOW
+#define SIM800_WAKE_LEVEL LOW
 /**
  * @brief The loggerModem::_wakePulse_ms.
- * @copydetails #SIM7080_WAKE_LEVEL
+ * @copydetails #SIM800_WAKE_LEVEL
  */
-#define SIM7080_WAKE_PULSE_MS 1100
+#define SIM800_WAKE_PULSE_MS 1100
+
 /**
  * @brief The loggerModem::_wakeDelayTime_ms.
  *
- * Time after power on before `PWRKEY` on SIM7080 can be used is undocumented.
- * Using 1s.
+ * Time after power on before `PWRKEY` on SIM800 can be used is >0.4sec.
  */
-#define SIM7080_WAKE_DELAY_MS 1000L
+#define SIM800_WAKE_DELAY_MS 450
 /**
  * @brief The loggerModem::_max_at_response_time_ms.
  *
- * Time after end pulse until serial port on SIM7080 becomes active is >1.8sec.
+ * Time after end pulse until serial port becomes active on SIM800 is >3sec from
+ * start of 1s pulse.
  */
-#define SIM7080_AT_RESPONSE_TIME_MS 1800
+#define SIM800_AT_RESPONSE_TIME_MS 3000
 
 /**
  * @brief The loggerModem::_disconnectTime_ms.
  *
- * SIM7080 power down (gracefully) takes 1.8-2 sec.
+ * SIM800 power down (gracefully) takes >3sec.  We allow up to 15sec for
+ * shutdown in case it is not monitored.
  */
-#define SIM7080_DISCONNECT_TIME_MS 2000L
+#define SIM800_DISCONNECT_TIME_MS 15000L
 /**@}*/
 
 /**
- * @brief The loggerModem subclass for modules based on the [SIMCOM
- * SIM7080](@ref modem_sim7080).
+ * @brief The loggerModem subclass for the Adafruit Fona 2G, the Sodaq GPRSBeeR4
+ * and almost any other module based on the [SIMCOM SIM800 or SIM900 modules and
+ * their variants](@ref modem_sim800).
  */
-class SIMComSIM7080 : public loggerModem {
+class SIMComSIM800 : public loggerModemImpl {
  public:
     /**
-     * @brief Construct a new SIMComSIM7080 object
+     * @brief Construct a new SIMComSIM800 object
      * The constructor initializes all of the provided member variables,
      * constructs a loggerModem parent class with the appropriate timing for the
      * module, calls the constructor for a TinyGSM modem on the provided
@@ -169,21 +177,20 @@ class SIMComSIM7080 : public loggerModem {
      * @param powerPin @copydoc loggerModem::_powerPin
      * @param statusPin @copydoc loggerModem::_statusPin
      * This is the pin labeled `STATUS` in SIMCom's integration guide.
+     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * This is the pin labeled `RESET` in SIMCom's integration guide.
      * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
      * This is the pin labeled `PWRKEY` in SIMCom's integration guide.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
      * @see loggerModem::loggerModem
-     *
-     * @note The SIM7080G does not have a `RESET` pin.  Resets are done using
-     * the `PWRKEY`.
      */
-    SIMComSIM7080(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                  int8_t modemSleepRqPin, const char* apn);
+    SIMComSIM800(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+                 int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn);
     /**
-     * @brief Destroy the SIMComSIM7080 object - no action needed
+     * @brief Destroy the SIMComSIM800 object - no action taken
      */
-    ~SIMComSIM7080() override = default;
+    ~SIMComSIM800() override = default;
 
     bool modemWake() override;
 
@@ -213,14 +220,14 @@ class SIMComSIM7080 : public loggerModem {
                                int16_t& milliVolts) override;
     float getModemChipTemperature() override;
 
-#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
+#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
     StreamDebugger _modemATDebugger;
 #endif
 
     /**
      * @brief Public reference to the TinyGSM modem.
      */
-    TinyGsmSim7080 gsmModem;
+    TinyGsmSim800 gsmModem;
 
  protected:
     bool isInternetAvailable() override;
@@ -233,4 +240,4 @@ class SIMComSIM7080 : public loggerModem {
     const char* _apn;  ///< Internal reference to the cellular APN
 };
 /**@}*/
-#endif  // SRC_MODEMS_SIMCOMSIM7080_H_
+#endif  // SRC_MODEMS_SIMCOMSIM800_H_

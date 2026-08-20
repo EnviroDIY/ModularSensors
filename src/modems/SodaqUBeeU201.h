@@ -76,7 +76,7 @@
 
 // Include other in-library and external dependencies
 #include "TinyGsmClientUBLOX.h"
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 #ifdef MS_SODAQUBEEU201_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -161,7 +161,7 @@
  * [Sodaq UBee](@ref modem_ublox) based on the u-blox SARA U201 2G/3G cellular
  * module.
  */
-class SodaqUBeeU201 : public loggerModem {
+class SodaqUBeeU201 : public loggerModemImpl {
  public:
     /**
      * @brief Construct a new Sodaq UBee U201 object

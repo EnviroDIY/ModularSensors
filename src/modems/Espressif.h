@@ -68,7 +68,7 @@
 #undef MS_DEBUGGING_STD
 
 // Include other in-library and external dependencies
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 /** @ingroup modem_espressif */
 /**@{*/
@@ -175,7 +175,7 @@
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
  */
-class Espressif : public loggerModem {
+class Espressif : public loggerModemImpl {
  public:
     // Constructors/Destructor
     /**

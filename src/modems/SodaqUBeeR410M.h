@@ -136,7 +136,7 @@
 
 // Include other in-library and external dependencies
 #include "TinyGsmClientSaraR4.h"
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 #ifdef MS_SODAQUBEER410M_DEBUG_DEEP
 #include <StreamDebugger.h>
@@ -221,7 +221,7 @@
  * u-blox SARA R410M LTE-M cellular module.  This can be also used for any other
  * breakout of the u-blox R4 or N4 series modules.
  */
-class SodaqUBeeR410M : public loggerModem {
+class SodaqUBeeR410M : public loggerModemImpl {
  public:
 #if F_CPU == 8000000L
     /**
