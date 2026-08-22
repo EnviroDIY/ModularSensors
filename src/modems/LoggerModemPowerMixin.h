@@ -49,30 +49,32 @@
 template <typename Derived>
 class loggerModemPowerMixin {
  protected:
+    /**
+     * @brief Get a reference to the derived class.
+     * @return Reference to the derived class.
+     */
     inline Derived& derived() {
         return static_cast<Derived&>(*this);
     }
+    /**
+     * @brief Get a const reference to the derived class.
+     * @return Const reference to the derived class.
+     */
     inline const Derived& derived() const {
         return static_cast<const Derived&>(*this);
     }
 
 
     /**
-     * @anchor modem_power_functions
-     * @name Modem power management
-     * Functions to power up or down the modem, wake it from sleep, or put it
-     * to sleep.
+     * @anchor modem_power_functions_impl
+     * @name Modem power management function implementations
+     * Implementations for the functions to power up or down the modem, wake it
+     * from sleep, or put it to sleep.
      */
     /**@{*/
- public:
-    /**
-     * @brief Power up the modem.
-     *
-     * If there's a power pin, this sets that pin high to power the modem. If
-     * there's a sleep request pin, it is set to the "not wake" level before
-     * power up.
-     */
-    virtual void modemPowerUp() {
+ protected:
+    /// @copydoc loggerModem::modemPowerUp()
+    virtual void modemPowerUpImpl() {
         if (derived()._powerPin >= 0) {
             if (derived()._modemSleepRqPin >= 0) {
                 // For most modules, the sleep pin should be held high during
@@ -98,14 +100,8 @@ class loggerModemPowerMixin {
         }
     }
 
-    /**
-     * @brief Cut power to the modem by setting the modem power pin low.
-     *
-     * @note modemPowerDown() simply kills power, while modemSleepPowerDown()
-     * allows for graceful shut down.  You should use modemSleepPowerDown()
-     * whenever possible.
-     */
-    virtual void modemPowerDown() {
+    /// @copydoc loggerModem::modemPowerDown()
+    virtual void modemPowerDownImpl() {
         if (derived()._powerPin >= 0) {
             MS_DBG(F("Turning off power to"), derived().getModemName(),
                    F("with pin"), derived()._powerPin);
@@ -118,26 +114,15 @@ class loggerModemPowerMixin {
         }
     }
 
-    /**
-     * @brief Wake up the modem.
-     *
-     * This sets pin modes, powers up the modem if necessary, sets time stamps,
-     * runs the specific modem's wake function, tests for responsiveness to AT
-     * commands, and then re-runs the TinyGSM init() if necessary.  If the modem
-     * fails to respond, this attempts a "hard" pin reset if possible.
-     *
-     * @return True if the modem is responsive and ready for action.
-     */
-    virtual bool modemWake() {
+    /// @copydoc loggerModem::modemWake()
+    virtual bool modemWakeImpl() {
         // Set-up pin modes.
         // Because the modem calls wake BEFORE the first setup, we must set the
         // pin modes in the wake function.
         derived().setModemPinModes();
 
         // Power up
-        if (derived()._millisPowerOn == 0)
-            static_cast<loggerModemPowerMixin<Derived>&>(derived())
-                .modemPowerUp();
+        if (derived()._millisPowerOn == 0) modemPowerUpImpl();
         // wait for warmup
         if (millis() - derived()._millisPowerOn < derived()._wakeDelayTime_ms) {
             MS_DBG(F("Wait"),
@@ -150,8 +135,7 @@ class loggerModemPowerMixin {
             }
         }
 
-        if (static_cast<loggerModemPowerMixin<Derived>&>(derived())
-                .isModemAwake()) {
+        if (isModemAwakeImpl()) {
             MS_DBG(derived().getModemName(),
                    F("was already on! Will not run wake function."));
         } else {  // Run the specific modemWakeFxn()
@@ -178,8 +162,7 @@ class loggerModemPowerMixin {
             } else {  // Hard reset is there's no AT response.
                 MS_DBG(F("No response to AT commands!"));
                 MS_DBG(F("Attempting a hard reset on the modem! "), resets + 1);
-                if (!static_cast<loggerModemPowerMixin<Derived>&>(derived())
-                         .modemHardReset()) {
+                if (!modemHardResetImpl()) {
                     // Exit if we can't hardreset.
                     break;
                 } else {
@@ -214,13 +197,8 @@ class loggerModemPowerMixin {
         return success;
     }
 
-    /**
-     * @brief Request that the modem enter its lowest possible power state.
-     *
-     * @return True if the modem has successfully entered low power
-     * state
-     */
-    virtual bool modemSleep() {
+    /// @copydoc loggerModem::modemSleep()
+    virtual bool modemSleepImpl() {
         bool success = true;
         MS_DBG(F("Putting"), derived().getModemName(), F("to sleep."));
 
@@ -234,8 +212,7 @@ class loggerModemPowerMixin {
         // that is sufficient to wake but not quite long enough to put it to
         // sleep and am using AT commands to sleep.  This *should* keep
         // everything lined up.
-        if (!static_cast<loggerModemPowerMixin<Derived>&>(derived())
-                 .isModemAwake()) {
+        if (!isModemAwakeImpl()) {
             MS_DBG(derived().getModemName(),
                    F("is already off!  Will not run sleep function."));
         } else {
@@ -248,23 +225,14 @@ class loggerModemPowerMixin {
         return success;
     }
 
-    /**
-     * @brief Request that the modem enter its lowest possible power state and
-     * then set the power pin low after the modem has indicated it has
-     * successfully gone to low power.
-     *
-     * This allows the modem to shut down all connections cleanly and do any
-     * necessary internal housekeeping before stopping power.
-     *
-     * @return True if the modem has successfully entered low power
-     * state _and_ then powered off
-     */
-    virtual bool modemSleepPowerDown() {
+    /// @copydoc loggerModem::modemSleepPowerDown()
+    virtual bool modemSleepPowerDownImpl() {
         bool     success = true;
         uint32_t start   = millis();
         MS_DBG(F("Turning"), derived().getModemName(), F("off."));
 
-        static_cast<loggerModemPowerMixin<Derived>&>(derived()).modemSleep();
+        // Put the modem to sleep
+        modemSleepImpl();
 
         // Now power down
         if (derived()._powerPin >= 0) {
@@ -315,18 +283,8 @@ class loggerModemPowerMixin {
         return success;
     }
 
-    /**
-     * @brief Use the modem reset pin specified in the constructor to perform a
-     * "hard" or "panic" reset.
-     *
-     * This should only be used if the modem is clearly non-responsive.
-     *
-     * @return True if the reset succeeded and the modem should now be
-     * responsive.  False if the modem remains non-responsive either because the
-     * reset failed to fix the communication issue or because a reset is not
-     * possible with the current pin/modem configuration.
-     */
-    virtual bool modemHardReset() {
+    /// @copydoc loggerModem::modemHardReset()
+    virtual bool modemHardResetImpl() {
         if (derived()._modemResetPin >= 0) {
             MS_DBG(F("Doing a hard reset on the modem by setting pin"),
                    derived()._modemResetPin,
@@ -342,25 +300,8 @@ class loggerModemPowerMixin {
         }
     }
 
-    /**
-     * @brief Check if the modem was awake using all possible means.
-     *
-     * If possible, we always want to check if the modem was awake before
-     * attempting to wake it up.  Most cellular modules are woken and put to
-     * sleep by identical pulses on a sleep or "power" pin.  We don't want to
-     * accidentally pulse an already on modem to off.
-     *
-     * @note It's possible that the status pin is on, but the modem is actually
-     * mid-shutdown.  In that case, we'll mistakenly skip re-waking it.  This
-     * only applies to modules with a pulse wake (i.e., non-zero wake time). For
-     * all modules that do pulse on, where possible I've selected a pulse time
-     * that is sufficient to wake but not quite long enough to put it to sleep
-     * and am using AT commands to sleep.  This *should* keep everything lined
-     * up.
-     *
-     * @return True if the modem is already awake; false otherwise.
-     */
-    virtual bool isModemAwake() {
+    /// @copydoc loggerModem::isModemAwake()
+    virtual bool isModemAwakeImpl() {
         if (derived()._wakePulse_ms == 0 && derived()._modemSleepRqPin >= 0) {
             // If the wake up is one where a pin is held (0 wake time) and that
             // pin is defined, then we're going to check the level of the held
@@ -414,17 +355,19 @@ class loggerModemPowerMixin {
 
 
     /* ===================================================================== */
-    /* Pin Functions                                                         */
+    /* Pin Level Functions                                                   */
     /* ===================================================================== */
     /**
-     * @anchor modem_pin_functions
-     * @name Pin setting functions
-     * Functions to set or re-set the pin numbers for the connection between
-     * the modem module and the logger MCU.
+     * @anchor modem_pin_levels_impl
+     * @name Pin setting function implementations
+     * Functions to set the pin levels of the modem control pins.  These are
+     * called by the public functions in LoggerModemImpl.h and are not intended
+     * to be called directly.
      */
     /**@{*/
  public:
-    void setModemLED(int8_t modemLEDPin) {
+    /// @copydoc loggerModem::setModemLED()
+    void setModemLEDImpl(int8_t modemLEDPin) {
         derived()._modemLEDPin = modemLEDPin;
         if (derived()._modemLEDPin >= 0) {
             pinMode(derived()._modemLEDPin, OUTPUT);
@@ -432,45 +375,18 @@ class loggerModemPowerMixin {
         }
     }
 
-    /**
-     * @brief Set the pin level to be expected when the on the modem status pin
-     * when the modem is active.
-     *
-     * If this function is not called, the modem status pin is assumed to
-     * exactly follow the hardware specifications for that modems raw cellular
-     * component.
-     *
-     * @param level The active level of the pin (`LOW` or `HIGH`)
-     */
-    void setModemStatusLevel(bool level) {
+    /// @copydoc loggerModem::setModemStatusLevel()
+    void setModemStatusLevelImpl(bool level) {
         derived()._statusLevel = level;
     }
 
-    /**
-     * @brief Set the pin level to be used to wake the modem.
-     *
-     * If this function is not called, the modem status pin is assumed to
-     * exactly follow the hardware specifications for that modems raw cellular
-     * component.
-     *
-     * @param level The pin level (`LOW` or `HIGH`) of the pin while waking
-     * the modem.
-     */
-    void setModemWakeLevel(bool level) {
+    /// @copydoc loggerModem::setModemWakeLevel()
+    void setModemWakeLevelImpl(bool level) {
         derived()._wakeLevel = level;
     }
 
-    /**
-     * @brief Set the pin level to be used to reset the modem.
-     *
-     * If this function is not called, the modem status pin is assumed to
-     * exactly follow the hardware specifications for that modems raw cellular
-     * component - nearly always low.
-     *
-     * @param level The pin level (`LOW` or `HIGH`) of the pin while
-     * resetting the modem.
-     */
-    void setModemResetLevel(bool level) {
+    /// @copydoc loggerModem::setModemResetLevel()
+    void setModemResetLevelImpl(bool level) {
         derived()._resetLevel = level;
     }
     /**@}*/
@@ -576,30 +492,31 @@ class loggerModemPowerMixin {
      */
     uint32_t _wakePulse_ms;
     /**
-     * @brief The time in milliseconds between when #modemWake() is run and when
-     * the #_statusPin is expected to be at #_statusLevel.
+     * @brief The time in milliseconds between when loggerModem::modemWake() is
+     * run and when the #_statusPin is expected to be at #_statusLevel.
      */
     uint32_t _statusTime_ms;
     /**
      * @brief The maximum length of time in milliseconds between when the modem
-     * is requested to enter lowest power state (#modemSleep()) and when it
-     * should have completed necessary steps to shut down.
+     * is requested to enter lowest power state (loggerModem::modemSleep()) and
+     * when it should have completed necessary steps to shut down.
      */
     uint32_t _disconnectTime_ms;
     /**
      * @brief The time in milliseconds between when the modem is powered and
      * when it is able to receive a wake command.
      *
-     * That is, the time that should be allowed between #modemPowerUp() and
-     * #modemWake().
+     * That is, the time that should be allowed between
+     * loggerModem::modemPowerUp() and loggerModem::modemWake().
      */
     uint32_t _wakeDelayTime_ms;
     /**
      * @brief The processor elapsed time when the power was turned on for the
      * modem.
      *
-     * The #_millisPowerOn value is set in the modemPowerUp()
-     * function.  It is un-set in the modemSleepPowerDown() function.
+     * The #_millisPowerOn value is set in the loggerModem::modemPowerUp()
+     * function.  It is un-set in the loggerModem::modemSleepPowerDown()
+     * function.
      */
     uint32_t _millisPowerOn = 0;
 
