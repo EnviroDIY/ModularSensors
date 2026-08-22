@@ -205,7 +205,8 @@ class loggerModemSensingMixin {
     /**
      * @brief The get battery stats function for modems that cannot return
      * battery information.
-     * @copydetails loggerModem::getModemBatteryStats(int8_t&, int8_t&, int16_t&)
+     * @copydetails loggerModem::getModemBatteryStats(int8_t&, int8_t&,
+     * int16_t&)
      */
     bool getModemBatteryStatsImpl(int8_t& chargeState, int8_t& percent,
                                   int16_t& milliVolts,

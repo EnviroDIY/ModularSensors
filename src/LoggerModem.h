@@ -258,6 +258,7 @@
 /// @brief Default variable short code; "modemTemp"
 #define MODEM_TEMPERATURE_DEFAULT_CODE "modemTemp"
 /**@}*/
+/**@}*/
 
 
 /**
@@ -295,8 +296,9 @@ class loggerModem {
     /**@{*/
     /**
      * @brief Set an LED to turn on (pin will be `HIGH`) when the modem is on.
-     *
-     * @param modemLEDPin The digital pin number for the LED
+     * @param modemLEDPin The digital pin number of the pin on the MCU connected
+     * to the modem status LED or alert pin.  Set to a negative number if there
+     * is no such pin.
      */
     virtual void setModemLED(int8_t modemLEDPin) = 0;
     /**
@@ -316,8 +318,6 @@ class loggerModem {
      *
      * @return The concatenated name, hardware version, firmware
      * version, and serial number of the modem.
-     *
-     * @todo Implement this for modems other than the XBee WiFi
      */
     virtual String getModemDevId() = 0;
     /**
@@ -339,7 +339,8 @@ class loggerModem {
      * @brief Set up the modem before first use.
      *
      * This is used for operations that cannot happen in the modem constructor -
-     * they must happen at run time, not at compile time.
+     * they must happen at run time, not at compile time.  By default, this
+     * performs TinyGSM initialization and any modem-specific setup.
      *
      * @return True if setup was successful
      */
@@ -655,7 +656,7 @@ class loggerModem {
      * multiplexing channel.
      * @warning Be sure to delete this object when you're done with it!
      *
-     * @param muxChannel The multiplexing channel to use
+     * @param mux The multiplexing channel to use
      * @param pskTableName The pre-shared key table name - for modems that
      * require PSK's in a "table" format
      * @param sslVersion The SSL version to use

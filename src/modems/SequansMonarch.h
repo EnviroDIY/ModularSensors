@@ -203,14 +203,14 @@ class SequansMonarch
      * modemStream, and creates a TinyGSM Client linked to the modem.
      *
      * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param powerPin @copydoc _powerPin
+     * @param statusPin @copydoc _statusPin
      * This could be the pin called either the `GPIO3/STATUS_LED` or `POWER_MON`
      * in the Sequans Monarch integration guide.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This should be the pin called `RESETN` in the Sequans Monarch integration
      * guide.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This should be the pin called `RTS` or `RTS0` in the Sequans Monarch
      * integration guide.
      * @param apn The Access Point Name (APN) for the SIM card.

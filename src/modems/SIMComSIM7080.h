@@ -167,10 +167,10 @@ class SIMComSIM7080 : public loggerModemImpl<
      * modemStream, and creates a TinyGSM Client linked to the modem.
      *
      * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param powerPin @copydoc _powerPin
+     * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in SIMCom's integration guide.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This is the pin labeled `PWRKEY` in SIMCom's integration guide.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
