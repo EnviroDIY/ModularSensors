@@ -52,12 +52,15 @@ template <typename Derived, typename GsmModemType_T>
 class loggerModemSensingMixin {
  public:
     // Type aliases to avoid incomplete type issues
+    /// @copydoc loggerModemImpl::GsmModemType
     using GsmModemType = GsmModemType_T;
 
  protected:
+    /// @copydoc loggerModemPowerMixin::derived()
     inline Derived& derived() {
         return static_cast<Derived&>(*this);
     }
+    /// @copydoc loggerModemPowerMixin::derived() const
     inline const Derived& derived() const {
         return static_cast<const Derived&>(*this);
     }
@@ -66,38 +69,19 @@ class loggerModemSensingMixin {
     /* Modem Metadata                                                        */
     /* ===================================================================== */
     /**
-     * @anchor modem_metadata_functions
-     * @name Modem metadata functions
-     * Functions to get metadata about modem functionality - using the modem
-     * like a sensor.
-     *
-     * These functions will query the modem to get new values.
-     *
-     * @note In order to use the modem metadata functions, they must be
-     * called after the modem is connected to the internet.
+     * @anchor modem_metadata_functions_impl
+     * @name Modem metadata function implementations
+     * Implementations of functions to get metadata about modem functionality -
+     * using the modem like a sensor.
      */
     /**@{*/
 
     /* ===================================================================== */
     /* Signal Quality                                                        */
     /* ===================================================================== */
- public:
-    /**
-     * @brief Get the signal quality from the modem
-     *
-     * @remark We can't distinguish between a bad modem response, no modem
-     * response, and a real response from the modem of no service/signal.
-     * The TinyGSM getSignalQuality function returns the same "no signal" value
-     * (99 CSQ or 0 RSSI) in all 3 cases.
-     *
-     * @param rssi The reference to an int16_t which will be set with the
-     * received signal strength indicator.
-     * @param percent The reference to an int16_t which will be set with the
-     * "percent" signal strength.
-     * @return True if the communication with the modem was successful and the
-     * values referenced by the pointers should be valid; false otherwise.
-     */
-    virtual bool getModemSignalQuality(int16_t& rssi, int16_t& percent) {
+ protected:
+    /// @copydoc loggerModem::getModemSignalQuality()
+    virtual bool getModemSignalQualityImpl(int16_t& rssi, int16_t& percent) {
         MS_DBG(F("Getting signal quality:"));
         int16_t signalQual = derived().gsmModem.getSignalQuality();
         MS_DBG(F("Raw signal quality:"), signalQual);
@@ -107,12 +91,12 @@ class loggerModemSensingMixin {
         return true;
     }
 
- protected:
     /**
      * @anchor modem_signal_functions
      * @name Functions to convert between signal strength measurement types
      */
     /**@{*/
+ protected:
     /**
      * @brief The convert signal quality function for modems that return RSSI
      * directly - those with "signalQualityIsRSSI" set to a true type.
@@ -195,50 +179,24 @@ class loggerModemSensingMixin {
     /* ===================================================================== */
     /* Battery Stats - battery voltage, charging state, and charge percent   */
     /* ===================================================================== */
- public:
-    /**
-     * @brief Get the modem's battery information  - this may or may not be a
-     * valid values depending on the module and breakout.
-     *
-     * This populates the entered references with invalid values for modems
-     * where such data is not available.
-     *
-     * @warning This function does **not** use #MS_INVALID_VALUE for the invalid
-     * values! This is because of the size of the int variables and the
-     * standards within TinyGSM.
-     *
-     * @remark The battery values for the modem will only be valid if the modem
-     * is directly connected to a battery.  This is __not__ the way most modems
-     * are wired.  If the modem is not directly wired to a battery, this will
-     * return invalid data.
-     *
-     * @param chargeState The reference to an int8_t which will be set with the
-     * battery charge state - exactly the meaning of this varies by module, but
-     * it generally indicates whether the battery is currently charging or
-     * discharging.
-     * @param percent The reference to an int8_t which will be set with the
-     * percent battery charge
-     * @param milliVolts The reference to an int16_t which will be set with the
-     * battery voltage in millivolts
-     * @return True if the communication with the modem was successful and the
-     * values referenced by the pointers should be valid; false otherwise.
-     */
-    virtual bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                                      int16_t& milliVolts) {
-        return getModemBatteryStats(
+ protected:
+    /// @copydoc loggerModem::getModemBatteryStats()
+    virtual bool getModemBatteryStatsImpl(int8_t& chargeState, int8_t& percent,
+                                          int16_t& milliVolts) {
+        return getModemBatteryStatsImpl(
             chargeState, percent, milliVolts,
             typename TinyGsmCapabilities::has_battery<GsmModemType>::type());
     }
 
- protected:
     /**
      * @brief The get battery stats function for modems that are capable of
      * returning battery information.
-     * @copydetail getModemBatteryStats(int8_t&, int8_t&, int16_t&)
+     * @copydetails loggerModem::getModemBatteryStats(int8_t&, int8_t&,
+     * int16_t&)
      */
-    bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                              int16_t& milliVolts,
-                              TinyGsmCapabilities::true_type) {
+    bool getModemBatteryStatsImpl(int8_t& chargeState, int8_t& percent,
+                                  int16_t& milliVolts,
+                                  TinyGsmCapabilities::true_type) {
         MS_DBG(F("Getting modem battery data:"));
         return derived().gsmModem.getBattStats(chargeState, percent,
                                                milliVolts);
@@ -247,11 +205,11 @@ class loggerModemSensingMixin {
     /**
      * @brief The get battery stats function for modems that cannot return
      * battery information.
-     * @copydetail getModemBatteryStats(int8_t&, int8_t&, int16_t&)
+     * @copydetails loggerModem::getModemBatteryStats(int8_t&, int8_t&, int16_t&)
      */
-    bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                              int16_t& milliVolts,
-                              TinyGsmCapabilities::false_type) {
+    bool getModemBatteryStatsImpl(int8_t& chargeState, int8_t& percent,
+                                  int16_t& milliVolts,
+                                  TinyGsmCapabilities::false_type) {
         MS_DBG(F("This modem doesn't return battery information!"));
         chargeState = 99;
         percent     = -99;
@@ -263,29 +221,20 @@ class loggerModemSensingMixin {
     /* ===================================================================== */
     /* Modem internal chip temperature                                       */
     /* ===================================================================== */
- public:
-    /**
-     * @brief Get the current temperature provided by the modem module.
-     *
-     * @remark This is **not** a measurement of the ambient temperature, it only
-     * reflects the temperature of the modem chip itself.  This temperature is
-     * expected to be above ambient temperature.
-     *
-     * @return The modem temperature in degrees Celsius
-     */
-    virtual float getModemChipTemperature() {
-        return getModemChipTemperature(
+ protected:
+    /// @copydoc loggerModem::getModemChipTemperature()
+    virtual float getModemChipTemperatureImpl() {
+        return getModemChipTemperatureImpl(
             typename TinyGsmCapabilities::has_temperature<
                 GsmModemType>::type());
     }
 
- protected:
     /**
      * @brief The modem temperature function for modems that are able to return
      * temperature
-     * @return The modem temperature in degrees Celsius
+     * @copydetails loggerModem::getModemChipTemperature()
      */
-    float getModemChipTemperature(TinyGsmCapabilities::true_type) {
+    float getModemChipTemperatureImpl(TinyGsmCapabilities::true_type) {
         MS_DBG(F("Getting temperature:"));
         float temp = derived().gsmModem.getTemperature();
         MS_DBG(F("Temperature:"), temp);
@@ -297,7 +246,7 @@ class loggerModemSensingMixin {
      * temperature
      * @return An invalid value
      */
-    float getModemChipTemperature(TinyGsmCapabilities::false_type) {
+    float getModemChipTemperatureImpl(TinyGsmCapabilities::false_type) {
         MS_DBG(F("This modem doesn't return temperature!"));
         return static_cast<float>(MS_INVALID_VALUE);
     }

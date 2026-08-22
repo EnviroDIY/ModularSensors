@@ -111,11 +111,16 @@ class loggerModemImpl
 
  public:
     // Type members - use different names to avoid shadowing template parameters
-    using GsmModemType     = GsmModemType_T;
-    using ClientType       = ClientType_T;
+    /// The type of the TinyGSM modem used by this loggerModemImpl
+    using GsmModemType = GsmModemType_T;
+    /// The type of the TinyGSM client used by this loggerModemImpl
+    using ClientType = ClientType_T;
+    /// The type of the TinyGSM secure client used by this loggerModemImpl
     using SecureClientType = SecureClientType_T;
 
     // Use TinyGSM's integral_constant for tag dispatch pattern
+    /// The type of the signal quality measurement used by this loggerModemImpl
+    /// - true if RSSI, false if CSQ
     typedef TinyGsmCapabilities::integral_constant<bool, signalQualityIsRSSI>
         SignalQualityIsRSSI;
 
@@ -184,164 +189,127 @@ class loggerModemImpl
      */
     virtual ~loggerModemImpl() = default;
 
- private:
-    /* ===================================================================== */
-    /* Helper functions to cast to mixin base classes                        */
-    /* ===================================================================== */
-    /**
-     * @brief Get a pointer to the power mixin base class
-     * @return Casted pointer to loggerModemPowerMixin
-     */
-    loggerModemPowerMixin<loggerModemImpl>& getPowerMixin() {
-        return static_cast<loggerModemPowerMixin<loggerModemImpl>&>(*this);
-    }
-
-    /**
-     * @brief Get a pointer to the communication mixin base class
-     * @return Casted pointer to loggerModemCommMixin
-     */
-    loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
-                         SecureClientType_T>&
-    getCommMixin() {
-        return static_cast<
-            loggerModemCommMixin<loggerModemImpl, GsmModemType_T, ClientType_T,
-                                 SecureClientType_T>&>(*this);
-    }
-
-    /**
-     * @brief Get a pointer to the sensing mixin base class
-     * @return Casted pointer to loggerModemSensingMixin
-     */
-    loggerModemSensingMixin<loggerModemImpl, GsmModemType_T>&
-    getSensingMixin() {
-        return static_cast<
-            loggerModemSensingMixin<loggerModemImpl, GsmModemType_T>&>(*this);
-    }
-
- public:
     /* ===================================================================== */
     /* Virtual override functions that delegate to mixin implementations    */
     /* These satisfy the pure virtual functions from loggerModem base class */
     /* ===================================================================== */
 
     // Power management functions from loggerModemPowerMixin
-    virtual void setModemLED(int8_t modemLEDPin) override {
-        getPowerMixin().setModemLED(modemLEDPin);
+    void setModemLED(int8_t modemLEDPin) override {
+        this->setModemLEDImpl(modemLEDPin);
     }
-    virtual void modemPowerUp() override {
-        getPowerMixin().modemPowerUp();
+    void modemPowerUp() override {
+        this->modemPowerUpImpl();
     }
-    virtual void modemPowerDown() override {
-        getPowerMixin().modemPowerDown();
+    void modemPowerDown() override {
+        this->modemPowerDownImpl();
     }
-    virtual bool modemWake() override {
-        return getPowerMixin().modemWake();
+    bool modemWake() override {
+        return this->modemWakeImpl();
     }
-    virtual bool modemSleep() override {
-        return getPowerMixin().modemSleep();
+    bool modemSleep() override {
+        return this->modemSleepImpl();
     }
-    virtual bool modemSleepPowerDown() override {
-        return getPowerMixin().modemSleepPowerDown();
+    bool modemSleepPowerDown() override {
+        return this->modemSleepPowerDownImpl();
     }
-    virtual bool modemHardReset() override {
-        return getPowerMixin().modemHardReset();
+    bool modemHardReset() override {
+        return this->modemHardResetImpl();
     }
-    virtual bool isModemAwake() override {
-        return getPowerMixin().isModemAwake();
+    bool isModemAwake() override {
+        return this->isModemAwakeImpl();
     }
-    virtual void setModemStatusLevel(bool level) override {
-        getPowerMixin().setModemStatusLevel(level);
+    void setModemStatusLevel(bool level) override {
+        this->setModemStatusLevelImpl(level);
     }
-    virtual void setModemWakeLevel(bool level) override {
-        getPowerMixin().setModemWakeLevel(level);
+    void setModemWakeLevel(bool level) override {
+        this->setModemWakeLevelImpl(level);
     }
-    virtual void setModemResetLevel(bool level) override {
-        getPowerMixin().setModemResetLevel(level);
+    void setModemResetLevel(bool level) override {
+        this->setModemResetLevelImpl(level);
     }
 
     // Communication and setup functions from loggerModemCommMixin
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) override {
-        return getCommMixin().connectInternet(maxConnectionTime);
+    bool connectInternet(uint32_t maxConnectionTime = 50000L) override {
+        return this->connectInternetImpl(maxConnectionTime);
     }
-    virtual void disconnectInternet() override {
-        getCommMixin().disconnectInternet();
+    void disconnectInternet() override {
+        this->disconnectInternetImpl();
     }
-    virtual bool isInternetAvailable() override {
-        return getCommMixin().isInternetAvailable();
+    bool isInternetAvailable() override {
+        return this->isInternetAvailableImpl();
     }
-    virtual void setModemTimeZone(int8_t timeZone) override {
-        getCommMixin().setModemTimeZone(timeZone);
+    void setModemTimeZone(int8_t timeZone) override {
+        this->setModemTimeZoneImpl(timeZone);
     }
-    virtual uint32_t getNISTTime() override {
-        return getCommMixin().getNISTTime();
+    uint32_t getNISTTime() override {
+        return this->getNISTTimeImpl();
     }
 
     // TCP client functions from loggerModemCommMixin
-    virtual Client* createClient(uint8_t mux = 0) override {
-        return getCommMixin().createClient(mux);
+    Client* createClient(uint8_t mux = 0) override {
+        return this->createClientImpl(mux);
     }
-    virtual void deleteClient(Client* client) override {
-        getCommMixin().deleteClient(client);
+    void deleteClient(Client* client) override {
+        this->deleteClientImpl(client);
     }
 
     // Secure SSL/TLS client functions from loggerModemCommMixin
-    virtual Client* createSecureClient(uint8_t mux = 0) override {
-        return getCommMixin().createSecureClient(mux);
+    Client* createSecureClient(uint8_t mux = 0) override {
+        return this->createSecureClientImpl(mux);
     }
-    virtual Client* createSecureClient(
-        uint8_t mux, SSLAuthMode sslAuthMode,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) override {
-        return getCommMixin().createSecureClient(mux, sslAuthMode, sslVersion,
-                                                 CAcertName, clientCertName,
-                                                 clientKeyName);
+    Client* createSecureClient(uint8_t mux, SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) override {
+        return this->createSecureClient(mux, sslAuthMode, sslVersion,
+                                        CAcertName, clientCertName,
+                                        clientKeyName);
     }
-    virtual Client* createSecureClient(
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) override {
-        return getCommMixin().createSecureClient(
-            sslAuthMode, sslVersion, CAcertName, clientCertName, clientKeyName);
+    Client* createSecureClient(SSLAuthMode sslAuthMode,
+                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                               const char* CAcertName     = nullptr,
+                               const char* clientCertName = nullptr,
+                               const char* clientKeyName  = nullptr) override {
+        return this->createSecureClient(sslAuthMode, sslVersion, CAcertName,
+                                        clientCertName, clientKeyName);
     }
-    virtual Client* createSecureClient(
+    Client* createSecureClient(
         uint8_t mux, const char* pskIdent, const char* psKey,
         SSLVersion sslVersion = SSLVersion::TLS1_2) override {
-        return getCommMixin().createSecureClient(mux, pskIdent, psKey,
-                                                 sslVersion);
+        return this->createSecureClientImpl(mux, pskIdent, psKey, sslVersion);
     }
-    virtual Client* createSecureClient(
+    Client* createSecureClient(
         const char* pskIdent, const char* psKey,
         SSLVersion sslVersion = SSLVersion::TLS1_2) override {
-        return getCommMixin().createSecureClient(pskIdent, psKey, sslVersion);
+        return this->createSecureClientImpl(pskIdent, psKey, sslVersion);
     }
-    virtual Client* createSecureClient(
+    Client* createSecureClient(
         uint8_t mux, const char* pskTableName,
         SSLVersion sslVersion = SSLVersion::TLS1_2) override {
-        return getCommMixin().createSecureClient(mux, pskTableName, sslVersion);
+        return this->createSecureClientImpl(mux, pskTableName, sslVersion);
     }
-    virtual Client* createSecureClient(
+    Client* createSecureClient(
         const char* pskTableName,
         SSLVersion  sslVersion = SSLVersion::TLS1_2) override {
-        return getCommMixin().createSecureClient(pskTableName, sslVersion);
+        return this->createSecureClientImpl(pskTableName, sslVersion);
     }
 
-    virtual void deleteSecureClient(Client* client) override {
-        getCommMixin().deleteSecureClient(client);
+    void deleteSecureClient(Client* client) override {
+        this->deleteSecureClientImpl(client);
     }
 
     // Metadata functions from loggerModemSensingMixin
-    virtual bool getModemSignalQuality(int16_t& rssi,
-                                       int16_t& percent) override {
-        return getSensingMixin().getModemSignalQuality(rssi, percent);
+    bool getModemSignalQuality(int16_t& rssi, int16_t& percent) override {
+        return this->getModemSignalQualityImpl(rssi, percent);
     }
-    virtual bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                                      int16_t& milliVolts) override {
-        return getSensingMixin().getModemBatteryStats(chargeState, percent,
-                                                      milliVolts);
+    bool getModemBatteryStats(int8_t& chargeState, int8_t& percent,
+                              int16_t& milliVolts) override {
+        return this->getModemBatteryStatsImpl(chargeState, percent, milliVolts);
     }
-    virtual float getModemChipTemperature() override {
-        return getSensingMixin().getModemChipTemperature();
+    float getModemChipTemperature() override {
+        return this->getModemChipTemperatureImpl();
     }
 
 
@@ -384,13 +352,6 @@ class loggerModemImpl
     /* ===================================================================== */
     /* Setup                                                                 */
     /* ===================================================================== */
-    /**
-     * @brief Set up the modem before first use.
-     *
-     * This performs TinyGSM initialization and any modem-specific setup.
-     *
-     * @return True if setup was successful
-     */
     bool modemSetup() override {
         bool success = true;
         MS_DBG(F("Starting modem setup for"), getModemName());
@@ -449,6 +410,7 @@ class loggerModemImpl
         return success;
     }
 
+ protected:
     /**
      * @brief Perform the parts of the modem set up process that are unique to a
      * specific module, as opposed to the parts of setup that are common to all
@@ -463,30 +425,19 @@ class loggerModemImpl
     virtual bool extraModemSetup() {
         bool success = gsmModem.init();
         _modemName   = gsmModem.getModemName();
-        getCommMixin().syncNTP();
+        this->syncNTP();
         return success;
     }
-    /**@}*/
 
 
     /* ===================================================================== */
     /* Modem Identification Functions                                        */
     /* ===================================================================== */
-    /**
-     * @brief Get the modem name
-     *
-     * @return Modem name string
-     */
-    String getModemName() {
+    String getModemName() override {
         return _modemName;
     }
 
-    /**
-     * @brief Get the modem device identifier
-     *
-     * @return Device ID string (name + hardware + firmware + serial number)
-     */
-    String getModemDevId() {
+    String getModemDevId() override {
         String devId = getModemName() + F(" HW v") + _modemHwVersion +
             F(" FW v") + _modemFwVersion + F(" SN:") + _modemSerialNumber;
         MS_DBG(F("Modem Device ID:"), devId);

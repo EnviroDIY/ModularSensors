@@ -61,14 +61,19 @@ template <typename Derived, typename GsmModemType_T, typename ClientType_T,
 class loggerModemCommMixin {
  public:
     // Type aliases to avoid incomplete type issues
-    using GsmModemType     = GsmModemType_T;
-    using ClientType       = ClientType_T;
+    ///@copydoc loggerModemImpl::GsmModemType
+    using GsmModemType = GsmModemType_T;
+    /// @copydoc loggerModemImpl::ClientType
+    using ClientType = ClientType_T;
+    /// @copydoc loggerModemImpl::SecureClientType
     using SecureClientType = SecureClientType_T;
 
  protected:
+    /// @copydoc loggerModemPowerMixin::derived()
     inline Derived& derived() {
         return static_cast<Derived&>(*this);
     }
+    /// @copydoc loggerModemPowerMixin::derived() const
     inline const Derived& derived() const {
         return static_cast<const Derived&>(*this);
     }
@@ -77,31 +82,20 @@ class loggerModemCommMixin {
     /* Internet Connection                                                  */
     /* ===================================================================== */
     /**
-     * @anchor modem_connection_functions
-     * @name Functions for internet connection and disconnection
-     * Functions for managing internet connection and determining connectivity
-     * status.
+     * @anchor modem_connection_functions_impl
+     * @name Implementations of functions for internet connection and
+     * disconnection Functions for managing internet connection and determining
+     * connectivity status.
      */
     /**@{*/
- public:
-    /**
-     * @brief Wait for the modem to successfully connect to the internet -
-     * either WiFi or cellular data.
-     *
-     * @param maxConnectionTime The maximum length of time in milliseconds to
-     * wait for network registration and data connection.  Defaults to 50,000ms
-     * (50s).
-     * @return True if data connection has been established.  False if the modem
-     * was unresponsive, unable to register with the network, or unable to
-     * establish an internet connection.
-     */
-    virtual bool connectInternet(uint32_t maxConnectionTime = 50000L) {
-        return connectInternet(
+ protected:
+    /// @copydoc loggerModem::connectInternet()
+    virtual bool connectInternetImpl(uint32_t maxConnectionTime = 50000L) {
+        return connectInternetImpl(
             maxConnectionTime,
             typename TinyGsmCapabilities::has_gprs<GsmModemType>::type());
     }
 
- protected:
     /**
      * @brief Common preparation for connecting to the internet
      * @return True if the modem successfully woke and is ready to connect to
@@ -113,22 +107,19 @@ class loggerModemCommMixin {
         // Power up, if necessary
         bool wasPowered = true;
         if (derived()._millisPowerOn == 0) {
-            static_cast<loggerModemPowerMixin<Derived>&>(derived())
-                .modemPowerUp();
+            derived().modemPowerUpImpl();
             wasPowered = false;
         }
 
         // Check if the modem was awake, wake it if not
-        bool wasAwake = static_cast<loggerModemPowerMixin<Derived>&>(derived())
-                            .isModemAwake();
+        bool wasAwake = derived().isModemAwakeImpl();
         if (!wasAwake) {
             MS_DBG(F("Waiting for modem to boot after power on ..."));
             while (millis() - derived()._millisPowerOn <
                    derived()._wakeDelayTime_ms) {  // wait
             }
             MS_DBG(F("Waking up the modem to connect to the internet ..."));
-            success &= static_cast<loggerModemPowerMixin<Derived>&>(derived())
-                           .modemWake();
+            success &= derived().modemWakeImpl();
         } else {
             MS_DBG(F("Modem was already awake and should be ready."));
         }
@@ -158,8 +149,8 @@ class loggerModemCommMixin {
      * with the cellular network, or unable to establish a EPS or GPRS
      * connection.
      */
-    bool connectInternet(uint32_t maxConnectionTime,
-                         TinyGsmCapabilities::true_type) {
+    bool connectInternetImpl(uint32_t maxConnectionTime,
+                             TinyGsmCapabilities::true_type) {
         bool success = derived().prepareForInternet();
         if (!success) return false;
 
@@ -202,8 +193,8 @@ class loggerModemCommMixin {
      * @return True if WiFi data connection has been established.  False if the
      * modem was unresponsive or unable to connect to the network.
      */
-    bool connectInternet(uint32_t maxConnectionTime,
-                         TinyGsmCapabilities::false_type) {
+    bool connectInternetImpl(uint32_t maxConnectionTime,
+                             TinyGsmCapabilities::false_type) {
         bool success = derived().prepareForInternet();
         if (!success) return false;
 
@@ -237,6 +228,10 @@ class loggerModemCommMixin {
      *
      * This should be overridden in derived classes to implement modem-specific
      * credential handling (e.g., GPRS APN, WiFi SSID/password).
+     *
+     * @return True if the connection command was successful, false otherwise.
+     * True does not necessarily mean that the connection was established, only
+     * that the command to connect was sent successfully.
      */
     virtual bool connectWithCredentials() {
         // Default: return true
@@ -259,26 +254,22 @@ class loggerModemCommMixin {
         return 10000L;
     }
 
- public:
-    /**
-     * @brief Disconnect from the internet
-     */
-    virtual void disconnectInternet() {
+    /// @copydoc loggerModem::disconnectInternet()
+    virtual void disconnectInternetImpl() {
         MS_START_DEBUG_TIMER;
-        disconnectInternet(
+        disconnectInternetImpl(
             typename TinyGsmCapabilities::has_gprs<GsmModemType>::type());
         MS_DBG(F("Disconnected from internet after"), MS_PRINT_DEBUG_TIMER,
                F("milliseconds."));
     }
 
- protected:
     /**
      * @brief The disconnect function for modems with cellular connectivity.
      *
      * Detach from EPS or GPRS data connection and then deregister from the
      * cellular network.
      */
-    void disconnectInternet(TinyGsmCapabilities::true_type) {
+    void disconnectInternetImpl(TinyGsmCapabilities::true_type) {
         derived().gsmModem.gprsDisconnect();
     }
 
@@ -286,29 +277,23 @@ class loggerModemCommMixin {
      * @brief The disconnect function for modems without cellular (ie, with
      * WiFi) connectivity.
      */
-    void disconnectInternet(TinyGsmCapabilities::false_type) {
+    void disconnectInternetImpl(TinyGsmCapabilities::false_type) {
         derived().gsmModem.networkDisconnect();
     }
 
- public:
-    /**
-     * @brief Check whether there is an active internet connection available.
-     * @return True if there is an active data connection to the internet; false
-     * otherwise
-     */
-    virtual bool isInternetAvailable() {
-        return isInternetAvailable(
+    /// @copydoc loggerModem::isInternetAvailable()
+    virtual bool isInternetAvailableImpl() {
+        return isInternetAvailableImpl(
             typename TinyGsmCapabilities::has_gprs<GsmModemType>::type());
     }
 
- protected:
     /**
      * @brief The internet verification function for modems with cellular
      * connectivity.
      * @return True if there is an active data connection to the internet; false
      * otherwise
      */
-    bool isInternetAvailable(TinyGsmCapabilities::true_type) {
+    bool isInternetAvailableImpl(TinyGsmCapabilities::true_type) {
         return derived().gsmModem.isGprsConnected();
     }
 
@@ -318,7 +303,7 @@ class loggerModemCommMixin {
      * @return True if there is an active data connection to the internet; false
      * otherwise
      */
-    bool isInternetAvailable(TinyGsmCapabilities::false_type) {
+    bool isInternetAvailableImpl(TinyGsmCapabilities::false_type) {
         return derived().gsmModem.isNetworkConnected();
     }
     /**@}*/
@@ -327,42 +312,19 @@ class loggerModemCommMixin {
     /* TCP Clients                                                           */
     /* ===================================================================== */
     /**
-     * @anchor modem_client_functions
-     * @name Functions for creating standard TCP clients
+     * @anchor modem_client_functions_impl
+     * @name Implementations of functions for creating standard TCP clients
      */
     /**@{*/
- public:
-    /**
-     * @brief Create a new client object
-     * @warning Be sure to delete this object when you're done with it!
-     * @param mux Multiplexing channel to use, defaults to 0
-     * @return A new client object
-     *
-     * @note ALL modems MUST support client creation. Every TinyGSM modem does.
-     * We do not need two flavors of this function dependent on capabilities.
-     */
-    Client* createClient(uint8_t mux = 0) {
+ protected:
+    /// @copydoc loggerModem::createClient()
+    Client* createClientImpl(uint8_t mux = 0) {
         // Use the new keyword to create a new client on the **heap**
         return new ClientType(derived().gsmModem, mux);
     }
 
-    /**
-     * @brief Attempts to delete a created TinyGsmClient object. We need to do
-     * this to close memory leaks from the create client because we can't
-     * delete the created client from a pointer to the parent because the
-     * Arduino core's client class doesn't have a virtual destructor.
-     *
-     * @warning CRITICAL: This function MUST only be called with Client*
-     * pointers that were created by the corresponding createClient() function.
-     * Passing a Client* created by createSecureClient() will cause undefined
-     * behavior.
-     * Always match create/delete pairs:
-     * - createClient() -> deleteClient()
-     * - createSecureClient() -> deleteSecureClient()
-     *
-     * @param client The client to delete
-     */
-    virtual void deleteClient(Client* client) {
+    /// @copydoc loggerModem::deleteClient(Client*)
+    virtual void deleteClientImpl(Client* client) {
         delete static_cast<ClientType*>(client);
     }
     /**@}*/
@@ -371,28 +333,22 @@ class loggerModemCommMixin {
     /* Secure Clients                                                        */
     /* ===================================================================== */
     /**
-     * @anchor modem_ssl_client_functions
-     * @name Functions for creating secured (TLS/SSL) clients
+     * @anchor modem_ssl_client_functions_impl
+     * @name Implementations of functions for creating secured (TLS/SSL) clients
      */
     /**@{*/
- public:
-    /**
-     * @brief Create a new secure client object
-     * @warning Be sure to delete this object when you're done with it!
-     * @param mux Multiplexing channel to use, defaults to 0
-     * @return A new secure client object
-     */
-    Client* createSecureClient(uint8_t mux = 0) {
-        return createSecureClient(
+ protected:
+    /// @copydoc loggerModem::createSecureClient(uint8_t)
+    Client* createSecureClientImpl(uint8_t mux = 0) {
+        return createSecureClientImpl(
             mux, typename TinyGsmCapabilities::has_ssl<GsmModemType>::type());
     }
- protected:
     /**
      * @brief The create secure client function for modems that support SSL
-     * @param mux Multiplexing channel to use, defaults to 0
-     * @return A new secure client object
+     * @copydetails loggerModem::createSecureClient(uint8_t)
      */
-    Client* createSecureClient(uint8_t mux, TinyGsmCapabilities::true_type) {
+    Client* createSecureClientImpl(uint8_t mux,
+                                   TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived().gsmModem, mux);
     }
     /**
@@ -400,31 +356,18 @@ class loggerModemCommMixin {
      * SSL
      * @return A null pointer
      */
-    Client* createSecureClient(uint8_t, TinyGsmCapabilities::false_type) {
+    Client* createSecureClientImpl(uint8_t, TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
- public:
-    /**
-     * @brief Create a new secure client object with certificate specification
-     * and a multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param mux Multiplexing channel to use
-     * @param sslAuthMode The SSL authentication mode to use
-     * @param sslVersion The SSL version to use
-     * @param CAcertName The name of the CA certificate to use
-     * @param clientCertName The name of the client certificate to use
-     * @param clientKeyName The name of the client key to use
-     *
-     * @return A new secure client object
-     */
-    Client* createSecureClient(uint8_t mux, SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) {
-        return createSecureClient(
+    /// @copydoc loggerModem::createSecureClient(uint8_t, SSLAuthMode,
+    /// SSLVersion, const char*, const char*, const char*)
+    Client* createSecureClientImpl(uint8_t mux, SSLAuthMode sslAuthMode,
+                                   SSLVersion  sslVersion = SSLVersion::TLS1_2,
+                                   const char* CAcertName = nullptr,
+                                   const char* clientCertName = nullptr,
+                                   const char* clientKeyName  = nullptr) {
+        return createSecureClientImpl(
             mux, sslAuthMode, sslVersion, CAcertName, clientCertName,
             clientKeyName,
             typename TinyGsmCapabilities::can_specify_certs<
@@ -434,14 +377,15 @@ class loggerModemCommMixin {
     /**
      * @brief The create secure client function for modems with SSL capabilities
      * that can specify certificates
-     * @copydetails createSecureClient(uint8_t, SSLAuthMode, SSLVersion, const
-     * char*, const char*, const char*)
+     * @copydetails loggerModem::createSecureClient(uint8_t, SSLAuthMode,
+     * SSLVersion, const char*, const char*, const char*)
      */
-    Client* createSecureClient(uint8_t mux, SSLAuthMode sslAuthMode,
-                               SSLVersion sslVersion, const char* CAcertName,
-                               const char* clientCertName,
-                               const char* clientKeyName,
-                               TinyGsmCapabilities::true_type) {
+    Client* createSecureClientImpl(uint8_t mux, SSLAuthMode sslAuthMode,
+                                   SSLVersion  sslVersion,
+                                   const char* CAcertName,
+                                   const char* clientCertName,
+                                   const char* clientKeyName,
+                                   TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived().gsmModem, mux, sslAuthMode,
                                     sslVersion, CAcertName, clientCertName,
                                     clientKeyName);
@@ -451,48 +395,36 @@ class loggerModemCommMixin {
      * SSL with certificate specification
      * @return A null pointer
      */
-    Client* createSecureClient(uint8_t, SSLAuthMode, SSLVersion, const char*,
-                               const char*, const char*,
-                               TinyGsmCapabilities::false_type) {
+    Client* createSecureClientImpl(uint8_t, SSLAuthMode, SSLVersion,
+                                   const char*, const char*, const char*,
+                                   TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
- public:
-    /**
-     * @brief Create a new secure client object with certificate specification
-     * and default multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param sslAuthMode The SSL authentication mode to use
-     * @param sslVersion The SSL version to use
-     * @param CAcertName The name of the CA certificate to use
-     * @param clientCertName The name of the client certificate to use
-     * @param clientKeyName The name of the client key to use
-     *
-     * @return A new secure client object
-     */
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) {
-        return createSecureClient(
+    /// @copydoc loggerModem::createSecureClient(SSLAuthMode, SSLVersion,
+    /// const char*, const char*, const char*)
+    Client* createSecureClientImpl(SSLAuthMode sslAuthMode,
+                                   SSLVersion  sslVersion = SSLVersion::TLS1_2,
+                                   const char* CAcertName = nullptr,
+                                   const char* clientCertName = nullptr,
+                                   const char* clientKeyName  = nullptr) {
+        return createSecureClientImpl(
             sslAuthMode, sslVersion, CAcertName, clientCertName, clientKeyName,
             typename TinyGsmCapabilities::can_specify_certs<
                 GsmModemType>::type());
     }
- protected:
     /**
      * @brief The create secure client function for modems with SSL capabilities
      * that can specify certificates
-     * @copydetails createSecureClient(SSLAuthMode, SSLVersion, const char*,
-     * const char*, const char*)
+     * @copydetails loggerModem::createSecureClient(SSLAuthMode, SSLVersion,
+     * const char*, const char*, const char*)
      */
-    Client* createSecureClient(SSLAuthMode sslAuthMode, SSLVersion sslVersion,
-                               const char* CAcertName,
-                               const char* clientCertName,
-                               const char* clientKeyName,
-                               TinyGsmCapabilities::true_type) {
+    Client* createSecureClientImpl(SSLAuthMode sslAuthMode,
+                                   SSLVersion  sslVersion,
+                                   const char* CAcertName,
+                                   const char* clientCertName,
+                                   const char* clientKeyName,
+                                   TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived().gsmModem, sslAuthMode, sslVersion,
                                     CAcertName, clientCertName, clientKeyName);
     }
@@ -501,43 +433,31 @@ class loggerModemCommMixin {
      * SSL with certificate specification
      * @return A null pointer
      */
-    Client* createSecureClient(SSLAuthMode, SSLVersion, const char*,
-                               const char*, const char*,
-                               TinyGsmCapabilities::false_type) {
+    Client* createSecureClientImpl(SSLAuthMode, SSLVersion, const char*,
+                                   const char*, const char*,
+                                   TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
- public:
-    /**
-     * @brief Create a new secure client object with PSK credentials and a
-     * multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param mux Multiplexing channel to use
-     * @param pskIdent The pre-shared key identity
-     * @param psKey The pre-shared key
-     * @param sslVersion The SSL version to use
-     *
-     * @return A new secure client object
-     */
-    Client* createSecureClient(uint8_t mux, const char* pskIdent,
-                               const char* psKey,
-                               SSLVersion  sslVersion = SSLVersion::TLS1_2) {
-        return createSecureClient(
+    /// @copydoc loggerModem::createSecureClient(uint8_t, const char*,
+    /// const char*, SSLVersion)
+    Client* createSecureClientImpl(uint8_t mux, const char* pskIdent,
+                                   const char* psKey,
+                                   SSLVersion sslVersion = SSLVersion::TLS1_2) {
+        return createSecureClientImpl(
             mux, pskIdent, psKey, sslVersion,
             typename TinyGsmCapabilities::can_specify_certs<
                 GsmModemType>::type());
     }
- protected:
     /**
      * @brief The create secure client function for modems with SSL capabilities
      * that support certificates specification
-     * @copydetails createSecureClient(uint8_t, const char*, const char*,
-     * SSLVersion)
+     * @copydetails loggerModem::createSecureClient(uint8_t, const char*,
+     * const char*, SSLVersion)
      */
-    Client* createSecureClient(uint8_t mux, const char* pskIdent,
-                               const char* psKey, SSLVersion sslVersion,
-                               TinyGsmCapabilities::true_type) {
+    Client* createSecureClientImpl(uint8_t mux, const char* pskIdent,
+                                   const char* psKey, SSLVersion sslVersion,
+                                   TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived().gsmModem, mux, pskIdent, psKey,
                                     sslVersion);
     }
@@ -546,39 +466,30 @@ class loggerModemCommMixin {
      * SSL certificates specification
      * @return A null pointer
      */
-    Client* createSecureClient(uint8_t, const char*, const char*, SSLVersion,
-                               TinyGsmCapabilities::false_type) {
+    Client* createSecureClientImpl(uint8_t, const char*, const char*,
+                                   SSLVersion,
+                                   TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
- public:
-    /**
-     * @brief Create a new secure client object with PSK credentials and default
-     * multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param pskIdent The pre-shared key identity
-     * @param psKey The pre-shared key
-     * @param sslVersion The SSL version to use
-     *
-     * @return A new secure client object
-     */
-    Client* createSecureClient(const char* pskIdent, const char* psKey,
-                               SSLVersion sslVersion = SSLVersion::TLS1_2) {
-        return createSecureClient(
+    /// @copydoc loggerModem::createSecureClient(const char*, const char*,
+    /// SSLVersion)
+    Client* createSecureClientImpl(const char* pskIdent, const char* psKey,
+                                   SSLVersion sslVersion = SSLVersion::TLS1_2) {
+        return createSecureClientImpl(
             pskIdent, psKey, sslVersion,
             typename TinyGsmCapabilities::can_specify_certs<
                 GsmModemType>::type());
     }
- protected:
     /**
      * @brief The create secure client function for modems with SSL capabilities
      * that support certificates specification
-     * @copydetails createSecureClient(const char*, const char*, SSLVersion)
+     * @copydetails loggerModem::createSecureClient(const char*, const char*,
+     * SSLVersion)
      */
-    Client* createSecureClient(const char* pskIdent, const char* psKey,
-                               SSLVersion sslVersion,
-                               TinyGsmCapabilities::true_type) {
+    Client* createSecureClientImpl(const char* pskIdent, const char* psKey,
+                                   SSLVersion sslVersion,
+                                   TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived().gsmModem, pskIdent, psKey,
                                     sslVersion);
     }
@@ -587,120 +498,86 @@ class loggerModemCommMixin {
      * SSL certificates specification
      * @return A null pointer
      */
-    Client* createSecureClient(const char*, const char*, SSLVersion,
-                               TinyGsmCapabilities::false_type) {
+    Client* createSecureClientImpl(const char*, const char*, SSLVersion,
+                                   TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
- public:
-    /**
-     * @brief Create a new secure client object with PSK table name and a
-     * multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param muxChannel The multiplexing channel to use
-     * @param pskTableName The pre-shared key table name - for modems that
-     * require PSK's in a "table" format
-     * @param sslVersion The SSL version to use
-     *
-     * @return A new secure client object
-     */
-    Client* createSecureClient(uint8_t mux, const char* pskTableName,
-                               SSLVersion sslVersion = SSLVersion::TLS1_2) {
-        return createSecureClient(
+    /// @copydoc loggerModem::createSecureClient(uint8_t, const char*,
+    /// SSLVersion)
+    Client* createSecureClientImpl(uint8_t mux, const char* pskTableName,
+                                   SSLVersion sslVersion = SSLVersion::TLS1_2) {
+        return createSecureClientImpl(
             mux, pskTableName, sslVersion,
             typename TinyGsmCapabilities::can_specify_certs<
                 GsmModemType>::type());
     }
- protected:
     /**
      * @brief The create secure client function for modems with SSL capabilities
      * that can specify certificates
-     * @copydetails createSecureClient(uint8_t, const char*, SSLVersion)
+     * @copydetails loggerModem::createSecureClient(uint8_t, const char*,
+     * SSLVersion)
      */
-    Client* createSecureClient(uint8_t mux, const char* pskTableName,
-                               SSLVersion sslVersion,
-                               TinyGsmCapabilities::true_type) {
+    Client* createSecureClientImpl(uint8_t mux, const char* pskTableName,
+                                   SSLVersion sslVersion,
+                                   TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived().gsmModem, mux, pskTableName,
                                     sslVersion);
     }
     /**
      * @brief The create secure client function for modems that do not support
      * SSL with certificate specification
+     * @copydetails loggerModem::createSecureClient(uint8_t, const char*,
+     * SSLVersion)
      * @return A null pointer
      */
-    Client* createSecureClient(uint8_t, const char*, SSLVersion,
-                               TinyGsmCapabilities::false_type) {
+    Client* createSecureClientImpl(uint8_t, const char*, SSLVersion,
+                                   TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
- public:
-    /**
-     * @brief Create a new secure client object with PSK table name and default
-     * multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param pskTableName The pre-shared key table name - for modems that
-     * require PSK's in a "table" format
-     * @param sslVersion The SSL version to use
-     *
-     * @return A new secure client object
-     */
-    Client* createSecureClient(const char* pskTableName,
-                               SSLVersion  sslVersion = SSLVersion::TLS1_2) {
-        return createSecureClient(
+    /// @copydoc loggerModem::createSecureClient(const char*, SSLVersion)
+    Client* createSecureClientImpl(const char* pskTableName,
+                                   SSLVersion sslVersion = SSLVersion::TLS1_2) {
+        return createSecureClientImpl(
             pskTableName, sslVersion,
             typename TinyGsmCapabilities::can_specify_certs<
                 GsmModemType>::type());
     }
- protected:
     /**
      * @brief The create secure client function for modems with SSL capabilities
      * that can specify certificates
-     * @copydetails createSecureClient(const char*, SSLVersion)
+     * @copydetails loggerModem::createSecureClient(const char*, SSLVersion)
      */
-    Client* createSecureClient(const char* pskTableName, SSLVersion sslVersion,
-                               TinyGsmCapabilities::true_type) {
+    Client* createSecureClientImpl(const char* pskTableName,
+                                   SSLVersion  sslVersion,
+                                   TinyGsmCapabilities::true_type) {
         return new SecureClientType(derived().gsmModem, pskTableName,
                                     sslVersion);
     }
     /**
      * @brief The create secure client function for modems that do not support
      * SSL with certificate specification
+     * @copydetails loggerModem::createSecureClient(const char*, SSLVersion)
      * @return A null pointer
      */
-    Client* createSecureClient(const char*, SSLVersion,
-                               TinyGsmCapabilities::false_type) {
+    Client* createSecureClientImpl(const char*, SSLVersion,
+                                   TinyGsmCapabilities::false_type) {
         return nullptr;
     }
 
- public:
-    /**
-     * @brief Attempts to delete a created TinyGsmSecureClient object. We need
-     * to do this to close memory leaks from the create client because we can't
-     * delete the created client from a pointer to the parent because the
-     * Arduino core's client class doesn't have a virtual destructor.
-     *
-     * @warning CRITICAL: This function MUST only be called with Client*
-     * pointers that were created by the corresponding createSecureClient()
-     * function. Passing a Client* created by createClient() will cause
-     * undefined behavior.
-     * Always match create/delete pairs:
-     * - createClient() -> deleteClient()
-     * - createSecureClient() -> deleteSecureClient()
-     *
-     * @param client The client to delete
-     */
-    virtual void deleteSecureClient(Client* client) {
-        deleteSecureClient(
+    /// @copydoc loggerModem::deleteSecureClient(Client*)
+    virtual void deleteSecureClientImpl(Client* client) {
+        deleteSecureClientImpl(
             client,
             typename TinyGsmCapabilities::has_ssl<GsmModemType>::type());
     }
- protected:
     /**
      * @brief The delete secure client function for modems with SSL capabilities
+     * @copydetails loggerModem::deleteSecureClient(Client*)
      */
-    void deleteSecureClient(Client* client, TinyGsmCapabilities::true_type) {
+    void deleteSecureClientImpl(Client* client,
+                                TinyGsmCapabilities::true_type) {
         // WARNING: This static_cast is safe ONLY if the client was created by
         // createSecureClient(). Mismatched create/delete calls will cause
         // undefined behavior.
@@ -709,8 +586,9 @@ class loggerModemCommMixin {
     /**
      * @brief The delete secure client function for modems that do not support
      * SSL
+     * @copydetails loggerModem::deleteSecureClient(Client*)
      */
-    void deleteSecureClient(Client*, TinyGsmCapabilities::false_type) {}
+    void deleteSecureClientImpl(Client*, TinyGsmCapabilities::false_type) {}
     /**@}*/
 
 
@@ -718,10 +596,8 @@ class loggerModemCommMixin {
     /* NIST and Network Time Protocol (NTP) synchronization                  */
     /* ===================================================================== */
     /**
-     * @anchor modem_time_sync_functions
-     * @name Functions for NTP and NIST time synchronization
-     * Functions for synchronizing the modem's internal time via NTP or NIST
-     * time servers.
+     * @anchor modem_time_sync_functions_impl
+     * @name Implementations of functions for NTP and NIST time synchronization
      */
     /**@{*/
  protected:
@@ -745,6 +621,10 @@ class loggerModemCommMixin {
      * This needs to be called at wake because many modules forget their time
      * when they are powered down.  Without a proper time set, it is generally
      * not possible to make a SSL connection.
+     *
+     * @return True if the modem successfully requested a time sync from the NTP
+     * server; false otherwise.  Note that this does not guarantee that the time
+     * was successfully set, only that the request was sent successfully.
      */
     bool syncNTP() {
         return syncNTP(
@@ -754,10 +634,7 @@ class loggerModemCommMixin {
  protected:
     /**
      * @brief NTP sync for modems with NTP support
-     *
-     * This needs to be called at wake because many modules forget their time
-     * when they are powered down.  Without a proper time set, it is generally
-     * not possible to make a SSL connection.
+     * @copydetails syncNTP()
      */
     bool syncNTP(TinyGsmCapabilities::true_type) {
         return derived().gsmModem.NTPServerSync("pool.ntp.org",
@@ -766,53 +643,61 @@ class loggerModemCommMixin {
 
     /**
      * @brief NTP sync for modems without NTP support
+     * @return False, as NTP sync is not supported on this modem
      */
     bool syncNTP(TinyGsmCapabilities::false_type) {
         return false;
     }
 
- public:
-    /**
-     * @brief Set the UTC offset for the modem to use internally in NTP syncing
-     *
-     * This doesn't *have* to be the same as the RTC or logger timezone, but
-     * you'd be stupid to make it different.
-     *
-     * @note This must be set for SSL connections to work! If the modem does not
-     * have an accurate internal time when attempting an SSL connection, the
-     * connection will fail because the certificates will not be within their
-     * specified valid time ranges.
-     *
-     * @param timeZone UTC offset in hours that the modem will attempt to sync
-     * itself to
-     */
-    void setModemTimeZone(int8_t timeZone) {
+ protected:
+    /// @copydoc loggerModem::setModemTimeZone(int8_t)
+    void setModemTimeZoneImpl(int8_t timeZone) {
         derived()._modemUTCOffset = timeZone;
     }
 
- public:
+
+ protected:
     /**
-     * @brief Get the time from NIST via NTP on those modems that support it or
-     * using the NIST time protocol over TCP (RFC-868) for those that don't.
-     *
-     * @return Unix timestamp (seconds since Jan 1, 1970 UTC)
+     * @brief A struct for the constants for logger modems
      */
-    virtual uint32_t getNISTTime() {
+    struct LoggerModemNISTConstants {
+        /// The port for the NIST Time Protocol (RFC-868) is time.nist.gov
+        static constexpr char kTimeProtocolHost[] TINY_GSM_PROGMEM =
+            "time.nist.gov";
+        /// The port for the NIST Time Protocol (RFC-868) is 37
+        static constexpr uint16_t kTimeProtocolPort = 37;
+        /// Wait up to 2.5 seconds for the NIST Time Protocol (RFC-868) response
+        static constexpr uint16_t kTimeProtocolTimeout = 2500;
+        /// The NIST Time Protocol (RFC-868) returns 4 bytes
+        static constexpr int kTimeProtocolBytes = 4;
+        /// The NIST Time Protocol (RFC-868) requires at least 4 seconds between
+        /// requests
+        static constexpr uint16_t kTimeProtocolSpacing = 4000;
+        /// Retry up to 12 times to get a valid NIST Time Protocol (RFC-868)
+        /// response
+        static constexpr uint8_t kTimeProtocolRetries = 12;
+    };
+
+    /// @copydoc loggerModem::getNISTTime()
+    virtual uint32_t getNISTTimeImpl() {
         // Check for and bail if not connected to the internet.
-        if (!isInternetAvailable()) {
+        if (!isInternetAvailableImpl()) {
             MS_DBG(F("No internet connection, cannot get network time."));
             return 0;
         }
-        return getNISTTime(typename HasNTPAndTime::type());
+        return getNISTTimeImpl(typename HasNTPAndTime::type());
     }
- protected:
     /**
      * @brief The get NIST time function for modems that have NTP and Time
      * capabilities.
      *
+     * This makes use of the modems AT commands to get the time from an NTP
+     * server.  The modem must have both NTP and Time capabilities for this to
+     * work.
+     *
      * @return Unix timestamp (seconds since Jan 1, 1970 UTC)
      */
-    uint32_t getNISTTime(TinyGsmCapabilities::true_type) {
+    uint32_t getNISTTimeImpl(TinyGsmCapabilities::true_type) {
         derived().gsmModem.NTPServerSync("pool.ntp.org", 0);
         derived().gsmModem.waitForTimeSync();
 
@@ -836,18 +721,6 @@ class loggerModemCommMixin {
     }
 
     /**
-     * @brief A struct for the constants for logger modems
-     */
-    struct LoggerModemNISTConstants {
-        static constexpr uint16_t kTimeProtocolPort    = 37;
-        static constexpr uint16_t kTimeProtocolTimeout = 5000;
-        static constexpr int      kTimeProtocolBytes   = 4;
-        static constexpr uint16_t kTimeProtocolSpacing = 4000;
-        static constexpr uint8_t  kTimeProtocolRetries = 12;
-        static constexpr char     kTimeProtocolHost[] TINY_GSM_PROGMEM =
-            "time.nist.gov";
-    };
-    /**
      * @brief The get NIST time function for modems that do not have both NTP
      * and Time capabilities.
      *
@@ -862,9 +735,9 @@ class loggerModemCommMixin {
      *
      * @return Unix timestamp (seconds since Jan 1, 1970 UTC)
      */
-    uint32_t getNISTTime(TinyGsmCapabilities::false_type) {
+    uint32_t getNISTTimeImpl(TinyGsmCapabilities::false_type) {
         // create a client
-        Client* nistClient = derived().createClient();
+        Client* nistClient = derived().createClientImpl();
         // The NIST connection frequently opens and closes very quickly; so fast
         // that every module I've tested sometimes misses the response, so we
         // attempt multiple connections to increase the likelihood of
@@ -920,7 +793,7 @@ class loggerModemCommMixin {
                 if (nistParsed != 0) {
                     MS_DBG(F("Got non-zero NIST timestamp"));
                     // delete the NIST client so we don't have a memory leak!
-                    derived().deleteClient(nistClient);
+                    derived().deleteClientImpl(nistClient);
                     return nistParsed;
                 } else {
                     MS_DBG(F("Invalid/Zero NIST timestamp"));
@@ -935,7 +808,6 @@ class loggerModemCommMixin {
     }
 
 
- protected:
     /**
      * @brief Convert the 4 bytes returned by the NIST time protocol to the
      * number of seconds since January 1, 1970 in UTC.
