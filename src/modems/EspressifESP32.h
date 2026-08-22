@@ -110,8 +110,8 @@ class EspressifESP32
      * modemStream, and creates a TinyGSM Client linked to the modem.
      *
      * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param powerPin @copydoc _powerPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This is the ESP's `RSTB/DIO16` pin.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, **assuming WPA2**.

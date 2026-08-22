@@ -130,16 +130,16 @@ class DigiXBeeCellularTransparent
      * modemStream, and creates a TinyGSM Client linked to the modem.
      *
      * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param powerPin @copydoc _powerPin
+     * @param statusPin @copydoc _statusPin
      * This can be either the pin named `ON/SLEEP_N/DIO9` or `CTS_N/DIO7` pin in
      * Digi's hardware reference.
      * @param useCTSStatus True to use the `CTS_N/DIO7` pin of the XBee as a
      * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
      * This inverts the loggerModem::_statusLevel.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This should be the pin called `RESET_N` in Digi's hardware reference.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This should be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      * @param apn The Access Point Name (APN) for the SIM card.
@@ -169,7 +169,7 @@ class DigiXBeeCellularTransparent
     bool modemWakeFxn() override;
     bool modemSleepFxn() override;
     /**
-     * @copybrief loggerModem::extraModemSetup()
+     * @copybrief loggerModemImpl::extraModemSetup()
      *
      * For XBees, this sets the appropriate operating mode (transparent or
      * bypass), enables pin sleep, sets the DIO pins to the expected functions,

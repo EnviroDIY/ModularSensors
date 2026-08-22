@@ -1,5 +1,5 @@
 /**
- * @file QuectelBG96_Template_Example.cpp
+ * @file QuectelBG96.cpp
  * @copyright Stroud Water Research Center
  * Part of the EnviroDIY ModularSensors library for Arduino.
  * This library is published under the BSD-3 license.

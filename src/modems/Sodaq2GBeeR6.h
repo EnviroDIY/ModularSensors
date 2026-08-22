@@ -124,8 +124,8 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
      * modemStream, and creates a TinyGSM Client linked to the modem.
      *
      * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param powerPin @copydoc _powerPin
+     * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in Sodaq (and SIMCom)'s documentation.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
@@ -144,9 +144,9 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
      * @param modemStream The Arduino stream instance for serial communication.
      * @param vRefPin The digital pin number of a pin on the mcu controlling the
      * voltage reference (pin 1) for the GPRSBee
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in Sodaq (and SIMCom)'s documentation.
-     * @param powerPin @copydoc loggerModem::_powerPin
+     * @param powerPin @copydoc _powerPin
      * @param apn The Access Point Name (APN) for the SIM card.
      *
      * @note The order of the pins in the constructor is different from other

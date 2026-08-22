@@ -527,8 +527,6 @@ class loggerModemCommMixin {
     /**
      * @brief The create secure client function for modems that do not support
      * SSL with certificate specification
-     * @copydetails loggerModem::createSecureClient(uint8_t, const char*,
-     * SSLVersion)
      * @return A null pointer
      */
     Client* createSecureClientImpl(uint8_t, const char*, SSLVersion,
@@ -558,7 +556,6 @@ class loggerModemCommMixin {
     /**
      * @brief The create secure client function for modems that do not support
      * SSL with certificate specification
-     * @copydetails loggerModem::createSecureClient(const char*, SSLVersion)
      * @return A null pointer
      */
     Client* createSecureClientImpl(const char*, SSLVersion,
@@ -586,7 +583,6 @@ class loggerModemCommMixin {
     /**
      * @brief The delete secure client function for modems that do not support
      * SSL
-     * @copydetails loggerModem::deleteSecureClient(Client*)
      */
     void deleteSecureClientImpl(Client*, TinyGsmCapabilities::false_type) {}
     /**@}*/

@@ -173,18 +173,18 @@ class SodaqUBeeU201
      * modemStream, and creates a TinyGSM Client linked to the modem.
      *
      * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
+     * @param powerPin @copydoc _powerPin
      * For the Sodaq UBee, this is the pin labeled `ON/OFF`; pin 9 on the bee
      * socket.  The fact that this pin controls the power to the u-blox module
      * is not clear in the Sodaq documentation.
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param statusPin @copydoc _statusPin
      * This is the pin labeled `V_INT` in the u-blox integration guide.  It is
      * (misleadingly) called `CTS` in some of the Sodaq UBee documentation
      * because Sodaq wired the `V_INT` from the u-blox to the pin usually
      * reserved for `CTS` on the bee socket.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This is the pin labeled `RESET_N` in both u-blox and Sodaq documentation.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This is the pin labeled `PWR_ON` in both u-blox and Sodaq
      * documentation.
      * @param apn The Access Point Name (APN) for the SIM card.
