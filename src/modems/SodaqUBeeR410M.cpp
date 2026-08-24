@@ -52,11 +52,12 @@ SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
       _apn(apn) {}
 
 
+#endif
+
+
 bool SodaqUBeeR410M::connectWithCredentials() {
     return gsmModem.gprsConnect(_apn, "", "");
 }
-#endif
-
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
