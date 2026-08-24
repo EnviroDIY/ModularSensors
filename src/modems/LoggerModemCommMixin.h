@@ -658,28 +658,6 @@ class loggerModemCommMixin {
     }
 
 
- protected:
-    /**
-     * @brief A struct for the constants for logger modems
-     */
-    struct LoggerModemNISTConstants {
-        /// The port for the NIST Time Protocol (RFC-868) is time.nist.gov
-        static constexpr char kTimeProtocolHost[] TINY_GSM_PROGMEM =
-            "time.nist.gov";
-        /// The port for the NIST Time Protocol (RFC-868) is 37
-        static constexpr uint16_t kTimeProtocolPort = 37;
-        /// Wait up to 2.5 seconds for the NIST Time Protocol (RFC-868) response
-        static constexpr uint16_t kTimeProtocolTimeout = 2500;
-        /// The NIST Time Protocol (RFC-868) returns 4 bytes
-        static constexpr int kTimeProtocolBytes = 4;
-        /// The NIST Time Protocol (RFC-868) requires at least 4 seconds between
-        /// requests
-        static constexpr uint16_t kTimeProtocolSpacing = 4000;
-        /// Retry up to 12 times to get a valid NIST Time Protocol (RFC-868)
-        /// response
-        static constexpr uint8_t kTimeProtocolRetries = 12;
-    };
-
     /// @copydoc loggerModem::getNISTTime()
     virtual uint32_t getNISTTimeImpl() {
         // Check for and bail if not connected to the internet.
@@ -744,16 +722,13 @@ class loggerModemCommMixin {
         // that every module I've tested sometimes misses the response, so we
         // attempt multiple connections to increase the likelihood of
         // successfully receiving the time.
-        for (uint8_t i = 0; i < LoggerModemNISTConstants::kTimeProtocolRetries;
-             i++) {
+        for (uint8_t i = 0; i < NIST_TIME_PROTOCOL_RETRIES; i++) {
             // we absolutely must wait at least 4 seconds between NIST requests
-            while (millis() - _lastNISTrequest <
-                   LoggerModemNISTConstants::kTimeProtocolSpacing)
+            while (millis() - _lastNISTrequest < NIST_TIME_PROTOCOL_SPACING)
                 yield();
 
-            const char* nistServer =
-                LoggerModemNISTConstants::kTimeProtocolHost;
-            uint16_t nistPort = LoggerModemNISTConstants::kTimeProtocolPort;
+            const char* nistServer = NIST_TIME_PROTOCOL_HOST;
+            uint16_t    nistPort   = NIST_TIME_PROTOCOL_PORT;
 
             if (!nistClient) {
                 MS_DBG(F("Failed to create NIST client"));
@@ -771,10 +746,8 @@ class loggerModemCommMixin {
             _lastNISTrequest = millis();
             // wait up to the timeout for the expected 4 bytes
             while (nistClient->connected() &&
-                   nistClient->available() <
-                       LoggerModemNISTConstants::kTimeProtocolBytes &&
-                   millis() - _lastNISTrequest <
-                       LoggerModemNISTConstants::kTimeProtocolTimeout) {
+                   nistClient->available() < NIST_TIME_PROTOCOL_BYTES &&
+                   millis() - _lastNISTrequest < NIST_TIME_PROTOCOL_TIMEOUT) {
                 yield();
             }
             MS_DBG(F("Time from NIST received after"), MS_PRINT_DEBUG_TIMER,
@@ -785,12 +758,9 @@ class loggerModemCommMixin {
             // sending the 4 bytes.
 
             // we must have at least 4 bytes for a valid time
-            if (nistClient->available() >=
-                LoggerModemNISTConstants::kTimeProtocolBytes) {
-                byte nistBytes[LoggerModemNISTConstants::kTimeProtocolBytes] = {
-                    0};
-                nistClient->read(nistBytes,
-                                 LoggerModemNISTConstants::kTimeProtocolBytes);
+            if (nistClient->available() >= NIST_TIME_PROTOCOL_BYTES) {
+                byte nistBytes[NIST_TIME_PROTOCOL_BYTES] = {0};
+                nistClient->read(nistBytes, NIST_TIME_PROTOCOL_BYTES);
                 uint32_t nistParsed = parseNISTBytes(nistBytes);
                 if (nistParsed != 0) {
                     MS_DBG(F("Got non-zero NIST timestamp"));
@@ -823,11 +793,9 @@ class loggerModemCommMixin {
      * @return the number of seconds since January 1, 1970 00:00:00
      * UTC
      */
-    static uint32_t parseNISTBytes(
-        byte nistBytes[LoggerModemNISTConstants::kTimeProtocolBytes]) {
+    static uint32_t parseNISTBytes(byte nistBytes[NIST_TIME_PROTOCOL_BYTES]) {
         uint32_t secFrom1900 = 0;
-        for (byte i = 0; i < LoggerModemNISTConstants::kTimeProtocolBytes;
-             i++) {
+        for (byte i = 0; i < NIST_TIME_PROTOCOL_BYTES; i++) {
             MS_DBG(F("Response Byte"), i, ':', static_cast<char>(nistBytes[i]),
                    '=', static_cast<uint8_t>(nistBytes[i]), '=',
                    String(nistBytes[i], BIN));

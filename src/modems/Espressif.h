@@ -182,6 +182,8 @@ class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
      * pin to wake from deep sleep.  The only pin that can wake from deep sleep
      * is the reset pin, which is handled by the `modemResetPin`
      * parameter.
+     * @param espSleepRqPin the Espressif sleep request pin for light sleep.
+     * This is a GPIO on the Espressif module, not a pin on the MCU.
      * @see loggerModem::loggerModem
      */
     Espressif(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
@@ -342,7 +344,7 @@ class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
     const char* _pwd;   ///< Internal reference to the WiFi password
 
     /// Internal reference to the Espressif sleep request pin for light sleep
-    /// This is aGPIO on the espressif module, not a pin on the MCU.
+    /// This is a GPIO on the espressif module, not a pin on the MCU.
     int8_t _espSleepRqPin = -1;
 };
 /**@}*/

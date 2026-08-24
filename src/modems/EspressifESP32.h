@@ -115,6 +115,13 @@ class EspressifESP32
      * This is the ESP's `RSTB/DIO16` pin.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, **assuming WPA2**.
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin  On Espressif modules,
+     * the sleep request pin *only applies to light sleep*.  You cannot select a
+     * pin to wake from deep sleep.  The only pin that can wake from deep sleep
+     * is the reset pin, which is handled by the `modemResetPin`
+     * parameter.
+     * @param espSleepRqPin the Espressif sleep request pin for light sleep.
+     * This is a GPIO on the Espressif module, not a pin on the MCU.
      *
      * @see loggerModem::loggerModem
      */
