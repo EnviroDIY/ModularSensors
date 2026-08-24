@@ -20,8 +20,8 @@
  * @section modem_esp8266_notes Introduction
  *
  * The ESP8266 is an older Espressif module, but still widely and cheaply
- * available. This library does not support the "NON-OS" based AT commands.
- * Update to the final release for the ESP8266.
+ * available. This library is written for ESP8266 AT firmware version 2.3.0.0 or
+ * higher.
  *
  * @section modem_esp8266_dfrobot DFRobot ESPBee
  *
@@ -118,7 +118,9 @@ class EspressifESP8266
      * @see loggerModem::loggerModem
      */
     EspressifESP8266(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
-                     const char* ssid, const char* pwd);
+                     const char* ssid, const char* pwd,
+                     int8_t modemSleepRqPin = -1, int8_t espSleepRqPin = -1,
+                     int8_t espStatusPin = -1);
     /**
      * @brief Destroy the Espressif ESP8266 object - no action taken
      */
@@ -126,7 +128,6 @@ class EspressifESP8266
 
  protected:
     bool modemSleepFxn() override;
-    bool extraModemSetup() override;
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

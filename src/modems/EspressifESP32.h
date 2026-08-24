@@ -119,7 +119,8 @@ class EspressifESP32
      * @see loggerModem::loggerModem
      */
     EspressifESP32(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
-                   const char* ssid, const char* pwd);
+                   const char* ssid, const char* pwd,
+                   int8_t modemSleepRqPin = -1, int8_t espSleepRqPin = -1);
     /**
      * @brief Destroy the Espressif ESP32 object - no action taken
      */
@@ -127,7 +128,6 @@ class EspressifESP32
 
  protected:
     bool modemSleepFxn() override;
-    bool extraModemSetup() override;
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP32_H_
