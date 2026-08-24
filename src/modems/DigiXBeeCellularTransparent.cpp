@@ -191,8 +191,8 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         // every 4 seconds.  NIST clearly specifies here that this is a
         // requirement for all software that accesses its servers:
         // https://tf.nist.gov/tf-cgi/servers.cgi
-        while (millis() < _lastNISTrequest +
-                   LoggerModemNISTConstants::kTimeProtocolSpacing) {
+        while (millis() - _lastNISTrequest <
+               LoggerModemNISTConstants::kTimeProtocolSpacing) {
             yield();
         }
 
@@ -206,7 +206,8 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
             IPAddress(132, 163, 97, 1), IPAddress(132, 163, 97, 2),
             IPAddress(132, 163, 97, 3), IPAddress(132, 163, 97, 4),
             IPAddress(132, 163, 97, 6), IPAddress(132, 163, 97, 8)};
-        MS_DBG(F("\nConnecting to NIST time server at ip"), nistIPs[i],
+        const uint8_t ipIndex = i % (sizeof(nistIPs) / sizeof(nistIPs[0]));
+        MS_DBG(F("\nConnecting to NIST time server at ip"), nistIPs[ipIndex],
                F("attempt"), i, F("of"),
                LoggerModemNISTConstants::kTimeProtocolRetries);
 
@@ -214,7 +215,8 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         // socket isn't actually opened until we first send data (the '!' below)
         TinyGsmXBee::GsmClientXBee gsmClient(gsmModem);
         connectionMade = gsmClient.connect(
-            nistIPs[i], LoggerModemNISTConstants::kTimeProtocolPort);
+            nistIPs[ipIndex], LoggerModemNISTConstants::kTimeProtocolPort);
+        _lastNISTrequest = millis();
         // Need to send something before connection is made
         gsmClient.println('!');
 

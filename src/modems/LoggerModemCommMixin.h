@@ -165,10 +165,13 @@ class loggerModemCommMixin {
             // process.  We *avoid* setting the APN unnecessarily on the XBee so
             // as not to wear out the limited write flash.
             if (strcmp(Derived::GsmModemType::ModemConfig::MODEM_MANUFACTURER,
-                       "XBee") == 0) {
+                       "XBee") != 0) {
                 MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER,
                        F("milliseconds.  Connecting to GPRS..."));
-                derived().connectWithCredentials();
+                if (!derived().connectWithCredentials()) {
+                    MS_DBG(F("...GPRS attach failed."));
+                    return false;
+                }
             }
             MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,
                    F("milliseconds."));
@@ -799,7 +802,7 @@ class loggerModemCommMixin {
             }
         }
         // delete the NIST client so we don't have a memory leak!
-        derived().deleteClient(nistClient);
+        derived().deleteClientImpl(nistClient);
         return 0;
     }
 

@@ -24,7 +24,7 @@ void loggerModem::enableMetadataPolling(uint8_t pollingBitmask) {
     _pollModemMetaData |= pollingBitmask;
 }
 void loggerModem::disableMetadataPolling(uint8_t pollingBitmask) {
-    _pollModemMetaData |= ~pollingBitmask;
+    _pollModemMetaData &= static_cast<uint8_t>(~pollingBitmask);
 }
 void loggerModem::setMetadataPolling(uint8_t pollingBitmask) {
     _pollModemMetaData = pollingBitmask;
