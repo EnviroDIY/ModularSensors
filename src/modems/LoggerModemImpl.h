@@ -161,28 +161,18 @@ class loggerModemImpl
                     bool wakeLevel, uint32_t wakePulse_ms,
                     uint32_t max_status_time_ms, uint32_t max_disconnectTime_ms,
                     uint32_t wakeDelayTime_ms, uint32_t max_at_response_time_ms)
-        : gsmModem(*modemStream),
+        : loggerModemPowerMixin<loggerModemImpl>(
+              powerPin, statusPin, statusLevel, modemResetPin, resetLevel,
+              resetPulse_ms, modemSleepRqPin, wakeLevel, wakePulse_ms,
+              max_status_time_ms, max_disconnectTime_ms, wakeDelayTime_ms),
+          loggerModemCommMixin<
+              loggerModemImpl<GsmModemType_T, ClientType_T, SecureClientType_T,
+                              signalQualityIsRSSI>,
+              GsmModemType_T, ClientType_T, SecureClientType_T>(),
+          gsmModem(*modemStream),
+          _modemName(F("unspecified modem")),
           _max_at_response_time_ms(max_at_response_time_ms),
-          _hasBeenSetup(false) {
-        // Initialize power mixin members
-        this->_powerPin          = powerPin;
-        this->_statusPin         = statusPin;
-        this->_statusLevel       = statusLevel;
-        this->_modemResetPin     = modemResetPin;
-        this->_resetLevel        = resetLevel;
-        this->_resetPulse_ms     = resetPulse_ms;
-        this->_modemSleepRqPin   = modemSleepRqPin;
-        this->_wakeLevel         = wakeLevel;
-        this->_wakePulse_ms      = wakePulse_ms;
-        this->_statusTime_ms     = max_status_time_ms;
-        this->_disconnectTime_ms = max_disconnectTime_ms;
-        this->_wakeDelayTime_ms  = wakeDelayTime_ms;
-        this->_millisPowerOn     = 0;
-        this->_modemLEDPin       = -1;
-        // Initialize comm mixin members
-        this->_modemUTCOffset  = 0;
-        this->_lastNISTrequest = 0;
-    }
+          _hasBeenSetup(false) {}
 
     /**
      * @brief Destroy the loggerModemImpl object - no action taken.
@@ -441,7 +431,7 @@ class loggerModemImpl
      * Set in the init() portion of the #modemSetup().
      * Returned by #getModemName().
      */
-    String _modemName = F("unspecified modem");
+    String _modemName;
 
     /**
      * @brief The modem hardware version.
