@@ -348,10 +348,10 @@ class loggerModemImpl
         }
     }
 
- public:
     /* ===================================================================== */
     /* Setup                                                                 */
     /* ===================================================================== */
+ public:
     bool modemSetup() override {
         bool success = true;
         MS_DBG(F("Starting modem setup for"), getModemName());
@@ -423,16 +423,14 @@ class loggerModemImpl
      * @return True if extra setup succeeded; false otherwise.
      */
     virtual bool extraModemSetup() {
-        bool success = gsmModem.init();
-        _modemName   = gsmModem.getModemName();
-        this->syncNTP();
-        return success;
+        return this->syncNTP();
     }
 
 
     /* ===================================================================== */
     /* Modem Identification Functions                                        */
     /* ===================================================================== */
+ public:
     String getModemName() override {
         return _modemName;
     }
@@ -443,6 +441,8 @@ class loggerModemImpl
         MS_DBG(F("Modem Device ID:"), devId);
         return devId;
     }
+
+
     /* ===================================================================== */
     /* Internal Members                                                      */
     /* ===================================================================== */
@@ -451,6 +451,7 @@ class loggerModemImpl
      * @name Modem member variables
      */
     /**@{*/
+ protected:
 
     /**
      * @brief The modem name
@@ -458,7 +459,7 @@ class loggerModemImpl
      * Set in the init() portion of the #modemSetup().
      * Returned by #getModemName().
      */
-    String _modemName = "unspecified modem";
+    String _modemName = F("unspecified modem");
 
     /**
      * @brief The modem hardware version.
