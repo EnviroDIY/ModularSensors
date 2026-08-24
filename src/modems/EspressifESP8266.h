@@ -114,13 +114,19 @@ class EspressifESP8266
      * This is the ESP's `RSTB/DIO16` pin.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, **assuming WPA2**.
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin  On Espressif modules,
+     * the sleep request pin *only applies to light sleep*.  You cannot select a
+     * pin to wake from deep sleep.  The only pin that can wake from deep sleep
+     * is the reset pin, which is handled by the `modemResetPin`
+     * parameter.
+     * @param espSleepRqPin the Espressif sleep request pin for light sleep.
+     * This is a GPIO on the Espressif module, not a pin on the MCU.
      *
      * @see loggerModem::loggerModem
      */
     EspressifESP8266(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
                      const char* ssid, const char* pwd,
-                     int8_t modemSleepRqPin = -1, int8_t espSleepRqPin = -1,
-                     int8_t espStatusPin = -1);
+                     int8_t modemSleepRqPin = -1, int8_t espSleepRqPin = -1);
     /**
      * @brief Destroy the Espressif ESP8266 object - no action taken
      */
