@@ -118,10 +118,10 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
         _rtcEpoch);
 
     // Check the current RTC time
-    time_t prev_rtc_value = getNowAsEpoch(utcOffset, _rtcEpoch);
+    time_t prev_rtc_value = getNowAsEpoch(_rtcUTCOffset, _rtcEpoch);
     MS_DBG(F("    Current Time on RTC (in RTC's epoch):"), prev_rtc_value,
            F("->"),
-           TimeUtils::formatISO8601(prev_rtc_value, utcOffset, _rtcEpoch));
+           TimeUtils::formatISO8601(prev_rtc_value, _rtcUTCOffset, _rtcEpoch));
     MS_DBG(F("    Offset between input and RTC (seconds):"),
            abs(new_rtc_value - prev_rtc_value));
 
@@ -143,8 +143,8 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
     setRawRTCNow(new_rtc_value);
     PRINTOUT(F("Clock set!"));
     PRINTOUT(F("Current RTC time is now"),
-             TimeUtils::formatISO8601(getNowAsEpoch(utcOffset, _rtcEpoch),
-                                      utcOffset, _rtcEpoch));
+             TimeUtils::formatISO8601(getNowAsEpoch(_rtcUTCOffset, _rtcEpoch),
+                                      _rtcUTCOffset, _rtcEpoch));
     return true;
 }
 
