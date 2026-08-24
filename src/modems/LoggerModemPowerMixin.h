@@ -131,7 +131,7 @@ class loggerModemPowerMixin {
                    F("ms longer for warm-up"));
             while (millis() - derived()._millisPowerOn <
                    derived()._wakeDelayTime_ms) {
-                yield();  // wait
+                yield();
             }
         }
 
@@ -247,7 +247,8 @@ class loggerModemPowerMixin {
                     !derived()._statusLevel ? F("HIGH") : F("LOW"), F("..."));
                 while (millis() - start < derived()._disconnectTime_ms &&
                        digitalRead(derived()._statusPin) ==
-                           static_cast<int>(derived()._statusLevel)) {  // wait
+                           static_cast<int>(derived()._statusLevel)) {
+                    yield();
                 }
                 if (digitalRead(derived()._statusPin) ==
                     static_cast<int>(derived()._statusLevel)) {
@@ -261,7 +262,7 @@ class loggerModemPowerMixin {
                 MS_DBG(F("Waiting"), derived()._disconnectTime_ms,
                        F("ms for graceful shutdown."));
                 while (millis() - start < derived()._disconnectTime_ms) {
-                    // wait
+                    yield();
                 }
             }
 

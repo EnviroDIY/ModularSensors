@@ -326,7 +326,7 @@ class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
         uint32_t start   = millis();
         bool     success = false;
         while (!_modemStream->available() && millis() - start < 1000) {
-            // wait
+            yield();
         }
         if (_modemStream->available()) {
             success = true;
