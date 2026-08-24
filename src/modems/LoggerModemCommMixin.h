@@ -80,6 +80,11 @@ class loggerModemCommMixin {
         return static_cast<const Derived&>(*this);
     }
 
+    /**
+     * @brief Protected constructor for initializing communication members.
+     */
+    loggerModemCommMixin() : _modemUTCOffset(0), _lastNISTrequest(0) {}
+
     /* ===================================================================== */
     /* Internet Connection                                                  */
     /* ===================================================================== */
@@ -224,7 +229,7 @@ class loggerModemCommMixin {
         }
         MS_DBG(F("... WiFi connected after"), MS_PRINT_DEBUG_TIMER,
                F("milliseconds!"));
-        return success;
+        return true;
     }
 
     /**

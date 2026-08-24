@@ -64,6 +64,47 @@ class loggerModemPowerMixin {
         return static_cast<const Derived&>(*this);
     }
 
+    /**
+     * @brief Protected constructor for initializing power management members.
+     *
+     * @param powerPin The digital pin number to control modem power (-1 if not
+     * applicable)
+     * @param statusPin The digital pin number to read modem status (-1 if not
+     * applicable)
+     * @param statusLevel The digital level (HIGH/LOW) that indicates "on"
+     * status
+     * @param modemResetPin The digital pin number to reset the modem (-1 if not
+     * applicable)
+     * @param resetLevel The digital level (HIGH/LOW) for reset pulse
+     * @param resetPulse_ms Duration of reset pulse in milliseconds
+     * @param modemSleepRqPin The digital pin number for sleep request (-1 if
+     * not applicable)
+     * @param wakeLevel The digital level (HIGH/LOW) for wake pulse
+     * @param wakePulse_ms Duration of wake pulse in milliseconds
+     * @param max_status_time_ms Maximum time to wait for status indication
+     * @param max_disconnectTime_ms Maximum time for graceful disconnect
+     * @param wakeDelayTime_ms Warm-up time after power-on
+     */
+    loggerModemPowerMixin(int8_t powerPin, int8_t statusPin, bool statusLevel,
+                          int8_t modemResetPin, bool resetLevel,
+                          uint32_t resetPulse_ms, int8_t modemSleepRqPin,
+                          bool wakeLevel, uint32_t wakePulse_ms,
+                          uint32_t max_status_time_ms,
+                          uint32_t max_disconnectTime_ms,
+                          uint32_t wakeDelayTime_ms)
+        : _powerPin(powerPin),
+          _statusPin(statusPin),
+          _statusLevel(statusLevel),
+          _modemResetPin(modemResetPin),
+          _resetLevel(resetLevel),
+          _resetPulse_ms(resetPulse_ms),
+          _modemSleepRqPin(modemSleepRqPin),
+          _wakeLevel(wakeLevel),
+          _wakePulse_ms(wakePulse_ms),
+          _statusTime_ms(max_status_time_ms),
+          _disconnectTime_ms(max_disconnectTime_ms),
+          _wakeDelayTime_ms(wakeDelayTime_ms),
+          _modemLEDPin(-1) {}
 
     /**
      * @anchor modem_power_functions_impl
