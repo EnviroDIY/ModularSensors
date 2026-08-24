@@ -27,6 +27,12 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
       _pwd(pwd),
       _maintainAssociation(maintainAssociation) {}
 
+bool DigiXBeeWifi::connectWithCredentials() {
+    // the SSID and password are set in the modem's flash memory during setup,
+    // so we don't need to set them here.  Just connect.
+    return true;
+}
+
 
 // This is different MS_MODEM_CONNECT_INTERNET in that it doesn't attempt to
 // resend credentials

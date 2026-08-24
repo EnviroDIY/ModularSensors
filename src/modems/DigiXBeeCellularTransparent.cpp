@@ -28,7 +28,9 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
       _pwd(pwd) {}
 
 bool DigiXBeeCellularTransparent::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, _user, _pwd);
+    // the APN, user, and password are set in the modem's flash memory during
+    // setup, so we don't need to set them here.  Just connect.
+    return true;
 }
 
 // We turn off airplane mode in the wake.

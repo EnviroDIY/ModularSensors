@@ -158,6 +158,9 @@ class DigiXBeeWifi
      */
     bool extraModemSetup() override;
 
+    // Do NOTHING for this - credentials set in flash memory during setup
+    bool connectWithCredentials() override;
+
  private:
 
     const char* _ssid;  ///< Internal reference to the WiFi SSID
