@@ -337,7 +337,7 @@ class loggerModemPowerMixin {
             int8_t i   = 5;
             bool   res = false;
             while (i && !res) {
-                derived().gsmModem.sendAT(GF(""));
+                derived().gsmModem.sendAT();
                 res = derived().gsmModem.waitResponse(100) == 1;
                 if (res) break;
                 delay(50);
