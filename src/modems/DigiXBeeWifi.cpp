@@ -377,15 +377,16 @@ uint32_t DigiXBeeWifi::getNISTTime() {
             IPAddress(132, 163, 97, 1), IPAddress(132, 163, 97, 2),
             IPAddress(132, 163, 97, 3), IPAddress(132, 163, 97, 4),
             IPAddress(132, 163, 97, 6), IPAddress(132, 163, 97, 8)};
-        MS_DBG(F("\nConnecting to NIST time server at ip"), nistIPs[0],
-               F("attempt"), 0, F("of"),
+        const uint8_t ipIndex = i % (sizeof(nistIPs) / sizeof(nistIPs[0]));
+        MS_DBG(F("\nConnecting to NIST time server at ip"), nistIPs[ipIndex],
+               F("attempt"), i, F("of"),
                LoggerModemNISTConstants::kTimeProtocolRetries);
 
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
         TinyGsmXBee::GsmClientXBee gsmClient(gsmModem);
         connectionMade = gsmClient.connect(
-            nistIPs[0], LoggerModemNISTConstants::kTimeProtocolPort);
+            nistIPs[ipIndex], LoggerModemNISTConstants::kTimeProtocolPort);
         // Need to send something before connection is made
         gsmClient.println('!');
 
