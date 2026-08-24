@@ -5,27 +5,7 @@
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief Example implementation of QuectelBG96 using templates
- *
- * This file demonstrates the DRAMATIC simplification achieved by using
- * templates instead of macros.
- *
- * ===========================================================================
- * COMPARISON: Lines of Code
- * ===========================================================================
- *
- * OLD APPROACH (QuectelBG96.cpp with macros):
- * - File length: ~50+ lines
- * - 13+ macro invocations
- * - Dependency on LoggerModemMacros.h
- *
- * NEW APPROACH (this file):
- * - File length: ~90 lines (including extensive comments)
- * - 0 macro invocations
- * - Only implements unique behavior
- * - No LoggerModemMacros.h dependency
- *
- * ===========================================================================
+ * @brief Implements the QuectelBG96 class.
  */
 
 // Included Dependencies
@@ -51,26 +31,12 @@ bool QuectelBG96::connectWithCredentials() {
     return gsmModem.gprsConnect(_apn, "", "");
 }
 
-/**
- * @brief Override the modem-specific sleep function.
- *
- * For the BG96, sleep is by AT command.
- *
- * @return True if the sleep function ran successfully.
- */
 bool QuectelBG96::modemSleepFxn() {
     /** Run the sleep AT command.
         Use AT+QPOWD=1 for normal power down. */
     return gsmModem.powerOff();
 }
 
-/**
- * @brief Override the modem-specific wake function.
- *
- * The BG96 requires a pulse on the wake pin to wake from sleep.
- *
- * @return True if the wake function ran successfully.
- */
 bool QuectelBG96::modemWakeFxn() {
     /** For most modules, the wake pin is the same pin as the power pin */
     if (_modemSleepRqPin >= 0) {
@@ -87,12 +53,6 @@ bool QuectelBG96::modemWakeFxn() {
     }
 }
 
-/**
- * @brief Do a "hard" or panic reset of the modem.
- *
- * @return True if the reset succeeded and the modem should now be
- * responsive.
- */
 bool QuectelBG96::modemHardReset() {
     /** Check for a reset pin */
     if (_modemResetPin >= 0) {
