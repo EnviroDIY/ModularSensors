@@ -351,14 +351,12 @@ uint32_t DigiXBeeWifi::getNISTTime() {
         return 0;
     }
 
-    for (uint8_t i = 0; i < LoggerModemNISTConstants::kTimeProtocolRetries;
-         i++) {
+    for (uint8_t i = 0; i < NIST_TIME_PROTOCOL_RETRIES; i++) {
         // Must ensure that we do not ping the daylight servers more than once
         // every 4 seconds.  NIST clearly specifies here that this is a
         // requirement for all software that accesses its servers:
         // https://tf.nist.gov/tf-cgi/servers.cgi
-        while (millis() < _lastNISTrequest +
-                   LoggerModemNISTConstants::kTimeProtocolSpacing) {
+        while (millis() < _lastNISTrequest + NIST_TIME_PROTOCOL_SPACING) {
             yield();
         }
 
@@ -379,14 +377,13 @@ uint32_t DigiXBeeWifi::getNISTTime() {
             IPAddress(132, 163, 97, 6), IPAddress(132, 163, 97, 8)};
         const uint8_t ipIndex = i % (sizeof(nistIPs) / sizeof(nistIPs[0]));
         MS_DBG(F("\nConnecting to NIST time server at ip"), nistIPs[ipIndex],
-               F("attempt"), i, F("of"),
-               LoggerModemNISTConstants::kTimeProtocolRetries);
+               F("attempt"), i, F("of"), NIST_TIME_PROTOCOL_RETRIES);
 
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
         TinyGsmXBee::GsmClientXBee gsmClient(gsmModem);
-        connectionMade = gsmClient.connect(
-            nistIPs[ipIndex], LoggerModemNISTConstants::kTimeProtocolPort);
+        connectionMade = gsmClient.connect(nistIPs[ipIndex],
+                                           NIST_TIME_PROTOCOL_PORT);
         // Need to send something before connection is made
         gsmClient.println('!');
 
@@ -394,20 +391,15 @@ uint32_t DigiXBeeWifi::getNISTTime() {
         if (connectionMade) {
             uint32_t start = millis();
             while (gsmClient &&
-                   gsmClient.available() <
-                       LoggerModemNISTConstants::kTimeProtocolBytes &&
-                   millis() - start <
-                       LoggerModemNISTConstants::kTimeProtocolTimeout) {
-                // wait
+                   gsmClient.available() < NIST_TIME_PROTOCOL_BYTES &&
+                   millis() - start < NIST_TIME_PROTOCOL_TIMEOUT) {
+                yield();
             }
 
-            if (gsmClient.available() >=
-                LoggerModemNISTConstants::kTimeProtocolBytes) {
+            if (gsmClient.available() >= NIST_TIME_PROTOCOL_BYTES) {
                 MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
-                byte response[LoggerModemNISTConstants::kTimeProtocolBytes] = {
-                    0};
-                gsmClient.read(response,
-                               LoggerModemNISTConstants::kTimeProtocolBytes);
+                byte response[NIST_TIME_PROTOCOL_BYTES] = {0};
+                gsmClient.read(response, NIST_TIME_PROTOCOL_BYTES);
                 gsmClient.stop();
                 uint32_t nistParsed = parseNISTBytes(response);
                 if (nistParsed != 0) {

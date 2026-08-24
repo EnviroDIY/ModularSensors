@@ -548,6 +548,62 @@ static_assert(MS_AWS_IOT_MAX_CONNECTION_TIME > 0 &&
 //==============================================================
 
 
+//==============================================================
+// NIST Time Protocol (RFC-868) Configuration
+//==============================================================
+#if !defined(NIST_TIME_PROTOCOL_HOST) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_HOST
+ * @brief The host for the NIST Time Protocol (RFC-868)
+ */
+#define NIST_TIME_PROTOCOL_HOST "time.nist.gov"
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_PORT) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_PORT
+ * @brief The port for the NIST Time Protocol (RFC-868)
+ */
+#define NIST_TIME_PROTOCOL_PORT 37
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_TIMEOUT) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_TIMEOUT
+ * @brief Wait up to this many milliseconds for the NIST Time Protocol
+ * (RFC-868) response
+ */
+#define NIST_TIME_PROTOCOL_TIMEOUT 2500
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_BYTES) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_BYTES
+ * @brief The NIST Time Protocol (RFC-868) returns this many bytes
+ */
+#define NIST_TIME_PROTOCOL_BYTES 4
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_SPACING) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_SPACING
+ * @brief The NIST Time Protocol (RFC-868) requires at least this many
+ * milliseconds between requests
+ */
+#define NIST_TIME_PROTOCOL_SPACING 4000
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_RETRIES) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_RETRIES
+ * @brief Retry up to this many times to get a valid NIST Time Protocol
+ * (RFC-868) response
+ */
+#define NIST_TIME_PROTOCOL_RETRIES 12
+#endif
+//==============================================================
+
+
 // cSpell:ignore SEALEVELPRESSURE
 
 
