@@ -37,7 +37,7 @@
 // Initialize the static timezone
 int8_t Logger::_loggerUTCOffset = 0;
 // Initialize the static epoch
-epochStart Logger ::_loggerEpoch = MS_LOGGER_EPOCH;
+epochStart Logger::_loggerEpoch = MS_LOGGER_EPOCH;
 // Initialize the static time adjustment
 int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
@@ -637,7 +637,8 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
 // Code modified from parts of the SparkFun RV-8803 library.
 String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
     return TimeUtils::formatISO8601(
-        epochTime(epochSeconds, Logger::_loggerUTCOffset * 3600,
+        epochTime(epochSeconds,
+                  static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
                   Logger::_loggerEpoch),
         Logger::_loggerUTCOffset);
 }
@@ -645,7 +646,8 @@ void Logger::formatDateTime(char* buffer, const char* fmt,
                             time_t epochSeconds) {
     TimeUtils::formatDateTime(
         buffer, fmt,
-        epochTime(epochSeconds, Logger::_loggerUTCOffset * 3600,
+        epochTime(epochSeconds,
+                  static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
                   Logger::_loggerEpoch));
 }
 // This checks that the logger time is within a "sane" range

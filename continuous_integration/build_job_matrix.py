@@ -97,31 +97,34 @@ def build_custom_matrix(config: dict) -> list[dict]:
 
     # Find matches and add them to the lists
     for match in re.finditer(pattern, filetext):
-        if (
-            "_SENSOR_" in match.group("flag1")
-            and match.group("flag1") not in all_sensor_flags + ignored_flags
-        ):
-            all_sensor_flags.append(match.group("flag1"))
-        elif (
-            "_MODEM_" in match.group("flag1")
-            and match.group("flag1") not in all_modem_flags + ignored_flags
-        ):
-            all_modem_flags.append(match.group("flag1"))
-        elif (
-            "_PUB_" in match.group("flag1")
-            and match.group("flag1") not in all_publisher_flags + ignored_flags
-        ):
-            all_publisher_flags.append(match.group("flag1"))
-        else:
+        for match_flag in match.groups():
+            if match_flag is None:
+                continue
             if (
-                match.group("flag1")
-                not in all_sensor_flags
-                + all_modem_flags
-                + all_publisher_flags
-                + all_other_flags
-                + ignored_flags
+                "_SENSOR_" in match_flag
+                and match_flag not in all_sensor_flags + ignored_flags
             ):
-                all_other_flags.append(match.group("flag1"))
+                all_sensor_flags.append(match_flag)
+            elif (
+                "_MODEM_" in match_flag
+                and match_flag not in all_modem_flags + ignored_flags
+            ):
+                all_modem_flags.append(match_flag)
+            elif (
+                "_PUB_" in match_flag
+                and match_flag not in all_publisher_flags + ignored_flags
+            ):
+                all_publisher_flags.append(match_flag)
+            else:
+                if (
+                    match_flag
+                    not in all_sensor_flags
+                    + all_modem_flags
+                    + all_publisher_flags
+                    + all_other_flags
+                    + ignored_flags
+                ):
+                    all_other_flags.append(match_flag)
 
     print(f"Found {len(all_sensor_flags)} sensor flags")
     print(f"Found {len(all_modem_flags)} modem flags")
