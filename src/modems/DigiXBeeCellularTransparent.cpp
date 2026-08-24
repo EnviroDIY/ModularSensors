@@ -182,6 +182,13 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         return 0;
     }
 
+    // These are is the IP address of time-[a,b,c,d]-wwv.nist.gov
+    // XBee's address lookup falters on time.nist.gov
+    IPAddress nistIPs[] = {
+        IPAddress(132, 163, 97, 1), IPAddress(132, 163, 97, 2),
+        IPAddress(132, 163, 97, 3), IPAddress(132, 163, 97, 4),
+        IPAddress(132, 163, 97, 6), IPAddress(132, 163, 97, 8)};
+
     for (uint8_t i = 0; i < NIST_TIME_PROTOCOL_RETRIES; i++) {
         // Must ensure that we do not ping the daylight servers more than once
         // every 4 seconds.  NIST clearly specifies here that this is a
@@ -193,14 +200,6 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
 
         // Make TCP connection
         MS_DBG(F("\nConnecting to NIST time server"));
-        bool connectionMade = false;
-
-        // These are is the IP address of time-[a,b,c,d]-wwv.nist.gov
-        // XBee's address lookup falters on time.nist.gov
-        IPAddress nistIPs[] = {
-            IPAddress(132, 163, 97, 1), IPAddress(132, 163, 97, 2),
-            IPAddress(132, 163, 97, 3), IPAddress(132, 163, 97, 4),
-            IPAddress(132, 163, 97, 6), IPAddress(132, 163, 97, 8)};
         const uint8_t ipIndex = i % (sizeof(nistIPs) / sizeof(nistIPs[0]));
         MS_DBG(F("\nConnecting to NIST time server at ip"), nistIPs[ipIndex],
                F("attempt"), i, F("of"), NIST_TIME_PROTOCOL_RETRIES);
@@ -208,14 +207,15 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
         TinyGsmXBee::GsmClientXBee gsmClient(gsmModem);
-        connectionMade   = gsmClient.connect(nistIPs[ipIndex],
-                                             NIST_TIME_PROTOCOL_PORT);
-        _lastNISTrequest = millis();
-        // Need to send something before connection is made
-        gsmClient.println('!');
+        bool connectionConfigured = gsmClient.connect(nistIPs[ipIndex],
+                                                      NIST_TIME_PROTOCOL_PORT);
+        _lastNISTrequest          = millis();
 
         // Wait up to 5 seconds for a response
-        if (connectionMade) {
+        if (connectionConfigured) {
+            // Need to send something before connection is made
+            gsmClient.println('!');
+
             uint32_t start = millis();
             while (gsmClient &&
                    gsmClient.available() < NIST_TIME_PROTOCOL_BYTES &&

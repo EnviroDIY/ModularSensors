@@ -74,3 +74,8 @@ bool QuectelBG96::modemHardReset() {
         return false;
     }
 }
+
+bool QuectelBG96::extraModemSetup() {
+    // Perform any extra setup required for the BG96 modem
+    return true;
+}

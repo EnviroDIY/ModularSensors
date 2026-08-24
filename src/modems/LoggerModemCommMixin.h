@@ -93,9 +93,22 @@ class loggerModemCommMixin {
  protected:
     /// @copydoc loggerModem::connectInternet()
     virtual bool connectInternetImpl(uint32_t maxConnectionTime = 50000L) {
-        return connectInternetImpl(
+        bool success = derived().prepareForInternet();
+        if (!success) return false;
+        success &= connectInternetImpl(
             maxConnectionTime,
             typename TinyGsmCapabilities::has_gprs<GsmModemType>::type());
+        // After connecting to the internet, instruct the module to sync with
+        // NTP. For some modules, this causes an immediate sync, so this needs
+        // to be done after the internet connection is established. For other
+        // modules, this will just set the NTP server and the module will sync
+        // on its own schedule. Either way, we don't check the return value here
+        // because this always returns false for modules that don't support NTP
+        // sync and for modules that do support NTP sync, the return value is
+        // not a reliable indicator of whether the sync was successful, only
+        // that the module accepted the request.
+        derived().syncNTP();
+        return success;
     }
 
     /**
@@ -154,9 +167,6 @@ class loggerModemCommMixin {
      */
     bool connectInternetImpl(uint32_t maxConnectionTime,
                              TinyGsmCapabilities::true_type) {
-        bool success = derived().prepareForInternet();
-        if (!success) return false;
-
         MS_START_DEBUG_TIMER
         MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,
                F("seconds for cellular network registration..."));
@@ -201,9 +211,6 @@ class loggerModemCommMixin {
      */
     bool connectInternetImpl(uint32_t maxConnectionTime,
                              TinyGsmCapabilities::false_type) {
-        bool success = derived().prepareForInternet();
-        if (!success) return false;
-
         const uint32_t reconnectTime = derived().autoReconnectTime();
         MS_START_DEBUG_TIMER
         MS_DBG(F("\nWaiting"), reconnectTime,
@@ -718,6 +725,10 @@ class loggerModemCommMixin {
     uint32_t getNISTTimeImpl(TinyGsmCapabilities::false_type) {
         // create a client
         Client* nistClient = derived().createClientImpl();
+        if (!nistClient) {
+            MS_DBG(F("Failed to create NIST client"));
+            return 0;
+        }
         // The NIST connection frequently opens and closes very quickly; so fast
         // that every module I've tested sometimes misses the response, so we
         // attempt multiple connections to increase the likelihood of
@@ -730,16 +741,12 @@ class loggerModemCommMixin {
             const char* nistServer = NIST_TIME_PROTOCOL_HOST;
             uint16_t    nistPort   = NIST_TIME_PROTOCOL_PORT;
 
-            if (!nistClient) {
-                MS_DBG(F("Failed to create NIST client"));
-                continue;
-            }
-
             MS_DBG(F("Connecting to NIST time server"));
             MS_START_DEBUG_TIMER;
             if (!nistClient->connect(nistServer, nistPort)) {
                 // If the connection failed, go to the next loop
                 MS_DBG(F("Unable to open TCP connection to NIST!"));
+                nistClient->stop();
                 continue;
             }
 
@@ -762,6 +769,7 @@ class loggerModemCommMixin {
                 byte nistBytes[NIST_TIME_PROTOCOL_BYTES] = {0};
                 nistClient->read(nistBytes, NIST_TIME_PROTOCOL_BYTES);
                 uint32_t nistParsed = parseNISTBytes(nistBytes);
+                nistClient->stop();
                 if (nistParsed != 0) {
                     MS_DBG(F("Got non-zero NIST timestamp"));
                     // delete the NIST client so we don't have a memory leak!
@@ -772,6 +780,7 @@ class loggerModemCommMixin {
                 }
             } else {
                 MS_DBG(F("NIST time server did not respond!"));
+                nistClient->stop();
             }
         }
         // delete the NIST client so we don't have a memory leak!
