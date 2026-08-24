@@ -93,9 +93,22 @@ class loggerModemCommMixin {
  protected:
     /// @copydoc loggerModem::connectInternet()
     virtual bool connectInternetImpl(uint32_t maxConnectionTime = 50000L) {
-        return connectInternetImpl(
+        bool success = derived().prepareForInternet();
+        if (!success) return false;
+        success &= connectInternetImpl(
             maxConnectionTime,
             typename TinyGsmCapabilities::has_gprs<GsmModemType>::type());
+        // After connecting to the internet, instruct the module to sync with
+        // NTP. For some modules, this causes an immediate sync, so this needs
+        // to be done after the internet connection is established. For other
+        // modules, this will just set the NTP server and the module will sync
+        // on its own schedule. Either way, we don't check the return value here
+        // because this always returns false for modules that don't support NTP
+        // sync and for modules that do support NTP sync, the return value is
+        // not a reliable indicator of whether the sync was successful, only
+        // that the module accepted the request.
+        derived().syncNTP();
+        return success;
     }
 
     /**
@@ -154,9 +167,6 @@ class loggerModemCommMixin {
      */
     bool connectInternetImpl(uint32_t maxConnectionTime,
                              TinyGsmCapabilities::true_type) {
-        bool success = derived().prepareForInternet();
-        if (!success) return false;
-
         MS_START_DEBUG_TIMER
         MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,
                F("seconds for cellular network registration..."));
@@ -201,9 +211,6 @@ class loggerModemCommMixin {
      */
     bool connectInternetImpl(uint32_t maxConnectionTime,
                              TinyGsmCapabilities::false_type) {
-        bool success = derived().prepareForInternet();
-        if (!success) return false;
-
         const uint32_t reconnectTime = derived().autoReconnectTime();
         MS_START_DEBUG_TIMER
         MS_DBG(F("\nWaiting"), reconnectTime,

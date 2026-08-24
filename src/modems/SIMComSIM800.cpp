@@ -65,3 +65,8 @@ bool SIMComSIM800::modemSleepFxn() {
         return true;  // nothing's wrong with sleeping, we just won't do it!
     }
 }
+
+bool SIMComSIM800::extraModemSetup() {
+    // Perform any extra setup required for the SIM800 modem
+    return true;
+}

@@ -64,3 +64,8 @@ bool SIMComSIM7000::modemSleepFxn() {
         return true;
     }
 }
+
+bool extraModemSetup() {
+    // Perform any extra setup required for the SIM7000 modem
+    return true;
+}

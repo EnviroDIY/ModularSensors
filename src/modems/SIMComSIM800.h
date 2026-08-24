@@ -197,6 +197,7 @@ class SIMComSIM800
  protected:
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
+    bool extraModemSetup() override;
 
     // Only override connectWithCredentials to provide APN
     bool connectWithCredentials() override;

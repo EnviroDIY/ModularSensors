@@ -182,8 +182,8 @@ class loggerModemPowerMixin {
             // If we run setup, take success value entirely from that.
             success = derived().modemSetup();
         } else {
+            // Re-init to check for SIM card and turn off echo
             success &= derived().gsmModem.init();
-            derived().syncNTP();
         }
 
         if (success) {

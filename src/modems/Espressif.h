@@ -307,6 +307,11 @@ class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
         }
     }
 
+    bool extraModemSetup() override {
+        // Perform any extra setup required for the Espressif modem
+        return true;
+    }
+
 
  protected:
     /**

@@ -376,17 +376,15 @@ class loggerModemImpl
         MS_DBG(F("Modem is a:"), _modemName);
 
         // Initialize the modem
-        {
-            MS_START_DEBUG_TIMER;
-            MS_DBG(F("Initializing modem..."));
-            success &= gsmModem.init();
-            if (success) {
-                MS_DBG(F("Modem init complete after"), MS_PRINT_DEBUG_TIMER,
-                       F("milliseconds."));
-            } else {
-                MS_DBG(F("Modem init failed!"));
-                return false;
-            }
+        MS_START_DEBUG_TIMER;
+        MS_DBG(F("Initializing modem..."));
+        success &= gsmModem.init();
+        if (success) {
+            MS_DBG(F("Modem init complete after"), MS_PRINT_DEBUG_TIMER,
+                   F("milliseconds."));
+        } else {
+            MS_DBG(F("Modem init failed!"));
+            return false;
         }
 
         // Get modem info
@@ -408,22 +406,6 @@ class loggerModemImpl
         }
 
         return success;
-    }
-
- protected:
-    /**
-     * @brief Perform the parts of the modem set up process that are unique to a
-     * specific module, as opposed to the parts of setup that are common to all
-     * modem modules.
-     *
-     * Be default, this runs the TinyGSM modem init() function, sets the modem
-     * name in internal memory, and synchronizes the modem's time with NTP if
-     * the modem is capable of doing so.
-     *
-     * @return True if extra setup succeeded; false otherwise.
-     */
-    virtual bool extraModemSetup() {
-        return this->syncNTP();
     }
 
 
@@ -512,6 +494,13 @@ class loggerModemImpl
      * @return True if sleep succeeded
      */
     virtual bool modemSleepFxn() = 0;
+    /**
+     * @brief Perform the parts of the modem set up process that are unique to a
+     * specific module, as opposed to the parts of setup that are common to all
+     * modem modules.
+     * @return True if extra setup succeeded; false otherwise.
+     */
+    virtual bool extraModemSetup() = 0;
 };
 
 #endif  // SRC_LOGGERMODEMIMPL_H_
