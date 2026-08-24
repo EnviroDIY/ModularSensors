@@ -718,6 +718,10 @@ class loggerModemCommMixin {
     uint32_t getNISTTimeImpl(TinyGsmCapabilities::false_type) {
         // create a client
         Client* nistClient = derived().createClientImpl();
+        if (!nistClient) {
+            MS_DBG(F("Failed to create NIST client"));
+            return 0;
+        }
         // The NIST connection frequently opens and closes very quickly; so fast
         // that every module I've tested sometimes misses the response, so we
         // attempt multiple connections to increase the likelihood of
@@ -730,16 +734,12 @@ class loggerModemCommMixin {
             const char* nistServer = NIST_TIME_PROTOCOL_HOST;
             uint16_t    nistPort   = NIST_TIME_PROTOCOL_PORT;
 
-            if (!nistClient) {
-                MS_DBG(F("Failed to create NIST client"));
-                continue;
-            }
-
             MS_DBG(F("Connecting to NIST time server"));
             MS_START_DEBUG_TIMER;
             if (!nistClient->connect(nistServer, nistPort)) {
                 // If the connection failed, go to the next loop
                 MS_DBG(F("Unable to open TCP connection to NIST!"));
+                nistClient->stop();
                 continue;
             }
 
@@ -762,6 +762,7 @@ class loggerModemCommMixin {
                 byte nistBytes[NIST_TIME_PROTOCOL_BYTES] = {0};
                 nistClient->read(nistBytes, NIST_TIME_PROTOCOL_BYTES);
                 uint32_t nistParsed = parseNISTBytes(nistBytes);
+                nistClient->stop();
                 if (nistParsed != 0) {
                     MS_DBG(F("Got non-zero NIST timestamp"));
                     // delete the NIST client so we don't have a memory leak!
@@ -772,6 +773,7 @@ class loggerModemCommMixin {
                 }
             } else {
                 MS_DBG(F("NIST time server did not respond!"));
+                nistClient->stop();
             }
         }
         // delete the NIST client so we don't have a memory leak!
