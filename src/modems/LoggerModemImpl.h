@@ -263,17 +263,17 @@ class loggerModemImpl
                                const char* CAcertName     = nullptr,
                                const char* clientCertName = nullptr,
                                const char* clientKeyName  = nullptr) override {
-        return this->createSecureClient(mux, sslAuthMode, sslVersion,
-                                        CAcertName, clientCertName,
-                                        clientKeyName);
+        return this->createSecureClientImpl(mux, sslAuthMode, sslVersion,
+                                            CAcertName, clientCertName,
+                                            clientKeyName);
     }
     Client* createSecureClient(SSLAuthMode sslAuthMode,
                                SSLVersion  sslVersion     = SSLVersion::TLS1_2,
                                const char* CAcertName     = nullptr,
                                const char* clientCertName = nullptr,
                                const char* clientKeyName  = nullptr) override {
-        return this->createSecureClient(sslAuthMode, sslVersion, CAcertName,
-                                        clientCertName, clientKeyName);
+        return this->createSecureClientImpl(sslAuthMode, sslVersion, CAcertName,
+                                            clientCertName, clientKeyName);
     }
     Client* createSecureClient(
         uint8_t mux, const char* pskIdent, const char* psKey,
