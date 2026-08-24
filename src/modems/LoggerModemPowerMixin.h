@@ -308,12 +308,10 @@ class loggerModemPowerMixin {
             // pin is defined, then we're going to check the level of the held
             // pin as the indication of whether attempts were made to wake the
             // modem before entering the setup function.
-            int8_t sleepRqBitNumber =
-                log(digitalPinToBitMask(derived()._modemSleepRqPin)) / log(2);
             bool currentRqPinState =
-                bitRead(*portInputRegister(
-                            digitalPinToPort(derived()._modemSleepRqPin)),
-                        sleepRqBitNumber);
+                (*portInputRegister(
+                     digitalPinToPort(derived()._modemSleepRqPin)) &
+                 digitalPinToBitMask(derived()._modemSleepRqPin)) != 0;
             MS_DBG(F("Current state of sleep request pin"),
                    derived()._modemSleepRqPin, '=',
                    currentRqPinState ? F("HIGH") : F("LOW"), F("meaning"),
