@@ -15,9 +15,9 @@
 SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream, int8_t powerPin,
                              int8_t statusPin, int8_t modemResetPin,
                              int8_t modemSleepRqPin, const char* apn)
-    : loggerModemImpl<TinyGsmUBLOX,                         // Modem Type
-                      TinyGsmUBLOX ::GsmClientUBLOX,        // TCP Client Type
-                      TinyGsmUBLOX ::GsmClientSecureUBLOX,  // SSL Client Type
+    : loggerModemImpl<TinyGsmUBLOX,                        // Modem Type
+                      TinyGsmUBLOX::GsmClientUBLOX,        // TCP Client Type
+                      TinyGsmUBLOX::GsmClientSecureUBLOX,  // SSL Client Type
                       false  // signal quality is RSSI
                       >(modemStream, powerPin, statusPin, U201_STATUS_LEVEL,
                         modemResetPin, U201_RESET_LEVEL, U201_RESET_PULSE_MS,
