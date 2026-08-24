@@ -128,8 +128,6 @@ bool DigiXBeeCellularTransparent::extraModemSetup() {
         MS_DBG(F("Setting Sleep Options..."));
         changesMade |= gsmModem.changeSettingIfNeeded(GF("SM"),
                                                       _modemSleepRqPin >= 0);
-        // Disassociate from the network for the lowest power deep sleep.
-        changesMade |= gsmModem.changeSettingIfNeeded(GF("SO"), 0);
         MS_DBG(F("Setting Other Options..."));
         // Disable remote manager, USB Direct, and LTE PSM
         // NOTE: LTE-M's PSM (Power Save Mode) sounds good, but there's no easy
@@ -139,8 +137,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup() {
 
         // Ask data to be "packetized" and sent out with every new line (0x0A)
         // character.
-        gsmModem.sendAT(GF("TD0A"));
-        success &= gsmModem.waitResponse() == 1;
+        changesMade |= gsmModem.changeSettingIfNeeded(GF("TD"), 10);
         // Make sure USB direct is NOT enabled on the XBee3 units.
         changesMade |= gsmModem.changeSettingIfNeeded(GF("P1"), 0);
         // Set the socket timeout to 10s (this is default).
@@ -148,17 +145,17 @@ bool DigiXBeeCellularTransparent::extraModemSetup() {
 
         MS_DBG(F("Setting the APN..."));
         // Save the network connection parameters.
+        // This function does an internal check for changes made
         success &= gsmModem.gprsConnect(_apn, _user, _pwd);
 
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode.
-        gsmModem.sendAT(GF("AP0"));
-        success &= gsmModem.waitResponse() == 1;
+        changesMade |= gsmModem.changeSettingIfNeeded(GF("AP"), 0);
 
         // Write all changes to flash and apply them.
         if (changesMade) {
             MS_DBG(F("Applying changes..."));
-            gsmModem.writeChanges();
+            success &= gsmModem.writeChanges();
         }
         // Finally, exit command mode.
         gsmModem.exitCommand();
@@ -273,6 +270,12 @@ bool DigiXBeeCellularTransparent::updateModemMetadata() {
     // Enter command mode only once
     MS_DBG(F("Entering Command Mode to update modem metadata:"));
     success &= gsmModem.commandMode();
+    // Enter command mode only once
+    MS_DBG(F("Entering Command Mode to update modem metadata:"));
+    if (!gsmModem.commandMode()) {
+        MS_DBG(F("Failed to enter command mode - cannot update metadata"));
+        return false;
+    }
 
     if ((_pollModemMetaData & MODEM_RSSI_ENABLE_BITMASK) ==
             MODEM_RSSI_ENABLE_BITMASK ||
