@@ -20,7 +20,8 @@ EspressifESP32::EspressifESP32(Stream* modemStream, int8_t powerPin,
                 TinyGsmESP32::GsmClientESP32,       // TCP Client Type
                 TinyGsmESP32::GsmClientSecureESP32  // SSL Client
                                                     // Type
-                >(modemStream, powerPin, modemResetPin, ssid, pwd) {}
+                >(modemStream, powerPin, modemResetPin, ssid, pwd,
+                  modemSleepRqPin, espSleepRqPin) {}
 
 
 bool EspressifESP32::modemSleepFxn() {
