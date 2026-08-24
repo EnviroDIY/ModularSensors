@@ -83,6 +83,7 @@ class loggerModemPowerMixin {
                 MS_DBG(F("Setting sleep pin"), derived()._modemSleepRqPin,
                        F("to"), !derived()._wakeLevel ? F("HIGH") : F("LOW"),
                        F("while powering on"), derived().getModemName());
+                pinMode(derived()._modemSleepRqPin, OUTPUT);
                 digitalWrite(derived()._modemSleepRqPin, !derived()._wakeLevel);
             }
             MS_DBG(F("Powering"), derived().getModemName(), F("with pin"),
@@ -99,7 +100,6 @@ class loggerModemPowerMixin {
                 derived()._millisPowerOn = millis();
         }
     }
-
     /// @copydoc loggerModem::modemPowerDown()
     virtual void modemPowerDownImpl() {
         if (derived()._powerPin >= 0) {
