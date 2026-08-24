@@ -203,8 +203,6 @@ class SodaqUBeeU201
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
-
-    // Only override connectWithCredentials to provide APN
     bool connectWithCredentials() override;
 
  private:

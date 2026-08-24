@@ -171,20 +171,11 @@ class loggerModemCommMixin {
         MS_DBG(F("\nWaiting up to"), maxConnectionTime / 1000,
                F("seconds for cellular network registration..."));
         if (derived().gsmModem.waitForNetwork(maxConnectionTime)) {
-            // for all cellular modems **except the XBee** we need to actively
-            // connect to the APN using the gprsConnect function after we've
-            // connected to the base cellular network.  The XBee stores the APN
-            // in NVM and automatically inputs in in the network connection
-            // process.  We *avoid* setting the APN unnecessarily on the XBee so
-            // as not to wear out the limited write flash.
-            if (strcmp(Derived::GsmModemType::ModemConfig::MODEM_MANUFACTURER,
-                       "XBee") != 0) {
-                MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER,
-                       F("milliseconds.  Connecting to GPRS..."));
-                if (!derived().connectWithCredentials()) {
-                    MS_DBG(F("...GPRS attach failed."));
-                    return false;
-                }
+            MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER,
+                   F("milliseconds.  Connecting to GPRS..."));
+            if (!derived().connectWithCredentials()) {
+                MS_DBG(F("...GPRS attach failed."));
+                return false;
             }
             MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,
                    F("milliseconds."));
@@ -246,14 +237,12 @@ class loggerModemCommMixin {
      * True does not necessarily mean that the connection was established, only
      * that the command to connect was sent successfully.
      */
-    virtual bool connectWithCredentials() {
-        // Default: return true
-        // Derived classes with _apn member should override to call:
-        // return gsmModem.gprsConnect(_apn, "", "");
-        // Derived classes with _ssid and _password members should override to
-        // call: return gsmModem.networkConnect(_ssid, _password);
-        return true;
-    }
+    virtual bool connectWithCredentials() = 0;
+    // Default: return true
+    // Derived classes with _apn member should override to call:
+    // return gsmModem.gprsConnect(_apn, "", "");
+    // Derived classes with _ssid and _password members should override to
+    // call: return gsmModem.networkConnect(_ssid, _password);
 
     /**
      * @brief Default auto-reconnect time for WiFi modems.

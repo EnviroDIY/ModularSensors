@@ -179,7 +179,7 @@ class DigiXBeeCellularTransparent
      */
     bool extraModemSetup() override;
 
-    // Only override connectWithCredentials to provide APN
+    // Do NOTHING for this - credentials set in flash memory during setup
     bool connectWithCredentials() override;
 
  private:

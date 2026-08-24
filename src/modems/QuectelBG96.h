@@ -210,8 +210,6 @@ class QuectelBG96
     bool modemWakeFxn() override;
     bool modemSleepFxn() override;
     bool extraModemSetup() override;
-
-    // Only override connectWithCredentials to provide APN
     bool connectWithCredentials() override;
 
  private:

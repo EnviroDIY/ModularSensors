@@ -140,8 +140,6 @@ class DigiXBee3GBypass
      * @return True if the extra setup succeeded.
      */
     bool extraModemSetup() override;
-
-    // Only override connectWithCredentials to provide APN
     bool connectWithCredentials() override;
 
  private:

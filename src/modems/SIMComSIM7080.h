@@ -190,8 +190,6 @@ class SIMComSIM7080 : public loggerModemImpl<
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
-
-    // Only override connectWithCredentials to provide APN
     bool connectWithCredentials() override;
 
  private:
