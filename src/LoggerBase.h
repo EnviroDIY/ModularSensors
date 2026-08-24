@@ -211,6 +211,9 @@ class Logger {
      *
      * @param loggingIntervalMinutes The frequency with which to update sensor
      * values and write data to the SD card.
+     *
+     * @remark While this could be as large as 32767 minutes (~22.7 days), it's
+     * expected to be <24 hours.
      */
     void setLoggingInterval(int16_t loggingIntervalMinutes);
     /**
