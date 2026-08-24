@@ -97,7 +97,9 @@ void loggerClock::getNowAsParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
 // This sets the real time clock to the given time
 bool loggerClock::setRTClock(time_t ts, int8_t utcOffset, epochStart epoch) {
     MS_DEEP_DBG(F("Raw input timestamp:"), ts);
-    return setRTClock(epochTime(ts, utcOffset * 3600, epoch), utcOffset);
+    return setRTClock(
+        epochTime(ts, static_cast<int32_t>(utcOffset) * 3600, epoch),
+        utcOffset);
 }
 bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
     // If the timestamp is not in the valid range, just exit
@@ -111,8 +113,9 @@ bool loggerClock::setRTClock(epochTime in_time, int8_t utcOffset) {
     // timezone The RTC's timezone is equal to the logger's timezone minus
     // the offset between the logger and the RTC.
     time_t new_rtc_value = TimeUtils::convertOffsetAndEpoch(
-        in_time.getTimestamp(), utcOffset * 3600, epochStart::unix_epoch,
-        _rtcUTCOffset * 3600, _rtcEpoch);
+        in_time.getTimestamp(), static_cast<int32_t>(utcOffset) * 3600,
+        epochStart::unix_epoch, static_cast<int32_t>(_rtcUTCOffset) * 3600,
+        _rtcEpoch);
 
     // Check the current RTC time
     time_t prev_rtc_value = getNowAsEpoch(utcOffset, _rtcEpoch);
@@ -165,7 +168,9 @@ bool loggerClock::isRTCSane() {
 void loggerClock::setNextRTCInterrupt(time_t ts, int8_t utcOffset,
                                       epochStart epoch) {
     MS_DEEP_DBG(F("Raw input alarm timestamp:"), ts);
-    setNextRTCInterrupt(epochTime(ts, utcOffset * 3600, epoch), utcOffset);
+    setNextRTCInterrupt(
+        epochTime(ts, static_cast<int32_t>(utcOffset) * 3600, epoch),
+        utcOffset);
 }
 void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
     // Disable any previous interrupts
@@ -175,8 +180,10 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time, int8_t utcOffset) {
     // Use the conversion function to get a temporary variable for the epoch
     // time in the epoch used by the processor core (i.e., used by gmtime).
     time_t t = TimeUtils::convertOffsetAndEpoch(
-                   in_time.getTimestamp(), utcOffset * 3600,
-                   epochStart::unix_epoch, _rtcUTCOffset * 3600, _rtcEpoch) -
+                   in_time.getTimestamp(),
+                   static_cast<int32_t>(utcOffset) * 3600,
+                   epochStart::unix_epoch,
+                   static_cast<int32_t>(_rtcUTCOffset) * 3600, _rtcEpoch) -
         static_cast<time_t>(utcOffset * 3600);
     MS_DBG(F("Setting the next alarm on the"), MS_CLOCK_NAME, F("to"),
            static_cast<uint32_t>(t));
