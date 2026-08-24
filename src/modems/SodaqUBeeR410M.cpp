@@ -12,10 +12,15 @@
 #include "SodaqUBeeR410M.h"
 
 // Constructor
+SodaqUBeeR410M::SodaqUBeeR410M(
 #if F_CPU == 8000000L
-SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
-                               int8_t statusPin, int8_t modemResetPin,
-                               int8_t modemSleepRqPin, const char* apn)
+    HardwareSerial* modemStream,
+#else
+    Stream* modemStream,
+#endif
+
+    int8_t powerPin, int8_t statusPin, int8_t modemResetPin,
+    int8_t modemSleepRqPin, const char* apn)
     : loggerModemImpl<TinyGsmSaraR4,                         // Modem Type
                       TinyGsmSaraR4::GsmClientSaraR4,        // TCP Client Type
                       TinyGsmSaraR4::GsmClientSecureSaraR4,  // SSL Client Type
@@ -25,34 +30,11 @@ SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
                         modemSleepRqPin, R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS,
                         R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
                         R410M_WAKE_DELAY_MS, R410M_AT_RESPONSE_TIME_MS),
-#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger)
-#else
-      gsmModem(*modemStream)
-#endif
-{
-    _apn         = apn;
+      _apn(apn) {
+#if F_CPU == 8000000L
     _modemSerial = modemStream;
-}
-#else
-SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
-                               int8_t statusPin, int8_t modemResetPin,
-                               int8_t modemSleepRqPin, const char* apn)
-    : loggerModemImpl<TinyGsmSaraR4,                         // Modem Type
-                      TinyGsmSaraR4::GsmClientSaraR4,        // TCP Client Type
-                      TinyGsmSaraR4::GsmClientSecureSaraR4,  // SSL Client Type
-                      false  // signal quality is RSSI
-                      >(modemStream, powerPin, statusPin, R410M_STATUS_LEVEL,
-                        modemResetPin, R410M_RESET_LEVEL, R410M_RESET_PULSE_MS,
-                        modemSleepRqPin, R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS,
-                        R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
-                        R410M_WAKE_DELAY_MS, R410M_AT_RESPONSE_TIME_MS),
-
-      _apn(apn) {}
-
-
 #endif
+}
 
 
 bool SodaqUBeeR410M::connectWithCredentials() {
@@ -84,9 +66,7 @@ bool SodaqUBeeR410M::modemWakeFxn() {
             }
 
             // But at least 0.15s
-            while (millis() - startTimer < 150) {
-                // wait
-            }
+            while (millis() - startTimer < 150) { yield(); }
             // Say how long we pulsed for
             MS_DBG(F("Pulsed for"), millis() - startTimer, F("ms"));
 
