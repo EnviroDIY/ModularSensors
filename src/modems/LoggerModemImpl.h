@@ -32,7 +32,7 @@
 #define MS_DEBUGGING_STD "LoggerModemImpl"
 #endif
 #ifdef MS_LOGGERMODEMIMPL_DEBUG_DEEP
-#define MS_DEBUGGING_DEEP "LoggerModem"
+#define MS_DEBUGGING_DEEP "LoggerModemImpl"
 #endif
 
 // Include the debugger
