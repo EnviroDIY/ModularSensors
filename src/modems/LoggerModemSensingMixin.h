@@ -47,6 +47,8 @@
  * battery stats, and chip temperature monitoring.
  *
  * @tparam Derived The derived class type that uses this mixin
+ * @tparam GsmModemType_T The TinyGSM modem type used to select the
+ * capability-dependent implementations
  */
 template <typename Derived, typename GsmModemType_T>
 class loggerModemSensingMixin {
@@ -251,6 +253,7 @@ class loggerModemSensingMixin {
         MS_DBG(F("This modem doesn't return temperature!"));
         return static_cast<float>(MS_INVALID_VALUE);
     }
+    /**@}*/
 };
 
 // cSpell:ignore bpercent

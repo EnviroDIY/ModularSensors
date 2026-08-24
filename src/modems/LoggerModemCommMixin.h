@@ -40,6 +40,8 @@
 #include <Arduino.h>
 #include <Client.h>
 
+// Include EpochTime for time conversions
+#include <EpochTime.h>
 // Include the TinyGSM capabilities file to check what the modem can do
 #include <TinyGsmCapabilities.h>
 // Include TinyGsmSSL for SSLAuthMode and SSLVersion enums
@@ -116,7 +118,8 @@ class loggerModemCommMixin {
         if (!wasAwake) {
             MS_DBG(F("Waiting for modem to boot after power on ..."));
             while (millis() - derived()._millisPowerOn <
-                   derived()._wakeDelayTime_ms) {  // wait
+                   derived()._wakeDelayTime_ms) {
+                yield();
             }
             MS_DBG(F("Waking up the modem to connect to the internet ..."));
             success &= derived().modemWakeImpl();

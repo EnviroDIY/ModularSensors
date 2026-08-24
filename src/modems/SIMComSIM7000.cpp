@@ -25,7 +25,6 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream, int8_t powerPin,
             modemSleepRqPin, SIM7000_WAKE_LEVEL, SIM7000_WAKE_PULSE_MS,
             SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,
             SIM7000_WAKE_DELAY_MS, SIM7000_AT_RESPONSE_TIME_MS),
-
       _apn(apn) {}
 
 
