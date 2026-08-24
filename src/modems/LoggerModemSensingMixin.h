@@ -90,7 +90,9 @@ class loggerModemSensingMixin {
         derived().convertSignalQuality(
             signalQual, rssi, percent,
             typename Derived::SignalQualityIsRSSI::type());
-        return true;
+        // A raw value of 0 (RSSI) or 99 (CSQ) means no signal, no response, or
+        // a bad response - we cannot tell them apart.
+        return rssi != 0 && rssi != MS_INVALID_VALUE;
     }
 
     /**
