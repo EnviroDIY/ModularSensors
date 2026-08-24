@@ -91,9 +91,8 @@ def build_custom_matrix(config: dict) -> list[dict]:
     try:
         with open(menu_file_path, "r") as textfile:
             filetext = textfile.read()
-    except FileNotFoundError:
-        print(f"Warning: Menu file not found at {menu_file_path}")
-        filetext = ""
+    except FileNotFoundError as error:
+        raise FileNotFoundError(f"Menu file not found at {menu_file_path}") from error
 
     # Find matches and add them to the lists
     for match in re.finditer(pattern, filetext):
