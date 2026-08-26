@@ -51,6 +51,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
     menu_file_path = os.path.join(
         examples_path, menu_example_name, menu_example_name + ".ino"
     )
+    menu_example_name = os.path.join("examples", "menu_a_la_carte")
 
     # Pattern for flags in the menu-a-la-cart example
     pattern = re.compile(
@@ -137,7 +138,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         for filename in files:
             if (
                 filename == os.path.split(root)[-1] + ".ino"
-                and menu_example_name != os.path.split(root)[-1]
+                and os.path.split(menu_example_name)[-1] != os.path.split(root)[-1]
                 and not any(
                     e in os.path.normpath(root).split(os.sep) for e in excluded_folders
                 )
@@ -174,6 +175,8 @@ def build_custom_matrix(config: dict) -> list[dict]:
             }
         )
     )
+    for item in non_menu_matrix:
+        item["log_group"] = item["example"].split(os.sep)[-1]
     assembled_matrix += non_menu_matrix
     print(f"Total matrix items with common examples: {len(assembled_matrix)}")
 
@@ -195,6 +198,8 @@ def build_custom_matrix(config: dict) -> list[dict]:
             }
         )
     )
+    for item in mayfly_only_matrix:
+        item["log_group"] = item["example"].split(os.sep)[-1]
     assembled_matrix += mayfly_only_matrix
     print(
         f"Total matrix items after adding Mayfly-specific examples: {len(assembled_matrix)}"
@@ -222,6 +227,8 @@ def build_custom_matrix(config: dict) -> list[dict]:
             }
         )
     )
+    for item in drwi_matrix:
+        item["log_group"] = item["example"].split(os.sep)[-1]
     assembled_matrix += drwi_matrix
     print(f"Total matrix items after adding DRWI examples: {len(assembled_matrix)}")
 
@@ -259,6 +266,17 @@ def build_custom_matrix(config: dict) -> list[dict]:
                 }
             )
         )
+        for item in list_matrix:
+            if list_name == "All Sensors":
+                item["log_group"] = item["sensor"].replace("BUILD_SENSOR_", "")
+            elif list_name == "All Modems":
+                item["log_group"] = item["modem"].replace("BUILD_MODEM_", "")
+            elif list_name == "All Publishers":
+                item["log_group"] = item["publisher"].replace("BUILD_PUB_", "")
+            elif list_name == "Array Types":
+                item["log_group"] = item["array"].replace("BUILD_TEST_", "")
+            elif list_name == "Loop Types":
+                item["log_group"] = item["loop"].replace("BUILD_TEST_", "")
         print(f"Items for {list_name}: {len(list_matrix)}")
         assembled_matrix += list_matrix
     print(
@@ -288,6 +306,8 @@ def build_custom_matrix(config: dict) -> list[dict]:
             }
         )
     )
+    for item in serial_sensor_matrix:
+        item["log_group"] = item["serial"]
     assembled_matrix += serial_sensor_matrix
     print(
         f"Total matrix items after adding software serial configurations: {len(assembled_matrix)}"
@@ -311,6 +331,8 @@ def build_custom_matrix(config: dict) -> list[dict]:
             }
         )
     )
+    for item in software_wire_matrix:
+        item["log_group"] = "PaleoTerra Software Wire"
     assembled_matrix += software_wire_matrix
     print(
         f"Total matrix items after adding PaleoTerra software wire configurations: {len(assembled_matrix)}"
@@ -333,6 +355,8 @@ def build_custom_matrix(config: dict) -> list[dict]:
             }
         )
     )
+    for item in software_wire_matrix:
+        item["log_group"] = "I2C Rain Software Wire"
     assembled_matrix += software_wire_matrix
     print(
         f"Total matrix items after adding I2C Rain software wire configurations: {len(assembled_matrix)}"
@@ -368,10 +392,12 @@ def build_custom_matrix(config: dict) -> list[dict]:
                 "loop": loop_flags[0:1],
                 "serial": serial_flags[0:1],
                 "compiler_flags": [["MS_SDI12_NON_CONCURRENT"]],
-                "job_group": ["SDI-12 Configurations"],
+                "job_group": ["SDI-12 Non-Concurrent"],
             }
         )
     )
+    for item in sdi12_matrix:
+        item["log_group"] = item["sensor"].replace("BUILD_SENSOR_", "")
     assembled_matrix += sdi12_matrix
     print(
         f"Total matrix items after adding SDI12 configurations: {len(assembled_matrix)}"
@@ -395,10 +421,12 @@ def build_custom_matrix(config: dict) -> list[dict]:
                 "loop": loop_flags[0:1],
                 "serial": serial_flags[0:1],
                 "compiler_flags": [["MS_USE_ADS1015"]],
-                "job_group": ["ADS Configurations"],
+                "job_group": ["ADS 1015"],
             }
         )
     )
+    for item in ads_matrix:
+        item["log_group"] = item["sensor"].replace("BUILD_SENSOR_", "")
     assembled_matrix += ads_matrix
     print(
         f"Total matrix items after adding ADS configurations: {len(assembled_matrix)}"
@@ -423,6 +451,22 @@ def build_custom_matrix(config: dict) -> list[dict]:
     )
     final_matrix = remove_nested_duplicates(assembled_matrix)
     print(f"Final filtered matrix: {len(final_matrix)}")
+
+    # %%
+    # convert all of the flag types to inline defines for the final matrix
+    for item in final_matrix:
+        item["inline_defines"] = []
+        for key in [
+            "sensor",
+            "modem",
+            "publisher",
+            "array",
+            "loop",
+            "serial",
+        ]:
+            if item[key] and len(item[key]) > 0:
+                item["inline_defines"].append(item[key])
+            item.pop(key, None)
 
     # %%
     return final_matrix
