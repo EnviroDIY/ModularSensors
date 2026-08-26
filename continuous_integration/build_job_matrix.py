@@ -320,7 +320,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         {
             "sensor": serial_sensor_flags,
             "serial": serial_flags,
-            "compiler_flags": [["NEOSWSERIAL_EXTERNAL_PCINT"]],
+            "compiler_flags": [["-D NEOSWSERIAL_EXTERNAL_PCINT"]],
             "job_group": ["Serial Configurations"],
         }
     )
@@ -336,7 +336,9 @@ def build_custom_matrix(config: dict) -> list[dict]:
         dict_product(serial_sensor_dict_p)
     )
     for item in serial_sensor_matrix:
-        item["log_group"] = item["serial"]
+        item["log_group"] = (
+            item["serial"] + "-" + item["sensor"].replace("BUILD_SENSOR_", "")
+        )
     assembled_matrix += serial_sensor_matrix
     print(
         f"Total matrix items after adding software serial configurations: {len(assembled_matrix)}"
@@ -348,7 +350,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         {
             "sensor": ["BUILD_SENSOR_GRO_POINT_GPLP8"],
             "serial": ["BUILD_TEST_SOFTWARE_WIRE"],
-            "compiler_flags": [["MS_PALEOTERRA_SOFTWAREWIRE"]],
+            "compiler_flags": [["-D MS_PALEOTERRA_SOFTWAREWIRE"]],
             "job_group": ["Wire Configurations"],
         }
     )
@@ -373,13 +375,13 @@ def build_custom_matrix(config: dict) -> list[dict]:
     software_wire_dict_a.update(
         {
             "sensor": ["BUILD_SENSOR_RAIN_COUNTER_I2C"],
-            "compiler_flags": [["MS_RAIN_SOFTWAREWIRE"]],
+            "compiler_flags": [["-D MS_RAIN_SOFTWAREWIRE"]],
         }
     )
     software_wire_dict_p.update(
         {
             "sensor": ["BUILD_SENSOR_RAIN_COUNTER_I2C"],
-            "compiler_flags": [["MS_RAIN_SOFTWAREWIRE"]],
+            "compiler_flags": [["-D MS_RAIN_SOFTWAREWIRE"]],
         }
     )
     software_wire_matrix = list(dict_product(software_wire_dict_a)) + list(
@@ -414,7 +416,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         {
             "sensor": sdi_sensor_flags,
             "serial": [""],
-            "compiler_flags": [["MS_SDI12_NON_CONCURRENT"]],
+            "compiler_flags": [["-D MS_SDI12_NON_CONCURRENT"]],
             "job_group": ["SDI-12 Non-Concurrent"],
         }
     )
@@ -450,7 +452,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         {
             "sensor": analog_sensor_flags,
             "serial": [""],
-            "compiler_flags": [["MS_USE_ADS1015"]],
+            "compiler_flags": [["-D MS_USE_ADS1015"]],
             "job_group": ["ADS 1015"],
         }
     )
