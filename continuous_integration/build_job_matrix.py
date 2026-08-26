@@ -55,7 +55,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
 
     # Pattern for flags in the menu-a-la-cart example
     pattern = re.compile(
-        r"(?:#if|#elif) defined[\s\(](?P<flag1>BUILD_\w+)((?:[\s\n\\\)]*?\|\|[\s\n\\]*defined[\s\n\\\(]*?)(?P<flag_last>BUILD_\w+))*",
+        r"(?:#if|#elif) defined[\s\(](?P<flag1>BUILD_\w+)(?:(?:[\s\n\\\)]*?\|\|[\s\n\\]*defined[\s\n\\\(]*?)(?P<flag_last>BUILD_\w+))*",
         re.MULTILINE,
     )
 
@@ -131,6 +131,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
     print(f"Found {len(all_publisher_flags)} publisher flags")
     print(f"Found {len(all_other_flags)} other flags")
 
+    # %%
     # Get non-menu examples
     excluded_folders = [".history", "archive", "logger_test", "tests", "more"]
     non_menu_examples = []
