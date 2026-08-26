@@ -603,19 +603,6 @@ class loggerModemCommMixin {
      * @name Implementations of functions for NTP and NIST time synchronization
      */
     /**@{*/
- protected:
-    /**
-     * @brief A helper typedef to combine the two qualities needed to get NTP
-     * time directly from the modem rather than from a NIST server.
-     *
-     * To get the time directly from the modem, the modem must support both NTP
-     * __and__ Time functions.
-     */
-    typedef TinyGsmCapabilities::integral_constant<
-        bool,
-        TinyGsmCapabilities::has_ntp<GsmModemType>::value &&
-            TinyGsmCapabilities::has_time<GsmModemType>::value>
-        HasNTPAndTime;
 
  public:
     /**
@@ -657,6 +644,20 @@ class loggerModemCommMixin {
     void setModemTimeZoneImpl(int8_t timeZone) {
         derived()._modemUTCOffset = timeZone;
     }
+
+ protected:
+    /**
+     * @brief A helper typedef to combine the two qualities needed to get NTP
+     * time directly from the modem rather than from a NIST server.
+     *
+     * To get the time directly from the modem, the modem must support both NTP
+     * __and__ Time functions.
+     */
+    typedef TinyGsmCapabilities::integral_constant<
+        bool,
+        TinyGsmCapabilities::has_ntp<GsmModemType>::value &&
+            TinyGsmCapabilities::has_time<GsmModemType>::value>
+        HasNTPAndTime;
 
 
     /// @copydoc loggerModem::getNISTTime()
