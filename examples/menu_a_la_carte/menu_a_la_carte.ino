@@ -328,9 +328,9 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-const int32_t serialBaud    = 115200;  // Baud rate for debugging
-const int8_t  greenLED      = 8;       // Pin for the green LED
-const int8_t  redLED        = 9;       // Pin for the red LED
+const int32_t serialBaud    = 115200L;  // Baud rate for debugging
+const int8_t  greenLED      = 8;        // Pin for the green LED
+const int8_t  redLED        = 9;        // Pin for the red LED
 const int8_t  buttonPin     = 21;  // Pin for debugging mode (i.e., button pin)
 uint8_t       buttonPinMode = INPUT;  // mode for debugging pin
 // NOTE: On the Mayfly (and Stonefly), pin 21 is tied to a button that pulls the
@@ -378,7 +378,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 const int8_t relayPowerPin = 41;  // MCU pin controlling an optional power relay
 const int8_t sdi12DataPin  = 3;
 #else
-const int32_t serialBaud = 115200;  // Baud rate for debugging
+const int32_t serialBaud = 115200L;  // Baud rate for debugging
 #if defined(PIN_LED2)
 const int8_t greenLED = PIN_LED2;  // Pin for the green LED
 #else
@@ -595,7 +595,7 @@ DigiXBeeWifi modem = modemXBWF;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const int32_t modemBaud = 115200;  // Communication speed of the modem
+const int32_t modemBaud = 115200L;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
 // module should be programmed to a slower baud rate or set to auto-baud using
 // the AT+UART_CUR or AT+UART_DEF command.
@@ -664,7 +664,7 @@ EspressifESP32 modem = modemESP;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const int32_t modemBaud = 115200;  // Communication speed of the modem
+const int32_t modemBaud = 115200L;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
 // module should be programmed to a slower baud rate or set to auto-baud using
 // the AT+IPR=9600 command.
@@ -863,7 +863,7 @@ Sodaq2GBeeR6 modem = modem2GB;
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 const int32_t modemBaud =
-    115200;  // Default baud rate of the SARA R410M is 115200
+    115200L;  // Default baud rate of the SARA R410M is 115200
 // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
 // every power loss, the module will return to the default baud rate of 115200.
 // NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
@@ -3026,9 +3026,6 @@ Variable* y4000BGA =
 
 
 #if defined(BUILD_SENSOR_ZEBRA_TECH_D_OPTO)
-#ifndef BUILD_MODBUS_SENSOR
-#define BUILD_MODBUS_SENSOR
-#endif
 // ==========================================================================
 //  Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
@@ -3840,7 +3837,7 @@ void setup() {
 
 #if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
     // Start the stream for the camera; it will always be at 115200 baud
-    cameraSerial.begin(115200);
+    cameraSerial.begin(115200L);
 #endif
 /** End [setup_serial_begins] */
 
