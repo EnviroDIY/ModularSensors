@@ -137,8 +137,6 @@ class DigiXBeeWifi
      */
     ~DigiXBeeWifi() override = default;
 
-    bool modemWake() override;
-
     bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
     void disconnectInternet() override;
 
@@ -160,6 +158,9 @@ class DigiXBeeWifi
 
     // Do NOTHING for this - credentials set in flash memory during setup
     bool connectWithCredentials() override;
+
+    using DigiXBee<TinyGsmXBee, TinyGsmXBee::GsmClientXBee,
+                   TinyGsmXBee::GsmClientSecureXBee>::modemHardResetImpl;
 
  private:
 

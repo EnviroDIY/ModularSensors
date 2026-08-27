@@ -142,8 +142,6 @@ class DigiXBeeLTEBypass
      */
     ~DigiXBeeLTEBypass() override = default;
 
-    bool modemHardResetImpl() override;
-
  protected:
     /**
      * @copybrief loggerModemImpl::extraModemSetup()
@@ -156,6 +154,8 @@ class DigiXBeeLTEBypass
      */
     bool extraModemSetup() override;
     bool connectWithCredentials() override;
+
+    bool modemHardResetImpl() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

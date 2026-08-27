@@ -274,8 +274,6 @@ class SodaqUBeeR410M
      */
     ~SodaqUBeeR410M() override = default;
 
-    bool modemHardResetImpl() override;
-
 
 #if F_CPU == 8000000L
     /**
@@ -295,6 +293,8 @@ class SodaqUBeeR410M
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
     bool connectWithCredentials() override;
+
+    bool modemHardResetImpl() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

@@ -499,9 +499,9 @@ modemSleepFxn	KEYWORD2
 modemWakeFxn	KEYWORD2
 DigiXBee3GBypass	KEYWORD2
 ~DigiXBee3GBypass	KEYWORD2
-modemHardReset	KEYWORD2
 extraModemSetup	KEYWORD2
 connectWithCredentials	KEYWORD2
+modemHardResetImpl	KEYWORD2
 DigiXBeeCellularTransparent	KEYWORD2
 ~DigiXBeeCellularTransparent	KEYWORD2
 getNISTTime	KEYWORD2
@@ -510,7 +510,6 @@ DigiXBeeLTEBypass	KEYWORD2
 ~DigiXBeeLTEBypass	KEYWORD2
 DigiXBeeWifi	KEYWORD2
 ~DigiXBeeWifi	KEYWORD2
-modemWake	KEYWORD2
 connectInternet	KEYWORD2
 disconnectInternet	KEYWORD2
 DreamHostPublisher	KEYWORD2
@@ -720,8 +719,10 @@ setModemTimeZone	KEYWORD2
 modemSetup	KEYWORD2
 modemPowerUp	KEYWORD2
 modemPowerDown	KEYWORD2
+modemWake	KEYWORD2
 modemSleep	KEYWORD2
 modemSleepPowerDown	KEYWORD2
+modemHardReset	KEYWORD2
 isModemAwake	KEYWORD2
 setModemStatusLevel	KEYWORD2
 setModemWakeLevel	KEYWORD2
@@ -753,6 +754,7 @@ deleteClientImpl	KEYWORD2
 createSecureClientImpl	KEYWORD2
 deleteSecureClientImpl	KEYWORD2
 derived	KEYWORD2
+loggerModemCommMixin	KEYWORD2
 loggerModemImpl	KEYWORD2
 ~loggerModemImpl	KEYWORD2
 setModemPinModes	KEYWORD2
@@ -761,7 +763,6 @@ modemPowerDownImpl	KEYWORD2
 modemWakeImpl	KEYWORD2
 modemSleepImpl	KEYWORD2
 modemSleepPowerDownImpl	KEYWORD2
-modemHardResetImpl	KEYWORD2
 isModemAwakeImpl	KEYWORD2
 setModemLEDImpl	KEYWORD2
 setModemStatusLevelImpl	KEYWORD2
@@ -769,6 +770,7 @@ setModemWakeLevelImpl	KEYWORD2
 setModemResetLevelImpl	KEYWORD2
 modemLEDOn	KEYWORD2
 modemLEDOff	KEYWORD2
+loggerModemPowerMixin	KEYWORD2
 getModemSignalQualityImpl	KEYWORD2
 convertSignalQuality	KEYWORD2
 getRSSIFromCSQ	KEYWORD2
@@ -1261,6 +1263,8 @@ ESPRESSIF_RESET_PULSE_MS	LITERAL1
 ESPRESSIF_WAKE_LEVEL	LITERAL1
 ESPRESSIF_WAKE_PULSE_MS	LITERAL1
 ESPRESSIF_WAKE_DELAY_MS	LITERAL1
+ESPRESSIF_BOOT_LOG_DELAY_MS	LITERAL1
+ESPRESSIF_BOOT_LOG_TIMEOUT_MS	LITERAL1
 ESPRESSIF_AT_RESPONSE_TIME_MS	LITERAL1
 ESPRESSIF_DISCONNECT_TIME_MS	LITERAL1
 ESPRESSIF_RECONNECT_TIME_MS	LITERAL1

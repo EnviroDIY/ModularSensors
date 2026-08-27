@@ -316,7 +316,7 @@ bool DigiXBeeWifi::extraModemSetup() {
             if (!gsmModem.waitForNetwork()) {
                 PRINTOUT(
                     F("... Initial WiFi connection failed - resetting module"));
-                loggerModem::modemHardReset();
+                modemHardReset();
                 delay(50);
                 success = false;
             } else {

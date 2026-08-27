@@ -203,14 +203,14 @@ class QuectelBG96
      */
     ~QuectelBG96() override = default;
 
-    // Hard reset has device-specific implementation
-    bool modemHardResetImpl() override;
-
  protected:
     bool modemWakeFxn() override;
     bool modemSleepFxn() override;
     bool extraModemSetup() override;
     bool connectWithCredentials() override;
+
+    // Hard reset has device-specific implementation
+    bool modemHardResetImpl() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

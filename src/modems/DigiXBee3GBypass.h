@@ -127,8 +127,6 @@ class DigiXBee3GBypass
      */
     ~DigiXBee3GBypass() override = default;
 
-    bool modemHardResetImpl();
-
  protected:
     /**
      * @copybrief loggerModemImpl::extraModemSetup()
@@ -141,6 +139,8 @@ class DigiXBee3GBypass
      */
     bool extraModemSetup() override;
     bool connectWithCredentials() override;
+
+    bool modemHardResetImpl();
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN
