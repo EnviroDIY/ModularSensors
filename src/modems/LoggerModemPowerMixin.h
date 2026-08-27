@@ -187,9 +187,9 @@ class loggerModemPowerMixin {
             }
         }
 
-        uint8_t resets  = 0;
+        uint8_t atAttempts = 0;
         bool    success = false;
-        while (!success && resets < 2) {
+        while (!success && atAttempts < 2) {
             // Check that the modem is responding to AT commands.
             MS_START_DEBUG_TIMER;
             MS_DBG(F("\nWaiting up to"), derived()._max_at_response_time_ms,
@@ -202,12 +202,13 @@ class loggerModemPowerMixin {
                        F("milliseconds!"));
             } else {  // Hard reset is there's no AT response.
                 MS_DBG(F("No response to AT commands!"));
-                MS_DBG(F("Attempting a hard reset on the modem! "), resets + 1);
+                MS_DBG(F("Attempting a hard reset on the modem! "),
+                       atAttempts + 1);
                 if (!modemHardResetImpl()) {
                     // Exit if we can't hardreset.
                     break;
                 } else {
-                    resets++;
+                    atAttempts++;
                 }
             }
         }
