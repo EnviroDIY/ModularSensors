@@ -32,6 +32,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(
                         R410M_WAKE_DELAY_MS, R410M_AT_RESPONSE_TIME_MS),
       _apn(apn) {
 #if F_CPU == 8000000L
+    // only store the pointer for 8MHz processors
     _modemSerial = modemStream;
 #endif
 }
