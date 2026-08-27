@@ -157,10 +157,10 @@
  * module.
  */
 class SodaqUBeeU201
-    : public loggerModemImpl<TinyGsmUBLOX,                   // Modem Type
-                             TinyGsmUBLOX ::GsmClientUBLOX,  // TCP Client Type
-                             TinyGsmUBLOX ::GsmClientSecureUBLOX,  // SSL Client
-                                                                   // Type
+    : public loggerModemImpl<TinyGsmUBLOX,                  // Modem Type
+                             TinyGsmUBLOX::GsmClientUBLOX,  // TCP Client Type
+                             TinyGsmUBLOX::GsmClientSecureUBLOX,  // SSL Client
+                                                                  // Type
                              false  // signal quality is RSSI
                              > {
  public:

@@ -37,7 +37,7 @@
 // Initialize the static timezone
 int8_t Logger::_loggerUTCOffset = 0;
 // Initialize the static epoch
-epochStart Logger ::_loggerEpoch = MS_LOGGER_EPOCH;
+epochStart Logger::_loggerEpoch = MS_LOGGER_EPOCH;
 // Initialize the static time adjustment
 int8_t Logger::_loggerRTCOffset = 0;
 // Initialize the static timestamps
