@@ -127,7 +127,7 @@ class DigiXBee3GBypass
      */
     ~DigiXBee3GBypass() override = default;
 
-    bool modemHardReset() override;
+    bool modemHardResetImpl();
 
  protected:
     /**

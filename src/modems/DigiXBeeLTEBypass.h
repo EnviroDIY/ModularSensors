@@ -142,7 +142,7 @@ class DigiXBeeLTEBypass
      */
     ~DigiXBeeLTEBypass() override = default;
 
-    bool modemHardReset() override;
+    bool modemHardResetImpl() override;
 
  protected:
     /**

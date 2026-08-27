@@ -204,7 +204,7 @@ class QuectelBG96
     ~QuectelBG96() override = default;
 
     // Hard reset has device-specific implementation
-    bool modemHardReset() override;
+    bool modemHardResetImpl() override;
 
  protected:
     bool modemWakeFxn() override;

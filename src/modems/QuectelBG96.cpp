@@ -58,7 +58,7 @@ bool QuectelBG96::modemWakeFxn() {
     }
 }
 
-bool QuectelBG96::modemHardReset() {
+bool QuectelBG96::modemHardResetImpl() {
     /** Check for a reset pin */
     if (_modemResetPin >= 0) {
         MS_DBG(F("Doing a hard reset on the modem by setting pin"),

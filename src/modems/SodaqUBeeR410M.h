@@ -274,7 +274,7 @@ class SodaqUBeeR410M
      */
     ~SodaqUBeeR410M() override = default;
 
-    bool modemHardReset() override;
+    bool modemHardResetImpl() override;
 
 
 #if F_CPU == 8000000L
