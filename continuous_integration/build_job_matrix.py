@@ -444,6 +444,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         f"Total matrix items after adding SDI12 configurations: {len(assembled_matrix)}"
     )
 
+    # %%
     analog_sensor_flags = [
         flag
         for flag in all_sensor_flags
@@ -497,13 +498,15 @@ def build_custom_matrix(config: dict) -> list[dict]:
             x["job_group"],
         ),
     )
-    final_matrix = remove_nested_duplicates(assembled_matrix)
-    print(f"Final filtered matrix: {len(final_matrix)}")
+    filtered_matrix = remove_nested_duplicates(assembled_matrix)
+    print(f"Filtered matrix: {len(filtered_matrix)}")
 
     # %%
     # convert all of the flag types to inline defines for the final matrix
-    for item in final_matrix:
-        item["inline_defines"] = []
+    final_matrix = []
+    for item in filtered_matrix:
+        new_item = copy.deepcopy(item)
+        new_item["inline_defines"] = []
         for key in [
             "sensor",
             "modem",
@@ -512,22 +515,24 @@ def build_custom_matrix(config: dict) -> list[dict]:
             "loop",
             "serial",
         ]:
-            if item[key] and len(item[key]) > 0:
-                item["inline_defines"].append(item[key])
-            item.pop(key, None)
-        item["board"] = item.get("fqbn", item.get("pio_env", ""))
+            if new_item[key] and len(new_item[key]) > 0:
+                new_item["inline_defines"].append(new_item[key])
+            new_item.pop(key, None)
+        new_item["board"] = new_item.get("fqbn", new_item.get("pio_env", ""))
         # add clocks for Arduino CLI boards that need them
-        if item["compiler"] == "arduino-cli":
-            if item["fqbn"] == "adafruit:samd:adafruit_feather_m0":
-                item["compiler_flags"].append(f"-D MS_USE_RV8803")
-            if item["fqbn"] == "adafruit:samd:adafruit_feather_m4":
-                item["compiler_flags"].append(f"-D MS_USE_DS3231")
-            if item["fqbn"] == "adafruit:samd:adafruit_grandcentral_m4":
-                item["compiler_flags"].append(f"-D MS_USE_RV8803")
-            if item["fqbn"] == "arduino:avr:mega":
-                item["compiler_flags"].append(f"-D MS_USE_RV8803")
-            if item["fqbn"] == "arduino:samd:mzero_bl":
-                item["compiler_flags"].append(f"-D MS_USE_RTC_ZERO")
+        if new_item["compiler"] == "arduino-cli":
+            if new_item["fqbn"] == "adafruit:samd:adafruit_feather_m0":
+                new_item["compiler_flags"].append(f"-D MS_USE_RV8803")
+            if new_item["fqbn"] == "adafruit:samd:adafruit_feather_m4":
+                new_item["compiler_flags"].append(f"-D MS_USE_DS3231")
+            if new_item["fqbn"] == "adafruit:samd:adafruit_grandcentral_m4":
+                new_item["compiler_flags"].append(f"-D MS_USE_RV8803")
+            if new_item["fqbn"] == "arduino:avr:mega":
+                new_item["compiler_flags"].append(f"-D MS_USE_RV8803")
+            if new_item["fqbn"] == "arduino:samd:mzero_bl":
+                new_item["compiler_flags"].append(f"-D MS_USE_RTC_ZERO")
+
+        final_matrix.append(copy.deepcopy(new_item))
 
     # %%
     return final_matrix
