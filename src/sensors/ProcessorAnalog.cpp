@@ -169,8 +169,8 @@ bool ProcessorAnalog::addSingleMeasurementResult() {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     float resultValue = MS_INVALID_VALUE;
-    bool  success     = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
-                                                                     resultValue);
+    bool  success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
+                                                                 resultValue);
 
     if (success) {
         verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, resultValue);

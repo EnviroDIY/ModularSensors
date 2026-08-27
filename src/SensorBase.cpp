@@ -422,7 +422,7 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
     bool prevResultGood = (sensorValues[resultNumber] != MS_INVALID_VALUE &&
                            !isnan(sensorValues[resultNumber]));
     bool newResultGood  = (resultValue != MS_INVALID_VALUE &&
-                          !isnan(resultValue));
+                           !isnan(resultValue));
     // If the new result is good and there was were only bad results, set the
     // result value as the new result and add 1 to the good result total
     if (!prevResultGood && newResultGood) {
