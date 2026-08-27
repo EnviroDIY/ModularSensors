@@ -60,7 +60,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
         re.MULTILINE,
     )
 
-    # Lists for the flags
+    # Lists for the inline defines to specify which sections of the menu to build
     ignored_flags = ["BUILD_TEST_SKYWIRE", "BUILD_MODBUS_SENSOR"]
     all_modem_flags = [
         "BUILD_MODEM_SIM_COM_SIM7080",
@@ -87,6 +87,8 @@ def build_custom_matrix(config: dict) -> list[dict]:
         "BUILD_TEST_SIMPLE_LOOP",
         "BUILD_TEST_COMPLEX_LOOP",
     ]
+    # NOTE: the clock must be set via compiler flag or config
+    clock_flags = ["-D MS_USE_RV8803", "-D MS_USE_DS3231", "-D MS_USE_RTC_ZERO"]
     compiler_flags = [[]]
 
     # Open the file and read it
@@ -514,10 +516,22 @@ def build_custom_matrix(config: dict) -> list[dict]:
                 item["inline_defines"].append(item[key])
             item.pop(key, None)
         item["board"] = item.get("fqbn", item.get("pio_env", ""))
+        # add clocks for Arduino CLI boards that need them
+        if item["compiler"] == "arduino-cli":
+            if item["fqbn"] == "adafruit:samd:adafruit_feather_m0":
+                item["compiler_flags"].append(f"-D MS_USE_RV8803")
+            if item["fqbn"] == "adafruit:samd:adafruit_feather_m4":
+                item["compiler_flags"].append(f"-D MS_USE_DS3231")
+            if item["fqbn"] == "adafruit:samd:adafruit_grandcentral_m4":
+                item["compiler_flags"].append(f"-D MS_USE_RV8803")
+            if item["fqbn"] == "arduino:avr:mega":
+                item["compiler_flags"].append(f"-D MS_USE_RV8803")
+            if item["fqbn"] == "arduino:samd:mzero_bl":
+                item["compiler_flags"].append(f"-D MS_USE_RTC_ZERO")
 
     # %%
     return final_matrix
 
 
 # %%
-# cSpell:ignore fqbn fqbns PCINT Wextra
+# cSpell:ignore fqbn fqbns PCINT Wextra adafruit_grandcentral_m4 mzero_bl

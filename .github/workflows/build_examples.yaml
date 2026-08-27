@@ -13,7 +13,7 @@ jobs:
     if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
     uses: EnviroDIY/workflows/.github/workflows/build_examples.yaml@main
     with:
-      boards_to_build: 'mayfly,envirodiy_stonefly_m4,megaatmega2560,zeroUSB,adafruit_feather_m0,adafruit_feather_m4,adafruit_grandcentral_m4'
+      boards_to_build: 'mayfly,envirodiy_stonefly_m4,megaatmega2560,zeroUSB,adafruit_feather_m0,adafruit_feather_m4'
       log_grouping_fields: 'compiler,board,job_group,log_group'
       job_grouping_fields: 'compiler,board,job_group'
     secrets: inherit
