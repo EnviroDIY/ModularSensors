@@ -315,7 +315,7 @@ def build_custom_matrix(config: dict) -> list[dict]:
     serial_sensor_flags = [
         flag
         for flag in all_sensor_flags
-        if any(f in flag for f in ["_MAX_BOTIX", "YOSEMITECH_Y504"])
+        if any(f in flag for f in ["_MAX_BOTIX", "YOSEMITECH_Y504", "GEOLUX_HYDRO_CAM"])
     ]
     serial_sensor_dict = copy.deepcopy(special_config_dict)
     serial_sensor_dict.update(
