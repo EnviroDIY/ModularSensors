@@ -108,7 +108,7 @@ bool SodaqUBeeR410M::modemSleepFxn() {
 }
 
 
-bool SodaqUBeeR410M::modemHardReset() {
+bool SodaqUBeeR410M::modemHardResetImpl() {
     if (_modemResetPin >= 0) {
         MS_DBG(F("Doing a hard reset on the modem by setting pin"),
                _modemResetPin, _resetLevel ? F("HIGH") : F("LOW"), F("for"),

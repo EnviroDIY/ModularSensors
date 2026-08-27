@@ -130,7 +130,7 @@ bool DigiXBeeLTEBypass::extraModemSetup() {
     return success;
 }
 
-bool DigiXBeeLTEBypass::modemHardReset() {
+bool DigiXBeeLTEBypass::modemHardResetImpl() {
     bool success = false;
     // If the u-blox cellular component isn't responding but the Digi processor
     // is, use the Digi API to reset the cellular component
@@ -152,7 +152,7 @@ bool DigiXBeeLTEBypass::modemHardReset() {
         success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
     } else {
         MS_DBG(F("... failed!  Using a pin reset on the XBee."));
-        success = loggerModem::modemHardReset();
+        success = loggerModemImpl::modemHardResetImpl();
     }
     return success;
 }

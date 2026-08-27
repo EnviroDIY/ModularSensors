@@ -188,7 +188,7 @@ class loggerModemPowerMixin {
         }
 
         uint8_t atAttempts = 0;
-        bool    success = false;
+        bool    success    = false;
         while (!success && atAttempts < 2) {
             // Check that the modem is responding to AT commands.
             MS_START_DEBUG_TIMER;
