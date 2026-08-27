@@ -281,6 +281,11 @@ class SodaqUBeeR410M
     /**
      * @brief The HardwareSerial instance used for communication between the MCU
      * and the modem.
+     *
+     * We need to keep the pointer to the HardwareSerial instance on slow
+     * processors so that we can drop the default baud rate on the SARA R410M.
+     * For processors above 8MHz, we don't need to change the baud rate so we
+     * don't need the pointer to the serial instance.
      */
     HardwareSerial* _modemSerial;
 #endif

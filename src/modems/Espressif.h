@@ -115,6 +115,16 @@
  */
 #define ESPRESSIF_WAKE_DELAY_MS 0
 /**
+ * @brief The minimum time before the Espressif module will spit out it's boot
+ * log after power on or reset.
+ */
+#define ESPRESSIF_BOOT_LOG_DELAY_MS 200L
+/**
+ * @brief The maximum time to listen for the Espressif module's boot log after
+ * power on or reset.
+ */
+#define ESPRESSIF_BOOT_LOG_TIMEOUT_MS 1000L
+/**
  * @brief The loggerModem::_max_at_response_time_ms.
  *
  * The serial response time after boot (via power on or reset) is undocumented
@@ -222,7 +232,7 @@ class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
     }
 
 
-    bool extraModemSetup() {
+    bool extraModemSetup() override {
         if (this->_modemSleepRqPin >= 0) {
             digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
         }
@@ -324,10 +334,11 @@ class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
         // not going to worry about the odd baud rate since we're simply
         // throwing the characters away.
         MS_DBG(F("Waiting for boot-up message from Espressif module"));
-        delay(200);  // It will take at least this long
+        delay(ESPRESSIF_BOOT_LOG_DELAY_MS);  // It will take at least this long
         uint32_t start   = millis();
         bool     success = false;
-        while (!_modemStream->available() && millis() - start < 1000) {
+        while (!_modemStream->available() &&
+               millis() - start < ESPRESSIF_BOOT_LOG_TIMEOUT_MS) {
             yield();
         }
         if (_modemStream->available()) {
