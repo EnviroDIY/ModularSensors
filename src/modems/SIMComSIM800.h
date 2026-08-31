@@ -22,7 +22,7 @@
  *
  * There are a multitude of boards available that feature a variant of the
  * SIMCom SIM800 or the nearly identical SIM900, including the
- * [Adafruit Fona](whttps://www.adafruit.com/product/1946) Mini cellular GSM
+ * [Adafruit Fona](https://www.adafruit.com/product/1946) Mini cellular GSM
  * breakout.
  * Almost all of those boards should work with ModularSensors as a generic
  * SIM800.

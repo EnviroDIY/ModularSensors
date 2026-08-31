@@ -448,7 +448,7 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 // NOTE:  Use -1 for pins that do not apply
 // The pin numbers here are for a Digi XBee with a Mayfly 0.x and LTE adapter
 // For options https://github.com/EnviroDIY/LTEbee-Adapter/edit/master/README.md
-const int8_t modemVccPin = -1;     // MCU pin controlling modem power
+const int8_t modemVccPin    = -1;  // MCU pin controlling modem power
                                    // Option: modemVccPin = A5, if Mayfly SJ7 is
                                    // connected to the ASSOC pin
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
@@ -1011,8 +1011,8 @@ AlphasenseCO2 alphasenseCO2(asCO2Power, asCO2Channel1, asCO2Channel2,
                             asCO2Meas);
 
 // Create PAR and raw voltage variable pointers for the CO2
-Variable* asCO2        = new AlphasenseCO2_CO2(&alphasenseCO2,
-                                               "12345678-abcd-1234-ef00-1234567890ab");
+Variable* asCO2 = new AlphasenseCO2_CO2(&alphasenseCO2,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
 Variable* asco2voltage = new AlphasenseCO2_Voltage(
     &alphasenseCO2, "12345678-abcd-1234-ef00-1234567890ab");
 
@@ -1061,8 +1061,8 @@ Variable* anbPHValue = new ANBpH_pH(&anbPH,
                                     "12345678-abcd-1234-ef00-1234567890ab");
 Variable* anbPHTemp  = new ANBpH_Temp(&anbPH,
                                       "12345678-abcd-1234-ef00-1234567890ab");
-Variable* anbPHSal   = new ANBpH_Salinity(&anbPH,
-                                          "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHSal = new ANBpH_Salinity(&anbPH,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
 Variable* anbPHSpCond =
     new ANBpH_SpCond(&anbPH, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* anbPHEC = new ANBpH_EC(&anbPH,

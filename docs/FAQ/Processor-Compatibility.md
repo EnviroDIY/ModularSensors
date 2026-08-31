@@ -8,42 +8,24 @@
 
 - [Processor Compatibility](#processor-compatibility)
   - [Processor Configuration and Adding Support](#processor-configuration-and-adding-support)
-    - [KnownProcessors.h Documentation](#knownprocessorsh-documentation)
-    - [Adding New Processor Support](#adding-new-processor-support)
-    - [Board-Specific Parameters](#board-specific-parameters)
-    - [Configuration Override](#configuration-override)
   - [AtMega1284p (EnviroDIY Mayfly, Sodaq Mbili, Mighty 1284)](#atmega1284p-envirodiy-mayfly-sodaq-mbili-mighty-1284)
-    - [Specific Supported AtMega1284p Boards](#specific-supported-atmega1284p-boards)
-    - [AtMega1284p Processor Information](#atmega1284p-processor-information)
   - [AtSAMD21 (Arduino Zero, Adafruit Feather M0, Sodaq Autonomo)](#atsamd21-arduino-zero-adafruit-feather-m0-sodaq-autonomo)
-    - [Specific Supported AtSAMD21 Boards](#specific-supported-atsamd21-boards)
-    - [AtSAMD21 Processor Information](#atsamd21-processor-information)
   - [AtSAMD51 (Adafruit Feather M4, EnviroDIY Stonefly)](#atsamd51-adafruit-feather-m4-envirodiy-stonefly)
-    - [Specific Supported AtSAMD51 Boards](#specific-supported-atsamd51-boards)
-    - [AtSAMD51 Processor Information](#atsamd51-processor-information)
   - [AtMega2560 (Arduino Mega)](#atmega2560-arduino-mega)
-    - [Specific Supported AtMega2560 Boards](#specific-supported-atmega2560-boards)
-    - [AtMega2560 Processor Information](#atmega2560-processor-information)
   - [AtMega644p (Sanguino)](#atmega644p-sanguino)
-    - [Specific Supported AtMega644p Boards](#specific-supported-atmega644p-boards)
-    - [AtMega644p Processor Information](#atmega644p-processor-information)
   - [AtMega328p (Arduino Uno, Seeeduino Stalker, etc)](#atmega328p-arduino-uno-seeeduino-stalker-etc)
-    - [Specific Supported AtMega328p Boards](#specific-supported-atmega328p-boards)
-    - [AtMega328p Processor Information](#atmega328p-processor-information)
   - [AtMega32u4 (Arduino Leonardo/Micro, Adafruit Flora/Feather, etc)](#atmega32u4-arduino-leonardomicro-adafruit-florafeather-etc)
-    - [Specific Supported AtMega32u4 Boards](#specific-supported-atmega32u4-boards)
-    - [AtMega32u4 Processor Information](#atmega32u4-processor-information)
   - [Unsupported Processors](#unsupported-processors)
 
 <!--! @endif -->
 
 ## Processor Configuration and Adding Support<!--! {#processor_configuration} -->
 
-The specific processors supported by the ModularSensors library are defined in the [KnownProcessors.h](../src/sensors/KnownProcessors.h) file. This file contains compiler defines for board names, operating voltages, battery monitoring pins, and other board-specific parameters.
+The specific processors supported by the ModularSensors library are defined in the [KnownProcessors.h](src/KnownProcessors.h) file. This file contains compiler defines for board names, operating voltages, battery monitoring pins, and other board-specific parameters.
 
 ### KnownProcessors.h Documentation
 
-The [KnownProcessors.h](../src/sensors/KnownProcessors.h) file defines board-specific parameters for optimal configuration:
+The [KnownProcessors.h](src/KnownProcessors.h) file defines board-specific parameters for optimal configuration:
 
 **Basic Board Information:**
 

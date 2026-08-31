@@ -459,14 +459,14 @@ def build_custom_matrix(config: dict) -> list[dict]:
             "job_group": ["ADS 1015"],
         }
     )
-    ads_dict_a = copy.deepcopy(software_wire_dict)
+    ads_dict_a = copy.deepcopy(ads_dict)
     ads_dict_a.update(
         {
             "compiler": ["arduino-cli"],
             "fqbn": ["EnviroDIY:avr:envirodiy_mayfly", "EnviroDIY:samd:stonefly_m4"],
         }
     )
-    ads_dict_p = copy.deepcopy(software_wire_dict)
+    ads_dict_p = copy.deepcopy(ads_dict)
     ads_dict_p.update(
         {
             "compiler": ["platformio"],

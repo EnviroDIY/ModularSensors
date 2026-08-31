@@ -160,8 +160,8 @@ inline bool VariableArray::shouldWakeSensor(uint8_t sensorIndex, bool wake) {
 inline bool VariableArray::isSensorReadyToMeasure(uint8_t sensorIndex) {
     bool wakeSuccessful =
         _sensorList[sensorIndex]->getStatusBit(Sensor::WAKE_SUCCESSFUL) == 1;
-    bool measurementAttempted = _sensorList[sensorIndex]->getStatusBit(
-                                    Sensor::MEASUREMENT_ATTEMPTED) == 1;
+    bool measurementAttempted  = _sensorList[sensorIndex]->getStatusBit(
+                                     Sensor::MEASUREMENT_ATTEMPTED) == 1;
     bool measurementSuccessful = _sensorList[sensorIndex]->getStatusBit(
                                      Sensor::MEASUREMENT_SUCCESSFUL) == 1;
     return wakeSuccessful && !measurementAttempted && !measurementSuccessful;
