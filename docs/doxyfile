@@ -1031,7 +1031,7 @@ WARN_LINE_FORMAT       = "at line $line of file $file"
 # specified the warning and error messages are written to standard output
 # (stdout).
 
-WARN_LOGFILE           = output_doxygen.log
+WARN_LOGFILE           = logs/output_doxygen.log
 
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
