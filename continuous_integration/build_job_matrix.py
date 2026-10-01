@@ -386,12 +386,12 @@ def build_custom_matrix(config: dict) -> list[dict]:
             "compiler_flags": [["-D MS_RAIN_SOFTWAREWIRE"]],
         }
     )
-    software_wire_matrix = list(dict_product(software_wire_dict_a)) + list(
+    software_wire_matrix2 = list(dict_product(software_wire_dict_a)) + list(
         dict_product(software_wire_dict_p)
     )
-    for item in software_wire_matrix:
+    for item in software_wire_matrix2:
         item["log_group"] = "I2C Rain Software Wire"
-    assembled_matrix += software_wire_matrix
+    assembled_matrix += software_wire_matrix2
     print(
         f"Total matrix items after adding I2C Rain software wire configurations: {len(assembled_matrix)}"
     )
