@@ -16,5 +16,5 @@ jobs:
       contents: write
     uses: EnviroDIY/workflows/.github/workflows/verify_library_structure.yaml@main
     with:
-      library-manager: "update"
+      library-manager: "submit"
       library-compliance: "strict"
