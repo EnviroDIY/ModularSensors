@@ -68,7 +68,7 @@
 #endif
 
 /// The modem type for the underlying TinyGSM library.
-#define TINY_GSM_MODEM_ESP8266
+// #define TINY_GSM_MODEM_ESP8266
 
 // Include the debugger
 #include "ModSensorDebugger.h"

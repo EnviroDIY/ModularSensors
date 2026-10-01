@@ -58,7 +58,7 @@
 #endif
 
 /// The modem type for the underlying TinyGSM library.
-#define TINY_GSM_MODEM_XBEE
+// #define TINY_GSM_MODEM_XBEE
 
 // Include the debugger
 #include "ModSensorDebugger.h"

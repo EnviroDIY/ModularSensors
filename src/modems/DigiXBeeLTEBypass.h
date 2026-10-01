@@ -78,7 +78,7 @@
 #endif
 
 /// The modem type for the underlying TinyGSM library.
-#define TINY_GSM_MODEM_SARAR4
+// #define TINY_GSM_MODEM_SARAR4
 
 // Include the debugger
 #include "ModSensorDebugger.h"

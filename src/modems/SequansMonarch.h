@@ -68,7 +68,7 @@
 #endif
 
 /// The modem type for the underlying TinyGSM library.
-#define TINY_GSM_MODEM_SEQUANS_MONARCH
+// #define TINY_GSM_MODEM_SEQUANS_MONARCH
 
 // Include the debugger
 #include "ModSensorDebugger.h"
