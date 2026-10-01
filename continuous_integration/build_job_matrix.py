@@ -422,14 +422,14 @@ def build_custom_matrix(config: dict) -> list[dict]:
             "job_group": ["SDI-12 Non-Concurrent"],
         }
     )
-    sdi12_dict_a = copy.deepcopy(software_wire_dict)
+    sdi12_dict_a = copy.deepcopy(sdi12_dict)
     sdi12_dict_a.update(
         {
             "compiler": ["arduino-cli"],
             "fqbn": ["EnviroDIY:avr:envirodiy_mayfly", "EnviroDIY:samd:stonefly_m4"],
         }
     )
-    sdi12_dict_p = copy.deepcopy(software_wire_dict)
+    sdi12_dict_p = copy.deepcopy(sdi12_dict)
     sdi12_dict_p.update(
         {
             "compiler": ["platformio"],
