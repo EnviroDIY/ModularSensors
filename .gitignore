@@ -50,6 +50,19 @@ Temporary Items
 # Python
 __pycache__/
 
+# Filters
+.gitconfig
+filters/*
+
+# Certificates
+*.cert
+*.crt
+*.pem
+*.pem.crt
+*.pem.cert
+*.pem.key
+*.key
+
 # PyCharm
 .idea/
 
@@ -66,38 +79,25 @@ __pycache__/
 .settings
 .pioenvs
 .piolibdeps
-.pio/*
-lib/*
-include/*
-boards/*
+.pio
+lib
+lib/readme.txt
+include
+include/readme.txt
+pioScripts
+variants
+boards
+tests
 .sconsign.dblite
 platformio.ini
 extra_envs.ini
-lib/readme.txt
-include/readme.txt
-
-# Certificates
-*.pem
-*.pem.crt
-*.pem.cert
-*.pem.key
-*.crt
-*.cert
-*.key
-
-# PlatformIO
-pioScripts/*
-variants/*
-boards/*
-tests/*
-lib/*
 platformio_extra_envs.ini
 pio_common_libdeps.ini
 
 # Arduino CLI
 arduino_cli.log
 continuous_integration/arduino_cli_local.yaml
-home/arduino/*
+home/arduino
 arduino_lint.md
 arduino_lint.json
 
@@ -110,25 +110,25 @@ continuous_integration_artifacts/*
 clang_format_all.bat
 generateKeywords.bat
 installWorkingDependencies.bat
+clang-format-all.py
 runDoxygen.bat
+compile_commands.json
 buildCI.bat
 run_mcss.bat
-
-# Filters
-.gitconfig
-filters/*
 
 # Other stuff
 *.tar.gz
 sync.ffs_db
-archive/
-compile_tests/
-logger_test*/
-ex_one_offs/
-**/sensor_tests/
+archive
+planning
+compile_tests
+logger_test*
+ex_one_offs
+**/sensor_tests
 AGENTS.md
 .github/copilot-instructions.md
 .bumpversion.toml
+.clang-tidy
 .github/workflows/LibraryBuild.yml
 datasheets/*
 Datasheets.md

@@ -73,7 +73,7 @@ const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
                                        // status (-1 if unconnected)
 
 // Network connection information
-const char* apn = "YourAPN";  // The APN for the gprs connection
+const char* apn = "YourAPN";  // The APN for cellular connection
 
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
 // Create an extra reference to the modem by a generic name

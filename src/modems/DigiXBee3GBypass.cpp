@@ -26,7 +26,7 @@ DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream, int8_t powerPin,
       _apn(apn) {}
 
 bool DigiXBee3GBypass::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, "", "");
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 bool DigiXBee3GBypass::extraModemSetup() {

@@ -148,7 +148,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup() {
         MS_DBG(F("Setting the APN..."));
         // Save the network connection parameters.
         // This function does an internal check for changes made
-        success &= gsmModem.gprsConnect(_apn, _user, _pwd);
+        success &= gsmModem.dataConnect(_apn, _user, _pwd);
 
         MS_DBG(F("Ensuring XBee is in transparent mode..."));
         // Make sure we're really in transparent mode.

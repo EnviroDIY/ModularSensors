@@ -31,7 +31,7 @@ SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
 
 
 bool SequansMonarch::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, "", "");
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 

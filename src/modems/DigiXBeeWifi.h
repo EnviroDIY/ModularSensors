@@ -68,7 +68,7 @@
 
 // Include other in-library and external dependencies
 #include "TinyGsmClientXBee.h"
-#undef TINY_GSM_MODEM_HAS_GPRS
+#undef TINY_GSM_MODEM_HAS_CELLULAR_DATA
 #include "DigiXBee.h"
 
 

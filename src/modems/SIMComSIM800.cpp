@@ -30,7 +30,7 @@ SIMComSIM800::SIMComSIM800(Stream* modemStream, int8_t powerPin,
 
 
 bool SIMComSIM800::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, "", "");
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 

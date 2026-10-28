@@ -29,7 +29,7 @@ SIMComSIM7000::SIMComSIM7000(Stream* modemStream, int8_t powerPin,
 
 
 bool SIMComSIM7000::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, "", "");
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 

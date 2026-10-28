@@ -79,7 +79,7 @@ const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
                                      // status (-1 if unconnected)
 
 // Network connection information
-const char* apn = "YourAPN";  // The APN for the gprs connection
+const char* apn = "YourAPN";  // The APN for cellular connection
 
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
                                       useCTSforStatus, modemResetPin,

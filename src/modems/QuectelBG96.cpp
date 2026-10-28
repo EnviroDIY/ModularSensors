@@ -28,7 +28,7 @@ QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
 
 
 bool QuectelBG96::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, "", "");
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 bool QuectelBG96::modemSleepFxn() {

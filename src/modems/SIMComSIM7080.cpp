@@ -31,7 +31,7 @@ SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
 
 
 bool SIMComSIM7080::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, "", "");
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 
@@ -52,10 +52,10 @@ bool SIMComSIM7080::extraModemSetup() {
     // Enable the netlight indicator
     gsmModem.sendAT(F("+CNETLIGHT=1"));
     gsmModem.waitResponse();
-    // Enable netlight indication of GPRS status
+    // Enable netlight indication of cellular data status
     // Enable, the netlight will be forced to enter into 64ms on/300ms off
-    // blinking state in GPRS data transmission service.  Otherwise, the
-    // netlight state is not restricted.
+    // blinking state in data transmission service.  Otherwise, the netlight
+    // state is not restricted.
     gsmModem.sendAT(F("+CNETLIGHT=1"));
     gsmModem.waitResponse();
 

@@ -29,7 +29,7 @@ SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream, int8_t powerPin,
 
 
 bool SodaqUBeeU201::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, "", "");
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 

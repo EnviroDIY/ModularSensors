@@ -100,9 +100,10 @@ class loggerModemCommMixin {
     virtual bool connectInternetImpl(uint32_t maxConnectionTime = 50000L) {
         bool success = derived().prepareForInternet();
         if (!success) return false;
-        success &= connectInternetImpl(
-            maxConnectionTime,
-            typename TinyGsmCapabilities::has_gprs<GsmModemType>::type());
+        success &=
+            connectInternetImpl(maxConnectionTime,
+                                typename TinyGsmCapabilities::has_cellular_data<
+                                    GsmModemType>::type());
         // After connecting to the internet, instruct the module to sync with
         // NTP. For some modules, this causes an immediate sync, so this needs
         // to be done after the internet connection is established. For other
@@ -159,16 +160,14 @@ class loggerModemCommMixin {
      * (GPRS, EPS, etc) connectivity.
      *
      * Wait for the modem to successfully register on the cellular
-     * network and then request that it establish either EPS or GPRS data
-     * connection.
+     * network and then request that it establish either a data connection.
      *
      * @param maxConnectionTime The maximum length of time in milliseconds to
      * wait for network registration and data connection.  Defaults to 50,000ms
      * (50s).
-     * @return True if EPS or GPRS data connection has been
+     * @return True if a data connection has been
      * established.  False if the modem was unresponsive, unable to register
-     * with the cellular network, or unable to establish a EPS or GPRS
-     * connection.
+     * with the cellular network, or unable to establish a data connection.
      */
     bool connectInternetImpl(uint32_t maxConnectionTime,
                              TinyGsmCapabilities::true_type) {
@@ -177,16 +176,16 @@ class loggerModemCommMixin {
                F("seconds for cellular network registration..."));
         if (derived().gsmModem.waitForNetwork(maxConnectionTime)) {
             MS_DBG(F("... Registered after"), MS_PRINT_DEBUG_TIMER,
-                   F("milliseconds.  Connecting to GPRS..."));
+                   F("milliseconds.  Connecting to the cellular network..."));
             if (!derived().connectWithCredentials()) {
-                MS_DBG(F("...GPRS attach failed."));
+                MS_DBG(F("...cellular data attach failed."));
                 return false;
             }
             MS_DBG(F("... Connected after"), MS_PRINT_DEBUG_TIMER,
                    F("milliseconds."));
             return true;
         } else {
-            MS_DBG(F("...GPRS connection failed."));
+            MS_DBG(F("...cellular registration failed."));
             return false;
         }
     }
@@ -236,7 +235,7 @@ class loggerModemCommMixin {
      * @brief Default connection with credentials - override in derived class.
      *
      * This should be overridden in derived classes to implement modem-specific
-     * credential handling (e.g., GPRS APN, WiFi SSID/password).
+     * credential handling (e.g., cellular APN, WiFi SSID/password).
      *
      * @return True if the connection command was successful, false otherwise.
      * True does not necessarily mean that the connection was established, only
@@ -245,7 +244,7 @@ class loggerModemCommMixin {
     virtual bool connectWithCredentials() = 0;
     // Default: return true
     // Derived classes with _apn member should override to call:
-    // return gsmModem.gprsConnect(_apn, "", "");
+    // return gsmModem.dataConnect(_apn, "", "");
     // Derived classes with _ssid and _password members should override to
     // call: return gsmModem.networkConnect(_ssid, _password);
 
@@ -264,8 +263,8 @@ class loggerModemCommMixin {
     /// @copydoc loggerModem::disconnectInternet()
     virtual void disconnectInternetImpl() {
         MS_START_DEBUG_TIMER;
-        disconnectInternetImpl(
-            typename TinyGsmCapabilities::has_gprs<GsmModemType>::type());
+        disconnectInternetImpl(typename TinyGsmCapabilities::has_cellular_data<
+                               GsmModemType>::type());
         MS_DBG(F("Disconnected from internet after"), MS_PRINT_DEBUG_TIMER,
                F("milliseconds."));
     }
@@ -273,11 +272,11 @@ class loggerModemCommMixin {
     /**
      * @brief The disconnect function for modems with cellular connectivity.
      *
-     * Detach from EPS or GPRS data connection and then deregister from the
-     * cellular network.
+     * Detach from data connection and then deregister from the cellular
+     * network.
      */
     void disconnectInternetImpl(TinyGsmCapabilities::true_type) {
-        derived().gsmModem.gprsDisconnect();
+        derived().gsmModem.dataDisconnect();
     }
 
     /**
@@ -291,7 +290,8 @@ class loggerModemCommMixin {
     /// @copydoc loggerModem::isInternetAvailable()
     virtual bool isInternetAvailableImpl() {
         return isInternetAvailableImpl(
-            typename TinyGsmCapabilities::has_gprs<GsmModemType>::type());
+            typename TinyGsmCapabilities::has_cellular_data<
+                GsmModemType>::type());
     }
 
     /**
@@ -301,7 +301,7 @@ class loggerModemCommMixin {
      * otherwise
      */
     bool isInternetAvailableImpl(TinyGsmCapabilities::true_type) {
-        return derived().gsmModem.isGprsConnected();
+        return derived().gsmModem.isDataConnected();
     }
 
     /**

@@ -39,7 +39,7 @@ SodaqUBeeR410M::SodaqUBeeR410M(
 
 
 bool SodaqUBeeR410M::connectWithCredentials() {
-    return gsmModem.gprsConnect(_apn, "", "");
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 // Create the wake and sleep methods for the modem

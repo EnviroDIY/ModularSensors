@@ -461,7 +461,7 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
@@ -499,7 +499,7 @@ const int8_t modemLEDPin = redLED;     // MCU pin connected an LED to show modem
                                        // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 DigiXBeeLTEBypass modemXBLTEB(&modemSerial, modemVccPin, modemStatusPin,
@@ -537,7 +537,7 @@ const int8_t modemLEDPin = redLED;     // MCU pin connected an LED to show modem
                                        // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 DigiXBee3GBypass modemXB3GB(&modemSerial, modemVccPin, modemStatusPin,
@@ -680,7 +680,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 QuectelBG96 modemBG96(&modemSerial, modemVccPin, modemStatusPin, modemResetPin,
@@ -716,7 +716,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 SequansMonarch modemSVZM(&modemSerial, modemVccPin, modemStatusPin,
@@ -749,7 +749,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 SIMComSIM800 modemS800(&modemSerial, modemVccPin, modemStatusPin, modemResetPin,
@@ -780,7 +780,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 SIMComSIM7000 modem7000(&modemSerial, modemVccPin, modemStatusPin,
@@ -811,7 +811,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
@@ -844,7 +844,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
@@ -882,7 +882,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 SodaqUBeeR410M modemR410(&modemSerial, modemVccPin, modemStatusPin,
@@ -915,7 +915,7 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create the modem object
 SodaqUBeeU201 modemU201(&modemSerial, modemVccPin, modemStatusPin,
