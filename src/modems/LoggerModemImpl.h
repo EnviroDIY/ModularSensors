@@ -248,42 +248,8 @@ class loggerModemImpl
     Client* createSecureClient(uint8_t mux = 0) override {
         return this->createSecureClientImpl(mux);
     }
-    Client* createSecureClient(uint8_t mux, SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override {
-        return this->createSecureClientImpl(mux, sslAuthMode, sslVersion,
-                                            CAcertName, clientCertName,
-                                            clientKeyName);
-    }
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override {
-        return this->createSecureClientImpl(sslAuthMode, sslVersion, CAcertName,
-                                            clientCertName, clientKeyName);
-    }
-    Client* createSecureClient(
-        uint8_t mux, const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override {
-        return this->createSecureClientImpl(mux, pskIdent, psKey, sslVersion);
-    }
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override {
-        return this->createSecureClientImpl(pskIdent, psKey, sslVersion);
-    }
-    Client* createSecureClient(
-        uint8_t mux, const char* pskTableName,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override {
-        return this->createSecureClientImpl(mux, pskTableName, sslVersion);
-    }
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override {
-        return this->createSecureClientImpl(pskTableName, sslVersion);
+    Client* createSecureClient(uint8_t mux, uint8_t sslCtxIndex) override {
+        return this->createSecureClientImpl(mux, sslCtxIndex);
     }
 
     void deleteSecureClient(Client* client) override {

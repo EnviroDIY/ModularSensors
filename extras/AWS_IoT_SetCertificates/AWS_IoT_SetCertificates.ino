@@ -167,8 +167,12 @@ TinyGsm        modem(debugger);
 TinyGsm modem(SerialAT);
 #endif
 
+// create a secure context (a grouping of certificates and settings)
+TinyGsmSecureContext secureContext(modem, (uint8_t)0);
+// create a secure client
 TinyGsmClientSecure secureClient(modem, (uint8_t)0);
-PubSubClient        mqtt(secureClient);
+// create an MQTT client using the secure client
+PubSubClient mqtt(secureClient);
 
 #define LED_PIN 13
 int ledStatus = LOW;
@@ -316,17 +320,19 @@ bool setupCertificates() {
 
     // ================= SET CERTIFICATES FOR THE CONNECTION =================
     // AWS IoT Core requires mutual authentication
-    DBG("Requiring mutual authentication on socket");
-    secureClient.setSSLAuthMode(SSLAuthMode::MUTUAL_AUTHENTICATION);
-    DBG("Requesting TLS 1.3 on socket");
-    secureClient.setSSLVersion(SSLVersion::TLS1_3);
+    DBG("Configuring SSL context to use  mutual authentication");
+    secureContext.setSSLAuthMode(SSLAuthMode::MUTUAL_AUTHENTICATION);
+    DBG("Configuring SSL context to use TLS 1.3");
+    secureContext.setSSLVersion(SSLVersion::TLS1_3);
     // attach the uploaded certificates to the secure client
-    DBG("Assigning", root_ca_name, "as certificate authority on socket");
-    secureClient.setCACertName(root_ca_name);
-    DBG("Assigning", client_cert_name, "as client certificate on socket");
-    secureClient.setClientCertName(client_cert_name);
-    DBG("Assigning", client_key_name, "as client key on socket");
-    secureClient.setPrivateKeyName(client_key_name);
+    DBG("Assigning", root_ca_name,
+        "as certificate authority for the SSL context");
+    secureContext.setCACertName(root_ca_name);
+    DBG("Assigning", client_cert_name, "and", client_key_name,
+        "as client credentials for the SSL context");
+    secureContext.setClientCredentials(client_cert_name, client_key_name);
+    DBG("Assigning the SSL context to the secure client");
+    secureClient.setSSLContextIndex(0);
 
     return ca_cert_success & client_cert_success;
 #else

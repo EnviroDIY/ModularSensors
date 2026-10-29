@@ -585,101 +585,16 @@ class loggerModem {
     virtual Client* createSecureClient(uint8_t mux = 0) = 0;
 
     /**
-     * @brief Create a new secure client object with certificate specification
-     * and a multiplexing channel.
+     * @brief Create a new secure client object with a multiplexing channel and
+     * a security context index.
      * @warning Be sure to delete this object when you're done with it!
      *
      * @param mux Multiplexing channel to use
-     * @param sslAuthMode The SSL authentication mode to use
-     * @param sslVersion The SSL version to use
-     * @param CAcertName The name of the CA certificate to use
-     * @param clientCertName The name of the client certificate to use
-     * @param clientKeyName The name of the client key to use
+     * @param sslCtxIndex The security context index to use
      *
      * @return A new secure client object
      */
-    virtual Client* createSecureClient(
-        uint8_t mux, SSLAuthMode sslAuthMode,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) = 0;
-    /**
-     * @brief Create a new secure client object with certificate specification
-     * and default multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param sslAuthMode The SSL authentication mode to use
-     * @param sslVersion The SSL version to use
-     * @param CAcertName The name of the CA certificate to use
-     * @param clientCertName The name of the client certificate to use
-     * @param clientKeyName The name of the client key to use
-     *
-     * @return A new secure client object
-     */
-    virtual Client* createSecureClient(
-        SSLAuthMode sslAuthMode, SSLVersion sslVersion = SSLVersion::TLS1_2,
-        const char* CAcertName = nullptr, const char* clientCertName = nullptr,
-        const char* clientKeyName = nullptr) = 0;
-
-    /**
-     * @brief Create a new secure client object with PSK credentials and a
-     * multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param mux Multiplexing channel to use
-     * @param pskIdent The pre-shared key identity
-     * @param psKey The pre-shared key
-     * @param sslVersion The SSL version to use
-     *
-     * @return A new secure client object
-     */
-    virtual Client* createSecureClient(
-        uint8_t mux, const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
-    /**
-     * @brief Create a new secure client object with PSK credentials and default
-     * multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param pskIdent The pre-shared key identity
-     * @param psKey The pre-shared key
-     * @param sslVersion The SSL version to use
-     *
-     * @return A new secure client object
-     */
-    virtual Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
-
-    /**
-     * @brief Create a new secure client object with PSK table name and a
-     * multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param mux The multiplexing channel to use
-     * @param pskTableName The pre-shared key table name - for modems that
-     * require PSK's in a "table" format
-     * @param sslVersion The SSL version to use
-     *
-     * @return A new secure client object
-     */
-    virtual Client* createSecureClient(
-        uint8_t mux, const char* pskTableName,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) = 0;
-    /**
-     * @brief Create a new secure client object with PSK table name and default
-     * multiplexing channel.
-     * @warning Be sure to delete this object when you're done with it!
-     *
-     * @param pskTableName The pre-shared key table name - for modems that
-     * require PSK's in a "table" format
-     * @param sslVersion The SSL version to use
-     *
-     * @return A new secure client object
-     */
-    virtual Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) = 0;
+    virtual Client* createSecureClient(uint8_t mux, uint8_t sslCtxIndex) = 0;
 
     /**
      * @brief Attempts to delete a created TinyGsmSecureClient object. We need

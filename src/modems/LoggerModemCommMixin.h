@@ -367,205 +367,26 @@ class loggerModemCommMixin {
         return nullptr;
     }
 
-    /// @copydoc loggerModem::createSecureClient(uint8_t, SSLAuthMode,
-    /// SSLVersion, const char*, const char*, const char*)
-    Client* createSecureClientImpl(uint8_t mux, SSLAuthMode sslAuthMode,
-                                   SSLVersion  sslVersion = SSLVersion::TLS1_2,
-                                   const char* CAcertName = nullptr,
-                                   const char* clientCertName = nullptr,
-                                   const char* clientKeyName  = nullptr) {
+    /// @copydoc loggerModem::createSecureClient(uint8_t, uint8_t)
+    Client* createSecureClientImpl(uint8_t mux, uint8_t sslCtxIndex) {
         return createSecureClientImpl(
-            mux, sslAuthMode, sslVersion, CAcertName, clientCertName,
-            clientKeyName,
-            typename TinyGsmCapabilities::can_specify_certs<
-                GsmModemType>::type());
+            mux, sslCtxIndex,
+            typename TinyGsmCapabilities::has_ssl<GsmModemType>::type());
     }
- protected:
     /**
-     * @brief The create secure client function for modems with SSL capabilities
-     * that can specify certificates
-     * @copydetails loggerModem::createSecureClient(uint8_t, SSLAuthMode,
-     * SSLVersion, const char*, const char*, const char*)
+     * @brief The create secure client function for modems that support SSL
+     * @copydetails loggerModem::createSecureClient(uint8_t, uint8_t)
      */
-    Client* createSecureClientImpl(uint8_t mux, SSLAuthMode sslAuthMode,
-                                   SSLVersion  sslVersion,
-                                   const char* CAcertName,
-                                   const char* clientCertName,
-                                   const char* clientKeyName,
+    Client* createSecureClientImpl(uint8_t mux, uint8_t sslCtxIndex,
                                    TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived().gsmModem, mux, sslAuthMode,
-                                    sslVersion, CAcertName, clientCertName,
-                                    clientKeyName);
+        return new SecureClientType(derived().gsmModem, mux, sslCtxIndex);
     }
     /**
      * @brief The create secure client function for modems that do not support
-     * SSL with certificate specification
+     * SSL
      * @return A null pointer
      */
-    Client* createSecureClientImpl(uint8_t, SSLAuthMode, SSLVersion,
-                                   const char*, const char*, const char*,
-                                   TinyGsmCapabilities::false_type) {
-        return nullptr;
-    }
-
-    /// @copydoc loggerModem::createSecureClient(SSLAuthMode, SSLVersion,
-    /// const char*, const char*, const char*)
-    Client* createSecureClientImpl(SSLAuthMode sslAuthMode,
-                                   SSLVersion  sslVersion = SSLVersion::TLS1_2,
-                                   const char* CAcertName = nullptr,
-                                   const char* clientCertName = nullptr,
-                                   const char* clientKeyName  = nullptr) {
-        return createSecureClientImpl(
-            sslAuthMode, sslVersion, CAcertName, clientCertName, clientKeyName,
-            typename TinyGsmCapabilities::can_specify_certs<
-                GsmModemType>::type());
-    }
-    /**
-     * @brief The create secure client function for modems with SSL capabilities
-     * that can specify certificates
-     * @copydetails loggerModem::createSecureClient(SSLAuthMode, SSLVersion,
-     * const char*, const char*, const char*)
-     */
-    Client* createSecureClientImpl(SSLAuthMode sslAuthMode,
-                                   SSLVersion  sslVersion,
-                                   const char* CAcertName,
-                                   const char* clientCertName,
-                                   const char* clientKeyName,
-                                   TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived().gsmModem, sslAuthMode, sslVersion,
-                                    CAcertName, clientCertName, clientKeyName);
-    }
-    /**
-     * @brief The create secure client function for modems that do not support
-     * SSL with certificate specification
-     * @return A null pointer
-     */
-    Client* createSecureClientImpl(SSLAuthMode, SSLVersion, const char*,
-                                   const char*, const char*,
-                                   TinyGsmCapabilities::false_type) {
-        return nullptr;
-    }
-
-    /// @copydoc loggerModem::createSecureClient(uint8_t, const char*,
-    /// const char*, SSLVersion)
-    Client* createSecureClientImpl(uint8_t mux, const char* pskIdent,
-                                   const char* psKey,
-                                   SSLVersion sslVersion = SSLVersion::TLS1_2) {
-        return createSecureClientImpl(
-            mux, pskIdent, psKey, sslVersion,
-            typename TinyGsmCapabilities::can_specify_certs<
-                GsmModemType>::type());
-    }
-    /**
-     * @brief The create secure client function for modems with SSL capabilities
-     * that support certificates specification
-     * @copydetails loggerModem::createSecureClient(uint8_t, const char*,
-     * const char*, SSLVersion)
-     */
-    Client* createSecureClientImpl(uint8_t mux, const char* pskIdent,
-                                   const char* psKey, SSLVersion sslVersion,
-                                   TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived().gsmModem, mux, pskIdent, psKey,
-                                    sslVersion);
-    }
-    /**
-     * @brief The create secure client function for modems that do not support
-     * SSL certificates specification
-     * @return A null pointer
-     */
-    Client* createSecureClientImpl(uint8_t, const char*, const char*,
-                                   SSLVersion,
-                                   TinyGsmCapabilities::false_type) {
-        return nullptr;
-    }
-
-    /// @copydoc loggerModem::createSecureClient(const char*, const char*,
-    /// SSLVersion)
-    Client* createSecureClientImpl(const char* pskIdent, const char* psKey,
-                                   SSLVersion sslVersion = SSLVersion::TLS1_2) {
-        return createSecureClientImpl(
-            pskIdent, psKey, sslVersion,
-            typename TinyGsmCapabilities::can_specify_certs<
-                GsmModemType>::type());
-    }
-    /**
-     * @brief The create secure client function for modems with SSL capabilities
-     * that support certificates specification
-     * @copydetails loggerModem::createSecureClient(const char*, const char*,
-     * SSLVersion)
-     */
-    Client* createSecureClientImpl(const char* pskIdent, const char* psKey,
-                                   SSLVersion sslVersion,
-                                   TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived().gsmModem, pskIdent, psKey,
-                                    sslVersion);
-    }
-    /**
-     * @brief The create secure client function for modems that do not support
-     * SSL certificates specification
-     * @return A null pointer
-     */
-    Client* createSecureClientImpl(const char*, const char*, SSLVersion,
-                                   TinyGsmCapabilities::false_type) {
-        return nullptr;
-    }
-
-    /// @copydoc loggerModem::createSecureClient(uint8_t, const char*,
-    /// SSLVersion)
-    Client* createSecureClientImpl(uint8_t mux, const char* pskTableName,
-                                   SSLVersion sslVersion = SSLVersion::TLS1_2) {
-        return createSecureClientImpl(
-            mux, pskTableName, sslVersion,
-            typename TinyGsmCapabilities::can_specify_certs<
-                GsmModemType>::type());
-    }
-    /**
-     * @brief The create secure client function for modems with SSL capabilities
-     * that can specify certificates
-     * @copydetails loggerModem::createSecureClient(uint8_t, const char*,
-     * SSLVersion)
-     */
-    Client* createSecureClientImpl(uint8_t mux, const char* pskTableName,
-                                   SSLVersion sslVersion,
-                                   TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived().gsmModem, mux, pskTableName,
-                                    sslVersion);
-    }
-    /**
-     * @brief The create secure client function for modems that do not support
-     * SSL with certificate specification
-     * @return A null pointer
-     */
-    Client* createSecureClientImpl(uint8_t, const char*, SSLVersion,
-                                   TinyGsmCapabilities::false_type) {
-        return nullptr;
-    }
-
-    /// @copydoc loggerModem::createSecureClient(const char*, SSLVersion)
-    Client* createSecureClientImpl(const char* pskTableName,
-                                   SSLVersion sslVersion = SSLVersion::TLS1_2) {
-        return createSecureClientImpl(
-            pskTableName, sslVersion,
-            typename TinyGsmCapabilities::can_specify_certs<
-                GsmModemType>::type());
-    }
-    /**
-     * @brief The create secure client function for modems with SSL capabilities
-     * that can specify certificates
-     * @copydetails loggerModem::createSecureClient(const char*, SSLVersion)
-     */
-    Client* createSecureClientImpl(const char* pskTableName,
-                                   SSLVersion  sslVersion,
-                                   TinyGsmCapabilities::true_type) {
-        return new SecureClientType(derived().gsmModem, pskTableName,
-                                    sslVersion);
-    }
-    /**
-     * @brief The create secure client function for modems that do not support
-     * SSL with certificate specification
-     * @return A null pointer
-     */
-    Client* createSecureClientImpl(const char*, SSLVersion,
+    Client* createSecureClientImpl(uint8_t, uint8_t,
                                    TinyGsmCapabilities::false_type) {
         return nullptr;
     }
