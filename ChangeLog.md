@@ -146,6 +146,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 #### Library-Wide
 
+- **BREAKING** Extracted time handling code into a new separate EpochTime library.
+  - The `epochStart` enum and `epochTime` class have been moved from `ClockSupport.h` to the standalone `EpochTime` library.
+  - Time formatting and validation utilities previously in `loggerClock` are now available in the new `TimeUtils` static class.
+  - The `loggerClock` class now focuses exclusively on RTC-specific operations.
+  - Code using `epochTime` or `epochStart` must now explicitly include `<EpochTime.h>`.
+  - Functions moved to `TimeUtils`: `formatISO8601()`, `formatDateTime()`, `isTimeSane()`, `convertEpoch()`, `getCoreEpochStart()`, `getCoreTimeZone()`.
 - Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
 - Applied many suggestions from CodeRabbit AI.
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
