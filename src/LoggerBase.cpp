@@ -676,7 +676,7 @@ void Logger::markTime() {
 bool Logger::checkInterval() {
     bool     retval;
     uint32_t checkTime = static_cast<uint32_t>(getNowLocalEpoch());
-    int16_t  interval  = _loggingIntervalMinutes;
+    int32_t  interval  = _loggingIntervalMinutes;
     if (_startupMeasurements > 0) {
         // log the first few samples at an interval of 1 minute so that
         // operation can be quickly verified in the field
@@ -730,7 +730,7 @@ bool Logger::checkInterval() {
 
 // This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval() {
-    int16_t interval = _loggingIntervalMinutes;
+    int32_t interval = _loggingIntervalMinutes;
     // If we're within the range of our startup measurements, we're logging,
     // then set the interval to 1.
     if (_startupMeasurements > 0) { interval = 1; }

@@ -315,15 +315,15 @@ class loggerClock {
      * @brief Convert a timestamp from the RTC's internal epoch and UTC offset
      * to the requested offset and epoch.
      *
-     * @param ts The timestamp in the epoch and timezone used internally by the
-     * RTC.
+     * @param rtc_ts The timestamp in the epoch and timezone used internally
+     * by the RTC.
      * @param utcOffset The offset of the desired output epoch time from UTC in
      * hours.
      * @param epoch The type of epoch of the output timestamp
      * @return A timestamp converted from the epoch and timezone used internally
      * by the RTC to the requested epoch and offset
      */
-    static inline time_t tsFromRawRTC(time_t ts, int8_t utcOffset,
+    static inline time_t tsFromRawRTC(time_t rtc_ts, int8_t utcOffset,
                                       epochStart epoch);
 
     /**
