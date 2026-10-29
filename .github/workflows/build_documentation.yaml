@@ -24,9 +24,7 @@ on:
                 default: false
 
 permissions:
-    id-token: write
     contents: read
-    pages: write
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,6 +32,10 @@ concurrency:
 
 jobs:
     check_menu_inclusion:
+        permissions:
+            id-token: write
+            contents: write
+            pages: write
         runs-on: ubuntu-latest
         if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
         name: Check that all classes are documented in the menu-a-la-carte example

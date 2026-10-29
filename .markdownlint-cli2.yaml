@@ -24,3 +24,10 @@ config:
       - a
       - br
       - sup
+
+  # MD060 - Table style
+  #
+  # Doxygen generates tables that may not conform to the default markdownlint
+  # table style rules. Use the compact style to reduce unnecessary spacing.
+  MD060:
+    style: aligned

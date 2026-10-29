@@ -399,7 +399,7 @@ MARKDOWN_STRICT        = YES
 # Minimum value: 0, maximum value: 99, default value: 6.
 # This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
 
-TOC_INCLUDE_HEADINGS   = 10
+TOC_INCLUDE_HEADINGS   = 6
 
 # The MARKDOWN_ID_STYLE tag can be used to specify the algorithm used to
 # generate identifiers for the Markdown headings. Note: Every identifier is
@@ -773,7 +773,7 @@ SORT_GROUP_NAMES       = NO
 # list.
 # The default value is: NO.
 
-SORT_BY_SCOPE_NAME     = YES
+SORT_BY_SCOPE_NAME     = NO
 
 # If the STRICT_PROTO_MATCHING option is enabled and Doxygen fails to do proper
 # type resolution of all parameters of a function it will reject a match between
@@ -1031,7 +1031,7 @@ WARN_LINE_FORMAT       = "at line $line of file $file"
 # specified the warning and error messages are written to standard output
 # (stdout).
 
-WARN_LOGFILE           = logs/output_doxygen.log
+WARN_LOGFILE           = output_doxygen.log
 
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
@@ -1118,13 +1118,19 @@ RECURSIVE              = YES
 
 EXCLUDE                = ../src/ReadMe.md \
                          ../ex_one_offs \
-                         ../tests \
-                         ../sensor_tests \
+                         ../AGENTS.md \
+                         ../.github \
+                         ../.pio \
+                         ../.vscode \
+                         ../keywords.txt \
                          ../src/sensors/table.md \
+                         ../sensor_tests \
+                         ../tests \
                          ../lib \
                          ../boards \
                          ../variants \
                          ../archive \
+                         ../planning \
                          ../continuous_integration_artifacts
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
