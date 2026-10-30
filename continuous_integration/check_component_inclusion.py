@@ -15,6 +15,7 @@ publisherHeaderFiles = glob.glob(os.path.join(script_dir, "../src/publishers/*.h
 header_files = modemHeaderFiles + sensorHeaderFiles + publisherHeaderFiles
 # print(header_files)
 
+
 # %% function to find the lowest level class
 def find_subclasses(class_name):
     subclass_pattern = r"class[\s\n]+(\w+)[\s\n]+:[\s\n]+public[\s\n]+" + re.escape(
@@ -69,6 +70,8 @@ def camel_to_snake(name, lower_case=True):
 class_pattern = re.compile(r"^\s*class[\s\n]+(\w+)[\s\n]", re.MULTILINE)
 
 for header_file in header_files:
+    if header_file.endswith("Mixin.h") or header_file.endswith("Impl.h"):
+        continue
     textfile = open(header_file, mode="r", encoding="utf-8")
     filetext = textfile.read()
     textfile.close()
@@ -123,7 +126,10 @@ var_sub_classes = find_subclasses("Variable")
 var_sub_classes.sort()
 for var_sub_class in var_sub_classes:
     must_doc_classes.append(
-        {"super_class": "Variable", "class_name": var_sub_class,}
+        {
+            "super_class": "Variable",
+            "class_name": var_sub_class,
+        }
     )
 
 publisher_sub_classes = find_subclasses("dataPublisher")

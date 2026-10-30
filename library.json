@@ -66,7 +66,7 @@
       "name": "EpochTime",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/EpochTime",
-      "version": "~1.0.0",
+      "version": "~1.1.1",
       "note": "An Arduino library for converting between time in parts as used by core gmtime functions and epoch time (Unix time).",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
@@ -274,7 +274,7 @@
       "name": "SDI-12",
       "owner": "envirodiy",
       "library id": "1486",
-      "version": "~2.3.2",
+      "version": "~2.5.0",
       "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "author_notes": [
@@ -364,7 +364,7 @@
       "name": "fast_math",
       "owner": "robtillaart",
       "url": "https://github.com/RobTillaart/fast_math",
-      "version": "~0.2.5",
+      "version": "~0.2.6",
       "note": "Arduino library for fast math algorithms.",
       "authors": ["Rob Tillaart"],
       "frameworks": "*",

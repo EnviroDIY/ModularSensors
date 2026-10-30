@@ -328,9 +328,9 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
 #if defined(ARDUINO_AVR_ENVIRODIY_MAYFLY)
-const int32_t serialBaud    = 115200;  // Baud rate for debugging
-const int8_t  greenLED      = 8;       // Pin for the green LED
-const int8_t  redLED        = 9;       // Pin for the red LED
+const int32_t serialBaud    = 115200L;  // Baud rate for debugging
+const int8_t  greenLED      = 8;        // Pin for the green LED
+const int8_t  redLED        = 9;        // Pin for the red LED
 const int8_t  buttonPin     = 21;  // Pin for debugging mode (i.e., button pin)
 uint8_t       buttonPinMode = INPUT;  // mode for debugging pin
 // NOTE: On the Mayfly (and Stonefly), pin 21 is tied to a button that pulls the
@@ -378,7 +378,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 const int8_t relayPowerPin = 41;  // MCU pin controlling an optional power relay
 const int8_t sdi12DataPin  = 3;
 #else
-const int32_t serialBaud = 115200;  // Baud rate for debugging
+const int32_t serialBaud = 115200L;  // Baud rate for debugging
 #if defined(PIN_LED2)
 const int8_t greenLED = PIN_LED2;  // Pin for the green LED
 #else
@@ -448,7 +448,7 @@ const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
 // NOTE:  Use -1 for pins that do not apply
 // The pin numbers here are for a Digi XBee with a Mayfly 0.x and LTE adapter
 // For options https://github.com/EnviroDIY/LTEbee-Adapter/edit/master/README.md
-const int8_t modemVccPin = -1;     // MCU pin controlling modem power
+const int8_t modemVccPin    = -1;  // MCU pin controlling modem power
                                    // Option: modemVccPin = A5, if Mayfly SJ7 is
                                    // connected to the ASSOC pin
 const int8_t modemStatusPin = 19;  // MCU pin used to read modem status
@@ -595,7 +595,7 @@ DigiXBeeWifi modem = modemXBWF;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const int32_t modemBaud = 115200;  // Communication speed of the modem
+const int32_t modemBaud = 115200L;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
 // module should be programmed to a slower baud rate or set to auto-baud using
 // the AT+UART_CUR or AT+UART_DEF command.
@@ -664,7 +664,7 @@ EspressifESP32 modem = modemESP;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
-const int32_t modemBaud = 115200;  // Communication speed of the modem
+const int32_t modemBaud = 115200L;  // Communication speed of the modem
 // NOTE:  This baud rate too fast for an 8MHz board, like the Mayfly!  The
 // module should be programmed to a slower baud rate or set to auto-baud using
 // the AT+IPR=9600 command.
@@ -863,7 +863,7 @@ Sodaq2GBeeR6 modem = modem2GB;
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 const int32_t modemBaud =
-    115200;  // Default baud rate of the SARA R410M is 115200
+    115200L;  // Default baud rate of the SARA R410M is 115200
 // NOTE:  The SARA R410N DOES NOT save baud rate to non-volatile memory.  After
 // every power loss, the module will return to the default baud rate of 115200.
 // NOTE:  115200 is TOO FAST for an 8MHz Arduino.  This library attempts to
@@ -1011,8 +1011,8 @@ AlphasenseCO2 alphasenseCO2(asCO2Power, asCO2Channel1, asCO2Channel2,
                             asCO2Meas);
 
 // Create PAR and raw voltage variable pointers for the CO2
-Variable* asCO2        = new AlphasenseCO2_CO2(&alphasenseCO2,
-                                               "12345678-abcd-1234-ef00-1234567890ab");
+Variable* asCO2 = new AlphasenseCO2_CO2(&alphasenseCO2,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
 Variable* asco2voltage = new AlphasenseCO2_Voltage(
     &alphasenseCO2, "12345678-abcd-1234-ef00-1234567890ab");
 
@@ -1061,8 +1061,8 @@ Variable* anbPHValue = new ANBpH_pH(&anbPH,
                                     "12345678-abcd-1234-ef00-1234567890ab");
 Variable* anbPHTemp  = new ANBpH_Temp(&anbPH,
                                       "12345678-abcd-1234-ef00-1234567890ab");
-Variable* anbPHSal   = new ANBpH_Salinity(&anbPH,
-                                          "12345678-abcd-1234-ef00-1234567890ab");
+Variable* anbPHSal = new ANBpH_Salinity(&anbPH,
+                                        "12345678-abcd-1234-ef00-1234567890ab");
 Variable* anbPHSpCond =
     new ANBpH_SpCond(&anbPH, "12345678-abcd-1234-ef00-1234567890ab");
 Variable* anbPHEC = new ANBpH_EC(&anbPH,
@@ -3026,9 +3026,6 @@ Variable* y4000BGA =
 
 
 #if defined(BUILD_SENSOR_ZEBRA_TECH_D_OPTO)
-#ifndef BUILD_MODBUS_SENSOR
-#define BUILD_MODBUS_SENSOR
-#endif
 // ==========================================================================
 //  Zebra Tech D-Opto Dissolved Oxygen Sensor
 // ==========================================================================
@@ -3163,7 +3160,9 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // ==========================================================================
 
 
-#else
+#elif defined(BUILD_TEST_PRE_NAMED_VARS) ||  \
+    (!defined(BUILD_TEST_CREATE_IN_ARRAY) && \
+     !defined(BUILD_TEST_SEPARATE_UUIDS))
 //^^ BUILD_TEST_PRE_NAMED_VARS
 /** Start [variables_pre_named] */
 // Version 3: Fill array with already created and named variable pointers
@@ -3838,7 +3837,7 @@ void setup() {
 
 #if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
     // Start the stream for the camera; it will always be at 115200 baud
-    cameraSerial.begin(115200);
+    cameraSerial.begin(115200L);
 #endif
 /** End [setup_serial_begins] */
 
@@ -4102,6 +4101,7 @@ void setup() {
 //  Arduino Loop Function
 // ==========================================================================
 #ifndef BUILD_TEST_COMPLEX_LOOP
+// #if defined(BUILD_TEST_SIMPLE_LOOP)
 // Use this short loop for simple data logging and sending
 /** Start [simple_loop] */
 void loop() {
@@ -4141,6 +4141,7 @@ void loop() {
 /** End [simple_loop] */
 
 #else
+// #if defined(BUILD_TEST_COMPLEX_LOOP)
 /** Start [complex_loop] */
 // Use this long loop when you want to do something special
 // Because of the way alarms work on the RTC, it will wake the processor and
