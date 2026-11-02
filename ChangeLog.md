@@ -125,7 +125,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - *Renamed* the EnviroDIYPublisher to MonitorMyWatershedPublisher.
   This reflects changes to the website from years ago.
-  There is a shell file and typedef to maintain backwards compatibility.
+  There is a stub file and typedef to maintain backwards compatibility.
 
 #### All Publishers
 

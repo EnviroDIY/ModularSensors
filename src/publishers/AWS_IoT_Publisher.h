@@ -129,7 +129,9 @@ class AWS_IoT_Publisher : public dataPublisher {
                       const char* clientKeyName,
                       const char* samplingFeatureUUID);
     /**
-     * @brief Construct a new AWS IoT Core Publisher object
+     * @brief Construct a new AWS IoT Core Publisher object, allowing the
+     * publisher to create a new security context and client based on the
+     * provided certificate names and assigning a sampling feature UUID.
      *
      * @param baseLogger The logger supplying the data to be published
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
@@ -146,7 +148,9 @@ class AWS_IoT_Publisher : public dataPublisher {
                       const char* caCertName, const char* clientCertName,
                       const char* clientKeyName);
     /**
-     * @brief Construct a new AWS IoT Core Publisher object
+     * @brief Construct a new AWS IoT Core Publisher object, allowing the
+     * publisher to create a new security context and client based on the
+     * provided certificate names.
      *
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
@@ -164,15 +168,14 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param baseLogger The logger supplying the data to be published
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
+     * single TinyGSM modem instance.  The provided client must already be
+     * configured with the correct security context and connection parameters.
      */
     AWS_IoT_Publisher(Logger& baseLogger, Client* inClient);
     /**
-     * @brief Construct a new AWS IoT Core Publisher object
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
+     * @brief Construct a new AWS IoT Core Publisher object.  This cannot be
+     * used without setting up the AWS IoT connection parameters and client
+     * before use.
      *
      * @param baseLogger The logger supplying the data to be published
      */

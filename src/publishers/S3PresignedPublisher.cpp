@@ -105,7 +105,10 @@ Client* S3PresignedPublisher::createClient() {
                    "certificate name!"));
         return nullptr;
     }
-    MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number."));
+    MS_DBG(F("Creating a new Security Context"));
+
+    MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number "
+             "and default security context number."));
     MS_DBG(F("Using CA cert:"), _caCertName);
     Client* newClient = _baseModem->createSecureClient(
         SSLAuthMode::CA_VALIDATION, SSLVersion::TLS1_3, _caCertName);
