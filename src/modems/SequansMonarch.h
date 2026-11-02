@@ -189,8 +189,11 @@ class SequansMonarch
     : public loggerModemImpl<
           TinyGsmSequansMonarch,                           // Modem Type
           TinyGsmSequansMonarch::GsmClientSequansMonarch,  // TCP Client Type
-          TinyGsmSequansMonarch::GsmClientSecureSequansMonarch,  // SSL Client
-                                                                 // Type
+          TinyGsmSequansMonarch::GsmClientSecureSequansMonarch,   // Secure
+                                                                  // Client Type
+          TinyGsmSequansMonarch::GsmSecureContextSequansMonarch,  // Secure
+                                                                  // Context
+                                                                  // Type
           false  // signal quality is RSSI
           > {
  public:

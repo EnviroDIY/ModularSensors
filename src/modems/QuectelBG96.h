@@ -171,8 +171,10 @@
 class QuectelBG96
     : public loggerModemImpl<TinyGsmBG96,                 // Modem Type
                              TinyGsmBG96::GsmClientBG96,  // TCP Client Type
-                             TinyGsmBG96::GsmClientSecureBG96,  // SSL Client
+                             TinyGsmBG96::GsmClientSecureBG96,  // Secure Client
                                                                 // Type
+                             TinyGsmBG96::GsmSecureContextBG96,  // Secure
+                                                                 // Context Type
                              false  // signal quality is RSSI
                              > {
  public:

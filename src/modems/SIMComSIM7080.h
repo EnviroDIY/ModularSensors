@@ -151,13 +151,14 @@
  * @brief The loggerModem subclass for modules based on the [SIMCOM
  * SIM7080](@ref modem_sim7080).
  */
-class SIMComSIM7080 : public loggerModemImpl<
-                          TinyGsmSim7080,                    // Modem Type
-                          TinyGsmSim7080::GsmClientSim7080,  // TCP Client Type
-                          TinyGsmSim7080::GsmClientSecureSim7080,  // SSL Client
-                                                                   // Type
-                          false  // signal quality is RSSI
-                          > {
+class SIMComSIM7080
+    : public loggerModemImpl<
+          TinyGsmSim7080,                           // Modem Type
+          TinyGsmSim7080::GsmClientSim7080,         // TCP Client Type
+          TinyGsmSim7080::GsmClientSecureSim7080,   // Secure Client Type
+          TinyGsmSim7080::GsmSecureContextSim7080,  // Secure Context Type
+          false                                     // signal quality is RSSI
+          > {
  public:
     /**
      * @brief Construct a new SIMComSIM7080 object

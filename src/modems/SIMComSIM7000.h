@@ -158,10 +158,10 @@
  */
 class SIMComSIM7000
     : public loggerModemImpl<
-          TinyGsmSim7000SSL,                             // Modem Type
-          TinyGsmSim7000SSL::GsmClientSim7000SSL,        // TCP Client Type
-          TinyGsmSim7000SSL::GsmClientSecureSim7000SSL,  // SSL Client
-                                                         // Type
+          TinyGsmSim7000SSL,                              // Modem Type
+          TinyGsmSim7000SSL::GsmClientSim7000SSL,         // TCP Client Type
+          TinyGsmSim7000SSL::GsmClientSecureSim7000SSL,   // Secure Client Type
+          TinyGsmSim7000SSL::GsmSecureContextSim7000SSL,  // Secure Context Type
           false  // signal quality is RSSI
           > {
  public:

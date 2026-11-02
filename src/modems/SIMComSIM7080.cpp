@@ -15,17 +15,17 @@
 SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
                              int8_t statusPin, int8_t modemSleepRqPin,
                              const char* apn)
-    : loggerModemImpl<TinyGsmSim7080,                    // Modem Type
-                      TinyGsmSim7080::GsmClientSim7080,  // TCP Client Type
-                      TinyGsmSim7080::GsmClientSecureSim7080,  // SSL Client
-                                                               // Type
-                      false  // signal quality is RSSI
-                      >(modemStream, powerPin, statusPin, SIM7080_STATUS_LEVEL,
-                        modemSleepRqPin, SIM7080_RESET_LEVEL,
-                        SIM7080_RESET_PULSE_MS, modemSleepRqPin,
-                        SIM7080_WAKE_LEVEL, SIM7080_WAKE_PULSE_MS,
-                        SIM7080_STATUS_TIME_MS, SIM7080_DISCONNECT_TIME_MS,
-                        SIM7080_WAKE_DELAY_MS, SIM7080_AT_RESPONSE_TIME_MS),
+    : loggerModemImpl<
+          TinyGsmSim7080,                           // Modem Type
+          TinyGsmSim7080::GsmClientSim7080,         // TCP Client Type
+          TinyGsmSim7080::GsmClientSecureSim7080,   // Secure Client Type
+          TinyGsmSim7080::GsmSecureContextSim7080,  // Secure Context Type
+          false                                     // signal quality is RSSI
+          >(modemStream, powerPin, statusPin, SIM7080_STATUS_LEVEL,
+            modemSleepRqPin, SIM7080_RESET_LEVEL, SIM7080_RESET_PULSE_MS,
+            modemSleepRqPin, SIM7080_WAKE_LEVEL, SIM7080_WAKE_PULSE_MS,
+            SIM7080_STATUS_TIME_MS, SIM7080_DISCONNECT_TIME_MS,
+            SIM7080_WAKE_DELAY_MS, SIM7080_AT_RESPONSE_TIME_MS),
 
       _apn(apn) {}
 

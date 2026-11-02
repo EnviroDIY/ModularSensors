@@ -217,13 +217,13 @@
  * breakout of the u-blox R4 or N4 series modules.
  */
 class SodaqUBeeR410M
-    : public loggerModemImpl<TinyGsmSaraR4,                   // Modem Type
-                             TinyGsmSaraR4::GsmClientSaraR4,  // TCP Client Type
-                             TinyGsmSaraR4::GsmClientSecureSaraR4,  // SSL
-                                                                    // Client
-                                                                    // Type
-                             false  // signal quality is RSSI
-                             > {
+    : public loggerModemImpl<
+          TinyGsmSaraR4,                          // Modem Type
+          TinyGsmSaraR4::GsmClientSaraR4,         // TCP Client Type
+          TinyGsmSaraR4::GsmClientSecureSaraR4,   // Secure Client Type
+          TinyGsmSaraR4::GsmSecureContextSaraR4,  // Secure Context Type
+          false                                   // signal quality is RSSI
+          > {
  public:
     /**
      * @brief Construct a new Sodaq UBee R410M object

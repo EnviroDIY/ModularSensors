@@ -157,12 +157,13 @@
  * module.
  */
 class SodaqUBeeU201
-    : public loggerModemImpl<TinyGsmUBLOX,                  // Modem Type
-                             TinyGsmUBLOX::GsmClientUBLOX,  // TCP Client Type
-                             TinyGsmUBLOX::GsmClientSecureUBLOX,  // SSL Client
-                                                                  // Type
-                             false  // signal quality is RSSI
-                             > {
+    : public loggerModemImpl<
+          TinyGsmUBLOX,                         // Modem Type
+          TinyGsmUBLOX::GsmClientUBLOX,         // TCP Client Type
+          TinyGsmUBLOX::GsmClientSecureUBLOX,   // Secure Client Type
+          TinyGsmUBLOX::GsmSecureContextUBLOX,  // Secure Context Type
+          false                                 // signal quality is RSSI
+          > {
  public:
     /**
      * @brief Construct a new Sodaq UBee U201 object

@@ -83,30 +83,33 @@
  * (false)
  */
 template <typename GsmModemType_T, typename ClientType_T,
-          typename SecureClientType_T, bool signalQualityIsRSSI = false>
+          typename SecureClientType_T, typename SecureContextType_T,
+          bool signalQualityIsRSSI = false>
 class loggerModemImpl
     : public loggerModem,
       public loggerModemPowerMixin<
           loggerModemImpl<GsmModemType_T, ClientType_T, SecureClientType_T,
-                          signalQualityIsRSSI>>,
+                          SecureContextType_T, signalQualityIsRSSI>>,
       public loggerModemCommMixin<
           loggerModemImpl<GsmModemType_T, ClientType_T, SecureClientType_T,
-                          signalQualityIsRSSI>,
-          GsmModemType_T, ClientType_T, SecureClientType_T>,
+                          SecureContextType_T, signalQualityIsRSSI>,
+          GsmModemType_T, ClientType_T, SecureClientType_T,
+          SecureContextType_T>,
       public loggerModemSensingMixin<
           loggerModemImpl<GsmModemType_T, ClientType_T, SecureClientType_T,
-                          signalQualityIsRSSI>,
+                          SecureContextType_T, signalQualityIsRSSI>,
           GsmModemType_T> {
     // Friend declarations to allow mixins to access protected members
-    friend class loggerModemPowerMixin<loggerModemImpl<
-        GsmModemType_T, ClientType_T, SecureClientType_T, signalQualityIsRSSI>>;
+    friend class loggerModemPowerMixin<
+        loggerModemImpl<GsmModemType_T, ClientType_T, SecureClientType_T,
+                        SecureContextType_T, signalQualityIsRSSI>>;
     friend class loggerModemCommMixin<
         loggerModemImpl<GsmModemType_T, ClientType_T, SecureClientType_T,
-                        signalQualityIsRSSI>,
-        GsmModemType_T, ClientType_T, SecureClientType_T>;
+                        SecureContextType_T, signalQualityIsRSSI>,
+        GsmModemType_T, ClientType_T, SecureClientType_T, SecureContextType_T>;
     friend class loggerModemSensingMixin<
         loggerModemImpl<GsmModemType_T, ClientType_T, SecureClientType_T,
-                        signalQualityIsRSSI>,
+                        SecureContextType_T, signalQualityIsRSSI>,
         GsmModemType_T>;
 
  public:
@@ -117,6 +120,8 @@ class loggerModemImpl
     using ClientType = ClientType_T;
     /// The type of the TinyGSM secure client used by this loggerModemImpl
     using SecureClientType = SecureClientType_T;
+    /// The type of the TinyGSM secure context used by this loggerModemImpl
+    using SecureContextType = SecureContextType_T;
 
     // Use TinyGSM's integral_constant for tag dispatch pattern
     /// The type of the signal quality measurement used by this loggerModemImpl
@@ -167,8 +172,9 @@ class loggerModemImpl
               max_status_time_ms, max_disconnectTime_ms, wakeDelayTime_ms),
           loggerModemCommMixin<
               loggerModemImpl<GsmModemType_T, ClientType_T, SecureClientType_T,
-                              signalQualityIsRSSI>,
-              GsmModemType_T, ClientType_T, SecureClientType_T>(),
+                              SecureContextType_T, signalQualityIsRSSI>,
+              GsmModemType_T, ClientType_T, SecureClientType_T,
+              SecureContextType_T>(),
           gsmModem(*modemStream),
           _modemName(F("unspecified modem")),
           _max_at_response_time_ms(max_at_response_time_ms),
@@ -242,6 +248,52 @@ class loggerModemImpl
     }
     void deleteClient(Client* client) override {
         this->deleteClientImpl(client);
+    }
+
+    // Secure SSL/TLS client functions from loggerModemCommMixin
+    Client* createSecureContext(uint8_t mux = 0) override {
+        return this->createSecureContextImpl(mux);
+    }
+    Client* createSecureContext(uint8_t mux, SSLAuthMode sslAuthMode,
+                                SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                                const char* CAcertName     = nullptr,
+                                const char* clientCertName = nullptr,
+                                const char* clientKeyName  = nullptr) override {
+        return this->createSecureContextImpl(mux, sslAuthMode, sslVersion,
+                                             CAcertName, clientCertName,
+                                             clientKeyName);
+    }
+    Client* createSecureContext(SSLAuthMode sslAuthMode,
+                                SSLVersion  sslVersion     = SSLVersion::TLS1_2,
+                                const char* CAcertName     = nullptr,
+                                const char* clientCertName = nullptr,
+                                const char* clientKeyName  = nullptr) override {
+        return this->createSecureContextImpl(
+            sslAuthMode, sslVersion, CAcertName, clientCertName, clientKeyName);
+    }
+    Client* createSecureContext(
+        uint8_t mux, const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override {
+        return this->createSecureContextImpl(mux, pskIdent, psKey, sslVersion);
+    }
+    Client* createSecureContext(
+        const char* pskIdent, const char* psKey,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override {
+        return this->createSecureContextImpl(pskIdent, psKey, sslVersion);
+    }
+    Client* createSecureContext(
+        uint8_t mux, const char* pskTableName,
+        SSLVersion sslVersion = SSLVersion::TLS1_2) override {
+        return this->createSecureContextImpl(mux, pskTableName, sslVersion);
+    }
+    Client* createSecureContext(
+        const char* pskTableName,
+        SSLVersion  sslVersion = SSLVersion::TLS1_2) override {
+        return this->createSecureContextImpl(pskTableName, sslVersion);
+    }
+
+    void deleteSecureContext(Client* client) override {
+        this->deleteSecureContextImpl(client);
     }
 
     // Secure SSL/TLS client functions from loggerModemCommMixin

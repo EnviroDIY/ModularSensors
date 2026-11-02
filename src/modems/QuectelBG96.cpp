@@ -15,9 +15,10 @@
 QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
                          int8_t modemResetPin, int8_t modemSleepRqPin,
                          const char* apn)
-    : loggerModemImpl<TinyGsmBG96,                       // Modem Type
-                      TinyGsmBG96::GsmClientBG96,        // TCP Client Type
-                      TinyGsmBG96::GsmClientSecureBG96,  // SSL Client Type
+    : loggerModemImpl<TinyGsmBG96,                        // Modem Type
+                      TinyGsmBG96::GsmClientBG96,         // TCP Client Type
+                      TinyGsmBG96::GsmClientSecureBG96,   // Secure Client Type
+                      TinyGsmBG96::GsmSecureContextBG96,  // Secure Context Type
                       false  // signal quality is RSSI
                       >(modemStream, powerPin, statusPin, BG96_STATUS_LEVEL,
                         modemResetPin, BG96_RESET_LEVEL, BG96_RESET_PULSE_MS,

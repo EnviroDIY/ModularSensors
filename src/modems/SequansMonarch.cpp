@@ -18,8 +18,11 @@ SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
     : loggerModemImpl<
           TinyGsmSequansMonarch,                           // Modem Type
           TinyGsmSequansMonarch::GsmClientSequansMonarch,  // TCP Client Type
-          TinyGsmSequansMonarch::GsmClientSecureSequansMonarch,  // SSL Client
-                                                                 // Type
+          TinyGsmSequansMonarch::GsmClientSecureSequansMonarch,   // Secure
+                                                                  // Client Type
+          TinyGsmSequansMonarch::GsmSecureContextSequansMonarch,  // Secure
+                                                                  // Context
+                                                                  // Type
           false  // signal quality is RSSI
           >(modemStream, powerPin, statusPin, VZM20Q_STATUS_LEVEL,
             modemResetPin, VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS,

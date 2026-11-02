@@ -21,15 +21,17 @@ SodaqUBeeR410M::SodaqUBeeR410M(
 
     int8_t powerPin, int8_t statusPin, int8_t modemResetPin,
     int8_t modemSleepRqPin, const char* apn)
-    : loggerModemImpl<TinyGsmSaraR4,                         // Modem Type
-                      TinyGsmSaraR4::GsmClientSaraR4,        // TCP Client Type
-                      TinyGsmSaraR4::GsmClientSecureSaraR4,  // SSL Client Type
-                      false  // signal quality is RSSI
-                      >(modemStream, powerPin, statusPin, R410M_STATUS_LEVEL,
-                        modemResetPin, R410M_RESET_LEVEL, R410M_RESET_PULSE_MS,
-                        modemSleepRqPin, R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS,
-                        R410M_STATUS_TIME_MS, R410M_DISCONNECT_TIME_MS,
-                        R410M_WAKE_DELAY_MS, R410M_AT_RESPONSE_TIME_MS),
+    : loggerModemImpl<
+          TinyGsmSaraR4,                          // Modem Type
+          TinyGsmSaraR4::GsmClientSaraR4,         // TCP Client Type
+          TinyGsmSaraR4::GsmClientSecureSaraR4,   // Secure Client Type
+          TinyGsmSaraR4::GsmSecureContextSaraR4,  // Secure Context Type
+          false                                   // signal quality is RSSI
+          >(modemStream, powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
+            R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
+            R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
+            R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
+            R410M_AT_RESPONSE_TIME_MS),
       _apn(apn) {
 #if F_CPU == 8000000L
     // only store the pointer for 8MHz processors
