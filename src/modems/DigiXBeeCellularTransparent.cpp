@@ -17,12 +17,8 @@ DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
     Stream* modemStream, int8_t powerPin, int8_t statusPin, bool useCTSStatus,
     int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn,
     const char* user, const char* pwd)
-    : DigiXBee<TinyGsmXBee,                      // Modem Type
-               TinyGsmXBee::GsmClientXBee,       // TCP Client Type
-               TinyGsmXBee::GsmClientSecureXBee  // SSL Client
-                                                 // Type
-               >(modemStream, powerPin, statusPin, useCTSStatus, modemResetPin,
-                 modemSleepRqPin),
+    : DigiXBee<TinyGsmXBee>(modemStream, powerPin, statusPin, useCTSStatus,
+                            modemResetPin, modemSleepRqPin),
       _apn(apn),
       _user(user),
       _pwd(pwd) {}

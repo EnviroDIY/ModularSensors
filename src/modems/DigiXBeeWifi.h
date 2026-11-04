@@ -67,7 +67,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientXBee.h"
+#include <TinyGsmClientXBee.h>
 #undef TINY_GSM_MODEM_HAS_CELLULAR_DATA
 #include "DigiXBee.h"
 
@@ -93,12 +93,7 @@
  * [S6B wifi](@ref modem_digi_wifi) module operating in Digi's "transparent"
  * mode.
  */
-class DigiXBeeWifi
-    : public DigiXBee<TinyGsmXBee,                      // Modem Type
-                      TinyGsmXBee::GsmClientXBee,       // TCP Client Type
-                      TinyGsmXBee::GsmClientSecureXBee  // SSL Client
-                                                        // Type
-                      > {
+class DigiXBeeWifi : public DigiXBee<TinyGsmXBee> {
  public:
     /**
      * @brief Construct a new Digi XBee Wifi object
@@ -159,8 +154,7 @@ class DigiXBeeWifi
     // Do NOTHING for this - credentials set in flash memory during setup
     bool connectWithCredentials() override;
 
-    using DigiXBee<TinyGsmXBee, TinyGsmXBee::GsmClientXBee,
-                   TinyGsmXBee::GsmClientSecureXBee>::modemHardResetImpl;
+    using DigiXBee<TinyGsmXBee>::modemHardResetImpl;
 
  private:
 

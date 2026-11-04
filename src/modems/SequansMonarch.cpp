@@ -15,20 +15,12 @@
 SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
                                int8_t statusPin, int8_t modemResetPin,
                                int8_t modemSleepRqPin, const char* apn)
-    : loggerModemImpl<
-          TinyGsmSequansMonarch,                           // Modem Type
-          TinyGsmSequansMonarch::GsmClientSequansMonarch,  // TCP Client Type
-          TinyGsmSequansMonarch::GsmClientSecureSequansMonarch,   // Secure
-                                                                  // Client Type
-          TinyGsmSequansMonarch::GsmSecureContextSequansMonarch,  // Secure
-                                                                  // Context
-                                                                  // Type
-          false  // signal quality is RSSI
-          >(modemStream, powerPin, statusPin, VZM20Q_STATUS_LEVEL,
-            modemResetPin, VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS,
-            modemSleepRqPin, VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS,
-            VZM20Q_STATUS_TIME_MS, VZM20Q_DISCONNECT_TIME_MS,
-            VZM20Q_WAKE_DELAY_MS, VZM20Q_AT_RESPONSE_TIME_MS),
+    : loggerModemImpl<TinyGsmSequansMonarch, false>(
+          modemStream, powerPin, statusPin, VZM20Q_STATUS_LEVEL, modemResetPin,
+          VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS, modemSleepRqPin,
+          VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS, VZM20Q_STATUS_TIME_MS,
+          VZM20Q_DISCONNECT_TIME_MS, VZM20Q_WAKE_DELAY_MS,
+          VZM20Q_AT_RESPONSE_TIME_MS),
 
       _apn(apn) {}
 

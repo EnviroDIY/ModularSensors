@@ -86,7 +86,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientBG96.h"
+#include <TinyGsmClientBG96.h>
 #include "LoggerModemImpl.h"
 
 
@@ -168,15 +168,7 @@
  * @brief The loggerModem subclass for Dragino, Nimbelink, or any other module
  * based on the [Quectel BG96](@ref modem_bg96).
  */
-class QuectelBG96
-    : public loggerModemImpl<TinyGsmBG96,                 // Modem Type
-                             TinyGsmBG96::GsmClientBG96,  // TCP Client Type
-                             TinyGsmBG96::GsmClientSecureBG96,  // Secure Client
-                                                                // Type
-                             TinyGsmBG96::GsmSecureContextBG96,  // Secure
-                                                                 // Context Type
-                             false  // signal quality is RSSI
-                             > {
+class QuectelBG96 : public loggerModemImpl<TinyGsmBG96, false> {
  public:
     /**
      * @brief Construct a new Quectel BG96 object

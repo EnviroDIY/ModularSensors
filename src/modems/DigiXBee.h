@@ -196,13 +196,8 @@
  * @note The ZigBee, 900mHZ, and other radio-based XBee's are **not**
  * supported.
  */
-template <typename GsmModemType_T, typename ClientType_T,
-          typename SecureClientType_T>
-class DigiXBee : public loggerModemImpl<GsmModemType_T,      // Modem Type
-                                        ClientType_T,        // TCP Client Type
-                                        SecureClientType_T,  // SSL Client Type
-                                        true  // signal quality is RSSI
-                                        > {
+template <typename GsmModemType_T>
+class DigiXBee : public loggerModemImpl<GsmModemType_T, true> {
  public:
     /**
      * @brief Construct a new Digi XBee object
@@ -225,16 +220,12 @@ class DigiXBee : public loggerModemImpl<GsmModemType_T,      // Modem Type
      */
     DigiXBee(Stream* modemStream, int8_t powerPin, int8_t statusPin,
              bool useCTSStatus, int8_t modemResetPin, int8_t modemSleepRqPin)
-        : loggerModemImpl<GsmModemType_T,      // Modem Type
-                          ClientType_T,        // TCP Client Type
-                          SecureClientType_T,  // SSL Client Type
-                          true                 // signal quality is RSSI
-                          >(modemStream, powerPin, statusPin, !useCTSStatus,
-                            modemResetPin, XBEE_RESET_LEVEL,
-                            XBEE_RESET_PULSE_MS, modemSleepRqPin,
-                            XBEE_WAKE_LEVEL, XBEE_WAKE_PULSE_MS,
-                            XBEE_STATUS_TIME_MS, XBEE_DISCONNECT_TIME_MS,
-                            XBEE_WAKE_DELAY_MS, XBEE_AT_RESPONSE_TIME_MS) {}
+        : loggerModemImpl<GsmModemType_T, true>(
+              modemStream, powerPin, statusPin, !useCTSStatus, modemResetPin,
+              XBEE_RESET_LEVEL, XBEE_RESET_PULSE_MS, modemSleepRqPin,
+              XBEE_WAKE_LEVEL, XBEE_WAKE_PULSE_MS, XBEE_STATUS_TIME_MS,
+              XBEE_DISCONNECT_TIME_MS, XBEE_WAKE_DELAY_MS,
+              XBEE_AT_RESPONSE_TIME_MS) {}
     /**
      * @brief Destroy the Digi XBee object - no action taken
      */

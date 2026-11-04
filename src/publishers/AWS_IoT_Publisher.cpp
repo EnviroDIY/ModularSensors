@@ -28,15 +28,9 @@ const char* AWS_IoT_Publisher::timestampTag       = "\"timestamp\":\"";
 // Primary constructor - handles full initialization with all parameters
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
                                      const char* awsIoTEndpoint,
-                                     const char* caCertName,
-                                     const char* clientCertName,
-                                     const char* clientKeyName,
                                      const char* samplingFeatureUUID)
     : dataPublisher(baseLogger, inClient) {
     if (awsIoTEndpoint) setEndpoint(awsIoTEndpoint);
-    if (caCertName) setCACertName(caCertName);
-    if (clientCertName) setClientCertName(clientCertName);
-    if (clientKeyName) setClientKeyName(clientKeyName);
     if (samplingFeatureUUID && _baseLogger) {
         _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     }
@@ -47,30 +41,16 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
 // Delegating constructors
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
                                      const char* awsIoTEndpoint,
-                                     const char* caCertName,
-                                     const char* clientCertName,
-                                     const char* clientKeyName,
                                      const char* samplingFeatureUUID)
-    : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint, caCertName,
-                        clientCertName, clientKeyName, samplingFeatureUUID) {}
+    : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint,
+                        samplingFeatureUUID) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
-                                     const char* awsIoTEndpoint,
-                                     const char* caCertName,
-                                     const char* clientCertName,
-                                     const char* clientKeyName)
-    : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint, caCertName,
-                        clientCertName, clientKeyName, nullptr) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
-                                     const char* awsIoTEndpoint,
-                                     const char* samplingFeatureUUID)
-    : AWS_IoT_Publisher(baseLogger, inClient, awsIoTEndpoint, nullptr, nullptr,
-                        nullptr, samplingFeatureUUID) {}
+                                     const char* awsIoTEndpoint)
+    : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint, nullptr) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient)
-    : AWS_IoT_Publisher(baseLogger, inClient, nullptr, nullptr, nullptr,
-                        nullptr, nullptr) {}
+    : AWS_IoT_Publisher(baseLogger, inClient, nullptr, nullptr) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger)
-    : AWS_IoT_Publisher(baseLogger, nullptr, nullptr, nullptr, nullptr, nullptr,
-                        nullptr) {}
+    : AWS_IoT_Publisher(baseLogger, nullptr, nullptr, nullptr) {}
 AWS_IoT_Publisher::AWS_IoT_Publisher() : dataPublisher() {
     init();
 }
@@ -93,32 +73,6 @@ void AWS_IoT_Publisher::init() {
 
 void AWS_IoT_Publisher::setEndpoint(const char* awsIoTEndpoint) {
     _awsIoTEndpoint = awsIoTEndpoint;
-}
-
-
-void AWS_IoT_Publisher::setCACertName(const char* caCertName) {
-    _caCertName = caCertName;
-}
-
-
-void AWS_IoT_Publisher::setClientCertName(const char* clientCertName) {
-    _clientCertName = clientCertName;
-}
-
-
-void AWS_IoT_Publisher::setClientKeyName(const char* clientKeyName) {
-    _clientKeyName = clientKeyName;
-}
-
-// Sets all AWS IoT Core parameters
-void AWS_IoT_Publisher::setAWSIoTParams(const char* awsIoTEndpoint,
-                                        const char* caCertName,
-                                        const char* clientCertName,
-                                        const char* clientKeyName) {
-    setEndpoint(awsIoTEndpoint);
-    setCACertName(caCertName);
-    setClientCertName(clientCertName);
-    setClientKeyName(clientKeyName);
 }
 
 void AWS_IoT_Publisher::setDataPublishTopic(const char* topic) {
@@ -185,48 +139,10 @@ void AWS_IoT_Publisher::begin(Logger& baseLogger, Client* inClient,
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
 }
 void AWS_IoT_Publisher::begin(Logger& baseLogger, const char* awsIoTEndpoint,
-                              const char* caCertName,
-                              const char* clientCertName,
-                              const char* clientKeyName,
                               const char* samplingFeatureUUID) {
     setEndpoint(awsIoTEndpoint);
-    setCACertName(caCertName);
-    setClientCertName(clientCertName);
-    setClientKeyName(clientKeyName);
     dataPublisher::begin(baseLogger);
     _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-}
-
-Client* AWS_IoT_Publisher::createClient() {
-    if (_baseModem == nullptr) {
-        PRINTOUT(F("ERROR! No web client assigned and cannot access a "
-                   "logger modem to create one!"));
-        return nullptr;
-    }
-    if (_caCertName == nullptr || _clientCertName == nullptr ||
-        _clientKeyName == nullptr) {
-        PRINTOUT(F("Cannot create a new AWS secure client without certificate "
-                   "names!"));
-        return nullptr;
-    }
-    MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number."));
-    MS_DBG(F("Using CA cert:"), _caCertName);
-    MS_DBG(F("Using client cert:"), _clientCertName);
-    MS_DBG(F("Using client key:"), _clientKeyName);
-    Client* newClient = _baseModem->createSecureClient(
-        SSLAuthMode::MUTUAL_AUTHENTICATION, SSLVersion::TLS1_3, _caCertName,
-        _clientCertName, _clientKeyName);
-    if (newClient == nullptr) {
-        PRINTOUT(F("Failed to create a new secure client!"));
-        return nullptr;
-    }
-    return newClient;
-}
-void AWS_IoT_Publisher::deleteClient(Client* client) {
-    if (_baseModem != nullptr) {
-        MS_DBG(F("Attempting to delete the client"));
-        _baseModem->deleteSecureClient(client);
-    }
 }
 
 

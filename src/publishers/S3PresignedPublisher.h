@@ -141,9 +141,6 @@ class S3PresignedPublisher : public dataPublisher {
      * @param inClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
-     * @param caCertName The name of your certificate authority certificate
-     * file - used to validate the server's certificate when connecting to S3
-     * with SSL. @see setCACertName()
      * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param getFileNameFxn A function to call to get a new filename
      *
@@ -151,33 +148,17 @@ class S3PresignedPublisher : public dataPublisher {
      * it is stored on you modem module, not the actual certificate content.
      */
     S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                         const char* caCertName,
                          String (*getUrlFxn)(String) = nullptr,
                          String (*getFileNameFxn)()  = nullptr);
     /**
-     * @brief Construct a new S3 Publisher object with certificate
+     * @brief Construct a new S3 Publisher object.  You must attach a configured
+     * client before using this publisher.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param caCertName The name of the certificate to use for SSL
-     * verification. This is the name of the certificate file as it is stored on
-     * you modem module, not the actual certificate content.
      * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param getFileNameFxn A function to call to get a new filename
      */
-    S3PresignedPublisher(Logger& baseLogger, const char* caCertName,
-                         String (*getUrlFxn)(String) = nullptr,
-                         String (*getFileNameFxn)()  = nullptr);
-    /**
-     * @brief Construct a new S3 Publisher object without certificate
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param getUrlFxn A function to call to get a new pre-signed URL
-     * @param getFileNameFxn A function to call to get a new filename
-     */
-    S3PresignedPublisher(Logger& baseLogger, Client* inClient,
+    S3PresignedPublisher(Logger& baseLogger,
                          String (*getUrlFxn)(String) = nullptr,
                          String (*getFileNameFxn)()  = nullptr);
     /**
@@ -266,30 +247,6 @@ class S3PresignedPublisher : public dataPublisher {
     void setFileUpdateFunction(String (*getFileNameFxn)());
 
     /**
-     * @brief Set the name of your certificate authority certificate file.
-     *
-     * You MUST have already uploaded your certificate to your modem. This will
-     * most likely be the Amazon Root CA 1 (RSA 2048 bit key) certificate. You
-     * can find Amazon's current CA certificates here:
-     * https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html.
-     * Depending on your module, you may instead need a certificate chain file
-     * or to use Amazon's older top-chain certificate (Starfield Services Root
-     * Certificate Authority - G2).
-     *
-     * This is exactly the same CA certificate as you would use for an MQTT
-     * connection to AWS IoT (i.e., the AWS IoT Publisher). For supported
-     * modules you can use the AWS_IOT_SetCertificates sketch in the extras
-     * folder to upload your certificate.
-     *
-     * @param caCertName The name of your certificate authority certificate
-     * file.
-     *
-     * @note The inputs to this is the **NAME** of the certificate **file** as
-     * it is stored on you modem module, not the actual certificate content.
-     */
-    void setCACertName(const char* caCertName);
-
-    /**
      * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
      * @param getUrlFxn A function to call to get a new pre-signed URL
      */
@@ -298,10 +255,8 @@ class S3PresignedPublisher : public dataPublisher {
     /**
      * @copydoc dataPublisher::begin(Logger& baseLogger)
      * @param getUrlFxn A function to call to get a new pre-signed URL
-     * @param caCertName The name of your certificate authority certificate file
      */
-    void begin(Logger&     baseLogger, String (*getUrlFxn)(String),
-               const char* caCertName = nullptr);
+    void begin(Logger& baseLogger, String (*getUrlFxn)(String));
 
     /**
      * @brief Utilizes an attached modem to make a TCP connection to the
@@ -321,9 +276,6 @@ class S3PresignedPublisher : public dataPublisher {
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-
     const char* s3_parent_host = "s3.amazonaws.com";  ///< The host name
     int         s3Port         = 443;                 ///< The host port
 
@@ -365,10 +317,6 @@ class S3PresignedPublisher : public dataPublisher {
      * @brief Private reference to function used fetch a new file name.
      */
     String (*_getFileNameFxn)() = nullptr;
-    /**
-     * @brief The name of your certificate authority certificate file
-     */
-    const char* _caCertName = nullptr;
     /**
      * @brief An internal reference to an SdFat file instance
      */

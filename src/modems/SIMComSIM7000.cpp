@@ -15,17 +15,12 @@
 SIMComSIM7000::SIMComSIM7000(Stream* modemStream, int8_t powerPin,
                              int8_t statusPin, int8_t modemResetPin,
                              int8_t modemSleepRqPin, const char* apn)
-    : loggerModemImpl<
-          TinyGsmSim7000SSL,                              // Modem Type
-          TinyGsmSim7000SSL::GsmClientSim7000SSL,         // TCP Client Type
-          TinyGsmSim7000SSL::GsmClientSecureSim7000SSL,   // Secure Client Type
-          TinyGsmSim7000SSL::GsmSecureContextSim7000SSL,  // Secure Context Type
-          false  // signal quality is RSSI
-          >(modemStream, powerPin, statusPin, SIM7000_STATUS_LEVEL,
-            modemResetPin, SIM7000_RESET_LEVEL, SIM7000_RESET_PULSE_MS,
-            modemSleepRqPin, SIM7000_WAKE_LEVEL, SIM7000_WAKE_PULSE_MS,
-            SIM7000_STATUS_TIME_MS, SIM7000_DISCONNECT_TIME_MS,
-            SIM7000_WAKE_DELAY_MS, SIM7000_AT_RESPONSE_TIME_MS),
+    : loggerModemImpl<TinyGsmSim7000SSL, false>(
+          modemStream, powerPin, statusPin, SIM7000_STATUS_LEVEL, modemResetPin,
+          SIM7000_RESET_LEVEL, SIM7000_RESET_PULSE_MS, modemSleepRqPin,
+          SIM7000_WAKE_LEVEL, SIM7000_WAKE_PULSE_MS, SIM7000_STATUS_TIME_MS,
+          SIM7000_DISCONNECT_TIME_MS, SIM7000_WAKE_DELAY_MS,
+          SIM7000_AT_RESPONSE_TIME_MS),
       _apn(apn) {}
 
 

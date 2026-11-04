@@ -335,7 +335,7 @@ void setup() {
     for (uint8_t i = 0; i < 5; i++) {
         // Wait the required guard time before entering command mode
         delay(1010);
-        modem.gsmModem.streamWrite(GF("+++"));  // enter command mode
+        modem.gsmModem.streamPrint(GF("+++"));  // enter command mode
         if (modem.gsmModem.waitResponse(2000, GF("OK\r")) == 1) break;
     }
     // Carrier Profile - 0 = Automatic selection

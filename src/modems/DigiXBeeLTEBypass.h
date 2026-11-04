@@ -87,7 +87,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSaraR4.h"
+#include <TinyGsmClientSaraR4.h>
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
@@ -102,12 +102,7 @@
  * @warning Digi strongly recommends against this, but it actually seems to be
  * more stable in our tests.  Your milage may vary.
  */
-class DigiXBeeLTEBypass
-    : public DigiXBee<TinyGsmSaraR4,                        // Modem Type
-                      TinyGsmSaraR4::GsmClientSaraR4,       // TCP Client Type
-                      TinyGsmSaraR4::GsmClientSecureSaraR4  // SSL Client
-                                                            // Type
-                      > {
+class DigiXBeeLTEBypass : public DigiXBee<TinyGsmSaraR4> {
  public:
     /**
      * @brief Construct a new Digi XBee LTE Bypass object.

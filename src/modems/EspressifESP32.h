@@ -78,7 +78,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientESP32.h"
+#include <TinyGsmClientESP32.h>
 #include "Espressif.h"
 
 
@@ -93,12 +93,7 @@
  * @warning Light sleep modes on the ESP32 may not function as expected (or at
  * all).
  */
-class EspressifESP32
-    : public Espressif<TinyGsmESP32,                       // Modem Type
-                       TinyGsmESP32::GsmClientESP32,       // TCP Client Type
-                       TinyGsmESP32::GsmClientSecureESP32  // SSL Client
-                                                           // Type
-                       > {
+class EspressifESP32 : public Espressif<TinyGsmESP32> {
  public:
     // Constructors/Destructor
     /**

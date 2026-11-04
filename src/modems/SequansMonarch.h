@@ -77,7 +77,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSequansMonarch.h"
+#include <TinyGsmClientSequansMonarch.h>
 #include "LoggerModemImpl.h"
 
 
@@ -185,17 +185,7 @@
  * @brief The loggerModem subclass for Nimbelink or other modules based on the
  * [Sequans Monarch VZM20Q](@ref modem_monarch).
  */
-class SequansMonarch
-    : public loggerModemImpl<
-          TinyGsmSequansMonarch,                           // Modem Type
-          TinyGsmSequansMonarch::GsmClientSequansMonarch,  // TCP Client Type
-          TinyGsmSequansMonarch::GsmClientSecureSequansMonarch,   // Secure
-                                                                  // Client Type
-          TinyGsmSequansMonarch::GsmSecureContextSequansMonarch,  // Secure
-                                                                  // Context
-                                                                  // Type
-          false  // signal quality is RSSI
-          > {
+class SequansMonarch : public loggerModemImpl<TinyGsmSequansMonarch, false> {
  public:
     /**
      * @brief Construct a new Sequans Monarch object

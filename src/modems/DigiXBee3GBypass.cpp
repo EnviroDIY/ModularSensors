@@ -16,12 +16,8 @@ DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream, int8_t powerPin,
                                    int8_t statusPin, bool useCTSStatus,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
                                    const char* apn)
-    : DigiXBee<TinyGsmUBLOX,                       // Modem Type
-               TinyGsmUBLOX::GsmClientUBLOX,       // TCP Client Type
-               TinyGsmUBLOX::GsmClientSecureUBLOX  // SSL Client
-                                                   // Type
-               >(modemStream, powerPin, statusPin, useCTSStatus, modemResetPin,
-                 modemSleepRqPin),
+    : DigiXBee<TinyGsmUBLOX>(modemStream, powerPin, statusPin, useCTSStatus,
+                             modemResetPin, modemSleepRqPin),
 
       _apn(apn) {}
 
@@ -36,7 +32,7 @@ bool DigiXBee3GBypass::extraModemSetup() {
         /** First, wait the required guard time before entering command mode. */
         delay(1010);
         /** Now, enter command mode to set all pin I/O functionality. */
-        gsmModem.streamWrite(GF("+++"));
+        gsmModem.streamPrint(GF("+++"));
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
@@ -134,7 +130,7 @@ bool DigiXBee3GBypass::modemHardResetImpl() {
     for (uint8_t i = 0; i < 5; i++) {
         // Wait the required guard time before entering command mode
         delay(1010);
-        gsmModem.streamWrite(GF("+++"));  // enter command mode
+        gsmModem.streamPrint(GF("+++"));  // enter command mode
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }

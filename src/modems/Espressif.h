@@ -157,14 +157,8 @@
  * wifi/bluetooth chip that has been flashed with Espressif's AT command
  * firmware.
  */
-template <typename GsmModemType_T, typename ClientType_T,
-          typename SecureClientType_T>
-class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
-                                         ClientType_T,        // TCP Client Type
-                                         SecureClientType_T,  // SSL Client
-                                                              // Type
-                                         true  // signal quality is RSSI
-                                         > {
+template <typename GsmModemType_T>
+class Espressif : public loggerModemImpl<GsmModemType_T, true> {
  public:
     // Constructors/Destructor
     /**
@@ -199,11 +193,7 @@ class Espressif : public loggerModemImpl<GsmModemType_T,      // Modem Type
     Espressif(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
               const char* ssid, const char* pwd, int8_t modemSleepRqPin = -1,
               int8_t espSleepRqPin = -1)
-        : loggerModemImpl<GsmModemType_T,      // Modem Type
-                          ClientType_T,        // TCP Client Type
-                          SecureClientType_T,  // SSL Client Type
-                          true                 // signal quality is RSSI
-                          >(
+        : loggerModemImpl<GsmModemType_T, true>(
               modemStream, powerPin, modemSleepRqPin, LOW, modemResetPin,
               ESPRESSIF_RESET_LEVEL, ESPRESSIF_RESET_PULSE_MS, -1,
               ESPRESSIF_WAKE_LEVEL, ESPRESSIF_WAKE_PULSE_MS, 0,

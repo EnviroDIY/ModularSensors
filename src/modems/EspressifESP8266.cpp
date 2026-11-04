@@ -16,12 +16,8 @@ EspressifESP8266::EspressifESP8266(Stream* modemStream, int8_t powerPin,
                                    int8_t modemResetPin, const char* ssid,
                                    const char* pwd, int8_t modemSleepRqPin,
                                    int8_t espSleepRqPin)
-    : Espressif<TinyGsmESP8266,                         // Modem Type
-                TinyGsmESP8266::GsmClientESP8266,       // TCP Client Type
-                TinyGsmESP8266::GsmClientSecureESP8266  // SSL Client
-                                                        // Type
-                >(modemStream, powerPin, modemResetPin, ssid, pwd,
-                  modemSleepRqPin, espSleepRqPin) {}
+    : Espressif<TinyGsmESP8266>(modemStream, powerPin, modemResetPin, ssid, pwd,
+                                modemSleepRqPin, espSleepRqPin) {}
 
 
 bool EspressifESP8266::modemSleepFxn() {

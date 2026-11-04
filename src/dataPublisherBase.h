@@ -398,34 +398,6 @@ class dataPublisher {
     static void txBufferFlush(bool debug_flush = true);
 
     /**
-     * @brief Use the connected base logger's logger modem and underlying
-     * TinyGSM instance to create a new client for the publisher.
-     *
-     * @note This does *NOT* override any client set by the
-     * constructor/begin/setClient functions. If you set an external client by
-     * any of those methods, this function should not be called. It is protected
-     * to prevent being called by external code.
-     *
-     * @note The default implementation of this function creates an insecure
-     * client. Publishers that require SSL must re-implement this function.
-     *
-     * @return A pointer to an Arduino client instance
-     */
-    virtual Client* createClient();
-    /**
-     * @brief Delete a created client. We need to pass this through to avoid a
-     * memory leak because we cannot delete from the pointer because the
-     * destructor for a client in the Arduino core isn't virtual.
-     *
-     * @note The client must be deleted by the same type of modem that created
-     * it.  This is unlikely to be an issue unless you're trying to use two
-     * modems on the same logger.
-     *
-     * @param client The client to delete
-     */
-    virtual void deleteClient(Client* client);
-
-    /**
      * @brief Interval (in units of the logging interval) between
      * attempted data transmissions. Not respected by all publishers.
      */

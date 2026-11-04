@@ -16,12 +16,8 @@ DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
                                      int8_t statusPin, bool useCTSStatus,
                                      int8_t modemResetPin,
                                      int8_t modemSleepRqPin, const char* apn)
-    : DigiXBee<TinyGsmSaraR4,                        // Modem Type
-               TinyGsmSaraR4::GsmClientSaraR4,       // TCP Client Type
-               TinyGsmSaraR4::GsmClientSecureSaraR4  // SSL Client
-                                                     // Type
-               >(modemStream, powerPin, statusPin, useCTSStatus, modemResetPin,
-                 modemSleepRqPin),
+    : DigiXBee<TinyGsmSaraR4>(modemStream, powerPin, statusPin, useCTSStatus,
+                              modemResetPin, modemSleepRqPin),
 
       _apn(apn) {}
 
@@ -38,7 +34,7 @@ bool DigiXBeeLTEBypass::extraModemSetup() {
         /** First, wait the required guard time before entering command mode. */
         delay(1010);
         /** Now, enter command mode to set all pin I/O functionality. */
-        gsmModem.streamWrite(GF("+++"));
+        gsmModem.streamPrint(GF("+++"));
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
@@ -138,7 +134,7 @@ bool DigiXBeeLTEBypass::modemHardResetImpl() {
     for (uint8_t i = 0; i < 5; i++) {
         // Wait the required guard time before entering command mode
         delay(1010);
-        gsmModem.streamWrite(GF("+++"));  // enter command mode
+        gsmModem.streamPrint(GF("+++"));  // enter command mode
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }

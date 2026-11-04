@@ -77,7 +77,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientESP8266.h"
+#include <TinyGsmClientESP8266.h>
 #include "Espressif.h"
 
 
@@ -92,12 +92,7 @@
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
  */
-class EspressifESP8266
-    : public Espressif<TinyGsmESP8266,                    // Modem Type
-                       TinyGsmESP8266::GsmClientESP8266,  // TCP Client Type
-                       TinyGsmESP8266::GsmClientSecureESP8266  // SSL Client
-                                                               // Type
-                       > {
+class EspressifESP8266 : public Espressif<TinyGsmESP8266> {
  public:
     // Constructors/Destructor
     /**

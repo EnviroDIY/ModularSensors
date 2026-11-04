@@ -51,7 +51,7 @@ void loop() {
         /** First, wait the required guard time before entering command mode. */
         delay(1010);
         /** Now, enter command mode to set all pin I/O functionality. */
-        gsmModem.streamWrite(GF("+++"));
+        gsmModem.streamPrint(GF("+++"));
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }

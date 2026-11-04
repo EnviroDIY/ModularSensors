@@ -207,34 +207,11 @@ bool dataPublisher::connectionNeeded() {
     return true;
 }
 
-Client* dataPublisher::createClient() {
-    if (_baseModem == nullptr) {
-        PRINTOUT(F("ERROR! No web client assigned and cannot access a "
-                   "logger modem to create one!"));
-        return nullptr;
-    }
-    MS_DBG(F("Creating new TinyGSMClient with default socket number."));
-    return _baseModem->createClient();
-}
-void dataPublisher::deleteClient(Client* client) {
-    if (_baseModem != nullptr) {
-        MS_DBG(F("Attempting to delete the client"));
-        _baseModem->deleteClient(client);
-    }
-}
-
 // This sends data on the "default" client of the modem
 int16_t dataPublisher::publishData(bool forceFlush) {
     if (_inClient == nullptr) {
         int16_t retVal = -2;  // -2 is connection failed in MQTT
-        MS_DBG(F("Creating new client to publish data."));
-        Client* newClient = createClient();
-        if (newClient != nullptr) {
-            retVal = publishData(newClient, forceFlush);
-            deleteClient(newClient);  // need to delete to free memory!
-        } else {
-            PRINTOUT(F("ERROR! Failed to create new client to publish data!"));
-        }
+        PRINTOUT(F("ERROR! No client available to publish data!"));
         return retVal;
     } else {
         MS_DBG(F("Publishing data with provided client."));
@@ -255,14 +232,8 @@ int16_t dataPublisher::publishMetadata(Client*) {
 }
 int16_t dataPublisher::publishMetadata() {
     if (_inClient == nullptr) {
-        int16_t retVal    = -2;  // -2 is connection failed in MQTT
-        Client* newClient = createClient();
-        if (newClient != nullptr) {
-            retVal = publishMetadata(newClient);
-            deleteClient(newClient);  // need to delete to free memory!
-        } else {
-            PRINTOUT(F("ERROR! Failed to create new client to publish data!"));
-        }
+        int16_t retVal = -2;  // -2 is connection failed in MQTT
+        PRINTOUT(F("ERROR! No client available to publish data!"));
         return retVal;
     } else {
         MS_DBG(F("Publishing data with provided client."));

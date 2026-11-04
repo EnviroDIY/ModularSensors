@@ -71,7 +71,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientUBLOX.h"
+#include <TinyGsmClientUBLOX.h>
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
@@ -87,12 +87,8 @@
  * @warning Digi strongly recommends against this, but it actually seems to be
  * more stable in our tests.  Your milage may vary.
  */
-class DigiXBee3GBypass
-    : public DigiXBee<TinyGsmUBLOX,                       // Modem Type
-                      TinyGsmUBLOX::GsmClientUBLOX,       // TCP Client Type
-                      TinyGsmUBLOX::GsmClientSecureUBLOX  // SSL Client
-                                                          // Type
-                      > {
+class DigiXBee3GBypass : public DigiXBee<TinyGsmUBLOX  // Modem Type
+                                         > {
  public:
     /**
      * @brief Construct a new Digi XBee 3G Bypass object

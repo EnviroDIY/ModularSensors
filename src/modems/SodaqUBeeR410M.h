@@ -124,7 +124,7 @@
 #endif
 
 /// The modem type for the underlying TinyGSM library.
-// #define TINY_GSM_MODEMDEM_SARAR4
+// #define TINY_GSM_MODEM_SARAR4
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -133,7 +133,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSaraR4.h"
+#include <TinyGsmClientSaraR4.h>
 #include "LoggerModemImpl.h"
 
 
@@ -216,14 +216,7 @@
  * u-blox SARA R410M LTE-M cellular module.  This can be also used for any other
  * breakout of the u-blox R4 or N4 series modules.
  */
-class SodaqUBeeR410M
-    : public loggerModemImpl<
-          TinyGsmSaraR4,                          // Modem Type
-          TinyGsmSaraR4::GsmClientSaraR4,         // TCP Client Type
-          TinyGsmSaraR4::GsmClientSecureSaraR4,   // Secure Client Type
-          TinyGsmSaraR4::GsmSecureContextSaraR4,  // Secure Context Type
-          false                                   // signal quality is RSSI
-          > {
+class SodaqUBeeR410M : public loggerModemImpl<TinyGsmSaraR4, false> {
  public:
     /**
      * @brief Construct a new Sodaq UBee R410M object

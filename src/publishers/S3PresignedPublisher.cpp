@@ -20,27 +20,18 @@ const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 // Constructors
 // Primary constructor with all parameters
 S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                                           const char* caCertName,
                                            String (*getUrlFxn)(String),
                                            String (*getFileNameFxn)())
     : dataPublisher(baseLogger, inClient) {
-    if (caCertName) setCACertName(caCertName);
     if (getUrlFxn) setURLUpdateFunction(getUrlFxn);
     if (getFileNameFxn) setFileUpdateFunction(getFileNameFxn);
 }
 
 // Delegating constructors
-S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
-                                           const char* caCertName,
+S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger,
                                            String (*getUrlFxn)(String),
                                            String (*getFileNameFxn)())
-    : S3PresignedPublisher(baseLogger, nullptr, caCertName, getUrlFxn,
-                           getFileNameFxn) {}
-S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                                           String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)())
-    : S3PresignedPublisher(baseLogger, inClient, nullptr, getUrlFxn,
-                           getFileNameFxn) {}
+    : S3PresignedPublisher(baseLogger, nullptr, getUrlFxn, getFileNameFxn) {}
 S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
 
 
@@ -75,11 +66,6 @@ void S3PresignedPublisher::setFileParams(const char* extension,
 }
 
 
-void S3PresignedPublisher::setCACertName(const char* caCertName) {
-    _caCertName = caCertName;
-}
-
-
 // A way to set members in the begin to use with a bare constructor
 void S3PresignedPublisher::begin(Logger& baseLogger, Client* inClient,
                                  String (*getUrlFxn)(String)) {
@@ -87,42 +73,9 @@ void S3PresignedPublisher::begin(Logger& baseLogger, Client* inClient,
     dataPublisher::begin(baseLogger, inClient);
 }
 void S3PresignedPublisher::begin(Logger& baseLogger,
-                                 String (*getUrlFxn)(String),
-                                 const char* caCertName) {
+                                 String (*getUrlFxn)(String)) {
     setURLUpdateFunction(getUrlFxn);
-    setCACertName(caCertName);
     dataPublisher::begin(baseLogger);
-}
-
-Client* S3PresignedPublisher::createClient() {
-    if (_baseModem == nullptr) {
-        PRINTOUT(F("ERROR! No web client assigned and cannot access a "
-                   "logger modem to create one!"));
-        return nullptr;
-    }
-    if (_caCertName == nullptr) {
-        PRINTOUT(F("Cannot create a new S3 secure client without a CA "
-                   "certificate name!"));
-        return nullptr;
-    }
-    MS_DBG(F("Creating a new Security Context"));
-
-    MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number "
-             "and default security context number."));
-    MS_DBG(F("Using CA cert:"), _caCertName);
-    Client* newClient = _baseModem->createSecureClient(
-        SSLAuthMode::CA_VALIDATION, SSLVersion::TLS1_3, _caCertName);
-    if (newClient == nullptr) {
-        PRINTOUT(F("Failed to create a new secure client!"));
-        return nullptr;
-    }
-    return newClient;
-}
-void S3PresignedPublisher::deleteClient(Client* client) {
-    if (_baseModem != nullptr) {
-        MS_DBG(F("Attempting to delete the client"));
-        _baseModem->deleteSecureClient(client);
-    }
 }
 
 bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,

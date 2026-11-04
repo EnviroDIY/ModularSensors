@@ -76,7 +76,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSIM800.h"
+#include <TinyGsmClientSIM800.h>
 #include "LoggerModemImpl.h"
 
 
@@ -159,14 +159,7 @@
  * and almost any other module based on the [SIMCOM SIM800 or SIM900 modules and
  * their variants](@ref modem_sim800).
  */
-class SIMComSIM800
-    : public loggerModemImpl<
-          TinyGsmSim800,                          // Modem Type
-          TinyGsmSim800::GsmClientSim800,         // TCP Client Type
-          TinyGsmSim800::GsmClientSecureSim800,   // Secure Client Type
-          TinyGsmSim800::GsmSecureContextSim800,  // Secure Context Type
-          false                                   // signal quality is RSSI
-          > {
+class SIMComSIM800 : public loggerModemImpl<TinyGsmSim800, false> {
  public:
     /**
      * @brief Construct a new SIMComSIM800 object

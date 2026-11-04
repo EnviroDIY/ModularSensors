@@ -17,12 +17,8 @@ DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
                            const char* ssid, const char* pwd,
                            bool maintainAssociation)
-    : DigiXBee<TinyGsmXBee,                      // Modem Type
-               TinyGsmXBee::GsmClientXBee,       // TCP Client Type
-               TinyGsmXBee::GsmClientSecureXBee  // SSL Client
-                                                 // Type
-               >(modemStream, powerPin, statusPin, useCTSStatus, modemResetPin,
-                 modemSleepRqPin),
+    : DigiXBee<TinyGsmXBee>(modemStream, powerPin, statusPin, useCTSStatus,
+                            modemResetPin, modemSleepRqPin),
       _ssid(ssid),
       _pwd(pwd),
       _maintainAssociation(maintainAssociation) {}

@@ -94,7 +94,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientXBee.h"
+#include <TinyGsmClientXBee.h>
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
@@ -114,12 +114,7 @@
  * stable used in bypass mode.  The Telit based Digi XBees (LTE Cat1 both
  * Verizon and AT&T) can only use this mode.
  */
-class DigiXBeeCellularTransparent
-    : public DigiXBee<TinyGsmXBee,                      // Modem Type
-                      TinyGsmXBee::GsmClientXBee,       // TCP Client Type
-                      TinyGsmXBee::GsmClientSecureXBee  // SSL Client
-                                                        // Type
-                      > {
+class DigiXBeeCellularTransparent : public DigiXBee<TinyGsmXBee> {
  public:
     /**
      * @brief Construct a new Digi XBee Cellular Transparent object

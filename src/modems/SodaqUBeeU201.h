@@ -73,7 +73,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientUBLOX.h"
+#include <TinyGsmClientUBLOX.h>
 #include "LoggerModemImpl.h"
 
 
@@ -156,14 +156,7 @@
  * [Sodaq UBee](@ref modem_ublox) based on the u-blox SARA U201 2G/3G cellular
  * module.
  */
-class SodaqUBeeU201
-    : public loggerModemImpl<
-          TinyGsmUBLOX,                         // Modem Type
-          TinyGsmUBLOX::GsmClientUBLOX,         // TCP Client Type
-          TinyGsmUBLOX::GsmClientSecureUBLOX,   // Secure Client Type
-          TinyGsmUBLOX::GsmSecureContextUBLOX,  // Secure Context Type
-          false                                 // signal quality is RSSI
-          > {
+class SodaqUBeeU201 : public loggerModemImpl<TinyGsmUBLOX, false> {
  public:
     /**
      * @brief Construct a new Sodaq UBee U201 object
