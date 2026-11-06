@@ -12,25 +12,21 @@
 #include "SodaqUBeeR410M.h"
 
 // Constructor
-SodaqUBeeR410M::SodaqUBeeR410M(
-#if F_CPU == 8000000L
-    HardwareSerial* modemStream,
-#else
-    Stream* modemStream,
-#endif
-
-    int8_t powerPin, int8_t statusPin, int8_t modemResetPin,
-    int8_t modemSleepRqPin, const char* apn)
+SodaqUBeeR410M::SodaqUBeeR410M(TinyGsmSaraR4& saraR4Modem, int8_t powerPin,
+                               int8_t statusPin, int8_t modemResetPin,
+                               int8_t modemSleepRqPin, const char* apn)
     : loggerModemImpl<TinyGsmSaraR4, false>(
-          modemStream, powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
+          saraR4Modem, powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
           R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
           R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
           R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
           R410M_AT_RESPONSE_TIME_MS),
       _apn(apn) {
 #if F_CPU == 8000000L
-    // only store the pointer for 8MHz processors
-    _modemSerial = modemStream;
+    // Only store the pointer for 8MHz processors. TinyGSM stores the serial
+    // interface as a Stream reference, so recover the required HardwareSerial
+    // interface to change its baud rate.
+    _modemSerial = &static_cast<HardwareSerial&>(saraR4Modem.stream);
 #endif
 }
 

@@ -221,12 +221,11 @@ class SodaqUBeeR410M : public loggerModemImpl<TinyGsmSaraR4, false> {
     /**
      * @brief Construct a new Sodaq UBee R410M object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param saraR4Modem A TinyGsmSaraR4 instance.
      * @param powerPin @copydoc _powerPin
      * For the Sodaq UBee, this is the pin labeled `ON/OFF`; pin 9 on the bee
      * socket.  The fact that this pin controls the power to the u-blox module
@@ -245,23 +244,17 @@ class SodaqUBeeR410M : public loggerModemImpl<TinyGsmSaraR4, false> {
      *
      * @note The SARA R410N DOES NOT save baud rate to non-volatile memory.
      * After every power loss, the module will return to the default baud rate
-     * of 115200.  This library attempts to compensate by sending a baud rate
-     * change command in the wake function.  Because of this, 8MHz boards, LIKE
-     * THE MAYFLY, *MUST* use a HardwareSerial instance as modemSerial.  This
-     * requirement does not exist for 16MHz (and faster) boards.  For those, any
-     * Stream instance may be used.
+     * of 115200. This library attempts to compensate by sending a baud rate
+     * change command in the wake function. Because of this, 8MHz boards, LIKE
+     * THE MAYFLY, *MUST* construct saraR4Modem with a HardwareSerial instance.
+     * This requirement does not exist for 16MHz (and faster) boards. For those,
+     * any Stream instance may be used.
      *
      * @see loggerModem::loggerModem
      */
-    SodaqUBeeR410M(
-
-#if F_CPU == 8000000L
-        HardwareSerial* modemStream,
-#else
-        Stream* modemStream,
-#endif
-        int8_t powerPin, int8_t statusPin, int8_t modemResetPin,
-        int8_t modemSleepRqPin, const char* apn);
+    SodaqUBeeR410M(TinyGsmSaraR4& saraR4Modem, int8_t powerPin,
+                   int8_t statusPin, int8_t modemResetPin,
+                   int8_t modemSleepRqPin, const char* apn);
     /**
      * @brief Destroy the Sodaq UBee R410M object - no action needed
      */
