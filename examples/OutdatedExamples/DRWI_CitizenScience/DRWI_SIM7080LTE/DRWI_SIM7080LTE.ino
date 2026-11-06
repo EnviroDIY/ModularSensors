@@ -88,11 +88,11 @@ const char* apn =
     "YourAPN";  // APN connection name, typically Hologram unless you have a
                  // different provider's SIM card. Change as needed
 
-// Create the modem object
-SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
-                        modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-SIMComSIM7080 modem = modem7080;
+// Create a TinyGsm modem
+TinyGsmSim7080 gsmModem(modemSerial);
+// Create a loggerModem object
+SIMComSIM7080 modem(gsmModem, modemVccPin, modemStatusPin, modemSleepRqPin,
+                    apn);
 /** End [sim_com_sim7080] */
 
 
@@ -240,10 +240,14 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/MonitorMyWatershedPublisher.h>
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
-                                          samplingFeature);
+// Create a client for Monitor My Watershed - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsmSim7080::GsmClientSim7080 mmwClient(gsmModem);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, &mmwClient,
+                                          registrationToken, samplingFeature);
 /** End [publishers] */
 
 

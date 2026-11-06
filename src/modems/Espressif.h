@@ -164,10 +164,9 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
     /**
      * @brief Construct a new Espressif object.
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
      * @remark The Espressif modules do not have any status pin capabilites.  In
      * older firmware versions, AT commands were provided to set up pins to
@@ -175,7 +174,7 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
      * removed in newer firmware versions.  The status pin is not used in this
      * library.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param espressif A TinyGsmEspressif instance.
      * @param powerPin @copydoc _powerPin
      * @param modemResetPin @copydoc _modemResetPin
      * This is the ESP's `RSTB/DIO16` pin.
@@ -190,16 +189,15 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
      * This is a GPIO on the Espressif module, not a pin on the MCU.
      * @see loggerModem::loggerModem
      */
-    Espressif(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
-              const char* ssid, const char* pwd, int8_t modemSleepRqPin = -1,
-              int8_t espSleepRqPin = -1)
+    Espressif(TinyGsmEspressif& espressif, int8_t powerPin,
+              int8_t modemResetPin, const char* ssid, const char* pwd,
+              int8_t modemSleepRqPin = -1, int8_t espSleepRqPin = -1)
         : loggerModemImpl<GsmModemType_T, true>(
-              modemStream, powerPin, modemSleepRqPin, LOW, modemResetPin,
+              xxxxxModem, powerPin, modemSleepRqPin, LOW, modemResetPin,
               ESPRESSIF_RESET_LEVEL, ESPRESSIF_RESET_PULSE_MS, -1,
               ESPRESSIF_WAKE_LEVEL, ESPRESSIF_WAKE_PULSE_MS, 0,
               ESPRESSIF_DISCONNECT_TIME_MS, ESPRESSIF_WAKE_DELAY_MS,
               ESPRESSIF_AT_RESPONSE_TIME_MS),
-          _modemStream(modemStream),
           _ssid(ssid),
           _pwd(pwd),
           _espSleepRqPin(espSleepRqPin) {}
@@ -327,15 +325,15 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
         delay(ESPRESSIF_BOOT_LOG_DELAY_MS);  // It will take at least this long
         uint32_t start   = millis();
         bool     success = false;
-        while (!_modemStream->available() &&
+        while (!gsmModem.stream.available() &&
                millis() - start < ESPRESSIF_BOOT_LOG_TIMEOUT_MS) {
             yield();
         }
-        if (_modemStream->available()) {
+        if (gsmModem.stream.available()) {
             success = true;
             // Read the boot log to empty it from the serial buffer
-            while (_modemStream->available()) {
-                _modemStream->read();
+            while (gsmModem.stream.available()) {
+                gsmModem.stream.read();
                 delay(2);
             }
         }

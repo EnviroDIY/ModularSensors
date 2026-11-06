@@ -13,17 +13,17 @@
 
 
 // Constructor
-Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream, int8_t powerPin,
+Sodaq2GBeeR6::Sodaq2GBeeR6(TinyGsmSim800& sim800Modem, int8_t powerPin,
                            int8_t statusPin, const char* apn)
-    : SIMComSIM800(modemStream, powerPin, statusPin, -1, -1, apn) {
+    : SIMComSIM800(sim800Modem, powerPin, statusPin, -1, -1, apn) {
     setVRefPin(-1);
 }
 
 
 // Constructor
-Sodaq2GBeeR6::Sodaq2GBeeR6(Stream* modemStream, int8_t vRefPin,
+Sodaq2GBeeR6::Sodaq2GBeeR6(TinyGsmSim800& sim800Modem, int8_t vRefPin,
                            int8_t statusPin, int8_t powerPin, const char* apn)
-    : SIMComSIM800(modemStream, powerPin, statusPin, -1, -1, apn) {
+    : SIMComSIM800(sim800Modem, powerPin, statusPin, -1, -1, apn) {
     setVRefPin(vRefPin);
 }
 

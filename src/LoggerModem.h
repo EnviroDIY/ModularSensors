@@ -284,6 +284,7 @@
  */
 class loggerModem {
  public:
+    /// Destroy the loggerModem object.
     virtual ~loggerModem() = default;
 
 

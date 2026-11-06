@@ -163,6 +163,13 @@ Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 /** Start [espressif_esp32] */
 #include <modems/EspressifESP32.h>
 
+// set up some helpful typedefs for easier usage of the TinyGSM ESP32 classes
+typedef TinyGsmESP32                        TinyGsm;
+typedef TinyGsmESP32::GsmClientESP32        TinyGsmClient;
+typedef TinyGsmESP32::GsmClientSecureESP32  TinyGsmClientSecure;
+typedef TinyGsmESP32::GsmSecureContextESP32 TinyGsmSecureContext;
+typedef ESP32RegStatus                      RegStatus;
+
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
 int32_t         modemBaud   = 57600;    // Communication speed of the modem
@@ -180,11 +187,10 @@ const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
 const char* wifiId  = WIFI_ID;      // WiFi access point name
 const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
-// Create the modem object
-EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
-                        wifiPwd);
-// Create an extra reference to the modem by a generic name
-EspressifESP32 modem = modemESP;
+// Create a TinyGsm modem
+TinyGsmESP32 gsmModem(modemSerial);
+// Create a loggerModem object
+EspressifESP32 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 /** End [espressif_esp32] */
 #endif
 
@@ -193,6 +199,14 @@ EspressifESP32 modem = modemESP;
 /** Start [sim_com_sim7080] */
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
+
+// set up some helpful typedefs for easier usage of the TinyGSM SimCom SIM7080
+// classes
+typedef TinyGsmSim7080                          TinyGsm;
+typedef TinyGsmSim7080::GsmClientSim7080        TinyGsmClient;
+typedef TinyGsmSim7080::GsmClientSecureSim7080  TinyGsmClientSecure;
+typedef TinyGsmSim7080::GsmSecureContextSim7080 TinyGsmSecureContext;
+typedef Sim7080RegStatus                        RegStatus;
 
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
@@ -210,11 +224,11 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
 // Network connection information
 const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
-                        modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-SIMComSIM7080 modem = modem7080;
+// Create a TinyGsm modem
+TinyGsmSim7080 gsmModem(modemSerial);
+// Create a loggerModem object
+SIMComSIM7080 modem(gsmModem, modemVccPin, modemStatusPin, modemSleepRqPin,
+                    apn);
 /** End [sim_com_sim7080] */
 #endif
 
@@ -330,7 +344,13 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 /** Start [monitor_my_watershed_publisher] */
 // Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/MonitorMyWatershedPublisher.h>
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken);
+// Create a client for Monitor My Watershed - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsmClient mmwClient(gsmModem);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, &mmwClient,
+                                          registrationToken);
 /** End [monitor_my_watershed_publisher] */
 #endif
 

@@ -115,9 +115,12 @@ class loggerModemImpl
     GsmModemType gsmModem;
 
     /**
-     * @brief Construct a new loggerModemImpl object.
+     * @brief Construct a new loggerModemImpl object giving it an already
+     * existing modem instance
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @note The modem instance must outlive this loggerModemImpl object.
+     *
+     * @param gsmModem A TinyGSM modem instance
      * @param powerPin The digital pin number to control modem power (-1 if not
      * applicable)
      * @param statusPin The digital pin number to read modem status (-1 if not
@@ -138,7 +141,7 @@ class loggerModemImpl
      * @param max_at_response_time_ms Maximum time to wait for AT command
      * response
      */
-    loggerModemImpl(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+    loggerModemImpl(GsmModemType_T& gsmModem, int8_t powerPin, int8_t statusPin,
                     bool statusLevel, int8_t modemResetPin, bool resetLevel,
                     uint32_t resetPulse_ms, int8_t modemSleepRqPin,
                     bool wakeLevel, uint32_t wakePulse_ms,
@@ -151,7 +154,7 @@ class loggerModemImpl
           loggerModemCommMixin<
               loggerModemImpl<GsmModemType_T, signalQualityIsRSSI>,
               GsmModemType_T>(),
-          gsmModem(*modemStream),
+          gsmModem(gsmModem),
           _modemName(F("unspecified modem")),
           _max_at_response_time_ms(max_at_response_time_ms),
           _hasBeenSetup(false) {}

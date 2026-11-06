@@ -79,11 +79,10 @@ const int8_t modemLEDPin =
 const char* wifiId  = "YourWiFiSSID";  // The WiFi access point
 const char* wifiPwd = "YourWiFiPassword";       // The WiFi password
 
-// Create the loggerModem object
-EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
-                          wifiPwd);
-// Create an extra reference to the modem by a generic name
-EspressifESP8266 modem = modemESP;
+// Create a TinyGsm modem
+TinyGsmESP8266 gsmModem(modemSerial);
+// Create a loggerModem object
+EspressifESP8266 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 /** End [espressif_esp8266] */
 
 
@@ -194,7 +193,10 @@ Logger dataLogger;
 // ==========================================================================
 //  Creating Data Publisher[s]
 // ==========================================================================
-// Create a channel with fields on ThingSpeak in advance
+/** Start [thing_speak_publisher] */
+#include <publishers/ThingSpeakPublisher.h>
+
+// Create a channel with fields on ThingSpeak in advance.
 // The fields will be sent in exactly the order they are in the variable array.
 // Any custom name or identifier given to the field on ThingSpeak is irrelevant.
 // No more than 8 fields of data can go to any one channel.  Any fields beyond
@@ -210,10 +212,15 @@ const char* thingSpeakChannelID =
 const char* thingSpeakAPIKey =
     "XXXXXXXXXXXXXXXX";  // The ThingSpeak user REST API key
 
+// Create a client for ThingSpeak MQTT - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsmESP8266::GsmClientESP8266 tsClient(gsmModem);
 // Create a data publisher for ThingSpeak
-#include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt;
-/** End [loggers] */
+ThingSpeakPublisher TsMqtt(dataLogger, &tsClient, thingSpeakClientName,
+                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                           thingSpeakChannelID);
+/** End [thing_speak_publisher] */
 
 
 // ==========================================================================

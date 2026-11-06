@@ -98,12 +98,11 @@ class DigiXBeeWifi : public DigiXBee<TinyGsmXBee> {
     /**
      * @brief Construct a new Digi XBee Wifi object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param xbeeModem A TinyGsmXBee instance.
      * @param powerPin @copydoc _powerPin
      * @param statusPin @copydoc _statusPin
      * This can be either the pin named `ON/SLEEP_N/DIO9` or `CTS_N/DIO7` pin in
@@ -123,7 +122,7 @@ class DigiXBeeWifi : public DigiXBee<TinyGsmXBee> {
      * more current (+10mA?), but also allows a faster reconnection on the next
      * wake.
      */
-    DigiXBeeWifi(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+    DigiXBeeWifi(TinyGsmXBee& xbeeModem, int8_t powerPin, int8_t statusPin,
                  bool useCTSStatus, int8_t modemResetPin,
                  int8_t modemSleepRqPin, const char* ssid, const char* pwd,
                  bool maintainAssociation = false);

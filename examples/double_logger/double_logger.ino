@@ -80,11 +80,11 @@ const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
 const char* wifiId  = "YourWiFiSSID";  // The WiFi access point
 const char* wifiPwd = "YourWiFiPassword";       // The WiFi password
 
-DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
-                       useCTSforStatus, modemResetPin, modemSleepRqPin, wifiId,
-                       wifiPwd);
-// Create an extra reference to the modem by a generic name
-DigiXBeeWifi modem = modemXBWF;
+// Create a TinyGsm modem
+TinyGsmXBee gsmModem(modemSerial);
+// Create a loggerModem object
+DigiXBeeWifi modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
+                   modemResetPin, modemSleepRqPin, wifiId, wifiPwd);
 /** End [xbee_wifi] */
 
 

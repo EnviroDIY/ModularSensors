@@ -12,11 +12,11 @@
 #include "DigiXBeeLTEBypass.h"
 
 // Constructor/Destructor
-DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
-                                     int8_t statusPin, bool useCTSStatus,
-                                     int8_t modemResetPin,
+DigiXBeeLTEBypass::DigiXBeeLTEBypass(TinyGsmSaraR4& saraR4Modem,
+                                     int8_t powerPin, int8_t statusPin,
+                                     bool useCTSStatus, int8_t modemResetPin,
                                      int8_t modemSleepRqPin, const char* apn)
-    : DigiXBee<TinyGsmSaraR4>(modemStream, powerPin, statusPin, useCTSStatus,
+    : DigiXBee<TinyGsmSaraR4>(saraR4Modem, powerPin, statusPin, useCTSStatus,
                               modemResetPin, modemSleepRqPin),
 
       _apn(apn) {}

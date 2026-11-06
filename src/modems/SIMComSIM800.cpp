@@ -12,11 +12,11 @@
 #include "SIMComSIM800.h"
 
 // Constructor
-SIMComSIM800::SIMComSIM800(Stream* modemStream, int8_t powerPin,
+SIMComSIM800::SIMComSIM800(TinyGsmSim800& sim800Modem, int8_t powerPin,
                            int8_t statusPin, int8_t modemResetPin,
                            int8_t modemSleepRqPin, const char* apn)
     : loggerModemImpl<TinyGsmSim800, false>(
-          modemStream, powerPin, statusPin, SIM800_STATUS_LEVEL, modemResetPin,
+          sim800Modem, powerPin, statusPin, SIM800_STATUS_LEVEL, modemResetPin,
           SIM800_RESET_LEVEL, SIM800_RESET_PULSE_MS, modemSleepRqPin,
           SIM800_WAKE_LEVEL, SIM800_WAKE_PULSE_MS, SIM800_STATUS_TIME_MS,
           SIM800_DISCONNECT_TIME_MS, SIM800_WAKE_DELAY_MS,

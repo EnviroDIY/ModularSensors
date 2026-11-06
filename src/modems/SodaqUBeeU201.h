@@ -161,12 +161,11 @@ class SodaqUBeeU201 : public loggerModemImpl<TinyGsmUBLOX, false> {
     /**
      * @brief Construct a new Sodaq UBee U201 object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param ubloxModem A TinyGsmUBLOX instance.
      * @param powerPin @copydoc _powerPin
      * For the Sodaq UBee, this is the pin labeled `ON/OFF`; pin 9 on the bee
      * socket.  The fact that this pin controls the power to the u-blox module
@@ -185,7 +184,7 @@ class SodaqUBeeU201 : public loggerModemImpl<TinyGsmUBLOX, false> {
      *
      * @see loggerModem::loggerModem
      */
-    SodaqUBeeU201(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+    SodaqUBeeU201(TinyGsmUBLOX& ubloxModem, int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
                   const char* apn);
     /**

@@ -12,11 +12,11 @@
 #include "EspressifESP8266.h"
 
 // Constructors
-EspressifESP8266::EspressifESP8266(Stream* modemStream, int8_t powerPin,
+EspressifESP8266::EspressifESP8266(TinyGsmESP8266& xxxxxModem, int8_t powerPin,
                                    int8_t modemResetPin, const char* ssid,
                                    const char* pwd, int8_t modemSleepRqPin,
                                    int8_t espSleepRqPin)
-    : Espressif<TinyGsmESP8266>(modemStream, powerPin, modemResetPin, ssid, pwd,
+    : Espressif<TinyGsmESP8266>(xxxxxModem, powerPin, modemResetPin, ssid, pwd,
                                 modemSleepRqPin, espSleepRqPin) {}
 
 
@@ -33,7 +33,7 @@ bool EspressifESP8266::modemSleepFxn() {
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
-        _modemStream->flush();
+        gsmModem.stream.flush();
         return success;
     } else if (_modemSleepRqPin >= 0) {
         // Light sleep without the status pin
@@ -78,7 +78,7 @@ bool EspressifESP8266::modemSleepFxn() {
         MS_DEEP_DBG(F("No pins for sleeping the Espressif module. "
                       "Hopefully it's in the "
                       "state you want."));
-        _modemStream->flush();
+        gsmModem.stream.flush();
         return true;
     }
 }

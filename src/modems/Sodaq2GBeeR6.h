@@ -118,12 +118,11 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
     /**
      * @brief Construct a new Sodaq 2GBee R6 object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param sim800Modem A TinyGsmSim800 instance.
      * @param powerPin @copydoc _powerPin
      * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in Sodaq (and SIMCom)'s documentation.
@@ -131,17 +130,16 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
      *
      * @see SIMComSIM800::SIMComSIM800
      */
-    Sodaq2GBeeR6(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+    Sodaq2GBeeR6(TinyGsmSim800& sim800Modem, int8_t powerPin, int8_t statusPin,
                  const char* apn);
     /**
      * @brief Construct a new Sodaq 2GBee R6 object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param sim800Modem A TinyGsmSim800 instance.
      * @param vRefPin The digital pin number of a pin on the mcu controlling the
      * voltage reference (pin 1) for the GPRSBee
      * @param statusPin @copydoc _statusPin
@@ -154,7 +152,7 @@ class Sodaq2GBeeR6 : public SIMComSIM800 {
      * somewhat muddled on the distinction between the `PWRKEY` and the module
      * power in.
      */
-    Sodaq2GBeeR6(Stream* modemStream, int8_t vRefPin, int8_t statusPin,
+    Sodaq2GBeeR6(TinyGsmSim800& sim800Modem, int8_t vRefPin, int8_t statusPin,
                  int8_t powerPin, const char* apn);
     /**
      * @brief Destroy the Sodaq 2GBee R6 object - no action taken

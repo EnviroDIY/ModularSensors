@@ -99,12 +99,11 @@ class EspressifESP32 : public Espressif<TinyGsmESP32> {
     /**
      * @brief Construct a new Espressif ESP32 object.
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param esp32Modem A TinyGsmESP32 instance.
      * @param powerPin @copydoc _powerPin
      * @param modemResetPin @copydoc _modemResetPin
      * This is the ESP's `RSTB/DIO16` pin.
@@ -120,8 +119,8 @@ class EspressifESP32 : public Espressif<TinyGsmESP32> {
      *
      * @see loggerModem::loggerModem
      */
-    EspressifESP32(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
-                   const char* ssid, const char* pwd,
+    EspressifESP32(TinyGsmESP32& esp32Modem, int8_t powerPin,
+                   int8_t modemResetPin, const char* ssid, const char* pwd,
                    int8_t modemSleepRqPin = -1, int8_t espSleepRqPin = -1);
     /**
      * @brief Destroy the Espressif ESP32 object - no action taken

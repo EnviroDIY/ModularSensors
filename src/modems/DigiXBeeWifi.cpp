@@ -12,12 +12,12 @@
 #include "DigiXBeeWifi.h"
 
 // Constructor/Destructor
-DigiXBeeWifi::DigiXBeeWifi(Stream* modemStream, int8_t powerPin,
+DigiXBeeWifi::DigiXBeeWifi(TinyGsmXBee& xbeeModem, int8_t powerPin,
                            int8_t statusPin, bool useCTSStatus,
                            int8_t modemResetPin, int8_t modemSleepRqPin,
                            const char* ssid, const char* pwd,
                            bool maintainAssociation)
-    : DigiXBee<TinyGsmXBee>(modemStream, powerPin, statusPin, useCTSStatus,
+    : DigiXBee<TinyGsmXBee>(xbeeModem, powerPin, statusPin, useCTSStatus,
                             modemResetPin, modemSleepRqPin),
       _ssid(ssid),
       _pwd(pwd),

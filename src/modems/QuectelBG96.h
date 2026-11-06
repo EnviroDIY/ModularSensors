@@ -173,12 +173,11 @@ class QuectelBG96 : public loggerModemImpl<TinyGsmBG96, false> {
     /**
      * @brief Construct a new Quectel BG96 object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param bg96Modem A TinyGsmBG96 instance.
      * @param powerPin @copydoc _powerPin
      * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in Quectel's integration guide.
@@ -190,7 +189,7 @@ class QuectelBG96 : public loggerModemImpl<TinyGsmBG96, false> {
      *
      * @see loggerModem::loggerModem
      */
-    QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+    QuectelBG96(TinyGsmBG96& bg96Modem, int8_t powerPin, int8_t statusPin,
                 int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn);
     /**
      * @brief Destroy the Quectel BG96 object - no action taken

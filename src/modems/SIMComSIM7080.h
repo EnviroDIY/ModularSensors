@@ -155,12 +155,11 @@ class SIMComSIM7080 : public loggerModemImpl<TinyGsmSim7080, false> {
  public:
     /**
      * @brief Construct a new SIMComSIM7080 object
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param sim7080Modem A TinyGsmSim7080 instance.
      * @param powerPin @copydoc _powerPin
      * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in SIMCom's integration guide.
@@ -173,8 +172,8 @@ class SIMComSIM7080 : public loggerModemImpl<TinyGsmSim7080, false> {
      * @note The SIM7080G does not have a `RESET` pin.  Resets are done using
      * the `PWRKEY`.
      */
-    SIMComSIM7080(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                  int8_t modemSleepRqPin, const char* apn);
+    SIMComSIM7080(TinyGsmSim7080& sim7080Modem, int8_t powerPin,
+                  int8_t statusPin, int8_t modemSleepRqPin, const char* apn);
     /**
      * @brief Destroy the SIMComSIM7080 object - no action needed
      */

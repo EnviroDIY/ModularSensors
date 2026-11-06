@@ -12,11 +12,12 @@
 #include "SequansMonarch.h"
 
 // Constructor
-SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
-                               int8_t statusPin, int8_t modemResetPin,
-                               int8_t modemSleepRqPin, const char* apn)
+SequansMonarch::SequansMonarch(TinyGsmSequansMonarch& monarchModem,
+                               int8_t powerPin, int8_t statusPin,
+                               int8_t modemResetPin, int8_t modemSleepRqPin,
+                               const char* apn)
     : loggerModemImpl<TinyGsmSequansMonarch, false>(
-          modemStream, powerPin, statusPin, VZM20Q_STATUS_LEVEL, modemResetPin,
+          monarchModem, powerPin, statusPin, VZM20Q_STATUS_LEVEL, modemResetPin,
           VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS, modemSleepRqPin,
           VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS, VZM20Q_STATUS_TIME_MS,
           VZM20Q_DISCONNECT_TIME_MS, VZM20Q_WAKE_DELAY_MS,

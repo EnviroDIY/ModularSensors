@@ -14,10 +14,10 @@
 
 // Constructor/Destructor
 DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
-    Stream* modemStream, int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-    int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn,
-    const char* user, const char* pwd)
-    : DigiXBee<TinyGsmXBee>(modemStream, powerPin, statusPin, useCTSStatus,
+    TinyGsmXBee& xbeeModem, int8_t powerPin, int8_t statusPin,
+    bool useCTSStatus, int8_t modemResetPin, int8_t modemSleepRqPin,
+    const char* apn, const char* user, const char* pwd)
+    : DigiXBee<TinyGsmXBee>(xbeeModem, powerPin, statusPin, useCTSStatus,
                             modemResetPin, modemSleepRqPin),
       _apn(apn),
       _user(user),

@@ -12,13 +12,12 @@
 #include "DigiXBee3GBypass.h"
 
 // Constructor/Destructor
-DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream, int8_t powerPin,
+DigiXBee3GBypass::DigiXBee3GBypass(TinyGsmUBLOX& ubloxModem, int8_t powerPin,
                                    int8_t statusPin, bool useCTSStatus,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
                                    const char* apn)
-    : DigiXBee<TinyGsmUBLOX>(modemStream, powerPin, statusPin, useCTSStatus,
+    : DigiXBee<TinyGsmUBLOX>(ubloxModem, powerPin, statusPin, useCTSStatus,
                              modemResetPin, modemSleepRqPin),
-
       _apn(apn) {}
 
 bool DigiXBee3GBypass::connectWithCredentials() {

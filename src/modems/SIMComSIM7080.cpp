@@ -12,11 +12,11 @@
 #include "SIMComSIM7080.h"
 
 // Constructor
-SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
+SIMComSIM7080::SIMComSIM7080(TinyGsmSim7080& sim7080Modem, int8_t powerPin,
                              int8_t statusPin, int8_t modemSleepRqPin,
                              const char* apn)
     : loggerModemImpl<TinyGsmSim7080, false>(
-          modemStream, powerPin, statusPin, SIM7080_STATUS_LEVEL,
+          sim7080Modem, powerPin, statusPin, SIM7080_STATUS_LEVEL,
           modemSleepRqPin, SIM7080_RESET_LEVEL, SIM7080_RESET_PULSE_MS,
           modemSleepRqPin, SIM7080_WAKE_LEVEL, SIM7080_WAKE_PULSE_MS,
           SIM7080_STATUS_TIME_MS, SIM7080_DISCONNECT_TIME_MS,

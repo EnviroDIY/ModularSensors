@@ -160,12 +160,11 @@ class SIMComSIM7000 : public loggerModemImpl<TinyGsmSim7000SSL, false> {
  public:
     /**
      * @brief Construct a new SIMComSIM7000 object
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param sim7000Modem A TinyGsmSim7000SSL instance.
      * @param powerPin @copydoc _powerPin
      * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in SIMCom's integration guide.
@@ -177,9 +176,9 @@ class SIMComSIM7000 : public loggerModemImpl<TinyGsmSim7000SSL, false> {
      *
      * @see loggerModem::loggerModem
      */
-    SIMComSIM7000(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                  int8_t modemResetPin, int8_t modemSleepRqPin,
-                  const char* apn);
+    SIMComSIM7000(TinyGsmSim7000SSL& sim7000Modem, int8_t powerPin,
+                  int8_t statusPin, int8_t modemResetPin,
+                  int8_t modemSleepRqPin, const char* apn);
     /**
      * @brief Destroy the SIMComSIM7000 object - no action needed
      */

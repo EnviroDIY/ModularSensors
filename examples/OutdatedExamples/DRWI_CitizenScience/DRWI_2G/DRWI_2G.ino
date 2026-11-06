@@ -75,9 +75,10 @@ const int8_t modemLEDPin    = redLED;  // MCU pin connected an LED to show modem
 // Network connection information
 const char* apn = "YourAPN";  // The APN for cellular connection
 
-Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
-// Create an extra reference to the modem by a generic name
-Sodaq2GBeeR6 modem = modem2GB;
+// Create a TinyGsm modem
+TinyGsmSim800 gsmModem(modemSerial);
+// Create a loggerModem object
+Sodaq2GBeeR6 modem(gsmModem, modemVccPin, modemStatusPin, apn);
 /** End [sodaq_2g_bee_r6] */
 
 
@@ -213,10 +214,14 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/MonitorMyWatershedPublisher.h>
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
-                                          samplingFeature);
+// Create a client for Monitor My Watershed - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsmSim800::GsmClientSim800 mmwClient(gsmModem);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, &mmwClient,
+                                          registrationToken, samplingFeature);
 /** End [publishers] */
 
 

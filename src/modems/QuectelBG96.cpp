@@ -12,11 +12,11 @@
 #include "QuectelBG96.h"
 
 // Constructor
-QuectelBG96::QuectelBG96(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                         int8_t modemResetPin, int8_t modemSleepRqPin,
-                         const char* apn)
+QuectelBG96::QuectelBG96(TinyGsmBG96& bg96Modem, int8_t powerPin,
+                         int8_t statusPin, int8_t modemResetPin,
+                         int8_t modemSleepRqPin, const char* apn)
     : loggerModemImpl<TinyGsmBG96, false>(
-          modemStream, powerPin, statusPin, BG96_STATUS_LEVEL, modemResetPin,
+          bg96Modem, powerPin, statusPin, BG96_STATUS_LEVEL, modemResetPin,
           BG96_RESET_LEVEL, BG96_RESET_PULSE_MS, modemSleepRqPin,
           BG96_WAKE_LEVEL, BG96_WAKE_PULSE_MS, BG96_STATUS_TIME_MS,
           BG96_DISCONNECT_TIME_MS, BG96_WAKE_DELAY_MS,

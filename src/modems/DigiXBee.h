@@ -202,7 +202,9 @@ class DigiXBee : public loggerModemImpl<GsmModemType_T, true> {
     /**
      * @brief Construct a new Digi XBee object
      *
-     * @param modemStream The Arduino stream instance for serial communication.
+     * @param gsmModem A TinyGSM modem instance.  This will be of type
+     * TinyGsmXBee in transparent mode or of the type of cellular chip in bypass
+     * mode.
      * @param powerPin @copydoc _powerPin
      * @param statusPin @copydoc _statusPin
      * This can be either the pin named `ON/SLEEP_N/DIO9` or `CTS_N/DIO7` pin in
@@ -218,14 +220,15 @@ class DigiXBee : public loggerModemImpl<GsmModemType_T, true> {
      *
      * @see loggerModem::loggerModem
      */
-    DigiXBee(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+    DigiXBee(GsmModemType_T& gsmModem, int8_t powerPin, int8_t statusPin,
              bool useCTSStatus, int8_t modemResetPin, int8_t modemSleepRqPin)
         : loggerModemImpl<GsmModemType_T, true>(
-              modemStream, powerPin, statusPin, !useCTSStatus, modemResetPin,
+              gsmModem, powerPin, statusPin, !useCTSStatus, modemResetPin,
               XBEE_RESET_LEVEL, XBEE_RESET_PULSE_MS, modemSleepRqPin,
               XBEE_WAKE_LEVEL, XBEE_WAKE_PULSE_MS, XBEE_STATUS_TIME_MS,
               XBEE_DISCONNECT_TIME_MS, XBEE_WAKE_DELAY_MS,
               XBEE_AT_RESPONSE_TIME_MS) {}
+
     /**
      * @brief Destroy the Digi XBee object - no action taken
      */

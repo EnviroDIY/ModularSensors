@@ -133,6 +133,7 @@
     "ENABLEINTERRUPT",
     "enviro_diy",
     "EnviroDIY",
+    "EpochTime",
     "Espressif",
     "Everlight",
     "examplenavigation",
@@ -307,6 +308,7 @@
     "*doxyfile*",
     ".vscode",
     "library.json",
-    "**/lib/**"
+    "**/lib/**",
+    ".gitignore"
   ]
 }

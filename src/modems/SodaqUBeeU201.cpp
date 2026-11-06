@@ -12,11 +12,11 @@
 #include "SodaqUBeeU201.h"
 
 // Constructor
-SodaqUBeeU201::SodaqUBeeU201(Stream* modemStream, int8_t powerPin,
+SodaqUBeeU201::SodaqUBeeU201(TinyGsmUBLOX& ubloxModem, int8_t powerPin,
                              int8_t statusPin, int8_t modemResetPin,
                              int8_t modemSleepRqPin, const char* apn)
     : loggerModemImpl<TinyGsmUBLOX, false>(
-          modemStream, powerPin, statusPin, U201_STATUS_LEVEL, modemResetPin,
+          ubloxModem, powerPin, statusPin, U201_STATUS_LEVEL, modemResetPin,
           U201_RESET_LEVEL, U201_RESET_PULSE_MS, modemSleepRqPin,
           U201_WAKE_LEVEL, U201_WAKE_PULSE_MS, U201_STATUS_TIME_MS,
           U201_DISCONNECT_TIME_MS, U201_WAKE_DELAY_MS,
