@@ -11,6 +11,9 @@
 #include "LoggerBase.h"
 #include "dataPublisherBase.h"
 
+// Include the EpochTime library
+#include <EpochTime.h>
+
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && \
     not defined(SDI12_INTERNAL_PCINT)
 // Unless we're forcing use of internal interrupts, use EnableInterrupt for AVR
@@ -631,6 +634,7 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                                Logger::_loggerUTCOffset);
 }
 
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
 // This converts an epoch time (unix time) into a ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
@@ -642,6 +646,8 @@ String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
                   Logger::_loggerEpoch),
         Logger::_loggerUTCOffset);
 }
+#endif
+#if EPOCHTIME_ENABLE_STRFTIME
 void Logger::formatDateTime(char* buffer, const char* fmt,
                             time_t epochSeconds) {
     TimeUtils::formatDateTime(
@@ -650,6 +656,7 @@ void Logger::formatDateTime(char* buffer, const char* fmt,
                   static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
                   Logger::_loggerEpoch));
 }
+#endif
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane() {
     return loggerClock::isRTCSane();
@@ -1222,16 +1229,28 @@ String Logger::generateFileName(bool include_time, const char* extension,
     const char* use_ext = extension != nullptr ? extension : ".csv";
     MS_DEEP_DBG(F("Generating filename with extension:"), use_ext);
     uint8_t len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
+    // The EpochTime library by default compiles with the generic
+    // formatDateTime function disabled (that is, without
+    // `EPOCHTIME_ENABLE_STRFTIME` defined).  Instead of using strftime to get
+    // the date-time for the filename, we use a sub-string of the ISO8601
+    // formatted datetime.
+    char isoBuf[26] = {'\0'};  // buffer for ISO8601 formatted datetime
+    // NOTE: the format function will not convert time zones, only use the input
+    // zone to print the zone info. Since we're going to crop off that part
+    // anyway, it doesn't matter what we put in as the offset.
+    TimeUtils::formatISO8601(
+        isoBuf,
+        epochTime(Logger::markedLocalUnixTime,
+                  static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
+                  Logger::_loggerEpoch),
+        static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600);
+
     // length: YYYYMMDD_HHMMSS = 15 + 1 for null or YYYYMMDD = 8 + 1 for null
     uint8_t len_time            = include_time ? 16 : 9;
     char    time_buff[len_time] = {'\0'};
-    if (include_time) {
-        formatDateTime(time_buff, "%Y%m%d_%H%M%S", Logger::markedLocalUnixTime);
-        time_buff[15] = '\0';  // just to be sure
-    } else {
-        formatDateTime(time_buff, "%Y%m%d", Logger::markedLocalUnixTime);
-        time_buff[8] = '\0';  // just to be sure
-    }
+    // copy the relevant part of ISO8601 string
+    strncpy(time_buff, isoBuf, len_time - 1);
+    time_buff[len_time - 1] = '\0';  // just to be sure
     MS_DEEP_DBG(F("Generating filename with timestamp string:"), time_buff);
     String filename = String(use_prefix);
     if (len_underscore) { filename += String("_"); }
@@ -2117,3 +2136,4 @@ void Logger::makeInitialConnections() {
 
 // cSpell:ignore prtout1 DFLLVAL DFLLSYNC
 // cSpell:ignore DIRCLR INEN PULLEN HIBCFG BRAMCFG MAINVREG FRZCLK BODSE
+// cSpell:ignore EPOCHTIME_ENABLE_STRFTIME EPOCHTIME_ENABLE_STRING_FORMATTING

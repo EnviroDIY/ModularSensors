@@ -905,7 +905,7 @@ class Logger {
      * @return The number of seconds from the start of the **UNIX** epoch.
      */
     static time_t getNowUTCEpoch();
-
+#if EPOCHTIME_ENABLE_STRING_FORMATTING || defined(DOXYGEN)
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.
      *
@@ -916,9 +916,15 @@ class Logger {
      * @param epochSeconds The number of seconds since the start of the logger's
      * epoch (#MS_LOGGER_EPOCH).
      * @return An ISO8601 formatted String.
+     *
+     * @remark This is only available if EPOCHTIME_ENABLE_STRING_FORMATTING is
+     * defined as a build flag for the entire build. It cannot be enabled or
+     * disabled on a per-file basis or in just the Modular Sensors configuration
+     * file.  The default options for EpochTime enable this feature.
      */
     static String formatDateTime_ISO8601(time_t epochSeconds);
-
+#endif
+#if EPOCHTIME_ENABLE_STRFTIME || defined(DOXYGEN)
     /**
      * @brief Convert an epoch time into a character string based on the input
      * strftime format string and put it into the given buffer.
@@ -937,9 +943,15 @@ class Logger {
      * @param fmt The strftime format string.
      * @param epochSeconds The number of seconds since the start of the given
      * epoch in the given offset from UTC.
+     *
+     * @important This is only available if EPOCHTIME_ENABLE_STRFTIME is defined
+     * as a build flag for the entire build. It cannot be enabled or disabled on
+     * a per-file basis or in just the Modular Sensors configuration file.  The
+     * default options for EpochTime **DO NOT** enable this feature.
      */
     static void formatDateTime(char* buffer, const char* fmt,
                                time_t epochSeconds);
+#endif
 
     /**
      * @brief Pass-through to loggerClock::setRTClock(time_t
@@ -1575,3 +1587,5 @@ class Logger {
 };
 
 #endif  // SRC_LOGGERBASE_H_
+
+// cSpell:ignore EPOCHTIME_ENABLE_STRFTIME EPOCHTIME_ENABLE_STRING_FORMATTING

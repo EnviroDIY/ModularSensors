@@ -66,7 +66,7 @@
       "name": "EpochTime",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/EpochTime",
-      "version": "~1.1.1",
+      "version": "~1.2.0",
       "note": "An Arduino library for converting between time in parts as used by core gmtime functions and epoch time (Unix time).",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
