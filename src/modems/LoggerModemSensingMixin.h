@@ -216,9 +216,9 @@ class loggerModemSensingMixin {
                                   int16_t& milliVolts,
                                   TinyGsmCapabilities::false_type) {
         MS_DBG(F("This modem doesn't return battery information!"));
-        chargeState = 99;
+        chargeState = -99;
         percent     = -99;
-        milliVolts  = 9999;
+        milliVolts  = -9999;
         return false;
     }
 

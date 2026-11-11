@@ -82,7 +82,7 @@ bool loggerModem::updateModemMetadata() {
         MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
         MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
         MS_DBG(F("CURRENT Modem Battery Voltage:"), volt);
-        if (state != 99)
+        if (state != -99)
             loggerModem::_priorBatteryState = static_cast<float>(state);
         else
             loggerModem::_priorBatteryState =
@@ -94,7 +94,7 @@ bool loggerModem::updateModemMetadata() {
             loggerModem::_priorBatteryPercent =
                 static_cast<float>(MS_INVALID_VALUE);
 
-        if (volt != 9999)
+        if (volt != -9999)
             loggerModem::_priorBatteryVoltage = static_cast<float>(volt);
         else
             loggerModem::_priorBatteryVoltage =

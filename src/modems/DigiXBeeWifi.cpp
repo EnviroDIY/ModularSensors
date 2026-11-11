@@ -482,10 +482,10 @@ bool DigiXBeeWifi::updateModemMetadata() {
     if ((_pollModemMetaData & MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) ==
         MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) {
         MS_DBG(F("Getting input voltage:"));
-        uint16_t volt_mV = 9999;
-        volt_mV          = gsmModem.getBattVoltage();
+        int16_t volt_mV = -9999;
+        volt_mV         = gsmModem.getBattVoltage();
         MS_DBG(F("CURRENT Modem battery (mV):"), volt_mV);
-        if (volt_mV != 9999) {
+        if (volt_mV != -9999) {
             loggerModem::_priorBatteryVoltage =
                 static_cast<float>(volt_mV / 1000.0f);
         } else {
@@ -493,7 +493,7 @@ bool DigiXBeeWifi::updateModemMetadata() {
                 static_cast<float>(MS_INVALID_VALUE);
         }
 
-        success &= ((volt_mV != 9999) && (volt_mV != 0));
+        success &= ((volt_mV != -9999) && (volt_mV != 0));
     } else {
         MS_DBG(F("Polling for modem battery voltage is disabled"));
     }
