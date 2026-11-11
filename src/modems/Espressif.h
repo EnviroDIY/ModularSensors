@@ -193,11 +193,10 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
               const char* ssid, const char* pwd, int8_t modemSleepRqPin = -1,
               int8_t espSleepRqPin = -1)
         : loggerModemImpl<GsmModemType_T, true>(
-              gsmModem, powerPin, modemSleepRqPin, LOW, modemResetPin,
-              ESPRESSIF_RESET_LEVEL, ESPRESSIF_RESET_PULSE_MS, -1,
-              ESPRESSIF_WAKE_LEVEL, ESPRESSIF_WAKE_PULSE_MS, 0,
-              ESPRESSIF_DISCONNECT_TIME_MS, ESPRESSIF_WAKE_DELAY_MS,
-              ESPRESSIF_AT_RESPONSE_TIME_MS),
+              gsmModem, powerPin, -1, LOW, modemResetPin, ESPRESSIF_RESET_LEVEL,
+              ESPRESSIF_RESET_PULSE_MS, modemSleepRqPin, ESPRESSIF_WAKE_LEVEL,
+              ESPRESSIF_WAKE_PULSE_MS, 0, ESPRESSIF_DISCONNECT_TIME_MS,
+              ESPRESSIF_WAKE_DELAY_MS, ESPRESSIF_AT_RESPONSE_TIME_MS),
           _ssid(ssid),
           _pwd(pwd),
           _espSleepRqPin(espSleepRqPin) {}
@@ -205,14 +204,6 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
      * @brief Destroy the Espressif object - no action taken
      */
     ~Espressif() override = default;
-
-    /**
-     * @brief A pointer to the Arduino serial Stream used for communication
-     * between the MCU and the Espressif module.
-     *
-     * We need to keep the pointer to the stream for tossing junk on boot.
-     */
-    Stream* _modemStream;
 
  protected:
     bool connectWithCredentials() override {
@@ -325,15 +316,15 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
         delay(ESPRESSIF_BOOT_LOG_DELAY_MS);  // It will take at least this long
         uint32_t start   = millis();
         bool     success = false;
-        while (!_modemStream->available() &&
+        while (!this->gsmModem.stream.available() &&
                millis() - start < ESPRESSIF_BOOT_LOG_TIMEOUT_MS) {
             yield();
         }
-        if (_modemStream->available()) {
+        if (this->gsmModem.stream.available()) {
             success = true;
             // Read the boot log to empty it from the serial buffer
-            while (_modemStream->available()) {
-                _modemStream->read();
+            while (this->gsmModem.stream.available()) {
+                this->gsmModem.stream.read();
                 delay(2);
             }
         }

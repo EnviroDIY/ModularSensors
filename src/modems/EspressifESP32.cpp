@@ -33,7 +33,9 @@ bool EspressifESP32::modemSleepFxn() {
         // days).  So here I'll tell the ESP32 to sleep for 1 second longer than
         // that knowing we can use the reset pin or power cycle to wake it up if
         // we're ready sooner.
-        gsmModem.sendAT(GF("+GSLP=196021000"));
+        // AT+GSLP=<time>
+        // <time>: sleep time in milliseconds
+        gsmModem.sendAT(GF("+GSLP=1966021000"));
         bool success = gsmModem.waitResponse() == 1;
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
