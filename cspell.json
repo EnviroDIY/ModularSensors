@@ -317,6 +317,7 @@
     "*doxyfile*",
     ".vscode",
     "library.json",
+    "dependencies.json",
     "**/lib/**",
     "docs/Doxyfile",
     ".github/**/*.yaml",

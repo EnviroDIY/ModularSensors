@@ -63,7 +63,7 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "https://github.com/EnviroDIY/TinyGSM.git#develop",
+      "version": "https://github.com/EnviroDIY/TinyGSM",
       "version_note": "~0.13.0",
       "note": "A small Arduino library for AT-command-based internet modules.",
       "authors": ["Volodymyr Shymanskyy", "Sara Damiano"],
