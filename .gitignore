@@ -47,21 +47,32 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Python
-__pycache__/
+# Compiled files, executables
+*.o
+*.a
+*.exe
+*.out
+*.app
 
-# Filters
-.gitconfig
-filters/*
+# Compressed and Backup Files
+*.orig
+*.log
+*.bak
+*.tar.gz
+*.zip
+sync.ffs_db
 
 # Certificates
-*.cert
-*.crt
 *.pem
 *.pem.crt
 *.pem.cert
 *.pem.key
+*.crt
+*.cert
 *.key
+
+# Python
+__pycache__/
 
 # PyCharm
 .idea/
@@ -74,30 +85,34 @@ filters/*
 # VSCode
 .vscode
 .history
+.settings
 
 # PlatformIO
-.settings
 .pioenvs
 .piolibdeps
 .pio
 lib
 lib/readme.txt
-include
+/include
 include/readme.txt
 pioScripts
-variants
-boards
-tests
+/tests
+tests/readme.txt
+/boards
+/variants
+/pioScripts
 .sconsign.dblite
 platformio.ini
 extra_envs.ini
+.clang-tidy
+compile_commands.json
 platformio_extra_envs.ini
 pio_common_libdeps.ini
 
 # Arduino CLI
 arduino_cli.log
 continuous_integration/arduino_cli_local.yaml
-home/arduino
+home/arduino/*
 arduino_lint.md
 arduino_lint.json
 
@@ -110,24 +125,28 @@ continuous_integration_artifacts/*
 clang_format_all.bat
 generateKeywords.bat
 installWorkingDependencies.bat
-clang-format-all.py
 runDoxygen.bat
-compile_commands.json
 buildCI.bat
 run_mcss.bat
 
+# Filters
+filters/*
+
+# Planning and Archive Folders
+/archive
+/planning
+**/*.*_archive
+
+# Local Agent Instructions
+AGENTS.md
+.github/copilot-instructions.md
+.bumpversion.toml
+
 # Other stuff
-*.tar.gz
-sync.ffs_db
-archive
-planning
 compile_tests
 logger_test*
 ex_one_offs
 **/sensor_tests
-AGENTS.md
-.github/copilot-instructions.md
-.bumpversion.toml
 .clang-tidy
 .github/workflows/LibraryBuild.yml
 datasheets/*
@@ -139,5 +158,3 @@ docs/footer.html
 docs/header.html
 tests/SL099_certificates/*
 tests/test_certificates/*
-run_CI_pipeline.bat
-AGENTS.md

@@ -174,7 +174,7 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
      * removed in newer firmware versions.  The status pin is not used in this
      * library.
      *
-     * @param espressif A TinyGsmEspressif instance.
+     * @param gsmModem A TinyGsmEspressif instance.
      * @param powerPin @copydoc _powerPin
      * @param modemResetPin @copydoc _modemResetPin
      * This is the ESP's `RSTB/DIO16` pin.

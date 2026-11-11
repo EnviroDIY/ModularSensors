@@ -1,4 +1,7 @@
 {
+  "version": "0.2",
+  "dictionaryDefinitions": [],
+  "dictionaries": [],
   "language": "en-US",
   "ignoreRegExpList": [
     "header-defines",
@@ -69,6 +72,16 @@
     }
   ],
   "words": [
+    "Adafruit",
+    "doxyfile",
+    "EnviroDIY",
+    "Espressif",
+    "Damiano",
+    "Geleskie",
+    "sdamiano",
+    "SRGDamia1"
+  ],
+  "ignoreWords": [
     "_CHLORO_",
     "_domgl",
     "_DOMGL_",
@@ -78,7 +91,6 @@
     "_turb",
     "_TURB_",
     "Acculevel",
-    "Adafruit",
     "Adalogger",
     "ADCSRA",
     "Alconox",
@@ -123,7 +135,6 @@
     "Digikey",
     "DLPP",
     "dopto",
-    "doxyfile",
     "DPLL",
     "Dragino",
     "DreamHost",
@@ -132,9 +143,7 @@
     "eeprom",
     "ENABLEINTERRUPT",
     "enviro_diy",
-    "EnviroDIY",
     "EpochTime",
-    "Espressif",
     "Everlight",
     "examplenavigation",
     "exceedances",
@@ -152,7 +161,6 @@
     "GCKLGEN",
     "GCLK",
     "GCLKGEN",
-    "Geleskie",
     "GENCTRL",
     "Geolux",
     "GPLP",
@@ -236,7 +244,6 @@
     "SAMD",
     "Sanguino",
     "SARAR4",
-    "sdamiano",
     "SDCARD",
     "SDHC",
     "Seeed",
@@ -258,7 +265,6 @@
     "Soracom",
     "SRDY",
     "SRGD",
-    "SRGDamia1",
     "Stoffregen",
     "SUPC",
     "SWRC",
@@ -302,13 +308,19 @@
     "µmol",
     "µsec"
   ],
-  "ignoreWords": [],
   "ignorePaths": [
+    ".vscode",
+    ".gitignore",
+    ".clang-format",
+    ".clang-tidy",
     "platformio.ini",
     "*doxyfile*",
     ".vscode",
     "library.json",
     "**/lib/**",
+    "docs/Doxyfile",
+    ".github/**/*.yaml",
+    ".github/**/*.yml",
     ".gitignore"
   ]
 }

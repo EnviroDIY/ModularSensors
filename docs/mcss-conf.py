@@ -1,6 +1,7 @@
-DOXYFILE = "mcss-Doxyfile"
+DOXYFILE = "doxyfile"
+HTML_OUTPUT = "../ModularSensors_Doxygen/m.css"
+PROJECT_REPOSITORY = "https://github.com/EnviroDIY/ModularSensors"
 THEME_COLOR = "#cb4b16"
-# FAVICON = "https://3qzcxr28gq9vutx8scdn91zq-wpengine.netdna-ssl.com/wp-content/uploads/2016/05/cropped-EnviroDIY_LogoMaster_TrueSquare_V5_TwoTree_Trans_notext-192x192.png"
 FAVICON = "MS_FavIcon.png"
 LINKS_NAVBAR1 = [
     (
@@ -123,3 +124,5 @@ MOBILE_LOGO = "gp-mobile-logo.png"
 SCROLLING_LOGO = "gp-scrolling-logo.png"
 M_MATH_RENDER_AS_CODE = False
 M_MATH_CACHE_FILE = "m.math.cache"
+
+USE_FOLDERS = False
