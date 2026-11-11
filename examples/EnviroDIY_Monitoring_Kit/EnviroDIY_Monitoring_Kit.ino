@@ -349,7 +349,7 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // encrypted connection.
 TinyGsmClient mmwClient(gsmModem);
 // Create a data publisher for the Monitor My Watershed POST endpoint
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, &mmwClient,
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
                                           registrationToken);
 /** End [monitor_my_watershed_publisher] */
 #endif

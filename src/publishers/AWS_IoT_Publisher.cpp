@@ -26,7 +26,7 @@ const char* AWS_IoT_Publisher::timestampTag       = "\"timestamp\":\"";
 
 // Constructors
 // Primary constructor - handles full initialization with all parameters
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
+AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client& inClient,
                                      const char* awsIoTEndpoint,
                                      const char* samplingFeatureUUID)
     : dataPublisher(baseLogger, inClient) {
@@ -36,24 +36,9 @@ AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
     }
     init();
 }
-
-
 // Delegating constructors
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
-                                     const char* awsIoTEndpoint,
-                                     const char* samplingFeatureUUID)
-    : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint,
-                        samplingFeatureUUID) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
-                                     const char* awsIoTEndpoint)
-    : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint, nullptr) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient)
+AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client& inClient)
     : AWS_IoT_Publisher(baseLogger, inClient, nullptr, nullptr) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger)
-    : AWS_IoT_Publisher(baseLogger, nullptr, nullptr, nullptr) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher() : dataPublisher() {
-    init();
-}
 
 
 void AWS_IoT_Publisher::init() {
@@ -130,24 +115,23 @@ void AWS_IoT_Publisher::closeConnection() {
 }
 
 
-// A way to set members in the begin to use with a bare constructor
-void AWS_IoT_Publisher::begin(Logger& baseLogger, Client* inClient,
+// A way to update members and replace the linked logger and client
+void AWS_IoT_Publisher::begin(Logger& baseLogger, Client& inClient,
                               const char* awsIoTEndpoint,
                               const char* samplingFeatureUUID) {
     setEndpoint(awsIoTEndpoint);
     dataPublisher::begin(baseLogger, inClient);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    if (samplingFeatureUUID != nullptr) {
+        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+    }
 }
-void AWS_IoT_Publisher::begin(Logger& baseLogger, const char* awsIoTEndpoint,
-                              const char* samplingFeatureUUID) {
-    setEndpoint(awsIoTEndpoint);
-    dataPublisher::begin(baseLogger);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
+void AWS_IoT_Publisher::begin(Logger& baseLogger, Client& inClient,
+                              const char* awsIoTEndpoint) {
+    begin(baseLogger, inClient, awsIoTEndpoint, nullptr);
 }
-
 
 // This sends the data to AWS IoT Core
-int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
+int16_t AWS_IoT_Publisher::publishData(Client& outClient, bool) {
     bool retVal = false;
 
     MS_DBG(F("Preparing to publish data to AWS IoT endpoint"), getEndpoint());
@@ -182,7 +166,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     // we're going to give PubSubClient the address of the txBuffer to send it
     // as a char*.
     // The txBuffer is used for the **payload** only
-    txBufferInit(outClient);
+    txBufferInit(&outClient);
 
     // put the start of the JSON into the outgoing response_buffer
     txBufferAppend('{');
@@ -224,7 +208,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     MS_DBG(F("strlen on buffer:"), strnlen(txBuffer, MS_SEND_BUFFER_SIZE));
 
     // Set the client connection parameters
-    _mqttClient.setClient(*outClient);
+    _mqttClient.setClient(outClient);
     _mqttClient.setServer(_awsIoTEndpoint, mqttPort);
     // NOTE: The MS_MQTT_MAX_PACKET_SIZE must be bigger than the maximum
     // expected incoming *or* outgoing message size. Incoming pre-signed S3 URLs
@@ -236,7 +220,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     // long as the client is connected, it must be connected to the right place.
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
-    if (outClient->connected()) { outClient->stop(); }
+    if (outClient.connected()) { outClient.stop(); }
 
     // Make the MQTT connection
     MS_DBG(F("Opening MQTT Connection to IoT Core"));
@@ -321,7 +305,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 
 
 // This sends the data to AWS IoT Core
-int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
+int16_t AWS_IoT_Publisher::publishMetadata(Client& outClient) {
     bool retVal = false;
 
     MS_DBG(F("Preparing to publish metadata to AWS IoT endpoint"),
@@ -338,10 +322,10 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     MS_DBG(F("Topic ["), strlen(use_topic), F("]:"), use_topic);
 
     // The txBuffer is used for the **payload** only
-    txBufferInit(outClient);
+    txBufferInit(&outClient);
 
     // Set the client connection parameters
-    _mqttClient.setClient(*outClient);
+    _mqttClient.setClient(outClient);
     _mqttClient.setServer(_awsIoTEndpoint, mqttPort);
     // NOTE: The MS_MQTT_MAX_PACKET_SIZE must be bigger than the maximum
     // expected incoming *or* outgoing message size.
@@ -352,7 +336,7 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     // long as the client is connected, it must be connected to the right place.
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
-    if (outClient->connected()) { outClient->stop(); }
+    if (outClient.connected()) { outClient.stop(); }
 
     // Make the MQTT connection
     MS_DBG(F("Opening MQTT Connection to IoT Core"));
@@ -391,7 +375,7 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
             snprintf(varTopicBuffer, strlen(use_topic) + 12, "%s/variable%.2u",
                      use_topic, i);
 
-            txBufferInit(outClient);
+            txBufferInit(&outClient);
             txBufferAppend("{\"variable_number\":");
             itoa(i, num_buf, 10);
             txBufferAppend(num_buf);

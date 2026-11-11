@@ -246,7 +246,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // encrypted connection.
 TinyGsmSim7080::GsmClientSim7080 mmwClient(gsmModem);
 // Create a data publisher for the Monitor My Watershed POST endpoint
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, &mmwClient,
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
                                           registrationToken, samplingFeature);
 /** End [publishers] */
 

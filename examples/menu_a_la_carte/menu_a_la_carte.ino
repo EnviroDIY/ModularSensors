@@ -919,11 +919,11 @@ SIMComSIM7080 modem(gsmModem, modemVccPin, modemStatusPin, modemSleepRqPin,
 
 // set up some helpful typedefs for easier usage of the TinyGSM SIMCom SIM800
 // classes
-typedef TinyGsmSim800                   TinyGsm;
-typedef TinyGsmSim800::GsmClient        TinyGsmClient;
-typedef TinyGsmSim800::GsmClientSecure  TinyGsmClientSecure;
-typedef TinyGsmSim800::GsmSecureContext TinyGsmSecureContext;
-typedef Sim800RegStatus                 RegStatus;
+typedef TinyGsmSim800                         TinyGsm;
+typedef TinyGsmSim800::GsmClientSim800        TinyGsmClient;
+typedef TinyGsmSim800::GsmClientSecureSim800  TinyGsmClientSecure;
+typedef TinyGsmSim800::GsmSecureContextSim800 TinyGsmSecureContext;
+typedef Sim800RegStatus                       RegStatus;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -3628,7 +3628,7 @@ const char* registrationToken =
 // encrypted connection.
 TinyGsmClient mmwClient(gsmModem);
 // Create a data publisher for the Monitor My Watershed POST endpoint
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, &mmwClient,
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
                                           registrationToken);
 /** End [monitor_my_watershed_publisher] */
 #endif
@@ -3652,7 +3652,7 @@ const char* DreamHostPortalRX = "xxxx";
 // encrypted connection.
 TinyGsmClient dhClient(gsmModem);
 // Create a data publisher to DreamHost
-DreamHostPublisher DreamHostGET(dataLogger, &dhClient, DreamHostPortalRX);
+DreamHostPublisher DreamHostGET(dataLogger, dhClient, DreamHostPortalRX);
 /** End [dream_host_publisher] */
 #endif
 
@@ -3686,7 +3686,7 @@ const char* thingSpeakAPIKey =
 // encrypted connection.
 TinyGsmClient tsClient(gsmModem);
 // Create a data publisher for ThingSpeak
-ThingSpeakPublisher TsMqtt(dataLogger, &tsClient, thingSpeakClientName,
+ThingSpeakPublisher TsMqtt(dataLogger, tsClient, thingSpeakClientName,
                            thingSpeakMQTTUser, thingSpeakMQTTPassword,
                            thingSpeakChannelID);
 /** End [thing_speak_publisher] */
@@ -3713,7 +3713,7 @@ const char* ubidotsDeviceID = "######";
 // encrypted connection.
 TinyGsmClient ubidotsClient(gsmModem);
 // Create a data publisher for Ubidots
-UbidotsPublisher ubidots(dataLogger, &ubidotsClient, ubidotsToken,
+UbidotsPublisher ubidots(dataLogger, ubidotsClient, ubidotsToken,
                          ubidotsDeviceID);
 /** End [ubidots_publisher] */
 #endif
@@ -3783,7 +3783,7 @@ TinyGsmSecureContext s3SecureContext(gsmModem, SSLAuthMode::CA_VALIDATION,
 TinyGsmClientSecure s3SecureClient(gsmModem, -1,
                                    s3SecureContext.getSSLContextIndex());
 // Create a data publisher for AWS IoT Core
-S3PresignedPublisher s3pub(dataLogger, &s3SecureClient);
+S3PresignedPublisher s3pub(dataLogger, s3SecureClient);
 /** End [s3_presigned_publisher] */
 #endif
 
@@ -3878,7 +3878,7 @@ TinyGsmSecureContext iotSecureContext(gsmModem,
 TinyGsmClientSecure iotSecureClient(gsmModem, -1,
                                     iotSecureContext.getSSLContextIndex());
 // Create a data publisher for AWS IoT Core
-AWS_IoT_Publisher awsIoTPub(dataLogger, &iotSecureClient, awsIoTEndpoint,
+AWS_IoT_Publisher awsIoTPub(dataLogger, iotSecureClient, awsIoTEndpoint,
                             samplingFeature);
 
 #if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)

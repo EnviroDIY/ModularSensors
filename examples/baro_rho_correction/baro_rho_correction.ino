@@ -360,7 +360,7 @@ const char* samplingFeature =
 // encrypted connection.
 TinyGsmSim800::GsmClientSim800 mmwClient(gsmModem);
 // Create a data publisher for the Monitor My Watershed POST endpoint
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, &mmwClient,
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
                                           registrationToken, samplingFeature);
 /** End [publishers] */
 

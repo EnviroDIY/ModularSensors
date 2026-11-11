@@ -92,61 +92,29 @@ class AWS_IoT_Publisher : public dataPublisher {
      * parameters.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param samplingFeatureUUID The sampling feature UUID
      */
-    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
+    AWS_IoT_Publisher(Logger& baseLogger, Client& inClient,
                       const char* awsIoTEndpoint,
                       const char* samplingFeatureUUID);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object.  This must be
-     * configured with a secure client before use.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param samplingFeatureUUID The sampling feature UUID
-     */
-    AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
-                      const char* samplingFeatureUUID);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object. This must be
-     * configured with a secure client and either a sampling feature UUID or
-     * MQTT topics before use.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     */
-    AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance.  The provided client must already be
      * configured with the correct security context and connection parameters.
      * The AWS_IoT_Publisher must be configured with an endpoint and either a
      * sampling feature UUID or MQTT topics before use.
      */
-    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object.  This must be
-     * configured with a secure client, an AWS IoT endpoint, and either a
-     * sampling feature UUID or MQTT topics before use.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     */
-    explicit AWS_IoT_Publisher(Logger& baseLogger);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object with all members set
-     * to defaults or nulls.  This must be configured with logger object, a
-     * secure client, an AWS IoT endpoint, and either a sampling feature UUID or
-     * MQTT topics before use.
-     */
-    AWS_IoT_Publisher();
+    AWS_IoT_Publisher(Logger& baseLogger, Client& inClient);
     /**
      * @brief Destroy the AWS IoT Core Publisher object
      */
@@ -298,34 +266,21 @@ class AWS_IoT_Publisher : public dataPublisher {
     void closeConnection();
 
     /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
+     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param samplingFeatureUUID The sampling feature UUID
      */
-    void begin(Logger& baseLogger, Client* inClient, const char* awsIoTEndpoint,
+    void begin(Logger& baseLogger, Client& inClient, const char* awsIoTEndpoint,
                const char* samplingFeatureUUID);
     /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
+     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      */
-    void begin(Logger& baseLogger, Client* inClient,
+    void begin(Logger& baseLogger, Client& inClient,
                const char* awsIoTEndpoint);
     /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param samplingFeatureUUID The sampling feature UUID
-     */
-    void begin(Logger& baseLogger, const char* awsIoTEndpoint,
-               const char* samplingFeatureUUID);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     */
-    void begin(Logger& baseLogger, const char* awsIoTEndpoint);
-
-    /**
-     * @brief Utilize an attached modem to open a SSL connection to AWS IoT Core
-     * and publish data over that connection.
+     * @brief Utilize the supplied client to open an SSL connection to AWS IoT
+     * Core and publish data over that connection.
      *
      * This depends on an internet connection already having been made and a
      * client being available.
@@ -336,9 +291,11 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The PubSubClient status code of the response.
      */
-    int16_t publishData(Client* outClient,
+    using dataPublisher::publishData;
+    int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
-    int16_t publishMetadata(Client* outClient) override;
+    using dataPublisher::publishMetadata;
+    int16_t publishMetadata(Client& outClient) override;
 
  protected:
     /**

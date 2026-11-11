@@ -51,46 +51,23 @@ class DreamHostPublisher : public dataPublisher {
      * @brief Construct a new DreamHost Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param dhUrl The URL for sending data to DreamHost
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient, const char* dhUrl);
+    DreamHostPublisher(Logger& baseLogger, Client& inClient, const char* dhUrl);
     /**
      * @brief Construct a new DreamHost Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      */
-    DreamHostPublisher(Logger& baseLogger, Client* inClient);
-    /**
-     * @brief Construct a new DreamHost Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param dhUrl The URL for sending data to DreamHost
-     */
-    DreamHostPublisher(Logger& baseLogger, const char* dhUrl);
-    /**
-     * @brief Construct a new DreamHost Publisher object
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     */
-    explicit DreamHostPublisher(Logger& baseLogger);
-    /**
-     * @brief Construct a new DreamHost Publisher object with all members set to
-     * default or null.
-     *
-     * @note You must call the begin() function to initialize the members before
-     * using the publisher.
-     */
-    DreamHostPublisher();
+    DreamHostPublisher(Logger& baseLogger, Client& inClient);
     /**
      * @brief Destroy the DreamHost Publisher object
      */
@@ -110,18 +87,12 @@ class DreamHostPublisher : public dataPublisher {
     void setDreamHostPortalRX(const char* dhUrl);
 
     /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
+     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
      * @param dhUrl The URL for sending data to DreamHost
      */
-    void begin(Logger& baseLogger, Client* inClient, const char* dhUrl);
+    void begin(Logger& baseLogger, Client& inClient, const char* dhUrl);
     /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param dhUrl The URL for sending data to DreamHost
-     */
-    void begin(Logger& baseLogger, const char* dhUrl);
-
-    /**
-     * @brief Utilizes an attached modem to make a TCP connection to the
+     * @brief Utilizes the supplied client to make a TCP connection to the
      * DreamHost URL and then stream out a get request over that connection.
      *
      * This depends on an internet connection already having been made and a
@@ -134,7 +105,8 @@ class DreamHostPublisher : public dataPublisher {
      *
      * @return The http status code of the response.
      */
-    int16_t publishData(Client* outClient,
+    using dataPublisher::publishData;
+    int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:

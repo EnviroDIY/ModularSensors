@@ -23,46 +23,25 @@ const char* dataPublisher::HTTPtag    = " HTTP/1.1";
 const char* dataPublisher::hostHeader = "\r\nHost: ";
 
 // Primary constructor
-dataPublisher::dataPublisher(Logger& baseLogger, Client* inClient,
+dataPublisher::dataPublisher(Logger& baseLogger, Client& inClient,
                              int sendEveryX, uint8_t startupTransmissions)
     : _baseLogger(&baseLogger),
-      _inClient(inClient),
+      _inClient(&inClient),
       _sendEveryX(sendEveryX),
       _startupTransmissions(startupTransmissions < 1 ? 1
                                                      : startupTransmissions) {
-    _baseModem =
-        _baseLogger->registerDataPublisher(this);  // register self with logger
+    _baseLogger->registerDataPublisher(this);  // register self with logger
 }
-// Constructors
-dataPublisher::dataPublisher(Logger& baseLogger, int sendEveryX,
-                             uint8_t startupTransmissions)
-    : dataPublisher(baseLogger, nullptr, sendEveryX, startupTransmissions) {}
-// Default constructor with explicit initialization to ensure all members are
-// initialized
-dataPublisher::dataPublisher()
-    : _baseLogger(nullptr),
-      _baseModem(nullptr),
-      _inClient(nullptr),
-      _sendEveryX(1),
-      _startupTransmissions(DEFAULT_STARTUP_TRANSMISSIONS) {}
-
-
 // Sets the client
-void dataPublisher::setClient(Client* inClient) {
-    _inClient = inClient;
+void dataPublisher::setClient(Client& inClient) {
+    _inClient = &inClient;
 }
 
 
 // Attaches to a logger
 void dataPublisher::attachToLogger(Logger& baseLogger) {
     _baseLogger = &baseLogger;
-    _baseModem =
-        _baseLogger->registerDataPublisher(this);  // register self with logger
-}
-
-// Set the pointer to a loggerModem instance.
-void dataPublisher::setModemPointer(loggerModem& modemPointer) {
-    _baseModem = &modemPointer;
+    _baseLogger->registerDataPublisher(this);  // register self with logger
 }
 
 
@@ -93,11 +72,8 @@ void dataPublisher::setStartupTransmissions(uint8_t count) {
 
 
 // "Begins" the publisher - attaches client and logger
-void dataPublisher::begin(Logger& baseLogger, Client* inClient) {
+void dataPublisher::begin(Logger& baseLogger, Client& inClient) {
     setClient(inClient);
-    begin(baseLogger);
-}
-void dataPublisher::begin(Logger& baseLogger) {
     attachToLogger(baseLogger);
 }
 
@@ -207,7 +183,7 @@ bool dataPublisher::connectionNeeded() {
     return true;
 }
 
-// This sends data on the "default" client of the modem
+// This sends data on the application-owned client linked to the publisher
 int16_t dataPublisher::publishData(bool forceFlush) {
     if (_inClient == nullptr) {
         int16_t retVal = -2;  // -2 is connection failed in MQTT
@@ -215,17 +191,17 @@ int16_t dataPublisher::publishData(bool forceFlush) {
         return retVal;
     } else {
         MS_DBG(F("Publishing data with provided client."));
-        return publishData(_inClient, forceFlush);
+        return publishData(*_inClient, forceFlush);
     }
 }
 // Duplicates for backwards compatibility
-int16_t dataPublisher::sendData(Client* outClient) {
+int16_t dataPublisher::sendData(Client& outClient) {
     return publishData(outClient);
 }
 int16_t dataPublisher::sendData() {
     return publishData();
 }
-int16_t dataPublisher::publishMetadata(Client*) {
+int16_t dataPublisher::publishMetadata(Client&) {
     // does nothing by default
     PRINTOUT(F("--- No metadata is sent to this publisher!"));
     return 0;
@@ -237,10 +213,9 @@ int16_t dataPublisher::publishMetadata() {
         return retVal;
     } else {
         MS_DBG(F("Publishing data with provided client."));
-        return publishMetadata(_inClient);
+        return publishMetadata(*_inClient);
     }
 }
-
 
 // This spits out a string description of the PubSubClient codes
 String dataPublisher::parseMQTTState(int state) {

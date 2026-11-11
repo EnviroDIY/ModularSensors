@@ -217,7 +217,7 @@ const char* thingSpeakAPIKey =
 // encrypted connection.
 TinyGsmESP8266::GsmClientESP8266 tsClient(gsmModem);
 // Create a data publisher for ThingSpeak
-ThingSpeakPublisher TsMqtt(dataLogger, &tsClient, thingSpeakClientName,
+ThingSpeakPublisher TsMqtt(dataLogger, tsClient, thingSpeakClientName,
                            thingSpeakMQTTUser, thingSpeakMQTTPassword,
                            thingSpeakChannelID);
 /** End [thing_speak_publisher] */
@@ -296,8 +296,6 @@ void setup() {
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
     dataLogger.begin(LoggerID, loggingInterval, &varArray);
-    TsMqtt.begin(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
-                 thingSpeakMQTTPassword, thingSpeakChannelID);
     TsMqtt.setRESTAPIKey(thingSpeakAPIKey);
 
     // Note:  Please change these battery voltages to match your battery

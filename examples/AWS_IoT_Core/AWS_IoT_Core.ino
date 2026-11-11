@@ -302,7 +302,7 @@ TinyGsmESP32::GsmClientSecureESP32 secureClient(gsmModem, (uint8_t)0,
 
 // Create a data publisher for AWS IoT Core
 #include <publishers/AWS_IoT_Publisher.h>
-AWS_IoT_Publisher awsIoTPub(dataLogger, &secureClient, awsIoTEndpoint,
+AWS_IoT_Publisher awsIoTPub(dataLogger, secureClient, awsIoTEndpoint,
                             samplingFeature);
 
 /** End [aws_io_t_publisher] */

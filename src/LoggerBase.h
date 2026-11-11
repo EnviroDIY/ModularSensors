@@ -760,10 +760,8 @@ class Logger {
      * @brief Register a data publisher object to receive data from the logger.
      *
      * @param publisher A dataPublisher object
-     * @return A pointer to the underlying logger's loggerModem to use for
-     * chaining
      */
-    loggerModem* registerDataPublisher(dataPublisher* publisher);
+    void registerDataPublisher(dataPublisher* publisher);
     /**
      * @brief Check if any data publishers need an Internet connection for the
      * next publish call.

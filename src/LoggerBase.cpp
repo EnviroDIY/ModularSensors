@@ -461,12 +461,6 @@ String Logger::formatValueStringAtI(uint8_t position_i, float value) {
 void Logger::attachModem(loggerModem& modem) {
     _logModem = &modem;
     _logModem->setModemTimeZone(_loggerUTCOffset);
-    // update the modem pointer for all of the publishers
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        if (dataPublishers[i] != nullptr) {
-            dataPublishers[i]->setModemPointer(modem);
-        }
-    }
 }
 
 
@@ -517,20 +511,18 @@ bool Logger::syncRTC(Client& nistClient) {
 }
 
 
-loggerModem* Logger::registerDataPublisher(dataPublisher* publisher) {
+void Logger::registerDataPublisher(dataPublisher* publisher) {
     // find the next empty spot in the publisher array
     uint8_t i = 0;
     for (; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] == publisher) {
             MS_DBG(F("dataPublisher already registered."));
-            return nullptr;
+            return;
         }
         if (dataPublishers[i] == nullptr) break;
     }
     // register the publisher to the empty spot
     dataPublishers[i] = publisher;
-    // return a pointer to the modem for the publisher to use
-    return _logModem;
 }
 
 bool Logger::checkRemotesConnectionNeeded() {

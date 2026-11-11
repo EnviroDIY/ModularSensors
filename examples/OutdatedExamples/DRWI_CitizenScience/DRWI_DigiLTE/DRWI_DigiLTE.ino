@@ -240,7 +240,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 // encrypted connection.
 TinyGsmXBee::GsmClientXBee mmwClient(gsmModem);
 // Create a data publisher for the Monitor My Watershed POST endpoint
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, &mmwClient,
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
                                           registrationToken, samplingFeature);
 /** End [publishers] */
 
