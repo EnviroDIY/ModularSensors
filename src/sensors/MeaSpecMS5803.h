@@ -54,6 +54,8 @@
  * The lower level communication between the mcu and the MS5803 is handled by the
  * [Northern Widget MS5803 library](https://github.com/NorthernWidget/MS5803).
  *
+ * @warning The Measurement Specialties MS5803 sensor cannot be used - or even compiled with - the Rob Tillaart MS5837 library.
+ *
  * @section sensor_ms5803_datasheet Sensor Datasheet
  *
  * Documentation for the sensor can be found at:
@@ -62,7 +64,7 @@
  *
  * The datasheet is also available here:
  * https://github.com/EnviroDIY/ModularSensors/wiki/Sensor-Datasheets/Measurement-Specialities-MS5803-14ba-Pressure-Sensor.pdf
- *
+  *
  * @section sensor_ms5803_ctor Sensor Constructor
  * {{ @ref MeaSpecMS5803::MeaSpecMS5803 }}
  *
@@ -130,6 +132,8 @@
  * measurement.
  * - Sensor takes about 0.5 / 1.1 / 2.1 / 4.1 / 8.22 ms to respond
  * at oversampling ratios: 256 / 512 / 1024 / 2048 / 4096, respectively.
+ *
+ * @note The 13-bit (8192) sampling mode is not available on the MS5803.
  */
 #define MS5803_MEASUREMENT_TIME_MS 10
 /**@}*/

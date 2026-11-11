@@ -90,7 +90,7 @@ ___
     - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
     - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
-    - [TE Connectivity MS5837 Pressure Sensor](#te-connectivity-ms5837-pressure-sensor)
+    - [TE Connectivity / Measurement Specialties MS5837 Pressure Sensor](#te-connectivity-ms5837-pressure-sensor)
     - [Meter SDI-12 Sensors](#meter-sdi-12-sensors)
       - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
       - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
@@ -958,7 +958,7 @@ Keep in mind that the I2C address (0x76) of the MS5803 matches those of some con
 
 ___
 
-### TE Connectivity MS5837 Pressure Sensor<!--! {#menu_walk_te_connectivity_ms5837} -->
+### TE Connectivity / Measurement Specialties MS5837 Pressure Sensor<!--! {#menu_walk_te_connectivity_ms5837} -->
 
 The MS5837 is commonly used in Blue Robotics Bar02/Bar30 pressure sensors for underwater applications and depth measurement.
 The only required input is the Arduino pin controlling power on/off; the sensor model, fluid density, air pressure, and number of readings to average are optional.

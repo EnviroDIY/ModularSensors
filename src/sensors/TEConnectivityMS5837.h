@@ -9,19 +9,21 @@
  * subclasses TEConnectivityMS5837_Temp, TEConnectivityMS5837_Pressure,
  * TEConnectivityMS5837_Depth, and TEConnectivityMS5837_Altitude.
  *
- * These are for the TE Connectivity MS5837 pressure sensor. This sensor is
- * commonly deployed in Blue Robotics Bar02/Bar30 pressure sensors for
- * underwater/high-pressure applications and is commonly used for depth
- * measurement. Rob Tillaart maintains the MS5837 Arduino library for
- * communication with this sensor.
+ * These are for the TE Connectivity / Measurement Specialties MS5837 pressure
+ * sensor. This sensor is commonly deployed in Blue Robotics Bar02/Bar30
+ * pressure sensors for underwater/high-pressure applications and is commonly
+ * used for depth measurement.
  *
  * This depends on the Rob Tillaart MS5837 library at
  * https://github.com/RobTillaart/MS5837
+ *
+ * @warning The MS5837 sensor cannot be used - or even compiled with - the
+ * Measurement Specialties MS5803.
  */
 /* clang-format off */
 /**
- * @defgroup sensor_ms5837 TE Connectivity MS5837
- * Classes for the TE Connectivity MS5837 digital pressure sensor.
+ * @defgroup sensor_ms5837 TE Connectivity / Measurement Specialties MS5837
+ * Classes for the TE Connectivity / Measurement Specialties MS5837 digital pressure sensor.
  *
  * @ingroup the_sensors
  *
@@ -30,7 +32,7 @@
  *
  * @section sensor_ms5837_intro Introduction
  *
- * The TE Connectivity MS5837 is a miniature digital pressure sensor designed for
+ * The TE Connectivity / Measurement Specialties MS5837 is a miniature digital pressure sensor designed for
  * underwater and high-pressure applications. It is commonly deployed in Blue Robotics
  * Bar02/Bar30 pressure sensors and is frequently used for depth measurement.
  * The MS5837 comes in several different pressure ranges, with 2 bar and 30 bar being
@@ -74,14 +76,14 @@
  * (1013.25 mBar). Adjust based on local atmospheric conditions or altitude for
  * more accurate depth measurements.
  *      - The same sea level pressure flag is used for BMP3xx, BME280, and
- * MS5837 sensors.
+ * MS5803 sensors.
  *
  * @section sensor_ms5837_ctor Sensor Constructor
  * {{ @ref TEConnectivityMS5837::TEConnectivityMS5837 }}
  *
  * ___
  * @section sensor_ms5837_examples Example Code
- * The TE Connectivity MS5837 is used in the @menulink{te_connectivity_ms5837} example.
+ * The TE Connectivity / Measurement Specialties MS5837 is used in the @menulink{te_connectivity_ms5837} example.
  *
  * @menusnip{te_connectivity_ms5837}
  */
@@ -199,7 +201,8 @@ static_assert(
 /**
  * @anchor sensor_ms5837_timing
  * @name Sensor Timing
- * The sensor timing for a Blue Robotics MS5837
+ * The sensor timing for a Blue Robotics / TE Connectivity / Measurement
+ * Specialties MS5837
  */
 /**@{*/
 /// @brief Sensor::_warmUpTime_ms; the MS5837 warms up in 10ms.
@@ -221,7 +224,8 @@ static_assert(
 /**
  * @anchor sensor_ms5837_temp
  * @name Temperature
- * The temperature variable from a TE Connectivity MS5837
+ * The temperature variable from a TE Connectivity / Measurement Specialties
+ * MS5837
  * - Range is -40°C to +85°C
  * - Accuracy is ±2.0°C
  *
@@ -252,7 +256,7 @@ static_assert(
 /**
  * @anchor sensor_ms5837_pressure
  * @name Pressure
- * The pressure variable from a TE Connectivity MS5837
+ * The pressure variable from a TE Connectivity / Measurement Specialties MS5837
  *   - Range depends on sensor model:
  *     - Bar02: 0 to 2 bar (0 to 2000 mbar)
  *     - Bar30: 0 to 30 bar (0 to 30000 mbar)
@@ -290,7 +294,8 @@ static_assert(
 /**
  * @anchor sensor_ms5837_depth
  * @name Depth
- * The depth variable calculated from a TE Connectivity MS5837
+ * The depth variable calculated from a TE Connectivity / Measurement
+ * Specialties MS5837
  * - Calculated from pressure using the configured fluid density
  * - Accuracy depends on pressure sensor accuracy and fluid density accuracy
  * - Resolution is 1mm (0.001m)
@@ -316,7 +321,8 @@ static_assert(
 /**
  * @anchor sensor_ms5837_altitude
  * @name Altitude
- * The altitude variable calculated from a TE Connectivity MS5837
+ * The altitude variable calculated from a TE Connectivity / Measurement
+ * Specialties MS5837
  * - Calculated from barometric pressure using standard atmosphere equations
  * - Accuracy depends on pressure sensor accuracy and reference air pressure
  * - Resolution is 0.01m
@@ -360,7 +366,7 @@ enum class MS5837Model : uint8_t {
 /* clang-format off */
 /**
  * @brief The Sensor sub-class for the
- * [TE Connectivity MS5837 sensor](@ref sensor_ms5837).
+ * [TE Connectivity / Measurement Specialties MS5837 sensor](@ref sensor_ms5837).
  *
  * @ingroup sensor_ms5837
  */
@@ -564,7 +570,7 @@ class TEConnectivityMS5837 : public Sensor {
 /**
  * @brief The Variable sub-class used for the
  * [temperature output](@ref sensor_ms5837_temp) from a
- * [TE Connectivity MS5837 digital pressure sensor](@ref sensor_ms5837).
+ * [TE Connectivity / Measurement Specialties MS5837 digital pressure sensor](@ref sensor_ms5837).
  *
  * @ingroup sensor_ms5837
  */
@@ -598,7 +604,7 @@ class TEConnectivityMS5837_Temp : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [pressure output](@ref sensor_ms5837_pressure) from a
- * [TE Connectivity MS5837 digital pressure sensor](@ref sensor_ms5837).
+ * [TE Connectivity / Measurement Specialties MS5837 digital pressure sensor](@ref sensor_ms5837).
  *
  * @ingroup sensor_ms5837
  */
@@ -633,7 +639,7 @@ class TEConnectivityMS5837_Pressure : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [depth output](@ref sensor_ms5837_depth) calculated from a
- * [TE Connectivity MS5837 digital pressure sensor](@ref sensor_ms5837).
+ * [TE Connectivity / Measurement Specialties MS5837 digital pressure sensor](@ref sensor_ms5837).
  *
  * @ingroup sensor_ms5837
  */
@@ -667,7 +673,7 @@ class TEConnectivityMS5837_Depth : public Variable {
 /**
  * @brief The Variable sub-class used for the
  * [altitude output](@ref sensor_ms5837_altitude) calculated from a
- * [TE Connectivity MS5837 digital pressure sensor](@ref sensor_ms5837).
+ * [TE Connectivity / Measurement Specialties MS5837 digital pressure sensor](@ref sensor_ms5837).
  *
  * @ingroup sensor_ms5837
  */

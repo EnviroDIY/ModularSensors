@@ -56,7 +56,8 @@ AltSoftSerial altSoftSerial;
 /** End [altsoftserial] */
 #endif  // #if defined (BUILD_TEST_ALTSOFTSERIAL)
 
-#if defined(BUILD_TEST_NEOSWSERIAL)
+#if defined(BUILD_TEST_NEOSWSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you need.
@@ -74,7 +75,8 @@ void neoSSerial1ISR() {
 /** End [neoswserial] */
 #endif  // #if defined (BUILD_TEST_NEOSWSERIAL)
 
-#if defined(BUILD_TEST_SOFTSERIAL)
+#if defined(BUILD_TEST_SOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // The "standard" software serial library uses interrupts that conflict
 // with several other libraries used within this program.  I've created a
 // [version of software serial that has been stripped of
@@ -270,13 +272,19 @@ void SERCOM1_3_Handler() {
 
 // Since the Maxbotix only needs one-way communication and sends a simple text
 // string repeatedly, almost any software serial port will do for it.
-#if defined(BUILD_TEST_ALTSOFTSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) &&     \
+    defined(BUILD_SENSOR_MAX_BOTIX_SONAR) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For AltSoftSerial
 #define sonarSerial altSoftSerial
-#elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+#elif defined(BUILD_TEST_NEOSWSERIAL) &&     \
+    defined(BUILD_SENSOR_MAX_BOTIX_SONAR) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For Neo software serial
 #define sonarSerial neoSSerial1
-#elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+#elif defined(BUILD_TEST_SOFTSERIAL) &&      \
+    defined(BUILD_SENSOR_MAX_BOTIX_SONAR) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For software serial
 #define sonarSerial softSerial1
 #elif defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
@@ -2183,8 +2191,8 @@ Variable* ms5803Temp =
 
 #if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
 // ==========================================================================
-//  TE Connectivity MS5837 Pressure Sensor (deployed in Blue Robotics
-//  Bar02/Bar30)
+//  TE Connectivity / Measurement Specialties MS5837 Pressure Sensor (deployed
+//  in Blue Robotics Bar02/Bar30)
 // ==========================================================================
 /** Start [te_connectivity_ms5837] */
 #include <sensors/TEConnectivityMS5837.h>
@@ -2197,7 +2205,8 @@ const MS5837Model MS5837model = MS5837Model::MS5837_02BA;
 // - MS5837Model::MS5803_01BA for 1 bar range sensors (MS5803-01BA)
 const uint8_t MS5837ReadingsToAvg = 1;
 
-// Create a TE Connectivity MS5837 pressure and temperature sensor object
+// Create a TE Connectivity / Measurement Specialties MS5837 pressure and
+// temperature sensor object
 TEConnectivityMS5837 ms5837(MS5837Power, MS5837model, MS5837ReadingsToAvg);
 
 // Create pressure, temperature, depth, and altitude variable pointers for the
@@ -4013,12 +4022,14 @@ void setup() {
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial
-#if defined(BUILD_TEST_SOFTSERIAL)
+#if defined(BUILD_TEST_SOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     PRINTOUT(F("Enabling interrupts for SoftwareSerial"));
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
 #endif
-#if defined(BUILD_TEST_NEOSWSERIAL)
+#if defined(BUILD_TEST_NEOSWSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     PRINTOUT(F("Enabling interrupts for NeoSoftSerial"));
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
@@ -4399,7 +4410,8 @@ void loop() {
         if (getBatteryVoltage() > 3.55) modem.modemPowerUp();
         extendedWatchDog::resetWatchDog();
 
-#if defined(BUILD_TEST_ALTSOFTSERIAL)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
@@ -4415,7 +4427,8 @@ void loop() {
         varArray.completeUpdate();
         extendedWatchDog::resetWatchDog();
 
-#if defined(BUILD_TEST_ALTSOFTSERIAL)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
         // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
         // on sleep, because Modbus Stop bit leaves these pins HIGH.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
@@ -4526,7 +4539,8 @@ void loop() {
         Logger::startTesting = false;
     }
 
-#if defined(BUILD_TEST_ALTSOFTSERIAL)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
     // on sleep, because Modbus Stop bit leaves these pins HIGH.
     // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
