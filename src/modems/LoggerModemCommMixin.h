@@ -342,7 +342,7 @@ class loggerModemCommMixin {
      */
     bool syncNTP(TinyGsmCapabilities::true_type) {
         return derived().gsmModem.NTPServerSync("pool.ntp.org",
-                                                derived()._modemUTCOffset);
+                                                derived()._modemUTCOffset * 4);
     }
 
     /**
@@ -397,10 +397,15 @@ class loggerModemCommMixin {
         derived().gsmModem.NTPServerSync("pool.ntp.org", 0);
         derived().gsmModem.waitForTimeSync();
 
-        int seconds = 0, minutes = 0, hours = 0;
-        int day = 0, month = 0, year = 0;
+        int16_t year     = 0;
+        int16_t month    = 0;
+        int16_t day      = 0;
+        int16_t hours    = 0;
+        int16_t minutes  = 0;
+        int16_t seconds  = 0;
+        int16_t timezone = 0;  // in quarter hours!
         if (!derived().gsmModem.getNetworkTime(&year, &month, &day, &hours,
-                                               &minutes, &seconds, 0)) {
+                                               &minutes, &seconds, &timezone)) {
             return 0;
         }
 
@@ -412,8 +417,16 @@ class loggerModemCommMixin {
         timeParts.tm_mon   = month - 1;
         timeParts.tm_year  = year - 1900;
         timeParts.tm_isdst = 0;
-        return static_cast<uint32_t>(mktime(&timeParts)) -
-            TimeUtils::getCoreTimeZone();
+
+        // Convert the standard calendar fields using the processor's local
+        // timezone. The timezone value is not part of this conversion.
+        time_t t = mktime(&timeParts);
+        // cast into a timestamp_t
+        timestamp_t ts = static_cast<timestamp_t>(t);
+        //  convert to Unix/UTC
+        return convertOffsetAndEpoch(ts, timezone * 15 * 60,
+                                     TimeUtils::getCoreEpochStart(), 0,
+                                     epochStart::unix_epoch);
     }
 
     /**
