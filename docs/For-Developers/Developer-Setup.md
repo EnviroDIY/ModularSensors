@@ -145,12 +145,12 @@ lib_deps =
     SDI-12_ExtInts=https://github.com/EnviroDIY/Arduino-SDI-12#ExtInts
     northernwidget/MS5803@^0.1.2
     Tally_Library_I2C=https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
-    envirodiy/EpochTime@^1.1.1
+    envirodiy/EpochTime@^1.2.0
     envirodiy/SensorModbusMaster@^1.7.0
     envirodiy/KellerModbus@^0.2.7
     envirodiy/YosemitechModbus@^0.5.4
     envirodiy/GroPointModbus@^0.1.5
-    envirodiy/GeoluxCamera@^0.1.3
+    envirodiy/GeoluxCamera@^0.1.4
     robtillaart/fast_math@^0.2.4
     envirodiy/ANBSensorsModbus@^0.4.2
     robtillaart/MS5837@^0.3.3

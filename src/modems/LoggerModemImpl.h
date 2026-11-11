@@ -53,7 +53,7 @@
 // Include the TinyGSM capabilities file to check what the modem can do
 #include <TinyGsmCapabilities.h>
 // Include SSL types for secure client creation
-#include <TinyGsmSSL.tpp>
+#include <mixins/TinyGsmSSL.tpp>
 
 // Include the CRTP mixin files
 #include "LoggerModemPowerMixin.h"
@@ -112,7 +112,7 @@ class loggerModemImpl
      *
      * This must be publicly accessible for derived classes and user code.
      */
-    GsmModemType gsmModem;
+    GsmModemType& gsmModem;
 
     /**
      * @brief Construct a new loggerModemImpl object giving it an already

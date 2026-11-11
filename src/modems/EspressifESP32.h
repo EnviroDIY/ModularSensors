@@ -78,7 +78,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include <TinyGsmClientESP32.h>
+#include <modems/TinyGsmClientESP32.h>
 #include "Espressif.h"
 
 

@@ -5,11 +5,10 @@
  * This library is published under the BSD-3 license.
  * @author Sara Geleskie Damiano <sdamiano@stroudcenter.org>
  *
- * @brief CRTP mixin providing internet connectivity and client creation for
- * modems.
+ * @brief CRTP mixin providing internet connectivity for modems.
  *
- * This mixin contains all functions for connecting/disconnecting from the
- * internet and creating/deleting TCP and secure clients.
+ * This mixin contains functions for connecting/disconnecting from the internet
+ * and synchronizing time.
  */
 
 // Header Guards
@@ -45,7 +44,7 @@
 // Include the TinyGSM capabilities file to check what the modem can do
 #include <TinyGsmCapabilities.h>
 // Include TinyGsmSSL for SSLAuthMode and SSLVersion enums
-#include <TinyGsmSSL.tpp>
+#include <mixins/TinyGsmSSL.tpp>
 
 /**
  * @brief CRTP mixin class providing internet connectivity for modems.

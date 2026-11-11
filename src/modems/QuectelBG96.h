@@ -86,7 +86,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include <TinyGsmClientBG96.h>
+#include <modems/TinyGsmClientBG96.h>
 #include "LoggerModemImpl.h"
 
 

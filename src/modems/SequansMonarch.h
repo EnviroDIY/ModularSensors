@@ -77,7 +77,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include <TinyGsmClientSequansMonarch.h>
+#include <modems/TinyGsmClientSequansMonarch.h>
 #include "LoggerModemImpl.h"
 
 

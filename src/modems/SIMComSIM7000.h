@@ -72,7 +72,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include <TinyGsmClientSIM7000SSL.h>
+#include <modems/TinyGsmClientSIM7000SSL.h>
 #include "LoggerModemImpl.h"
 
 

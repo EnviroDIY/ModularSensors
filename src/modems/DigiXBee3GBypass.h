@@ -71,7 +71,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include <TinyGsmClientUBLOX.h>
+#include <modems/TinyGsmClientUBLOX.h>
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 

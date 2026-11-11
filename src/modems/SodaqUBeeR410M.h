@@ -133,7 +133,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include <TinyGsmClientSaraR4.h>
+#include <modems/TinyGsmClientSaraR4.h>
 #include "LoggerModemImpl.h"
 
 

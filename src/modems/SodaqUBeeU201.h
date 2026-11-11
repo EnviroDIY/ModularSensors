@@ -73,7 +73,7 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include <TinyGsmClientUBLOX.h>
+#include <modems/TinyGsmClientUBLOX.h>
 #include "LoggerModemImpl.h"
 
 

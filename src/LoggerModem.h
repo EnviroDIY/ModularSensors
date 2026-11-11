@@ -53,7 +53,7 @@
 // Include the TinyGSM capabilities file to check what the modem can do
 #include <TinyGsmCapabilities.h>
 // Include TinyGsmSSL for SSLAuthMode and SSLVersion enums
-#include <TinyGsmSSL.tpp>
+#include <mixins/TinyGsmSSL.tpp>
 
 
 /**

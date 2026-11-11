@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 52,
+  "action_cache_version": 53,
   "dependencies": [
     {
       "name": "EpochTime",
@@ -294,7 +294,7 @@
       "name": "GeoluxCamera",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GeoluxCamera",
-      "version": "~0.1.3",
+      "version": "~0.1.4",
       "note": "Arduino library for communication with Geolux serial camera.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"

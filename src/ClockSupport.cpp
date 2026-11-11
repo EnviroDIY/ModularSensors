@@ -367,8 +367,9 @@ inline time_t loggerClock::tsFromRawRTC(time_t rtc_ts, int8_t utcOffset,
         return ts_conv;
     } else {
         // Do NOT apply an offset if the timestamp is obviously bad
-        time_t ts_conv = TimeUtils::convertEpoch(rtc_ts, loggerClock::_rtcEpoch,
-                                                 epoch);
+        // time_t ts_conv = TimeUtils::convertEpoch(rtc_ts,
+        // loggerClock::_rtcEpoch,
+        //                                          epoch);
         MS_DEEP_DBG(
             F("Converted raw RTC timestamp of"), rtc_ts, F("with epoch"),
             TimeUtils::printEpochName(loggerClock::_rtcEpoch),

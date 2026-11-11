@@ -68,6 +68,9 @@
 #undef MS_DEBUGGING_STD
 
 // Include other in-library and external dependencies
+
+// Include other in-library and external dependencies
+#include <modems/TinyGsmClientEspressif.h>
 #include "LoggerModemImpl.h"
 
 /** @ingroup modem_espressif */
