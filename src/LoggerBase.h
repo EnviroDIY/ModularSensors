@@ -39,6 +39,7 @@
 #include "VariableArray.h"
 #include "LoggerModem.h"
 #include "ClockSupport.h"
+#include <Client.h>
 #include <Wire.h>
 // // For time
 // #include <time.h>
@@ -739,6 +740,21 @@ class Logger {
      * @return True if clock synchronization was successful
      */
     bool syncRTC();
+    /**
+     * @brief Use an existing Arduino Client to synchronize the real-time clock
+     * with a NIST TIME protocol server.
+     *
+     * The client and its underlying network connection are owned and managed
+     * by the caller. The network must already be connected, and the client must
+     * be idle when this function is called. This function opens and closes the
+     * TCP socket used for the NIST request but does not connect or disconnect
+     * the underlying network interface.
+     *
+     * @param nistClient An Arduino Client to use for the NIST request.
+     * @return True if a sane timestamp was received and the clock was
+     * successfully synchronized.
+     */
+    bool syncRTC(Client& nistClient);
 
     /**
      * @brief Register a data publisher object to receive data from the logger.

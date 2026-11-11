@@ -134,6 +134,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 #### Loggers and Variable Arrays
 
+- Added `Logger::syncRTC(Client&)` to synchronize the real-time clock with a caller-owned Arduino Client on an already-connected network.
 - Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
 - Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
 - Re-wrote some of the logic of the `completeUpdate()` function.

@@ -9,6 +9,7 @@
  */
 
 #include "LoggerBase.h"
+#include "NISTTime.h"
 #include "dataPublisherBase.h"
 
 // Include the EpochTime library
@@ -479,11 +480,10 @@ bool Logger::syncRTC() {
         PRINTOUT(F("This may take up to two minutes!"));
         if (_logModem->modemWake()) {
             if (_logModem->connectInternet(120000L)) {
-                loggerClock::setRTClock(_logModem->getNISTTime(), 0,
-                                        epochStart::unix_epoch);
+                success = loggerClock::setRTClock(_logModem->getNISTTime(), 0,
+                                                  epochStart::unix_epoch);
                 MS_DBG(F("Current logger time after sync is"),
                        formatDateTime_ISO8601(getNowLocalEpoch()));
-                success = true;
                 _logModem->updateModemMetadata();
             } else {
                 PRINTOUT(F("Could not connect to internet for clock sync."));
@@ -498,6 +498,20 @@ bool Logger::syncRTC() {
         _logModem->disconnectInternet();
         _logModem->modemSleepPowerDown();
     }
+    extendedWatchDog::resetWatchDog();
+    return success;
+}
+
+
+// Synchronize the clock with NIST using a caller-owned client on an already
+// active network connection.
+bool Logger::syncRTC(Client& nistClient) {
+    PRINTOUT(F("Attempting to synchronize RTC with NIST using the provided "
+               "client"));
+    bool success = loggerClock::setRTClock(NISTTime::query(nistClient), 0,
+                                           epochStart::unix_epoch);
+    MS_DBG(F("Current logger time after sync is"),
+           formatDateTime_ISO8601(getNowLocalEpoch()));
     extendedWatchDog::resetWatchDog();
     return success;
 }

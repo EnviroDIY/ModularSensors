@@ -10,6 +10,7 @@
 
 // Included Dependencies
 #include "DigiXBeeWifi.h"
+#include "NISTTime.h"
 
 // Constructor/Destructor
 DigiXBeeWifi::DigiXBeeWifi(TinyGsmXBee& xbeeModem, int8_t powerPin,
@@ -365,10 +366,7 @@ uint32_t DigiXBeeWifi::getNISTTime() {
         // every 4 seconds.  NIST clearly specifies here that this is a
         // requirement for all software that accesses its servers:
         // https://tf.nist.gov/tf-cgi/servers.cgi
-        while (millis() - _lastNISTrequest < NIST_TIME_PROTOCOL_SPACING) {
-            yield();
-        }
-        _lastNISTrequest = millis();
+        NISTTime::waitForNextRequest();
         // Make TCP connection
         // Uses "TIME" protocol on port 37 NIST: This protocol is expensive,
         // since it uses the complete tcp machinery to transmit only 32 bits
@@ -403,7 +401,7 @@ uint32_t DigiXBeeWifi::getNISTTime() {
                 byte response[NIST_TIME_PROTOCOL_BYTES] = {0};
                 gsmClient.read(response, NIST_TIME_PROTOCOL_BYTES);
                 gsmClient.stop();
-                uint32_t nistParsed = parseNISTBytes(response);
+                uint32_t nistParsed = NISTTime::parseResponse(response);
                 if (nistParsed != 0) {
                     return nistParsed;
                 } else {

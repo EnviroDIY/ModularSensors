@@ -11,6 +11,7 @@
 
 // Included Dependencies
 #include "DigiXBeeCellularTransparent.h"
+#include "NISTTime.h"
 
 // Constructor/Destructor
 DigiXBeeCellularTransparent::DigiXBeeCellularTransparent(
@@ -192,9 +193,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         // every 4 seconds.  NIST clearly specifies here that this is a
         // requirement for all software that accesses its servers:
         // https://tf.nist.gov/tf-cgi/servers.cgi
-        while (millis() - _lastNISTrequest < NIST_TIME_PROTOCOL_SPACING) {
-            yield();
-        }
+        NISTTime::waitForNextRequest();
 
         // Make TCP connection
         MS_DBG(F("\nConnecting to NIST time server"));
@@ -207,7 +206,6 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         TinyGsmXBee::GsmClientXBee gsmClient(gsmModem);
         bool connectionConfigured = gsmClient.connect(nistIPs[ipIndex],
                                                       NIST_TIME_PROTOCOL_PORT);
-        _lastNISTrequest          = millis();
 
         // Wait up to 5 seconds for a response
         if (connectionConfigured) {
@@ -226,7 +224,7 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
                 byte response[NIST_TIME_PROTOCOL_BYTES] = {0};
                 gsmClient.read(response, NIST_TIME_PROTOCOL_BYTES);
                 gsmClient.stop();
-                uint32_t nistParsed = parseNISTBytes(response);
+                uint32_t nistParsed = NISTTime::parseResponse(response);
                 if (nistParsed != 0) {
                     return nistParsed;
                 } else {
