@@ -229,13 +229,6 @@ class S3PresignedPublisher : public dataPublisher {
      */
     void setFileUpdateFunction(String (*getFileNameFxn)());
 
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
-     * @param getUrlFxn A function to call to get a new pre-signed URL
-     */
-    void begin(Logger& baseLogger, Client& inClient,
-               String (*getUrlFxn)(String));
-
     using dataPublisher::publishData;
     /**
      * @brief Utilizes the supplied client to make a TCP connection to the

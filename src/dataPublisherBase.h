@@ -157,20 +157,6 @@ class dataPublisher {
      */
     void attachToLogger(Logger& baseLogger);
 
-    /**
-     * @brief Begin the publisher - linking it to the client and logger.
-     *
-     * This can be used as an alternative to adding the logger and client in the
-     * constructor.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An application-owned Arduino client instance to use to
-     * print data. It must remain valid for the lifetime of the publisher.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     */
-    void begin(Logger& baseLogger, Client& inClient);
-
 
     /**
      * @brief Get the destination for published data - generally the host name

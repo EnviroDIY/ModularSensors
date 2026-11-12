@@ -114,22 +114,6 @@ void AWS_IoT_Publisher::closeConnection() {
     _waitForSubs = false;
 }
 
-
-// A way to update members and replace the linked logger and client
-void AWS_IoT_Publisher::begin(Logger& baseLogger, Client& inClient,
-                              const char* awsIoTEndpoint,
-                              const char* samplingFeatureUUID) {
-    setEndpoint(awsIoTEndpoint);
-    dataPublisher::begin(baseLogger, inClient);
-    if (samplingFeatureUUID != nullptr) {
-        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    }
-}
-void AWS_IoT_Publisher::begin(Logger& baseLogger, Client& inClient,
-                              const char* awsIoTEndpoint) {
-    begin(baseLogger, inClient, awsIoTEndpoint, nullptr);
-}
-
 // This sends the data to AWS IoT Core
 int16_t AWS_IoT_Publisher::publishData(Client& outClient, bool) {
     bool retVal = false;

@@ -80,17 +80,6 @@ void ThingSpeakPublisher::setThingSpeakParams(
     setChannelID(thingSpeakChannelID);
 }
 
-
-// A way to update members and replace the linked logger and client
-void ThingSpeakPublisher::begin(Logger& baseLogger, Client& inClient,
-                                const char* thingSpeakClientName,
-                                const char* thingSpeakMQTTUser,
-                                const char* thingSpeakMQTTPassword,
-                                const char* thingSpeakChannelID) {
-    setThingSpeakParams(thingSpeakClientName, thingSpeakMQTTUser,
-                        thingSpeakMQTTPassword, thingSpeakChannelID);
-    dataPublisher::begin(baseLogger, inClient);
-}
 // This sends the data to ThingSpeak
 int16_t ThingSpeakPublisher::publishData(Client& outClient, bool) {
     // Validate required MQTT parameters before proceeding

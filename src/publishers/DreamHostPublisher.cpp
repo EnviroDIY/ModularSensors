@@ -38,18 +38,11 @@ void DreamHostPublisher::setDreamHostPortalRX(const char* dhUrl) {
     _DreamHostPortalRX = dhUrl;
 }
 
-
-// A way to update members and replace the linked logger and client
-void DreamHostPublisher::begin(Logger& baseLogger, Client& inClient,
-                               const char* dhUrl) {
-    setDreamHostPortalRX(dhUrl);
-    dataPublisher::begin(baseLogger, inClient);
-}
 // Post the data to dream host.
 int16_t DreamHostPublisher::publishData(Client& outClient, bool) {
     // Validate required DreamHost URL is set before proceeding
     if (_DreamHostPortalRX == nullptr) {
-        MS_DBG(F("ERROR: DreamHost Portal RX URL not set. Call begin() or "
+        MS_DBG(F("ERROR: DreamHost Portal RX URL not set. Call "
                  "setDreamHostPortalRX() first."));
         return -1;
     }

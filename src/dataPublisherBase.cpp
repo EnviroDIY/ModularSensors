@@ -71,13 +71,6 @@ void dataPublisher::setStartupTransmissions(uint8_t count) {
 }
 
 
-// "Begins" the publisher - attaches client and logger
-void dataPublisher::begin(Logger& baseLogger, Client& inClient) {
-    setClient(inClient);
-    attachToLogger(baseLogger);
-}
-
-
 void dataPublisher::txBufferInit(Client* outClient) {
     // remember client we are sending to
     txBufferOutClient = outClient;

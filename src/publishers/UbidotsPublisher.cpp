@@ -78,19 +78,6 @@ uint16_t UbidotsPublisher::calculateJsonSize() {
     return jsonLength;
 }
 
-
-// A way to update members and replace the linked logger and client
-void UbidotsPublisher::begin(Logger& baseLogger, Client& inClient,
-                             const char* authenticationToken,
-                             const char* deviceID) {
-    if (authenticationToken && authenticationToken[0] != '\0') {
-        setToken(authenticationToken);
-    }
-    dataPublisher::begin(baseLogger, inClient);
-    if (deviceID && deviceID[0] != '\0') {
-        _baseLogger->setSamplingFeatureUUID(deviceID);
-    }
-}
 // This utilizes the supplied client to make a TCP connection to Ubidots and
 // then streams out a post request over that connection. The return is the http
 // status code of the response.

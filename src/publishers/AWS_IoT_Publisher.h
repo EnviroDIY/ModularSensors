@@ -265,20 +265,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      */
     void closeConnection();
 
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param samplingFeatureUUID The sampling feature UUID
-     */
-    void begin(Logger& baseLogger, Client& inClient, const char* awsIoTEndpoint,
-               const char* samplingFeatureUUID);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     */
-    void begin(Logger& baseLogger, Client& inClient,
-               const char* awsIoTEndpoint);
-
     using dataPublisher::publishData;
     /**
      * @brief Utilize the supplied client to open an SSL connection to AWS IoT

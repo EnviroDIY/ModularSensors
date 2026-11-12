@@ -169,16 +169,6 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      */
     uint16_t calculateJsonSize();
 
-
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on
-     * Monitor My Watershed.
-     */
-    void begin(Logger& baseLogger, Client& inClient,
-               const char* registrationToken, const char* samplingFeatureUUID);
     /**
      * @brief Checks if the publisher needs an Internet connection for the next
      * publishData call (as opposed to just buffering data internally).

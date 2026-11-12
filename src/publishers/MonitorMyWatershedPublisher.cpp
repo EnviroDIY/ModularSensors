@@ -145,18 +145,6 @@ uint16_t MonitorMyWatershedPublisher::calculateJsonSize() {
     return jsonLength;
 }
 
-
-// A way to set members in begin
-void MonitorMyWatershedPublisher::begin(Logger& baseLogger, Client& inClient,
-                                        const char* registrationToken,
-                                        const char* samplingFeatureUUID) {
-    setToken(registrationToken);
-    dataPublisher::begin(baseLogger, inClient);
-    if (samplingFeatureUUID != nullptr) {
-        _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-    }
-    _logBuffer.setNumVariables(_baseLogger->getArrayVarCount());
-}
 bool MonitorMyWatershedPublisher::connectionNeeded() {
     // compute the send interval, reducing it as the buffer gets more full so we
     // have less of a chance of losing data

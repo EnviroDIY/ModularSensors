@@ -156,20 +156,6 @@ class ThingSpeakPublisher : public dataPublisher {
                              const char* thingSpeakMQTTPassword,
                              const char* thingSpeakChannelID);
 
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
-     * @param thingSpeakClientName The client name for your MQTT device. This is
-     * probably the same as your MQTT device's user name.
-     * @param thingSpeakMQTTUser The user name for your MQTT device. This is
-     * probably the same as your MQTT device's client name.
-     * @param thingSpeakMQTTPassword The password for your MQTT device.
-     * @param thingSpeakChannelID The numeric channel id for your channel.
-     */
-    void begin(Logger& baseLogger, Client& inClient,
-               const char* thingSpeakClientName, const char* thingSpeakMQTTUser,
-               const char* thingSpeakMQTTPassword,
-               const char* thingSpeakChannelID);
-
     using dataPublisher::publishData;
     /**
      * @brief Utilize the supplied client to open a TCP connection to ThingSpeak

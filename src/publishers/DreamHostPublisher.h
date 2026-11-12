@@ -86,12 +86,6 @@ class DreamHostPublisher : public dataPublisher {
      */
     void setDreamHostPortalRX(const char* dhUrl);
 
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
-     * @param dhUrl The URL for sending data to DreamHost
-     */
-    void begin(Logger& baseLogger, Client& inClient, const char* dhUrl);
-
     using dataPublisher::publishData;
     /**
      * @brief Utilizes the supplied client to make a TCP connection to the

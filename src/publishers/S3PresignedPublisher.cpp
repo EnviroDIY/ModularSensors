@@ -56,13 +56,6 @@ void S3PresignedPublisher::setFileParams(const char* extension,
     _filePrefix    = filePrefix;
 }
 
-
-// A way to update members and replace the linked logger and client
-void S3PresignedPublisher::begin(Logger& baseLogger, Client& inClient,
-                                 String (*getUrlFxn)(String)) {
-    setURLUpdateFunction(getUrlFxn);
-    dataPublisher::begin(baseLogger, inClient);
-}
 bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
                                          char* s3resource, char* content_type) {
     // S3 pre-signed URL's follow the "virtual-hosted style" and have the form:

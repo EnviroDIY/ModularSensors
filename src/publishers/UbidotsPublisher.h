@@ -107,18 +107,6 @@ class UbidotsPublisher : public dataPublisher {
      */
     uint16_t calculateJsonSize();
 
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client& inClient)
-     * @param authenticationToken The authentication token from Ubidots, either
-     * the Organization's Integration Token (under Users > Organization menu,
-     * visible by Admin only) OR the STEM User's Device Token (under the
-     * specific device's setup panel).
-     * @param deviceID The device API Label from Ubidots, derived from the
-     * user-specified device name.
-     */
-    void begin(Logger& baseLogger, Client& inClient,
-               const char* authenticationToken, const char* deviceID);
-
     using dataPublisher::publishData;
     /**
      * @brief Utilize the supplied client to open a TCP connection to the
