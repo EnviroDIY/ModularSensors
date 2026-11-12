@@ -127,6 +127,12 @@
  * the [USGS NGWOS development
  * repository](https://github.com/EnviroDIY/USGS_NGWOS).
  *
+ * The S3PresignedPublisher requires a secure Client using certificate authority
+ * (CA) certificates for SSL/TLS.  In order to use the same Client object for
+ * connection with any other service, you must reconfigure the Client between
+ * connections.  That type of reconfiguration does not happen automatically and
+ * is the responsibility of the application.
+ *
  * @todo Generate documentation on the AWS architecture for IoT Core to S3.
  *
  * @ingroup the_publishers

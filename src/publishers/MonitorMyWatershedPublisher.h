@@ -46,6 +46,13 @@
  * publishing data to Monitor My Watershed at https://monitormywatershed.org/
  * (formerly at http://data.enviroDIY.org).
  *
+ * The MonitorMyWatershedPublisher requires an unsecured Client.  It can (and
+ * should) share the Client with other services that require unsecured
+ * connections. In order to use the same Client object for connection with any
+ * _secured_ service, you must reconfigure the Client between connections.  That
+ * type of reconfiguration does not happen automatically and is the
+ * responsibility of the application.
+ *
  * @ingroup the_publishers
  */
 class MonitorMyWatershedPublisher : public dataPublisher {

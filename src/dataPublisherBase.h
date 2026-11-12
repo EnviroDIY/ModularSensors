@@ -67,9 +67,14 @@
  * logger for new data and correctly formats and sends that data to some online
  * web service.
  *
- * Every publisher requires an application-owned Client. The publisher stores
- * a pointer to that client but does not create, own, or replace it with a
- * client from the logger's modem.
+ * Every publisher requires an application-owned Client. The publisher stores a
+ * pointer to that Client but does not create, own, or replace it with a client
+ * from the logger's modem.  Publishers that require unsecured clients can (and
+ * should) share one common Client instance.  Publishers that require secure
+ * clients can only share a client with another publisher with identical
+ * credentials and security requirements.  If you are using TinyGSM to create
+ * Client objects, remember that each TinyGSM modem instance can only support a
+ * limited number of concurrent clients, so plan accordingly.
  *
  * @ingroup base_classes
  */

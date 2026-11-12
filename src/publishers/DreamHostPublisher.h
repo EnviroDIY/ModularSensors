@@ -43,6 +43,8 @@
  * system.
  *
  * @ingroup the_publishers
+ *
+ * @attention Seriously?  You shouldn't use this.
  */
 class DreamHostPublisher : public dataPublisher {
  public:

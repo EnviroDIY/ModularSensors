@@ -82,6 +82,12 @@
  * @brief The AWS_IoT_Publisher subclass of dataPublisher for publishing data
  * to AWS IoT Core using the MQTT protocol.
  *
+ * The AWS_IoT_Publisher requires a secure Client that has been configured with
+ * the certificates downloaded from AWS IoT Core for mutual TLS.  In order to
+ * use the same Client object for connection with any other service, you must
+ * reconfigure the Client between connections.  That type of reconfiguration
+ * does not happen automatically and is the responsibility of the application.
+ *
  * @ingroup the_publishers
  */
 class AWS_IoT_Publisher : public dataPublisher {
