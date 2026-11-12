@@ -17,6 +17,21 @@
 // Include the EpochTime library
 #include <EpochTime.h>
 
+namespace {
+
+int32_t normalizeUtcOffsetSeconds(int32_t utcOffsetSeconds) {
+    // Releases through 1.1.1 accepted hours in formatISO8601() and
+    // isTimeSane(). Preserve those calls while standardizing the API on
+    // seconds. Real-world UTC offsets expressed in seconds exceed this range,
+    // except UTC itself.
+    if (utcOffsetSeconds >= -24 && utcOffsetSeconds <= 24) {
+        return utcOffsetSeconds * 3600L;
+    }
+    return utcOffsetSeconds;
+}
+
+}  // namespace
+
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && \
     not defined(SDI12_INTERNAL_PCINT)
 // Unless we're forcing use of internal interrupts, use EnableInterrupt for AVR
@@ -41,11 +56,11 @@
 
 
 // Initialize the static timezone
-int8_t Logger::_loggerUTCOffset = 0;
+int32_t Logger::_loggerOffsetSeconds = 0;
 // Initialize the static epoch
 epochStart Logger::_loggerEpoch = MS_LOGGER_EPOCH;
 // Initialize the static time adjustment
-int8_t Logger::_loggerRTCOffset = 0;
+int32_t Logger::_loggerRTCOffsetSeconds = 0;
 // Initialize the static timestamps
 time_t Logger::markedLocalUnixTime = 0;
 time_t Logger::markedUTCUnixTime   = 0;
@@ -374,7 +389,9 @@ String Logger::formatValueStringAtI(uint8_t position_i, float value) {
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
 void Logger::attachModem(loggerModem& modem) {
     _logModem = &modem;
-    _logModem->setModemTimeZone(_loggerUTCOffset);
+    // TinyGSM uses a timezone in units of quarter hours (15 minutes = 60*15 =
+    // 900)
+    _logModem->setModemTimeZone(_loggerOffsetSeconds / 900);
 }
 
 
@@ -490,29 +507,36 @@ void Logger::publishMetadataToRemotes() {
 // ===================================================================== //
 
 // Sets the static timezone that the data will be logged in - this must be set
-void Logger::setLoggerTimeZone(int8_t timeZone) {
-    _loggerUTCOffset = timeZone;
+void Logger::setLoggerTimeZone(int32_t utcOffsetSeconds) {
+    _loggerOffsetSeconds = normalizeUtcOffsetSeconds(utcOffsetSeconds);
 // Some helpful prints for debugging
 #if !defined(MS_SILENT)
     const char* prtout1 = "Logger timezone is set to UTC";
-    if (_loggerUTCOffset == 0) {
+    if (_loggerOffsetSeconds == 0) {
         PRINTOUT(prtout1);
-    } else if (_loggerUTCOffset > 0) {
-        PRINTOUT(prtout1, '+', _loggerUTCOffset);
+    } else if (_loggerOffsetSeconds > 0) {
+        PRINTOUT(prtout1, '+',
+                 static_cast<int8_t>(Logger::_loggerOffsetSeconds / 3600));
     } else {
-        PRINTOUT(prtout1, _loggerUTCOffset);
+        PRINTOUT(prtout1,
+                 static_cast<int8_t>(Logger::_loggerOffsetSeconds / 3600));
     }
 #endif
 }
 int8_t Logger::getLoggerTimeZone() {
-    return Logger::_loggerUTCOffset;
+    return static_cast<int8_t>(Logger::_loggerOffsetSeconds / 3600);
+}
+
+int32_t Logger::getLoggerOffsetSeconds() {
+    return Logger::_loggerOffsetSeconds;
 }
 // Sets the static timezone that the RTC is programmed in
 // I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
 // You can either set the RTC offset directly or set the offset between the
 // RTC and the logger
-void Logger::setRTCTimeZone(int8_t timeZone) {
-    loggerClock::setRTCOffset(timeZone);
+void Logger::setRTCTimeZone(int8_t utcOffsetHours) {
+    loggerClock::setRTCOffset(
+        normalizeUtcOffsetSeconds(static_cast<int32_t>(utcOffsetHours)));
 }
 int8_t Logger::getRTCTimeZone() {
     return loggerClock::getRTCOffset();
@@ -525,26 +549,31 @@ int8_t Logger::getRTCTimeZone() {
 // timezone is EST this does not need to be called.
 // You can either set the RTC offset directly or set the offset between the
 // RTC and the logger
-void Logger::setTZOffset(int8_t offset) {
-    _loggerRTCOffset = offset;
-    loggerClock::setRTCOffset(Logger::_loggerUTCOffset +
-                              Logger::_loggerRTCOffset);
+void Logger::setTZOffset(int32_t offsetSeconds) {
+    _loggerRTCOffsetSeconds = normalizeUtcOffsetSeconds(offsetSeconds);
+    loggerClock::setRTCOffset(Logger::_loggerOffsetSeconds +
+                              Logger::_loggerRTCOffsetSeconds);
     // Some helpful prints for debugging
-    if (_loggerRTCOffset == 0) {
+    if (_loggerRTCOffsetSeconds == 0) {
         PRINTOUT(F("RTC and Logger are set in the same timezone."));
-    } else if (_loggerRTCOffset < 0) {
-        PRINTOUT(F("RTC is set"), -1 * _loggerRTCOffset,
+    } else if (_loggerRTCOffsetSeconds < 0) {
+        PRINTOUT(F("RTC is set"),
+                 -1 * static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds),
                  F("hours ahead of logging timezone"));
     } else {
-        PRINTOUT(F("RTC is set"), _loggerRTCOffset,
+        PRINTOUT(F("RTC is set"),
+                 static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds),
                  F("hours behind the logging timezone"));
     }
 }
 int8_t Logger::getTZOffset() {
-    return Logger::_loggerRTCOffset;
+    return static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds / 3600);
+}
+int32_t Logger::getTZOffsetSeconds() {
+    return Logger::_loggerRTCOffsetSeconds;
 }
 time_t Logger::getNowLocalEpoch() {
-    return loggerClock::getNowAsEpoch(Logger::_loggerUTCOffset,
+    return loggerClock::getNowAsEpoch(Logger::_loggerOffsetSeconds,
                                       Logger::_loggerEpoch);
 }
 time_t Logger::getNowUTCEpoch() {
@@ -552,10 +581,10 @@ time_t Logger::getNowUTCEpoch() {
 }
 void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                          int8_t& day, int8_t& month, int16_t& year,
-                         uint8_t& tz_offset) {
-    tz_offset = Logger::_loggerUTCOffset;
+                         int32_t& tz_offset_s) {
+    tz_offset_s = Logger::_loggerOffsetSeconds;
     loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerUTCOffset);
+                               Logger::_loggerOffsetSeconds);
 }
 
 // This converts an epoch time (unix time) into an ISO8601 formatted string.
@@ -563,28 +592,24 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
 // the LOGGER's offset as the time zone offset in the string.
 // Code modified from parts of the SparkFun RV-8803 library.
 void Logger::formatDateTime_ISO8601(char* buffer, time_t epochSeconds) {
-    TimeUtils::formatISO8601(
-        buffer,
-        epochTime(epochSeconds,
-                  static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
-                  Logger::_loggerEpoch),
-        static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600);
+    TimeUtils::formatISO8601(buffer,
+                             epochTime(epochSeconds,
+                                       Logger::_loggerOffsetSeconds,
+                                       Logger::_loggerEpoch),
+                             Logger::_loggerOffsetSeconds);
 }
-#if EPOCHTIME_ENABLE_STRING_FORMATTING
 String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
     char buffer[26] = {'\0'};
     formatDateTime_ISO8601(buffer, epochSeconds);
     return String(buffer);
 }
-#endif
 #if EPOCHTIME_ENABLE_STRFTIME
 void Logger::formatDateTime(char* buffer, const char* fmt,
                             time_t epochSeconds) {
-    TimeUtils::formatDateTime(
-        buffer, fmt,
-        epochTime(epochSeconds,
-                  static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
-                  Logger::_loggerEpoch));
+    TimeUtils::formatDateTime(buffer, fmt,
+                              epochTime(epochSeconds,
+                                        Logger::_loggerOffsetSeconds,
+                                        Logger::_loggerEpoch));
 }
 #endif
 // This checks that the logger time is within a "sane" range
@@ -604,7 +629,7 @@ void Logger::markTime() {
     MS_DEEP_DBG(F("Marking time..."));
     Logger::markedUTCUnixTime   = getNowUTCEpoch();
     Logger::markedLocalUnixTime = markedUTCUnixTime +
-        static_cast<time_t>(Logger::_loggerUTCOffset * 3600);
+        Logger::_loggerOffsetSeconds;
 }
 
 
@@ -1170,12 +1195,11 @@ String Logger::generateFileName(bool include_time, const char* extension,
     // NOTE: the format function will not convert time zones, only use the input
     // zone to print the zone info. Since we're going to crop off that part
     // anyway, it doesn't matter what we put in as the offset.
-    TimeUtils::formatISO8601(
-        isoBuf,
-        epochTime(Logger::markedLocalUnixTime,
-                  static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
-                  Logger::_loggerEpoch),
-        static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600);
+    TimeUtils::formatISO8601(isoBuf,
+                             epochTime(Logger::markedLocalUnixTime,
+                                       Logger::_loggerOffsetSeconds,
+                                       Logger::_loggerEpoch),
+                             Logger::_loggerOffsetSeconds);
 
     // Extract YYYYMMDD or YYYYMMDD_HHMMSS from YYYY-MM-DDTHH:MM:SS+HH:MM.
     char time_buff[16] = {'\0'};
@@ -1259,10 +1283,10 @@ void Logger::printFileHeader(Stream* stream) {
 
     // We'll finish up with the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
-    if (_loggerUTCOffset > 0) {
-        dtRowHeader += '+' + _loggerUTCOffset;
-    } else if (_loggerUTCOffset < 0) {
-        dtRowHeader += _loggerUTCOffset;
+    if (_loggerOffsetSeconds > 0) {
+        dtRowHeader += '+' + static_cast<int8_t>(_loggerOffsetSeconds / 3600);
+    } else if (_loggerOffsetSeconds < 0) {
+        dtRowHeader += '-' + static_cast<int8_t>(_loggerOffsetSeconds / 3600);
     }
     STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i))
 }
@@ -1375,7 +1399,7 @@ void Logger::fileDateTimeCallback(uint16_t* date, uint16_t* time) {
     int8_t  seconds, minutes, hours, day, month;
     int16_t year;
     loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerUTCOffset);
+                               Logger::_loggerOffsetSeconds);
 
     // return date using FAT_DATE macro to format fields
     *date = FAT_DATE(year, month, day);
@@ -1390,7 +1414,7 @@ void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
     int8_t  seconds, minutes, hours, day, month;
     int16_t year;
     loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerUTCOffset);
+                               Logger::_loggerOffsetSeconds);
     fileToStamp.timestamp(stampFlag, year, month, day, hours, minutes, seconds);
 }
 

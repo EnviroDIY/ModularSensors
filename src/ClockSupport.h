@@ -136,14 +136,19 @@ class loggerClock {
      * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
      * (i.e., offset = 0)
      *
-     * @param offsetHours The offset of the real-time clock (RTC) from UTC in
+     * @param offsetSeconds The offset of the real-time clock (RTC) from UTC in
      * hours
-     */
-    static void setRTCOffset(int8_t offsetHours);
-    /**
-     * @brief Get the of the real-time clock (RTC) from UTC in hours.
      *
-     * @return The offset of the real-time clock (RTC) from UTC in hours
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
+     */
+    static void setRTCOffset(int32_t offsetSeconds);
+    /**
+     * @brief Get the offset of the real-time clock (RTC) from UTC in **hours**.
+     *
+     * @return The offset of the real-time clock (RTC) from UTC in **hours**
      */
     static int8_t getRTCOffset();
 
@@ -151,13 +156,19 @@ class loggerClock {
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
      * the RTC.
      *
-     * @param utcOffset The offset from UTC to return the epoch time in.
+     * @param utcOffsetSeconds The offset **in seconds** from UTC to return the
+     * epoch time in.
      * @param epoch The type of epoch to use (i.e., the standard for the start
      * of the epoch).
      *
      * @return The number of seconds from the start of the given epoch.
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static time_t getNowAsEpoch(int8_t utcOffset, epochStart epoch);
+    static time_t getNowAsEpoch(int32_t utcOffsetSeconds, epochStart epoch);
 
     /**
      * @brief Get the current epoch time from the RTC and return it as
@@ -171,21 +182,27 @@ class loggerClock {
      * @param day [out] Reference to a variable where the day will be stored
      * @param month [out] Reference to a variable where the month will be stored
      * @param year [out] Reference to a variable where the year will be stored
-     * @param tz_offset [in] The time zone offset from UTC in hours
+     * @param tz_offset_s [in] The time zone offset from UTC in **seconds**
      *
      * @note The tz_offset is an input parameter - you need to set the timezone
      * that you want the other parts to be set in!
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
     static void getNowAsParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                               int8_t& day, int8_t& month, int16_t& year,
-                              uint8_t tz_offset);
+                              int32_t tz_offset_s);
 
     /**
      * @brief Verify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
      * @param ts The number of seconds since the start of the given epoch.
-     * @param utcOffset The offset of the epoch time from UTC.
+     * @param utcOffsetSeconds The offset of the epoch time from UTC **in
+     * seconds**.
      * @param epoch The type of epoch to use (i.e., the standard for the start
      * of the epoch).
      *
@@ -198,14 +215,21 @@ class loggerClock {
      * @note Changed behavior: Previously returned true only when clock was
      * actually written. Now returns true when clock is at/within tolerance,
      * regardless of whether it was written.
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static bool setRTClock(time_t ts, int8_t utcOffset, epochStart epoch);
+    static bool setRTClock(time_t ts, int32_t utcOffsetSeconds,
+                           epochStart epoch);
     /**
      * @brief Verify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
      * @param in_time An epochTime object
-     * @param utcOffset The offset of the epoch time from UTC.
+     * @param utcOffsetSeconds The offset of the epoch time from UTC **in
+     * seconds**.
      *
      * @return True if the input timestamp passes sanity checks **and**
      * the clock is now at or within tolerance (±5 seconds) of the target time.
@@ -216,8 +240,13 @@ class loggerClock {
      * @note Changed behavior: Previously returned true only when clock was
      * actually written. Now returns true when clock is at/within tolerance,
      * regardless of whether it was written.
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static bool setRTClock(epochTime in_time, int8_t utcOffset);
+    static bool setRTClock(epochTime in_time, int32_t utcOffsetSeconds);
 
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
@@ -235,19 +264,32 @@ class loggerClock {
      *
      * @param ts The timestamp for the next interrupt - in seconds from the
      * start of the input epoch.
-     * @param utcOffset The offset of the epoch time from UTC in hours.
+     * @param utcOffsetSeconds The offset of the epoch time from UTC **in
+     * seconds**.
      * @param epoch The type of epoch to use (i.e., the standard for the start
      * of the epoch).
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static void setNextRTCInterrupt(time_t ts, int8_t utcOffset,
+    static void setNextRTCInterrupt(time_t ts, int32_t utcOffsetSeconds,
                                     epochStart epoch);
     /**
      * @brief Set an alarm to fire a clock interrupt at a specific epoch time
      *
      * @param in_time An epochTime object
-     * @param utcOffset The offset of the epoch time from UTC in hours.
+     * @param utcOffsetSeconds The offset of the epoch time from UTC **in
+     * seconds**.
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static void setNextRTCInterrupt(epochTime in_time, int8_t utcOffset);
+    static void setNextRTCInterrupt(epochTime in_time,
+                                    int32_t   utcOffsetSeconds);
 
     /**
      * @brief Enable 1 minute interrupts on the RTC
@@ -290,9 +332,9 @@ class loggerClock {
  protected:
 
     /**
-     * @brief The static offset data of the real time clock from UTC in hours
+     * @brief The static offset of the real time clock from UTC in **seconds**
      */
-    static int8_t _rtcUTCOffset;
+    static int32_t _rtcOffsetSeconds;
     /**
      * @brief The start of the epoch for the RTC (or the RTC's library).
      */
@@ -304,12 +346,13 @@ class loggerClock {
      *
      * @param ts The input epoch time - in seconds since the start of the input
      * epoch.
-     * @param utcOffset The offset of the input epoch time from UTC in hours.
+     * @param utcOffsetSeconds The offset of the input epoch time from UTC in
+     * seconds.
      * @param epoch The type of epoch of the input timestamp
      * @return A timestamp converted to the epoch and timezone used internally
      * by the RTC
      */
-    static inline time_t tsToRawRTC(time_t ts, int8_t utcOffset,
+    static inline time_t tsToRawRTC(time_t ts, int32_t utcOffsetSeconds,
                                     epochStart epoch);
     /**
      * @brief Convert a timestamp from the RTC's internal epoch and UTC offset
@@ -317,13 +360,13 @@ class loggerClock {
      *
      * @param rtc_ts The timestamp in the epoch and timezone used internally
      * by the RTC.
-     * @param utcOffset The offset of the desired output epoch time from UTC in
-     * hours.
+     * @param utcOffsetSeconds The offset of the desired output epoch time from
+     * UTC in seconds.
      * @param epoch The type of epoch of the output timestamp
      * @return A timestamp converted from the epoch and timezone used internally
      * by the RTC to the requested epoch and offset
      */
-    static inline time_t tsFromRawRTC(time_t rtc_ts, int8_t utcOffset,
+    static inline time_t tsFromRawRTC(time_t rtc_ts, int32_t utcOffsetSeconds,
                                       epochStart epoch);
 
     /**
