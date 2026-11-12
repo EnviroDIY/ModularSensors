@@ -195,9 +195,14 @@
  *
  * @note The ZigBee, 900mHZ, and other radio-based XBee's are **not**
  * supported.
+ *
+ * @tparam GsmModemType_T The TinyGSM modem type.
+ * @tparam signalQualityIsRSSI Whether signal quality is RSSI (true) or CSQ
+ * (false).
  */
-template <typename GsmModemType_T>
-class DigiXBee : public loggerModemImpl<GsmModemType_T, true> {
+template <typename GsmModemType_T, bool signalQualityIsRSSI = true>
+class DigiXBee
+    : public loggerModemImpl<GsmModemType_T, signalQualityIsRSSI> {
  public:
     /**
      * @brief Construct a new Digi XBee object
@@ -222,7 +227,7 @@ class DigiXBee : public loggerModemImpl<GsmModemType_T, true> {
      */
     DigiXBee(GsmModemType_T& gsmModem, int8_t powerPin, int8_t statusPin,
              bool useCTSStatus, int8_t modemResetPin, int8_t modemSleepRqPin)
-        : loggerModemImpl<GsmModemType_T, true>(
+        : loggerModemImpl<GsmModemType_T, signalQualityIsRSSI>(
               gsmModem, powerPin, statusPin, !useCTSStatus, modemResetPin,
               XBEE_RESET_LEVEL, XBEE_RESET_PULSE_MS, modemSleepRqPin,
               XBEE_WAKE_LEVEL, XBEE_WAKE_PULSE_MS, XBEE_STATUS_TIME_MS,

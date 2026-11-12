@@ -16,8 +16,9 @@ DigiXBee3GBypass::DigiXBee3GBypass(TinyGsmUBLOX& ubloxModem, int8_t powerPin,
                                    int8_t statusPin, bool useCTSStatus,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
                                    const char* apn)
-    : DigiXBee<TinyGsmUBLOX>(ubloxModem, powerPin, statusPin, useCTSStatus,
-                             modemResetPin, modemSleepRqPin),
+    : DigiXBee<TinyGsmUBLOX, false>(ubloxModem, powerPin, statusPin,
+                                    useCTSStatus, modemResetPin,
+                                    modemSleepRqPin),
       _apn(apn) {}
 
 bool DigiXBee3GBypass::connectWithCredentials() {

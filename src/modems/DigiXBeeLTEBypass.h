@@ -102,7 +102,7 @@
  * @warning Digi strongly recommends against this, but it actually seems to be
  * more stable in our tests.  Your milage may vary.
  */
-class DigiXBeeLTEBypass : public DigiXBee<TinyGsmSaraR4> {
+class DigiXBeeLTEBypass : public DigiXBee<TinyGsmSaraR4, false> {
  public:
     /**
      * @brief Construct a new Digi XBee LTE Bypass object.

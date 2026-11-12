@@ -87,7 +87,8 @@
  * @warning Digi strongly recommends against this, but it actually seems to be
  * more stable in our tests.  Your milage may vary.
  */
-class DigiXBee3GBypass : public DigiXBee<TinyGsmUBLOX  // Modem Type
+class DigiXBee3GBypass : public DigiXBee<TinyGsmUBLOX,  // Modem Type
+                                         false          // Signal is CSQ
                                          > {
  public:
     /**
