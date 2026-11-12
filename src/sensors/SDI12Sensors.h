@@ -95,7 +95,7 @@
  * @brief The main class for SDI-12 Sensors
  */
 class SDI12Sensors : public Sensor {
- public:
+ protected:
     /**
      * @brief Construct a new SDI 12 Sensors object.  This is only intended to
      * be used within this library.
@@ -148,6 +148,8 @@ class SDI12Sensors : public Sensor {
                  const uint8_t totalReturnedValues   = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
                  uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
+
+ public:
     /**
      * @brief Destroy the SDI12Sensors object - no action taken
      */

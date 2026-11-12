@@ -201,8 +201,7 @@
  * (false).
  */
 template <typename GsmModemType_T, bool signalQualityIsRSSI = true>
-class DigiXBee
-    : public loggerModemImpl<GsmModemType_T, signalQualityIsRSSI> {
+class DigiXBee : public loggerModemImpl<GsmModemType_T, signalQualityIsRSSI> {
  public:
     /**
      * @brief Construct a new Digi XBee object
