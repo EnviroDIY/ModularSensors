@@ -1482,8 +1482,13 @@ class Logger {
      *
      * @param sleepBeforeReturning True to put the logger to sleep before
      * returning from the function; optional with a default value of true.
+     * @return `true` if a VariableArray was found an logging attempted, `false`
+     * otherwise.
      * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
      * between readings.
+     * @important A `true` return value does not guarantee successful logging;
+     * it only indicates that a VariableArray was found and logging was
+     * attempted.
      */
     virtual bool logData(bool sleepBeforeReturning = true);
 
@@ -1493,8 +1498,13 @@ class Logger {
      *
      * @param sleepBeforeReturning True to put the logger to sleep before
      * returning from the function; optional with a default value of true.
+     * @return `true` if a VariableArray was found an logging attempted, `false`
+     * otherwise.
      * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
      * between readings.
+     * @important A `true` return value does not guarantee successful logging or
+     * publishing; it only indicates that a VariableArray was found and logging
+     * was attempted.
      */
     virtual bool logDataAndPublish(bool sleepBeforeReturning = true);
 
