@@ -85,6 +85,8 @@ bool DigiXBeeCellularTransparent::extraModemSetup() {
     success &= gsmModem.init();
     _modemName = gsmModem.getModemName();
     // Then enter command mode to set pin outputs.
+    /// @todo Consider failing if any individual XBee command mode setting
+    /// change fails.
     MS_DBG(F("Putting XBee into command mode..."));
     if (gsmModem.commandMode()) {
         bool changesMade = false;

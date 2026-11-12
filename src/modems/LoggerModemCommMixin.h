@@ -196,6 +196,9 @@ class loggerModemCommMixin {
      * (50s).
      * @return True if WiFi data connection has been established.  False if the
      * modem was unresponsive or unable to connect to the network.
+     *
+     * @todo Ensure that the total time for reconnect attempts does not exceed
+     * maxConnectionTime.
      */
     bool connectInternetImpl(uint32_t maxConnectionTime,
                              TinyGsmCapabilities::false_type) {

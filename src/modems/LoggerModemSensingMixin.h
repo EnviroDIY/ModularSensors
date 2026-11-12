@@ -92,6 +92,7 @@ class loggerModemSensingMixin {
             typename Derived::SignalQualityIsRSSI::type());
         // A raw value of 0 (RSSI) or 99 (CSQ) means no signal, no response, or
         // a bad response - we cannot tell them apart.
+        /// @todo Consider rejecting the XBee no-data RSSI value (162).
         return rssi != 0 && rssi != MS_INVALID_VALUE;
     }
 

@@ -57,6 +57,10 @@ class NISTTime {
      * @param nistClient An idle Arduino Client to use for the request.
      * @return Unix timestamp (seconds since January 1, 1970 UTC), or zero if
      * the request fails.
+     *
+     * @remark Clients (like those connected to a TinyGSM _XBee_ modem) that
+     * require data to be sent before a connection is fully established may not
+     * work correctly with this function.
      */
     static uint32_t query(Client& nistClient);
 

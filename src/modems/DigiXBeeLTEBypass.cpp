@@ -39,6 +39,8 @@ bool DigiXBeeLTEBypass::extraModemSetup() {
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
+    /// @todo Consider failing if any individual XBee command mode setting
+    /// change fails.
     if (success) {
         MS_DBG(F("Setting I/O Pins..."));
         /** Enable pin sleep functionality on `DIO9`.

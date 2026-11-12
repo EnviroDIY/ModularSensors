@@ -150,6 +150,8 @@ class S3PresignedPublisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param getUrlFxn A function to call to get a new pre-signed URL
      * @param getFileNameFxn A function to call to get a new filename
+     *
+     * @todo Reject an unsecured Client.
      */
     S3PresignedPublisher(Logger& baseLogger, Client& inClient,
                          String (*getUrlFxn)(String) = nullptr,

@@ -87,6 +87,8 @@ bool DigiXBeeWifi::extraModemSetup() {
     _modemName = gsmModem.getModemName();
     // Then enter command mode to set pin outputs.
     MS_DBG(F("Putting XBee into command mode..."));
+    /// @todo Consider failing if any individual XBee command mode setting
+    /// change fails.
     if (gsmModem.commandMode()) {
         MS_DBG(F("Getting Detailed Modem Version..."));
 

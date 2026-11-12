@@ -104,6 +104,8 @@ class AWS_IoT_Publisher : public dataPublisher {
      * single TinyGSM modem instance
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param samplingFeatureUUID The sampling feature UUID
+     *
+     * @todo Reject an unsecured Client.
      */
     AWS_IoT_Publisher(Logger& baseLogger, Client& inClient,
                       const char* awsIoTEndpoint,
@@ -119,6 +121,8 @@ class AWS_IoT_Publisher : public dataPublisher {
      * configured with the correct security context and connection parameters.
      * The AWS_IoT_Publisher must be configured with an endpoint and either a
      * sampling feature UUID or MQTT topics before use.
+     *
+     * @todo Reject an unsecured Client.
      */
     AWS_IoT_Publisher(Logger& baseLogger, Client& inClient);
     /**
@@ -304,9 +308,9 @@ class AWS_IoT_Publisher : public dataPublisher {
     /**
      * @brief The endpoint for your AWS IoT instance
      */
-    const char* _awsIoTEndpoint;
-    const char* _dataTopic;      ///< The topic for data
-    const char* _metadataTopic;  ///< The topic for metadata
+    const char* _awsIoTEndpoint = nullptr;
+    const char* _dataTopic      = nullptr;  ///< The topic for data
+    const char* _metadataTopic  = nullptr;  ///< The topic for metadata
     /**
      * @brief True to continue waiting for subscriptions after publishing data
      */

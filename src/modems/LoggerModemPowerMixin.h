@@ -273,7 +273,11 @@ class loggerModemPowerMixin {
         uint32_t start   = millis();
         MS_DBG(F("Turning"), derived().getModemName(), F("off."));
 
-        // Put the modem to sleep
+        // Attempt to put the modem to sleep, ignoring whether it succeeds or
+        // not before powering down.
+        MS_DBG(F("Putting modem to sleep before powering down."));
+        /// @todo Verify that it's safe to ignore failures from modemSleepImpl()
+        /// before powering down.
         modemSleepImpl();
 
         // Now power down
