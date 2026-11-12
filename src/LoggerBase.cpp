@@ -12,6 +12,8 @@
 #include "NISTTime.h"
 #include "dataPublisherBase.h"
 
+#include <string.h>
+
 // Include the EpochTime library
 #include <EpochTime.h>
 
@@ -476,8 +478,10 @@ bool Logger::syncRTC() {
             if (_logModem->connectInternet(120000L)) {
                 success = loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                                   epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                 MS_DBG(F("Current logger time after sync is"),
                        formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
                 _logModem->updateModemMetadata();
             } else {
                 PRINTOUT(F("Could not connect to internet for clock sync."));
@@ -504,8 +508,10 @@ bool Logger::syncRTC(Client& nistClient) {
                "client"));
     bool success = loggerClock::setRTClock(NISTTime::query(nistClient), 0,
                                            epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     MS_DBG(F("Current logger time after sync is"),
            formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
     extendedWatchDog::resetWatchDog();
     return success;
 }
@@ -640,17 +646,23 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                                Logger::_loggerUTCOffset);
 }
 
-#if EPOCHTIME_ENABLE_STRING_FORMATTING
-// This converts an epoch time (unix time) into a ISO8601 formatted string.
+// This converts an epoch time (unix time) into an ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
 // Code modified from parts of the SparkFun RV-8803 library.
-String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
-    return TimeUtils::formatISO8601(
+void Logger::formatDateTime_ISO8601(char* buffer, time_t epochSeconds) {
+    TimeUtils::formatISO8601(
+        buffer,
         epochTime(epochSeconds,
                   static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
                   Logger::_loggerEpoch),
-        Logger::_loggerUTCOffset);
+        static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600);
+}
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
+String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
+    char buffer[26] = {'\0'};
+    formatDateTime_ISO8601(buffer, epochSeconds);
+    return String(buffer);
 }
 #endif
 #if EPOCHTIME_ENABLE_STRFTIME
@@ -696,8 +708,10 @@ bool Logger::checkInterval() {
         interval = 1;
     }
 
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
+#endif
     MS_DBG(F("Logging interval in seconds:"), (interval * 60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
@@ -1251,12 +1265,17 @@ String Logger::generateFileName(bool include_time, const char* extension,
                   Logger::_loggerEpoch),
         static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600);
 
-    // length: YYYYMMDD_HHMMSS = 15 + 1 for null or YYYYMMDD = 8 + 1 for null
-    uint8_t len_time            = include_time ? 16 : 9;
-    char    time_buff[len_time] = {'\0'};
-    // copy the relevant part of ISO8601 string
-    strncpy(time_buff, isoBuf, len_time - 1);
-    time_buff[len_time - 1] = '\0';  // just to be sure
+    // Extract YYYYMMDD or YYYYMMDD_HHMMSS from YYYY-MM-DDTHH:MM:SS+HH:MM.
+    char time_buff[16] = {'\0'};
+    memcpy(time_buff, isoBuf, 4);
+    memcpy(time_buff + 4, isoBuf + 5, 2);
+    memcpy(time_buff + 6, isoBuf + 8, 2);
+    if (include_time) {
+        time_buff[8] = '_';
+        memcpy(time_buff + 9, isoBuf + 11, 2);
+        memcpy(time_buff + 11, isoBuf + 14, 2);
+        memcpy(time_buff + 13, isoBuf + 17, 2);
+    }
     MS_DEEP_DBG(F("Generating filename with timestamp string:"), time_buff);
     String filename = String(use_prefix);
     if (len_underscore) { filename += String("_"); }
@@ -1340,12 +1359,12 @@ void Logger::printFileHeader(Stream* stream) {
 // This prints a comma separated list of values of sensor data - including the
 // time -  out over an Arduino stream
 void Logger::printVariableValuesCSV(Stream* stream) {
-    String csvString = "";
-    String iso8601   = formatDateTime_ISO8601(Logger::markedLocalUnixTime);
-    iso8601.replace("T", " ");
-    csvString += iso8601.substring(0, 19);
-    csvString += ',';
-    stream->print(csvString);
+    char iso8601[26] = {'\0'};
+    formatDateTime_ISO8601(iso8601, Logger::markedLocalUnixTime);
+    iso8601[10] = ' ';
+    iso8601[19] = '\0';
+    stream->print(iso8601);
+    stream->print(',');
     for (uint8_t i = 0; i < getArrayVarCount(); i++) {
         stream->print(getValueStringAtI(i));
         if (i + 1 != getArrayVarCount()) { stream->print(','); }
@@ -1681,8 +1700,10 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
         // powered and awake between iterations in testing mode.
         _internalArray->completeUpdate(false, false, false, false);
         // Print out the current logger time
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
         PRINTOUT(F("Current logger time is"),
                  formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
 #if !defined(MS_SILENT)
@@ -1839,8 +1860,10 @@ void Logger::begin() {
 
     MS_DEEP_DBG(F("Beginning the logger clock"));
     loggerClock::begin();
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     PRINTOUT(F("Current localized logger time is:"),
              formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
 
@@ -2025,8 +2048,10 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                                  "NIST..."));
                         loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                                 epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                         MS_DBG(F("Current logger time after sync is"),
                                formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
                         extendedWatchDog::resetWatchDog();
                         // NOTE: This is the only time we publish **metadata**
                         // to remotes during a normal logging cycle
@@ -2115,8 +2140,10 @@ void Logger::makeInitialConnections() {
             if (_logModem->connectInternet(120000L)) {
                 loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                         epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                 MS_DBG(F("Current logger time after sync is"),
                        formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
                 _logModem->updateModemMetadata();
 
                 MS_DBG(F("Publishing configuration metadata to remotes"));

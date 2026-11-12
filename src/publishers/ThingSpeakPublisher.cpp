@@ -158,9 +158,9 @@ int16_t ThingSpeakPublisher::publishData(Client& outClient, bool) {
         // The txBuffer is used for the **payload** only
         txBufferInit(&outClient);
         txBufferAppend("created_at=");
-        txBufferAppend(
-            Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime)
-                .c_str());
+        char timestamp[26] = {'\0'};
+        Logger::formatDateTime_ISO8601(timestamp, Logger::markedLocalUnixTime);
+        txBufferAppend(timestamp);
 
         char tempBuffer[2] = "";  // for the field number
         for (uint8_t i = 0; i < numFields; i++) {

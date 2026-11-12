@@ -315,8 +315,10 @@ int16_t MonitorMyWatershedPublisher::flushDataBuffer(Client& outClient) {
         if (records > 1) { txBufferAppend('['); }
         for (int rec = 0; rec < records; rec++) {
             txBufferAppend('"');
-            uint32_t timestamp = _logBuffer.getRecordTimestamp(rec);
-            txBufferAppend(Logger::formatDateTime_ISO8601(timestamp).c_str());
+            uint32_t timestamp           = _logBuffer.getRecordTimestamp(rec);
+            char     timestampString[26] = {'\0'};
+            Logger::formatDateTime_ISO8601(timestampString, timestamp);
+            txBufferAppend(timestampString);
             txBufferAppend('"');
             if (rec + 1 != records) { txBufferAppend(','); }
         }

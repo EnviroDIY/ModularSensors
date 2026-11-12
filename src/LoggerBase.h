@@ -919,6 +919,18 @@ class Logger {
      * @return The number of seconds from the start of the **UNIX** epoch.
      */
     static time_t getNowUTCEpoch();
+    /**
+     * @brief Convert an epoch time into an ISO8601 formatted character buffer.
+     *
+     * This assumes the supplied date/time is in the LOGGER's timezone and the
+     * LOGGER's epoch start. It adds the LOGGER's offset as the time zone offset
+     * in the buffer.
+     *
+     * @param buffer A character buffer with space for at least 26 characters.
+     * @param epochSeconds The number of seconds since the start of the logger's
+     * epoch (#MS_LOGGER_EPOCH).
+     */
+    static void formatDateTime_ISO8601(char* buffer, time_t epochSeconds);
 #if EPOCHTIME_ENABLE_STRING_FORMATTING || defined(DOXYGEN)
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.

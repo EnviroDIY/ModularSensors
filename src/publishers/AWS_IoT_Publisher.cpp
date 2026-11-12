@@ -182,8 +182,9 @@ int16_t AWS_IoT_Publisher::publishData(Client& outClient, bool) {
 
     // add the timestamp tag
     txBufferAppend(timestampTag);
-    txBufferAppend(
-        Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime).c_str());
+    char timestamp[26] = {'\0'};
+    Logger::formatDateTime_ISO8601(timestamp, Logger::markedLocalUnixTime);
+    txBufferAppend(timestamp);
     txBufferAppend('"');
     txBufferAppend(',');
 
