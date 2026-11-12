@@ -29,14 +29,17 @@ bool QuectelBG96::connectWithCredentials() {
 }
 
 bool QuectelBG96::modemSleepFxn() {
-    // Don't go to sleep if we cannot wake up again.
-    if (_modemSleepRqPin < 0 && _powerPin < 0) {
-        MS_DBG(F("No way to wake the BG96; skipping power down"));
+    if (_modemSleepRqPin >= 0) {
+        MS_DBG(F("Asking BG96 to power down"));
+        /** Run the sleep AT command.
+            Use AT+QPOWD=1 for normal power down. */
+        bool res = gsmModem.powerOff();
+        gsmModem.stream.flush();
+        return res;
+    } else {  // DON'T go to sleep if we can't wake up!
+        gsmModem.stream.flush();
         return true;
     }
-    /** Run the sleep AT command.
-        Use AT+QPOWD=1 for normal power down. */
-    return gsmModem.powerOff();
 }
 
 bool QuectelBG96::modemWakeFxn() {
