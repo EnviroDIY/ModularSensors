@@ -17,8 +17,9 @@
  * This depends on the Rob Tillaart MS5837 library at
  * https://github.com/RobTillaart/MS5837
  *
- * @warning The MS5837 sensor cannot be used - or even compiled with - the
- * Measurement Specialties MS5803.
+ * @warning This file cannot be used - or even compiled with -
+ * src\sensors\MeaSpecMS5803.h or the EnviroDIY or Northern Widget MS5803
+ * library.
  */
 /* clang-format off */
 /**
@@ -44,6 +45,9 @@
  * Measurement Specialties MS5803, Bosch BME280, BMP388, and BMP390 sensors!
  * If you are also using one of those sensors, make sure that the address for
  * that sensor does not conflict with the address of this sensor.
+ *
+ * @warning The MS5837 sensor cannot be used - or even compiled with - the
+ * Measurement Specialties MS5803 or the EnviroDIY or Northern Widget MS5803 library.
  *
  * @note This sensor supports both primary and secondary hardware I2C instances
  * through TwoWire* constructor parameters. Software I2C is not supported.

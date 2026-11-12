@@ -948,7 +948,8 @@ ___
 ### Measurement Specialties MS5803-14BA Pressure Sensor<!--! {#menu_walk_mea_spec_ms5803} -->
 
 The only input needed is the Arduino pin controlling power on/off; the i2cAddressHex and maximum pressure are optional as is the number of readings to average.
-Keep in mind that the I2C address (0x76) of the MS5803 matches those of some configurations of the MS5837, BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
+Keep in mind that the I2C address (0x76) of the MS5803 matches those of some configurations of the BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
+The Measurement Specialties MS5803 sensor cannot be used - or even compiled with the TE Connectivity MS5837 sensor or the Rob Tillaart MS5837 library regardless of the I2C address.
 
 <!--! @menusnip{mea_spec_ms5803} -->
 
@@ -958,7 +959,8 @@ ___
 
 The TE Connectivity / Measurement Specialties MS5837 is commonly used in Blue Robotics Bar02/Bar30 pressure sensors for underwater applications and depth measurement.
 The only required input is the Arduino pin controlling power on/off; the sensor model, fluid density, air pressure, and number of readings to average are optional.
-Keep in mind that the I2C address (0x76) of the MS5837 matches that of some configurations of the MS5803, BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
+Keep in mind that the I2C address (0x76) of the MS5837 matches that of some configurations of the BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
+The MS5837 sensor cannot be used - or even compiled with - the Measurement Specialties MS5803 or the EnviroDIY or Northern Widget MS5803 library regardless of the I2C address..
 
 @see @ref sensor_ms5837
 

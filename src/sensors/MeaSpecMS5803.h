@@ -17,6 +17,9 @@
  * modified for ModularSensors based on a fork from the
  * https://github.com/NorthernWidget/MS5803 library, which itself expanded on
  * https://github.com/sparkfun/SparkFun_MS5803-14BA_Breakout_Arduino_Library
+ *
+ * @warning This file cannot be used - or even compiled with -
+ * src\sensors\TEConnectivityMS5837.h or the Rob Tillaart MS5837 library.
  */
 /* clang-format off */
 /**
@@ -54,7 +57,8 @@
  * The lower level communication between the mcu and the MS5803 is handled by the
  * [Northern Widget MS5803 library](https://github.com/NorthernWidget/MS5803).
  *
- * @warning The Measurement Specialties MS5803 sensor cannot be used - or even compiled with - the Rob Tillaart MS5837 library.
+ * @warning The Measurement Specialties MS5803 sensor cannot be used - or even
+ * compiled with the TE Connectivity MS5837 sensor or the Rob Tillaart MS5837 library.
  *
  * @section sensor_ms5803_datasheet Sensor Datasheet
  *

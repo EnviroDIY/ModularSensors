@@ -2123,9 +2123,11 @@ Variable* ds18Temp = new MaximDS18_Temp(&ds18,
 #endif
 
 
-#if defined(BUILD_SENSOR_MEA_SPEC_MS5803)
+#if defined(BUILD_SENSOR_MEA_SPEC_MS5803) && \
+    !defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
 // ==========================================================================
 //  Measurement Specialties MS5803-14BA pressure sensor
+//  This cannot be used together with the TE Connectivity MS5837 sensor.
 // ==========================================================================
 /** Start [mea_spec_ms5803] */
 #include <sensors/MeaSpecMS5803.h>
@@ -2151,10 +2153,12 @@ Variable* ms5803Temp =
 #endif
 
 
-#if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
+#if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837) && \
+    !defined(BUILD_SENSOR_MEA_SPEC_MS5803)
 // ==========================================================================
 //  TE Connectivity / Measurement Specialties MS5837 Pressure Sensor (deployed
 //  in Blue Robotics Bar02/Bar30)
+//  This cannot be used together with the Measurement Specialties MS5803 sensor.
 // ==========================================================================
 /** Start [te_connectivity_ms5837] */
 #include <sensors/TEConnectivityMS5837.h>
@@ -4149,8 +4153,11 @@ void setup() {
                                       // need power for setups
     }
 #if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
-    ms5837.setMaxRetries(
-        5);  // This sensor can be a little finicky, so allow for some retries
+    // This sensor can be a little finicky, so allow for some retries
+    // The default maximum number of retries for the MS5837
+    // (`MS5837_DEFAULT_MEASUREMENT_RETRIES`) is already five, so this isn't
+    // necessary, it just demonstrates how to set it manually.
+    ms5837.setMaxRetries(5);
 #endif
     /** End [setup_sensors] */
 
