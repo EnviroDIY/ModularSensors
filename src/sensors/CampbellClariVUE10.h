@@ -112,11 +112,11 @@
 #define CLARIVUE10_STABILIZATION_TIME_MS 0
 /**
  * @brief Sensor::_measurementTime_ms; the returned measurement time from the
- * ClariVUE10 in response to a measurement request is 11s.  I've found it to be
- * a little faster than that, but inconsistent enough that 11s is a safe
+ * ClariVUE10 in response to a measurement request is 11-12s.  I've found it to
+ * be a little faster than that, but inconsistent enough that 11.5s is a safe
  * estimate.
  */
-#define CLARIVUE10_MEASUREMENT_TIME_MS 11000
+#define CLARIVUE10_MEASUREMENT_TIME_MS 11500
 /**@}*/
 
 /**
