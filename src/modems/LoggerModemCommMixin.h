@@ -396,26 +396,26 @@ class loggerModemCommMixin {
     uint32_t getNISTTimeImpl(TinyGsmCapabilities::true_type) {
         derived().gsmModem.NTPServerSync("pool.ntp.org", 0);
         derived().gsmModem.waitForTimeSync();
-
-        int16_t year     = 0;
-        int16_t month    = 0;
-        int16_t day      = 0;
-        int16_t hours    = 0;
-        int16_t minutes  = 0;
-        int16_t seconds  = 0;
-        float   timezone = 0;  // in quarter hours!
-        if (!derived().gsmModem.getNetworkTime(&year, &month, &day, &hours,
-                                               &minutes, &seconds, &timezone)) {
+        int   ntp_year     = 0;
+        int   ntp_month    = 0;
+        int   ntp_day      = 0;
+        int   ntp_hour     = 0;
+        int   ntp_min      = 0;
+        int   ntp_sec      = 0;
+        float ntp_timezone = 0;  // in quarter hours!
+        if (!derived().gsmModem.getNetworkTime(&ntp_year, &ntp_month, &ntp_day,
+                                               &ntp_hour, &ntp_min, &ntp_sec,
+                                               &ntp_timezone)) {
             return 0;
         }
 
         tm timeParts       = {};
-        timeParts.tm_sec   = seconds;
-        timeParts.tm_min   = minutes;
-        timeParts.tm_hour  = hours;
-        timeParts.tm_mday  = day;
-        timeParts.tm_mon   = month - 1;
-        timeParts.tm_year  = year - 1900;
+        timeParts.tm_sec   = ntp_sec;
+        timeParts.tm_min   = ntp_min;
+        timeParts.tm_hour  = ntp_hour;
+        timeParts.tm_mday  = ntp_day;
+        timeParts.tm_mon   = ntp_month - 1;
+        timeParts.tm_year  = ntp_year - 1900;
         timeParts.tm_isdst = 0;
 
         // Convert the standard calendar fields using the processor's local
@@ -424,7 +424,7 @@ class loggerModemCommMixin {
         // cast into a timestamp_t
         timestamp_t ts = static_cast<timestamp_t>(t);
         //  convert to Unix/UTC
-        return TimeUtils::convertOffsetAndEpoch(ts, timezone * 15 * 60,
+        return TimeUtils::convertOffsetAndEpoch(ts, ntp_timezone * 15 * 60,
                                                 TimeUtils::getCoreEpochStart(),
                                                 0, epochStart::unix_epoch);
     }
