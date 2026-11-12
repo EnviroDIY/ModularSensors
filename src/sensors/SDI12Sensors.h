@@ -119,9 +119,6 @@ class SDI12Sensors : public Sensor {
      * Defaults to 0.
      * @param measurementTime_ms The time in ms between when a measurement is
      * started and when the result value is available.  Defaults to 0.
-     * @param extraWakeTime Legacy extra wake time retained for source
-     * compatibility.  Recorder transactions use the SDI-12 protocol timing
-     * limits instead of this value.
      * @param incCalcValues The number of included calculated variables from the
      * sensor, if any.  These are used for values that we would always calculate
      * for a sensor and depend only on the raw results of that single sensor;
@@ -132,8 +129,7 @@ class SDI12Sensors : public Sensor {
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t totalReturnedValues   = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
-                 uint8_t incCalcValues = 0);
+                 uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
@@ -142,8 +138,7 @@ class SDI12Sensors : public Sensor {
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t totalReturnedValues   = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
-                 uint8_t incCalcValues = 0);
+                 uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
     /**
      * @copydoc SDI12Sensors::SDI12Sensors
      */
@@ -152,8 +147,7 @@ class SDI12Sensors : public Sensor {
                  const char*   sensorName            = "SDI12-Sensor",
                  const uint8_t totalReturnedValues   = 1,
                  uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
-                 uint32_t measurementTime_ms = 0, int8_t extraWakeTime = 0,
-                 uint8_t incCalcValues = 0);
+                 uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
     /**
      * @brief Destroy the SDI12Sensors object - no action taken
      */
@@ -290,12 +284,6 @@ class SDI12Sensors : public Sensor {
      * @brief Internal reference to the SDI-12 address.
      */
     char _SDI12address;
-    /**
-     * @brief Legacy extra wake time retained for derived-class compatibility.
-     * Recorder transactions use the SDI-12 protocol timing limits instead.
-     */
-    int8_t _extraWakeTime;
-
  private:
     String _sensorVendor;   ///< The vendor (manufacturer) of the SDI-12 sensor
     String _sensorModel;    ///< The model of the SDI-12 sensor

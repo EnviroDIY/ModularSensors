@@ -233,6 +233,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 
+- **Potentially Breaking** Removed the unused configurable extra wake delay from SDI-12 sensor constructors and sensor definitions.
+  `SDI12Recorder` now owns protocol wake timing, and every bundled sensor had used the default delay.
 - **Potentially Breaking** Constructors for sensor-associated variables that don't include a pointer to the sensor.
   You now *must* create the sensor instance before creating the variable and tie the variable to the sensor when creating the variable.
   This functionality was never used in any examples and is unlikely to affect any users.

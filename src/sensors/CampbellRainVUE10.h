@@ -100,9 +100,6 @@
  * complete a measurement.
  */
 #define RAINVUE10_MEASUREMENT_TIME_MS 100
-/// @brief Extra wake time required for an SDI-12 sensor between the "break"
-/// and the time the command is sent.  The RainVUE requires no extra time.
-#define RAINVUE10_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -287,8 +284,7 @@ class CampbellRainVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell RainVUE10", RAINVUE10_NUM_VARIABLES,
               RAINVUE10_WARM_UP_TIME_MS, RAINVUE10_STABILIZATION_TIME_MS,
-              RAINVUE10_MEASUREMENT_TIME_MS, RAINVUE10_EXTRA_WAKE_TIME_MS,
-              RAINVUE10_INC_CALC_VARIABLES) {}
+              RAINVUE10_MEASUREMENT_TIME_MS, RAINVUE10_INC_CALC_VARIABLES) {}
     /**
      * @copydoc CampbellRainVUE10::CampbellRainVUE10
      */
@@ -298,8 +294,7 @@ class CampbellRainVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell RainVUE10", RAINVUE10_NUM_VARIABLES,
               RAINVUE10_WARM_UP_TIME_MS, RAINVUE10_STABILIZATION_TIME_MS,
-              RAINVUE10_MEASUREMENT_TIME_MS, RAINVUE10_EXTRA_WAKE_TIME_MS,
-              RAINVUE10_INC_CALC_VARIABLES) {}
+              RAINVUE10_MEASUREMENT_TIME_MS, RAINVUE10_INC_CALC_VARIABLES) {}
     /**
      * @copydoc CampbellRainVUE10::CampbellRainVUE10
      */
@@ -309,8 +304,7 @@ class CampbellRainVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell RainVUE10", RAINVUE10_NUM_VARIABLES,
               RAINVUE10_WARM_UP_TIME_MS, RAINVUE10_STABILIZATION_TIME_MS,
-              RAINVUE10_MEASUREMENT_TIME_MS, RAINVUE10_EXTRA_WAKE_TIME_MS,
-              RAINVUE10_INC_CALC_VARIABLES) {}
+              RAINVUE10_MEASUREMENT_TIME_MS, RAINVUE10_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Campbell RainVUE10 object
      */

@@ -104,9 +104,6 @@
  * measurement I was not getting a result until after about 9335ms.
  */
 #define CLARIVUE10_MEASUREMENT_TIME_MS 11000
-/// @brief Extra wake time required for an SDI-12 sensor between the "break"
-/// and the time the command is sent.  The ClariVUE requires no extra time.
-#define CLARIVUE10_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -237,8 +234,7 @@ class CampbellClariVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
               CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
-              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
-              CLARIVUE10_INC_CALC_VARIABLES) {}
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_INC_CALC_VARIABLES) {}
     /**
      * @copydoc CampbellClariVUE10::CampbellClariVUE10
      */
@@ -248,8 +244,7 @@ class CampbellClariVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
               CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
-              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
-              CLARIVUE10_INC_CALC_VARIABLES) {}
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_INC_CALC_VARIABLES) {}
     /**
      * @copydoc CampbellClariVUE10::CampbellClariVUE10
      */
@@ -259,8 +254,7 @@ class CampbellClariVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
               CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
-              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
-              CLARIVUE10_INC_CALC_VARIABLES) {}
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Campbell ClariVUE10 object
      */
