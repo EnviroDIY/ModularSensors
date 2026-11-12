@@ -178,6 +178,7 @@ If after the failure message and a delay you do see your modem serial number or 
 If you don't get the modem info, there's something wrong.
 If your SIM card requires pin number to unlock (uncommon), enter that as the `SIM_PIN` in the cellular credentials section of the ino file.
 If your APN requires a user name and password, enter those in as the `simUser` and `simPass` in the cellular credentials section of the ino file.
+After modifying the cellular credentials in the ino file, save the file and try uploading the program to the Arduino again.
 Confirm that your wires between the Arduino and your modem are correct and you've set the correct port for `SerialAT` in the line `#define SerialAT Serial1`.
 Confirm that your modem has power and that any expected LED's are lit.
 
