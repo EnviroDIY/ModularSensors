@@ -18,11 +18,6 @@
       "version": "https://github.com/EnviroDIY/SoftwareSerial_ExternalInts.git"
     },
     {
-      "name": "SDI-12_ExtInts",
-      "owner": "envirodiy",
-      "version": "https://github.com/EnviroDIY/Arduino-SDI-12.git#ExtInts"
-    },
-    {
       "name": "Adafruit NeoPixel",
       "owner": "adafruit",
       "url": "https://github.com/adafruit/Adafruit_NeoPixel",
