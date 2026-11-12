@@ -4069,8 +4069,8 @@ void setup() {
 
 #if defined(EXTERNAL_FLASH_DEVICES)
     PRINTOUT(F("Setting onboard flash pin modes"));
-    pinMode(flashSSPin,
-            OUTPUT);  // for proper operation of the onboard flash memory
+    pinMode(flashSSPin, OUTPUT);     // set to output
+    digitalWrite(flashSSPin, HIGH);  // deselect the flash chip
 #endif
 
     PRINTOUT(F("Starting I2C (Wire)"));

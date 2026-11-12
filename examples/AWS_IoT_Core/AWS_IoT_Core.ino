@@ -106,7 +106,7 @@ const int32_t   modemBaud   = 115200;   // Communication speed of the modem
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 const int8_t modemVccPin   = -2;  // MCU pin controlling modem power
-const int8_t modemResetPin = 20;  // MCU pin connected to modem reset pin
+const int8_t modemResetPin = 27;  // MCU pin connected to modem reset pin
 const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
@@ -396,8 +396,8 @@ void setup() {
 
 #if defined(EXTERNAL_FLASH_DEVICES)
     PRINTOUT(F("Setting onboard flash pin modes"));
-    pinMode(flashSSPin,
-            OUTPUT);  // for proper operation of the onboard flash memory
+    pinMode(flashSSPin, OUTPUT);     // set to output
+    digitalWrite(flashSSPin, HIGH);  // deselect the flash chip
 #endif
 
     PRINTOUT(F("Starting I2C (Wire)"));
