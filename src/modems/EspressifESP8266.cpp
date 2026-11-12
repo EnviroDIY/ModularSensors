@@ -35,7 +35,7 @@ bool EspressifESP8266::modemSleepFxn() {
         }
         gsmModem.stream.flush();
         return success;
-    } else if (_modemSleepRqPin >= 0) {
+    } else if (_modemSleepRqPin >= 0 && _espSleepRqPin >= 0) {
         // Light sleep without the status pin
         MS_DBG(F("Configuring light sleep for the Espressif module"));
         // AT+SLEEPWKCFG=<wakeup source>,<param1>[,<param2>]
