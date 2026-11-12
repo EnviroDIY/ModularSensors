@@ -442,22 +442,37 @@ class loggerModemCommMixin {
      * requirement for all software that accesses its servers:
      * https://tf.nist.gov/tf-cgi/servers.cgi
      *
+     * @warning This function will attempt to use the first available non-secure
+     * TCP client for the NIST connection.  **It _will_ stop (disconnect) the
+     * client if it is already connected.**
+     *
      * @return Unix timestamp (seconds since Jan 1, 1970 UTC)
      */
     uint32_t getNISTTimeImpl(TinyGsmCapabilities::false_type) {
         using NISTClient = typename GsmModemType::TinyGsmClient;
 
+        bool createdClient = false;
+        // Get the first registered unsecured client from the modem to use for
+        // the connection.
+        auto* nistClient = derived().gsmModem.findFirstClient(false);
+
         // create a new client for the NIST time protocol
-        NISTClient nistClient(derived().gsmModem);
+        if (nistClient == nullptr) {
+            nistClient    = new NISTClient(derived().gsmModem);
+            createdClient = true;
+        }
         // make sure the client attached to the modem correctly
-        if (!nistClient.isAttached()) {
-            MS_DBG(F("No modem socket available for NIST client"));
+        if (!nistClient || !nistClient->isAttached()) {
+            MS_DBG(F("No available GSM client for NIST connection."));
+            if (createdClient) { delete nistClient; }
             return 0;
         }
+        // stop the client if it is connected
+        if (nistClient && nistClient->connected()) { nistClient->stop(); }
         // get the time
-        uint32_t returned_time = NISTTime::query(nistClient);
-        // detach the client
-        nistClient.detach();
+        uint32_t returned_time = NISTTime::query(*nistClient);
+        // delete the client if we created it
+        if (createdClient) { delete nistClient; }
         return returned_time;
     }
 

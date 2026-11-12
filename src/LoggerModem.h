@@ -547,6 +547,10 @@ class loggerModem {
      * @brief Get the time from NIST via NTP on those modems that support it or
      * using the NIST time protocol over TCP (RFC-868) for those that don't.
      *
+     * @warning On modules that do not support NTP, this function will attempt
+     * to use the first available non-secure TCP client for the NIST connection.
+     * **It _will_ stop (disconnect) the client if it is already connected.**
+     *
      * @return Unix timestamp (seconds since Jan 1, 1970 UTC)
      */
     virtual uint32_t getNISTTime() = 0;

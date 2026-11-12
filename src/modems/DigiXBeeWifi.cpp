@@ -334,14 +334,29 @@ bool DigiXBeeWifi::extraModemSetup() {
 void DigiXBeeWifi::disconnectInternet() {
     // Ensure Wifi XBee IP socket torn down by forcing connection to
     // localhost IP For A XBee S6B bug, then force restart.
-    TinyGsmXBee::GsmClientXBee gsmClient(
-        gsmModem);  // need to create again to force close
-    String    oldRemoteIp = gsmClient.remoteIP();
-    IPAddress newHostIp   = IPAddress(127, 0, 0, 1);  // localhost
-    gsmClient.connect(newHostIp, 80);
-    MS_DBG(gsmModem.getBeeName(), oldRemoteIp, F("disconnectInternet set to"),
-           gsmClient.remoteIP());
 
+    bool createdClient = false;
+    // Get the first registered unsecured client from the modem to use for the
+    // connection.  The XBee only *has* one client socket available, so we
+    // must use it carefully.
+    auto* gsmClient = gsmModem.findFirstClient(false);
+    // if no client already exists, create a new one
+    if (gsmClient == nullptr) {
+        gsmClient     = new TinyGsmXBee::TinyGsmClient(gsmModem);
+        createdClient = true;
+    }
+    if (gsmClient == nullptr || !gsmClient->isAttached()) {
+        if (createdClient) { delete gsmClient; }
+        return;
+    }
+    // force a connection to localhost
+    IPAddress newHostIp = IPAddress(127, 0, 0, 1);  // localhost
+    gsmClient->connect(newHostIp, 80);
+    MS_DBG(gsmModem.getBeeName(),
+           F("forced to disconnect by setting the remote IP to the localhost"));
+    // delete the client if we created it
+    if (createdClient) { delete gsmClient; }
+    // restart the bee after the force close
     gsmModem.restart();
 }
 
@@ -367,6 +382,7 @@ uint32_t DigiXBeeWifi::getNISTTime() {
         // requirement for all software that accesses its servers:
         // https://tf.nist.gov/tf-cgi/servers.cgi
         NISTTime::waitForNextRequest();
+
         // Make TCP connection
         // Uses "TIME" protocol on port 37 NIST: This protocol is expensive,
         // since it uses the complete tcp machinery to transmit only 32 bits
@@ -378,42 +394,59 @@ uint32_t DigiXBeeWifi::getNISTTime() {
         MS_DBG(F("\nConnecting to NIST time server at ip"), nistIPs[ipIndex],
                F("attempt"), i, F("of"), NIST_TIME_PROTOCOL_RETRIES);
 
+        bool createdClient = false;
+        // Get the first registered unsecured client from the modem to use for
+        // the connection.  The XBee only *has* one client socket available, so
+        // we must use it carefully.
+        auto* nistClient = gsmModem.findFirstClient(false);
+        // if no client already exists, create a new one
+        if (nistClient == nullptr) {
+            nistClient    = new TinyGsmXBee::TinyGsmClient(gsmModem);
+            createdClient = true;
+        }
+        if (nistClient == nullptr || !nistClient->isAttached()) {
+            MS_DBG(F("No available GSM client for NIST connection."));
+            if (createdClient) { delete nistClient; }
+            return 0;
+        }
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
         // socket isn't actually opened until we first send data (the '!' below)
-        TinyGsmXBee::GsmClientXBee gsmClient(gsmModem);
-        bool connectionConfigured = gsmClient.connect(nistIPs[ipIndex],
-                                                      NIST_TIME_PROTOCOL_PORT);
+        bool connectionConfigured =
+            nistClient->connect(nistIPs[ipIndex], NIST_TIME_PROTOCOL_PORT);
 
         // Wait up to 5 seconds for a response
         if (connectionConfigured) {
             // Need to send something before connection is made
-            gsmClient.println('!');
+            nistClient->println('!');
 
             uint32_t start = millis();
-            while (gsmClient &&
-                   gsmClient.available() < NIST_TIME_PROTOCOL_BYTES &&
+            while (nistClient &&
+                   nistClient->available() < NIST_TIME_PROTOCOL_BYTES &&
                    millis() - start < NIST_TIME_PROTOCOL_TIMEOUT) {
                 yield();
             }
 
-            if (gsmClient.available() >= NIST_TIME_PROTOCOL_BYTES) {
+            if (nistClient->available() >= NIST_TIME_PROTOCOL_BYTES) {
                 MS_DBG(F("NIST responded after"), millis() - start, F("ms"));
                 byte response[NIST_TIME_PROTOCOL_BYTES] = {0};
-                gsmClient.read(response, NIST_TIME_PROTOCOL_BYTES);
-                gsmClient.stop();
+                nistClient->read(response, NIST_TIME_PROTOCOL_BYTES);
+                nistClient->stop();
                 uint32_t nistParsed = NISTTime::parseResponse(response);
                 if (nistParsed != 0) {
+                    if (createdClient) { delete nistClient; }
                     return nistParsed;
                 } else {
                     MS_DBG(F("NIST response was invalid!"));
                 }
             } else {
                 MS_DBG(F("NIST time server did not respond!"));
-                gsmClient.stop();
+                nistClient->stop();
             }
         } else {
             MS_DBG(F("Unable to open TCP to NIST!"));
         }
+        // delete the client if we created it
+        if (createdClient) { delete nistClient; }
     }
     return 0;
 }

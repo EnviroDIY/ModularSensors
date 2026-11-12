@@ -448,12 +448,8 @@ Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 // The Telit based Digi XBees (LTE Cat1) can only use this mode.
 #include <modems/DigiXBeeCellularTransparent.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM XBee classes
-typedef TinyGsmXBee                       TinyGsm;
-typedef TinyGsmXBee::GsmClientXBee        TinyGsmClient;
-typedef TinyGsmXBee::GsmClientSecureXBee  TinyGsmClientSecure;
-typedef TinyGsmXBee::GsmSecureContextXBee TinyGsmSecureContext;
-typedef XBeeRegStatus                     RegStatus;
+// Type alias for easier use of the TinyGSM XBee classes
+using TinyGsm = TinyGsmXBee;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -480,6 +476,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmXBee gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 DigiXBeeCellularTransparent modem(gsmModem, modemVccPin, modemStatusPin,
                                   useCTSforStatus, modemResetPin,
@@ -496,13 +494,8 @@ DigiXBeeCellularTransparent modem(gsmModem, modemVccPin, modemStatusPin,
 // mode, but my experience is the complete reverse.
 #include <modems/DigiXBeeLTEBypass.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM UBLOX SARA R4
-// classes
-typedef TinyGsmSaraR4                         TinyGsm;
-typedef TinyGsmSaraR4::GsmClientSaraR4        TinyGsmClient;
-typedef TinyGsmSaraR4::GsmClientSecureSaraR4  TinyGsmClientSecure;
-typedef TinyGsmSaraR4::GsmSecureContextSaraR4 TinyGsmSecureContext;
-typedef XBeeRegStatus                         RegStatus;
+// Type alias for easier use of the TinyGSM UBLOX SARA R410M classes
+using TinyGsm = TinyGsmSaraR4;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -526,6 +519,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmSaraR4 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 DigiXBeeLTEBypass modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
                         modemResetPin, modemSleepRqPin, apn);
@@ -541,12 +536,8 @@ DigiXBeeLTEBypass modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
 // mode, but my experience is the complete reverse.
 #include <modems/DigiXBee3GBypass.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM UBLOX classes
-typedef TinyGsmUBLOX                        TinyGsm;
-typedef TinyGsmUBLOX::GsmClientUBLOX        TinyGsmClient;
-typedef TinyGsmUBLOX::GsmClientSecureUBLOX  TinyGsmClientSecure;
-typedef TinyGsmUBLOX::GsmSecureContextUBLOX TinyGsmSecureContext;
-typedef XBeeRegStatus                       RegStatus;
+// Type alias for easier use of the TinyGSM UBLOX classes
+using TinyGsm = TinyGsmUBLOX;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -570,6 +561,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmUBLOX gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 DigiXBee3GBypass modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
                        modemResetPin, modemSleepRqPin, apn);
@@ -583,12 +576,8 @@ DigiXBee3GBypass modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
 // For the Digi Wifi XBee (S6B)
 #include <modems/DigiXBeeWifi.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM XBee classes
-typedef TinyGsmXBee                       TinyGsm;
-typedef TinyGsmXBee::GsmClientXBee        TinyGsmClient;
-typedef TinyGsmXBee::GsmClientSecureXBee  TinyGsmClientSecure;
-typedef TinyGsmXBee::GsmSecureContextXBee TinyGsmSecureContext;
-typedef XBeeRegStatus                     RegStatus;
+// Type alias for easier use of the TinyGSM XBee classes
+using TinyGsm = TinyGsmXBee;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -613,6 +602,8 @@ const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
 // Create a TinyGsm modem
 TinyGsmXBee gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 DigiXBeeWifi modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
                    modemResetPin, modemSleepRqPin, wifiId, wifiPwd);
@@ -627,12 +618,8 @@ DigiXBeeWifi modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
 // AT command firmware
 #include <modems/EspressifESP8266.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM ESP8266 classes
-typedef TinyGsmESP8266                          TinyGsm;
-typedef TinyGsmESP8266::GsmClientESP8266        TinyGsmClient;
-typedef TinyGsmESP8266::GsmClientSecureESP8266  TinyGsmClientSecure;
-typedef TinyGsmESP8266::GsmSecureContextESP8266 TinyGsmSecureContext;
-typedef ESP8266RegStatus                        RegStatus;
+// Type alias for easier use of the TinyGSM ESP8266 classes
+using TinyGsm = TinyGsmESP8266;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -654,6 +641,8 @@ const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
 // Create a TinyGsm modem
 TinyGsmESP8266 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 EspressifESP8266 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 /** End [espressif_esp8266] */
@@ -667,12 +656,8 @@ EspressifESP8266 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 // AT command firmware
 #include <modems/EspressifESP32.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM ESP32 classes
-typedef TinyGsmESP32                        TinyGsm;
-typedef TinyGsmESP32::GsmClientESP32        TinyGsmClient;
-typedef TinyGsmESP32::GsmClientSecureESP32  TinyGsmClientSecure;
-typedef TinyGsmESP32::GsmSecureContextESP32 TinyGsmSecureContext;
-typedef ESP32RegStatus                      RegStatus;
+// Type alias for easier use of the TinyGSM ESP32 classes
+using TinyGsm = TinyGsmESP32;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -696,6 +681,8 @@ const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
 // Create a TinyGsm modem
 TinyGsmESP32 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 EspressifESP32 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 /** End [espressif_esp32] */
@@ -708,13 +695,8 @@ EspressifESP32 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 // For the Dragino, Nimbelink or other boards based on the Quectel BG96
 #include <modems/QuectelBG96.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM Quectel BG96
-// classes
-typedef TinyGsmBG96                       TinyGsm;
-typedef TinyGsmBG96::GsmClientBG96        TinyGsmClient;
-typedef TinyGsmBG96::GsmClientSecureBG96  TinyGsmClientSecure;
-typedef TinyGsmBG96::GsmSecureContextBG96 TinyGsmSecureContext;
-typedef BG96RegStatus                     RegStatus;
+// Type alias for easier use of the TinyGSM Quectel BG96 classes
+using TinyGsm = TinyGsmBG96;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -738,6 +720,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmBG96 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 QuectelBG96 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
                   modemSleepRqPin, apn);
@@ -752,15 +736,8 @@ QuectelBG96 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
 // Monarch series
 #include <modems/SequansMonarch.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM Sequans Monarch
-// classes
-typedef TinyGsmSequansMonarch                          TinyGsm;
-typedef TinyGsmSequansMonarch::GsmClientSequansMonarch TinyGsmClient;
-typedef TinyGsmSequansMonarch::GsmClientSecureSequansMonarch
-    TinyGsmClientSecure;
-typedef TinyGsmSequansMonarch::GsmSecureContextSequansMonarch
-                                TinyGsmSecureContext;
-typedef SequansMonarchRegStatus RegStatus;
+// Type alias for easier use of the TinyGSM Sequans Monarch classes
+using TinyGsm = TinyGsmSequansMonarch;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -784,6 +761,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmSequansMonarch gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 SequansMonarch modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
                      modemSleepRqPin, apn);
@@ -798,13 +777,8 @@ SequansMonarch modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
 // higher
 #include <modems/SIMComSIM800.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM SIMCOM SIM800
-// classes
-typedef TinyGsmSim800                         TinyGsm;
-typedef TinyGsmSim800::GsmClientSim800        TinyGsmClient;
-typedef TinyGsmSim800::GsmClientSecureSim800  TinyGsmClientSecure;
-typedef TinyGsmSim800::GsmSecureContextSim800 TinyGsmSecureContext;
-typedef Sim800RegStatus                       RegStatus;
+// Type alias for easier use of the TinyGSM SIMCOM SIM800 classes
+using TinyGsm = TinyGsmSim800;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -825,6 +799,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmSim800 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 SIMComSIM800 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
                    modemSleepRqPin, apn);
@@ -838,13 +814,8 @@ SIMComSIM800 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
 // For almost anything based on the SIMCom SIM7000
 #include <modems/SIMComSIM7000.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM SIM 7000 (SSL)
-// classes
-typedef TinyGsmSim7000SSL                             TinyGsm;
-typedef TinyGsmSim7000SSL::GsmClientSim7000SSL        TinyGsmClient;
-typedef TinyGsmSim7000SSL::GsmClientSecureSim7000SSL  TinyGsmClientSecure;
-typedef TinyGsmSim7000SSL::GsmSecureContextSim7000SSL TinyGsmSecureContext;
-typedef Sim70xxRegStatus                              RegStatus;
+// Type alias for easier use of the TinyGSM SIMCom SIM7000 (SSL) classes
+using TinyGsm = TinyGsmSim7000SSL;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -864,6 +835,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmSim7000SSL gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 SIMComSIM7000 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
                     modemSleepRqPin, apn);
@@ -877,13 +850,8 @@ SIMComSIM7000 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM SIMCom SIM7080
-// classes
-typedef TinyGsmSim7080                          TinyGsm;
-typedef TinyGsmSim7080::GsmClientSim7080        TinyGsmClient;
-typedef TinyGsmSim7080::GsmClientSecureSim7080  TinyGsmClientSecure;
-typedef TinyGsmSim7080::GsmSecureContextSim7080 TinyGsmSecureContext;
-typedef Sim70xxRegStatus                        RegStatus;
+// Type alias for easier use of the TinyGSM SIMCom SIM7080 classes
+using TinyGsm = TinyGsmSim7080;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -903,6 +871,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmSim7080 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 SIMComSIM7080 modem(gsmModem, modemVccPin, modemStatusPin, modemSleepRqPin,
                     apn);
@@ -917,13 +887,8 @@ SIMComSIM7080 modem(gsmModem, modemVccPin, modemStatusPin, modemSleepRqPin,
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
 #include <modems/Sodaq2GBeeR6.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM SIMCom SIM800
-// classes
-typedef TinyGsmSim800                         TinyGsm;
-typedef TinyGsmSim800::GsmClientSim800        TinyGsmClient;
-typedef TinyGsmSim800::GsmClientSecureSim800  TinyGsmClientSecure;
-typedef TinyGsmSim800::GsmSecureContextSim800 TinyGsmSecureContext;
-typedef Sim800RegStatus                       RegStatus;
+// Type alias for easier use of the TinyGSM SIMCom SIM800 classes
+using TinyGsm = TinyGsmSim800;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -944,6 +909,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmSim800 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 Sodaq2GBeeR6 modem(gsmModem, modemVccPin, modemStatusPin, apn);
 /** End [sodaq_2g_bee_r6] */
@@ -956,13 +923,8 @@ Sodaq2GBeeR6 modem(gsmModem, modemVccPin, modemStatusPin, apn);
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
 #include <modems/SodaqUBeeR410M.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM UBLOX SARA R410M
-// classes
-typedef TinyGsmSaraR4                   TinyGsm;
-typedef TinyGsmSaraR4::GsmClient        TinyGsmClient;
-typedef TinyGsmSaraR4::GsmClientSecure  TinyGsmClientSecure;
-typedef TinyGsmSaraR4::GsmSecureContext TinyGsmSecureContext;
-typedef XBeeRegStatus                   RegStatus;
+// Type alias for easier use of the TinyGSM UBLOX SARA R410M classes
+using TinyGsm = TinyGsmSaraR4;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -990,6 +952,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmSaraR4 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 SodaqUBeeR410M modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
                      modemSleepRqPin, apn);
@@ -1003,12 +967,8 @@ SodaqUBeeR410M modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
 // For the Sodaq UBee based on the 3G u-blox SARA U201
 #include <modems/SodaqUBeeU201.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM UBLOX classes
-typedef TinyGsmUBLOX                   TinyGsm;
-typedef TinyGsmUBLOX::GsmClient        TinyGsmClient;
-typedef TinyGsmUBLOX::GsmClientSecure  TinyGsmClientSecure;
-typedef TinyGsmUBLOX::GsmSecureContext TinyGsmSecureContext;
-typedef UBLOXRegStatus                 RegStatus;
+// Type alias for easier use of the TinyGSM UBLOX classes
+using TinyGsm = TinyGsmUBLOX;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -1030,6 +990,8 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 
 // Create a TinyGsm modem
 TinyGsmUBLOX gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 SodaqUBeeU201 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
                     modemSleepRqPin, apn);
@@ -3623,15 +3585,23 @@ const char* registrationToken =
 // const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  //
 // Sampling feature UUID
 
+#if defined(BUILD_NO_SHARED_CLIENTS)
 // Create a client for Monitor My Watershed - this does not need to be secured
 // This client can be shared with any other publishers that do not need an
 // encrypted connection.
-TinyGsmClient mmwClient(gsmModem);
-// Create a data publisher for the Monitor My Watershed POST endpoint
+TinyGsm::TinyGsmClient mmwClient(gsmModem);
+// Create a data publisher for the Monitor My Watershed POST endpoint using the
+// unique client
 MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
                                           registrationToken);
+#else
+// Create a data publisher for the Monitor My Watershed POST endpoint using the
+// shared unsecured client
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, gsmClient,
+                                          registrationToken);
+#endif  // BUILD_NO_SHARED_CLIENTS
 /** End [monitor_my_watershed_publisher] */
-#endif
+#endif  // BUILD_PUB_MONITOR_MY_WATERSHED_PUBLISHER
 
 
 #if defined(BUILD_PUB_DREAM_HOST_PUBLISHER) && \
@@ -3644,17 +3614,21 @@ MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
 
 // NOTE:  This is an outdated data collection tool used by the Stroud Center.
 // It very, very unlikely that you will use this.
-
 const char* DreamHostPortalRX = "xxxx";
 
+#if defined(BUILD_NO_SHARED_CLIENTS)
 // Create a client for Dreamhost - this does not need to be secured
 // This client can be shared with any other publishers that do not need an
 // encrypted connection.
-TinyGsmClient dhClient(gsmModem);
-// Create a data publisher to DreamHost
+TinyGsm::TinyGsmClient dhClient(gsmModem);
+// Create a data publisher to DreamHost using the unique client
 DreamHostPublisher DreamHostGET(dataLogger, dhClient, DreamHostPortalRX);
 /** End [dream_host_publisher] */
-#endif
+#else
+// Create a data publisher to DreamHost using the shared unsecured client
+DreamHostPublisher DreamHostGET(dataLogger, gsmClient, DreamHostPortalRX);
+#endif  // BUILD_NO_SHARED_CLIENTS
+#endif  // BUILD_PUB_DREAM_HOST_PUBLISHER
 
 
 #if defined(BUILD_PUB_THING_SPEAK_PUBLISHER) && \
@@ -3681,16 +3655,23 @@ const char* thingSpeakChannelID =
 const char* thingSpeakAPIKey =
     "XXXXXXXXXXXXXXXX";  // The ThingSpeak user REST API key
 
+#if defined(BUILD_NO_SHARED_CLIENTS)
 // Create a client for ThingSpeak MQTT - this does not need to be secured
 // This client can be shared with any other publishers that do not need an
 // encrypted connection.
-TinyGsmClient tsClient(gsmModem);
-// Create a data publisher for ThingSpeak
+TinyGsm::TinyGsmClient tsClient(gsmModem);
+// Create a data publisher for ThingSpeak with the unique client
 ThingSpeakPublisher TsMqtt(dataLogger, tsClient, thingSpeakClientName,
                            thingSpeakMQTTUser, thingSpeakMQTTPassword,
                            thingSpeakChannelID);
+#else
+// Create a data publisher for ThingSpeak with the shared unsecured client
+ThingSpeakPublisher TsMqtt(dataLogger, gsmClient, thingSpeakClientName,
+                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                           thingSpeakChannelID);
+#endif  // BUILD_NO_SHARED_CLIENTS
 /** End [thing_speak_publisher] */
-#endif
+#endif  // BUILD_PUB_THING_SPEAK_PUBLISHER
 
 
 #if defined(BUILD_PUB_UBIDOTS_PUBLISHER) && \
@@ -3708,15 +3689,20 @@ const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
 // name.
 const char* ubidotsDeviceID = "######";
 
+#if defined(BUILD_NO_SHARED_CLIENTS)
 // Create a client for Ubidots - this does not need to be secured
 // This client can be shared with any other publishers that do not need an
 // encrypted connection.
-TinyGsmClient ubidotsClient(gsmModem);
-// Create a data publisher for Ubidots
+TinyGsm::TinyGsmClient ubidotsClient(gsmModem);
+// Create a data publisher for Ubidots using the unique client
 UbidotsPublisher ubidots(dataLogger, ubidotsClient, ubidotsToken,
                          ubidotsDeviceID);
 /** End [ubidots_publisher] */
-#endif
+#else
+// Create a data publisher for Ubidots with the shared unsecured client
+UbidotsPublisher ubidots(dataLogger, gsmClient, ubidotsToken, ubidotsDeviceID);
+#endif  // BUILD_NO_SHARED_CLIENTS
+#endif  // BUILD_PUB_UBIDOTS_PUBLISHER
 
 
 #if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) && \
@@ -3792,18 +3778,17 @@ const char* clientKeyName = "thing-private.pem.key";
 
 // Create a security context for S3
 // AWS IoT Core requires TLS >= 1.2, with mutual certificate verification
-TinyGsmSecureContext iotSecureContext(gsmModem,
-                                      SSLAuthMode::MUTUAL_AUTHENTICATION,
-                                      SSLVersion::TLS1_2, caCertName,
-                                      clientCertName, clientKeyName);
+TinyGsm::TinyGsmSecureContext iotSecureContext(
+    gsmModem, SSLAuthMode::MUTUAL_AUTHENTICATION, SSLVersion::TLS1_2,
+    caCertName, clientCertName, clientKeyName);
 // Create a client for IoT Core - this needs to be secured
 // This client can only be shared with other publishers that share the same
-// security context.
+// security context/credentials.
 // NOTE: Here we set the client index to -1 to have the modem tell us the next
 // context and we SSL context index for the secure client to use the previously
 // created security context.
-TinyGsmClientSecure iotSecureClient(gsmModem, -1,
-                                    iotSecureContext.getSSLContextIndex());
+TinyGsm::TinyGsmClientSecure iotSecureClient(
+    gsmModem, -1, iotSecureContext.getSSLContextIndex());
 // Create a data publisher for AWS IoT Core
 AWS_IoT_Publisher awsIoTPub(dataLogger, iotSecureClient, awsIoTEndpoint,
                             samplingFeature);
@@ -3868,16 +3853,17 @@ String s3URLMsgGetter() {
 
 // Create a security context for S3
 // S3 requires TLS >= 1.2, with certificate authority certificate verification
-TinyGsmSecureContext s3SecureContext(gsmModem, SSLAuthMode::CA_VALIDATION,
-                                     SSLVersion::TLS1_2, caCertName);
+TinyGsm::TinyGsmSecureContext s3SecureContext(gsmModem,
+                                              SSLAuthMode::CA_VALIDATION,
+                                              SSLVersion::TLS1_2, caCertName);
 // Create a client for S3 - this needs to be secured
 // This client can only be shared with other publishers that share the same
-// security context.
+// security context/credentials.
 // NOTE: Here we set the client index to -1 to have the modem tell us the next
 // context and we SSL context index for the secure client to use the previously
 // created security context.
-TinyGsmClientSecure s3SecureClient(gsmModem, -1,
-                                   s3SecureContext.getSSLContextIndex());
+TinyGsm::TinyGsmClientSecure s3SecureClient(
+    gsmModem, -1, s3SecureContext.getSSLContextIndex());
 // Create a data publisher for S3
 S3PresignedPublisher s3pub(dataLogger, s3SecureClient);
 
