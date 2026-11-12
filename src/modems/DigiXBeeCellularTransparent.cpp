@@ -142,7 +142,7 @@ bool DigiXBeeCellularTransparent::extraModemSetup() {
         // Make sure USB direct is NOT enabled on the XBee3 units.
         changesMade |= gsmModem.changeSettingIfNeeded(GF("P1"), 0);
         // Set the socket timeout to 10s (this is default).
-        changesMade |= gsmModem.changeSettingIfNeeded(GF("TM"), 64);
+        changesMade |= gsmModem.changeSettingIfNeeded(GF("TM"), 0x64);
 
         MS_DBG(F("Setting the APN..."));
         // Save the network connection parameters.
@@ -289,9 +289,6 @@ bool DigiXBeeCellularTransparent::updateModemMetadata() {
 
     // Enter command mode only once
     MS_DBG(F("Entering Command Mode to update modem metadata:"));
-    success &= gsmModem.commandMode();
-    // Enter command mode only once
-    MS_DBG(F("Entering Command Mode to update modem metadata:"));
     if (!gsmModem.commandMode()) {
         MS_DBG(F("Failed to enter command mode - cannot update metadata"));
         return false;
@@ -305,16 +302,16 @@ bool DigiXBeeCellularTransparent::updateModemMetadata() {
         // NOTE:  We can't actually distinguish between a bad modem response, no
         // modem response, and a real response from the modem of no
         // service/signal. The TinyGSM getSignalQuality function returns the
-        // same "no signal" value (99 CSQ or 0 RSSI) in all 3 cases.
+        // same "no signal" value (consistently -9999 in TinyGSM > 0.12) in all
+        // 3 cases.
         uint32_t startMillis = millis();
         do {
             MS_DBG(F("Getting signal quality:"));
             rssi = gsmModem.getSignalQuality();
             MS_DBG(F("Raw signal quality:"), rssi);
-            if (rssi != 0 && rssi != MS_INVALID_VALUE) break;
+            if (rssi != -9999) break;
             delay(250);
-        } while ((rssi == 0 || rssi == MS_INVALID_VALUE) &&
-                 millis() - startMillis < 15000L);
+        } while ((rssi == -9999) && millis() - startMillis < 15000L);
 
         // Convert signal quality to RSSI
         loggerModem::_priorRSSI = rssi;
@@ -325,7 +322,7 @@ bool DigiXBeeCellularTransparent::updateModemMetadata() {
         MS_DBG(F("CURRENT Percent signal strength:"),
                loggerModem::_priorSignalPercent);
 
-        success &= ((rssi != MS_INVALID_VALUE) && (rssi != 0));
+        success &= (rssi != -9999);
     } else {
         MS_DBG(F("Polling for both RSSI and signal strength is disabled"));
     }

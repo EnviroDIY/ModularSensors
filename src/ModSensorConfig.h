@@ -601,6 +601,10 @@ static_assert(MS_AWS_IOT_MAX_CONNECTION_TIME > 0 &&
  */
 #define NIST_TIME_PROTOCOL_RETRIES 12
 #endif
+// Static assert to validate NIST Time Protocol retry count is reasonable
+static_assert(NIST_TIME_PROTOCOL_RETRIES >= 0 &&
+                  NIST_TIME_PROTOCOL_RETRIES <= 255,
+              "NIST_TIME_PROTOCOL_RETRIES must be between 0 and 255");
 //==============================================================
 
 

@@ -606,11 +606,13 @@ class loggerModem {
      * @param chargeState The reference to an int8_t which will be set with the
      * battery charge state - exactly the meaning of this varies by module, but
      * it generally indicates whether the battery is currently charging or
-     * discharging.
+     * discharging.  It will be set to -99 if the value is not available.
      * @param percent The reference to an int8_t which will be set with the
-     * percent battery charge
+     * percent battery charge.  It will be set to -99 if the value is not
+     * available.
      * @param milliVolts The reference to an int16_t which will be set with the
-     * battery voltage in millivolts
+     * battery voltage in millivolts.  It will be set to -9999 if the value is
+     * not available.
      * @return True if the communication with the modem was successful and the
      * values referenced by the pointers should be valid; false otherwise.
      */

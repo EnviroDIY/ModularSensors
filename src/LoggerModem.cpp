@@ -79,6 +79,9 @@ bool loggerModem::updateModemMetadata() {
         (_pollModemMetaData & MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) ==
             MODEM_BATTERY_VOLTAGE_ENABLE_BITMASK) {
         success &= getModemBatteryStats(state, bpercent, volt);
+        // Versions of TinyGSM > 0.12 consistently return -99 for battery state
+        // and percent and -9999 for voltage on any failure in getting battery
+        // stats.
         MS_DBG(F("CURRENT Modem Battery Charge State:"), state);
         MS_DBG(F("CURRENT Modem Battery Charge Percentage:"), bpercent);
         MS_DBG(F("CURRENT Modem Battery Voltage:"), volt);

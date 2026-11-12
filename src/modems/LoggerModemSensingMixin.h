@@ -90,10 +90,10 @@ class loggerModemSensingMixin {
         derived().convertSignalQuality(
             signalQual, rssi, percent,
             typename Derived::SignalQualityIsRSSI::type());
-        // A raw value of 0 (RSSI) or 99 (CSQ) means no signal, no response, or
-        // a bad response - we cannot tell them apart.
+        // NOTE:  The TinyGSM getSignalQuality function in versions > 0.12
+        // consistently returns -9999 for any failure.
         /// @todo Consider rejecting the XBee no-data RSSI value (162).
-        return rssi != 0 && rssi != MS_INVALID_VALUE;
+        return rssi != -9999;
     }
 
     /**
@@ -115,6 +115,11 @@ class loggerModemSensingMixin {
     void convertSignalQuality(int16_t signalQual, int16_t& rssi,
                               int16_t& percent,
                               TinyGsmCapabilities::true_type) {
+        if (signalQual == -9999) {
+            rssi    = MS_INVALID_VALUE;
+            percent = MS_INVALID_VALUE;
+            return;
+        }
         rssi = signalQual;
         MS_DBG(F("Raw signal is already in units of RSSI:"), rssi);
         percent = getPctFromRSSI(signalQual);
@@ -134,6 +139,11 @@ class loggerModemSensingMixin {
     void convertSignalQuality(int16_t signalQual, int16_t& rssi,
                               int16_t& percent,
                               TinyGsmCapabilities::false_type) {
+        if (signalQual == -9999) {
+            rssi    = MS_INVALID_VALUE;
+            percent = MS_INVALID_VALUE;
+            return;
+        }
         rssi = getRSSIFromCSQ(signalQual);
         MS_DBG(F("RSSI Estimated from CSQ:"), rssi);
         percent = getPctFromCSQ(signalQual);

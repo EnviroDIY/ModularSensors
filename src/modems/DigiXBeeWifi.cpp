@@ -278,10 +278,10 @@ bool DigiXBeeWifi::extraModemSetup() {
 
 
         // Set the socket timeout to 10s (this is default).
-        bool changedTM = gsmModem.changeSettingIfNeeded(GF("TM"), "64");
+        bool changedTM = gsmModem.changeSettingIfNeeded(GF("TM"), 0x64);
         changesMade |= changedTM;
         if (changedTM) {
-            MS_DBG(F("Socket timeout changed to"), F("0x64"));
+            MS_DBG(F("Socket timeout changed to 0x64"));
         } else {
             MS_DEEP_DBG(F("Socket timeout not changed"));
         }
@@ -488,7 +488,8 @@ bool DigiXBeeWifi::updateModemMetadata() {
         // NOTE:  We can't actually distinguish between a bad modem response, no
         // modem response, and a real response from the modem of no
         // service/signal. The TinyGSM getSignalQuality function returns the
-        // same "no signal" value (99 CSQ or 0 RSSI) in all 3 cases.
+        // same "no signal" value (consistently -9999 in TinyGSM > 0.12) in all
+        // 3 cases.
 
         // Try up to 5 times to get a signal quality
         int8_t num_trys_remaining = 5;
@@ -496,9 +497,9 @@ bool DigiXBeeWifi::updateModemMetadata() {
             rssi = gsmModem.getSignalQuality();
             MS_DBG(F("Raw signal quality ("), num_trys_remaining, F("):"),
                    rssi);
-            if (rssi != 0 && rssi != MS_INVALID_VALUE) break;
+            if (rssi != -9999) break;
             num_trys_remaining--;
-        } while ((rssi == 0 || rssi == MS_INVALID_VALUE) && num_trys_remaining);
+        } while ((rssi == -9999) && num_trys_remaining);
 
         loggerModem::_priorRSSI = rssi;
         MS_DBG(F("CURRENT RSSI:"), rssi);
@@ -508,7 +509,7 @@ bool DigiXBeeWifi::updateModemMetadata() {
         MS_DBG(F("CURRENT Percent signal strength:"),
                loggerModem::_priorSignalPercent);
 
-        success &= ((rssi != MS_INVALID_VALUE) && (rssi != 0));
+        success &= (rssi != -9999);
     } else {
         MS_DBG(F("Polling for both RSSI and signal strength is disabled"));
     }

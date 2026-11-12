@@ -135,7 +135,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 #### Loggers and Variable Arrays
 
 - **BREAKING** Reduced the `Logger` constructor matrix to the default constructor
-  and `Logger(const char*, int16_t, VariableArray&)`.
+  and `Logger(const char*, int16_t, VariableArray*)`.
   Use the logger setters for staged configuration when the variable array is not
   available at construction.
 - **BREAKING** Changed `Logger::begin()` to return `bool`.
