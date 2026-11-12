@@ -403,7 +403,7 @@ class loggerModemCommMixin {
         int16_t hours    = 0;
         int16_t minutes  = 0;
         int16_t seconds  = 0;
-        int16_t timezone = 0;  // in quarter hours!
+        float   timezone = 0;  // in quarter hours!
         if (!derived().gsmModem.getNetworkTime(&year, &month, &day, &hours,
                                                &minutes, &seconds, &timezone)) {
             return 0;
@@ -424,9 +424,9 @@ class loggerModemCommMixin {
         // cast into a timestamp_t
         timestamp_t ts = static_cast<timestamp_t>(t);
         //  convert to Unix/UTC
-        return convertOffsetAndEpoch(ts, timezone * 15 * 60,
-                                     TimeUtils::getCoreEpochStart(), 0,
-                                     epochStart::unix_epoch);
+        return TimeUtils::convertOffsetAndEpoch(ts, timezone * 15 * 60,
+                                                TimeUtils::getCoreEpochStart(),
+                                                0, epochStart::unix_epoch);
     }
 
     /**
