@@ -89,91 +89,25 @@ class dataPublisher;  // Forward declaration
 class Logger {
  public:
     /**
-     * @brief Construct a new Logger object.
-     *
-     * @param loggerID A name for the logger - unless otherwise specified, files
-     * saved to the SD card will be named with the logger id and the date the
-     * file was started.
-     * @param samplingFeatureUUID The sampling feature UUID.
-     * @param loggingIntervalMinutes The frequency in minutes at which data
-     * should be logged
-     * @param SDCardSSPin The pin of the chip select/slave select for the SPI
-     * connection to the SD card
-     * @param mcuWakePin The pin used to wake the logger from deep sleep -
-     * expected to be attached to an alarm pin of the real-time clock.  Use a
-     * value of -1 to prevent the board from sleeping.
-     * @param inputArray A pointer to a variableArray object instance providing
-     * data to be logged.  This is NOT an array of variables, but an object of
-     * the variable array class.
-     */
-    Logger(const char* loggerID, const char* samplingFeatureUUID,
-           int16_t loggingIntervalMinutes, int8_t SDCardSSPin,
-           int8_t mcuWakePin, VariableArray* inputArray);
-    /**
-     * @brief Construct a new Logger object.
+     * @brief Construct a new Logger object with its required variable array.
      *
      * @param loggerID A name for the logger - unless otherwise specified, files
      * saved to the SD card will be named with the logger id and the date the
      * file was started.
      * @param loggingIntervalMinutes The frequency in minutes at which data
-     * should be logged
-     * @param SDCardSSPin The pin of the chip select/slave select for the SPI
-     * connection to the SD card
-     * @param mcuWakePin The pin used to wake the logger from deep sleep -
-     * expected to be attached to an alarm pin of the real-time clock.  Use a
-     * value of -1 to prevent the board from sleeping.
-     * @param inputArray A pointer to a variableArray object instance providing
-     * data to be logged.  This is NOT an array of variables, but an object of
-     * the variable array class.
-     */
-    Logger(const char* loggerID, int16_t loggingIntervalMinutes,
-           int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray);
-    /**
-     * @brief Construct a new Logger object.
-     *
-     * @param loggerID A name for the logger - unless otherwise specified, files
-     * saved to the SD card will be named with the logger id and the date the
-     * file was started.
-     * @param samplingFeatureUUID The sampling feature UUID.
-     * @param loggingIntervalMinutes The frequency in minutes at which data
-     * should be logged
-     * @param inputArray A variableArray object instance providing data to be
-     * logged.  This is NOT an array of variables, but an object of the variable
-     * array class.
-     */
-    Logger(const char* loggerID, const char* samplingFeatureUUID,
-           int16_t loggingIntervalMinutes, VariableArray* inputArray);
-    /**
-     * @brief Construct a new Logger object.
-     *
-     * @param loggerID A name for the logger - unless otherwise specified, files
-     * saved to the SD card will be named with the logger id and the date the
-     * file was started.
-     * @param samplingFeatureUUID The sampling feature UUID.
-     * @param loggingIntervalMinutes The frequency in minutes at which data
-     * should be logged
-     */
-    Logger(const char* loggerID, const char* samplingFeatureUUID,
-           int16_t loggingIntervalMinutes);
-    /**
-     * @brief Construct a new Logger object.
-     *
-     * @param loggerID A name for the logger - unless otherwise specified, files
-     * saved to the SD card will be named with the logger id and the date the
-     * file was started.
-     * @param loggingIntervalMinutes The frequency in minutes at which data
-     * should be logged
-     * @param inputArray A variableArray object instance providing data to be
-     * logged.  This is NOT an array of variables, but an object of the variable
-     * array class.
+     * should be logged.
+     * @param inputArray A pointer to the variableArray object providing data to
+     * be logged. This is NOT an array of variables, but an object of the
+     * VariableArray class.  The VariableArray must outlive the Logger.
      */
     Logger(const char* loggerID, int16_t loggingIntervalMinutes,
            VariableArray* inputArray);
     /**
      * @brief Construct a new Logger object.
      *
-     * @note The logger ID and logging interval must be specified before the
-     * logger object can be used.
+     * The logger uses the default ID `MyLogger` and a five-minute logging
+     * interval.  A VariableArray must be attached with setVariableArray()
+     * before begin() can succeed.
      */
     Logger();
     /**
@@ -583,8 +517,9 @@ class Logger {
     /**
      * @brief Set the variable array object.
      *
-     * @param inputArray A pointer to a variable array object instance.  This is
-     * NOT an array of variables, but an object of the variable array class.
+     * @param inputArray A pointer to the variable array object providing data
+     * to be logged. This is NOT an array of variables, but an object of the
+     * VariableArray class.  The VariableArray must outlive the Logger.
      */
     void setVariableArray(VariableArray* inputArray);
 
@@ -708,7 +643,7 @@ class Logger {
     /**
      * @brief A pointer to the internal variable array instance
      */
-    VariableArray* _internalArray;
+    VariableArray* _internalArray = nullptr;
     /**@}*/
 
     // ===================================================================== //
@@ -1521,12 +1456,14 @@ class Logger {
      * @param loggingIntervalMinutes The interval in minutes at which to log
      * data.  Supplying an interval here will override any value given in the
      * constructor.
-     * @param inputArray A variableArray object instance providing data to be
-     * logged.  This is NOT an array of variables, but an object of the variable
-     * array class.  Supplying a variableArray object here will override any
-     * value given in the constructor.
+     * @param inputArray A pointer to the variableArray object providing data to
+     * be logged. This is NOT an array of variables, but an object of the
+     * VariableArray class.  Supplying a VariableArray object here will override
+     * any value given in the constructor.  The VariableArray must outlive the
+     * Logger.
+     * @return `true` when initialization completes.
      */
-    virtual void begin(const char* loggerID, int16_t loggingIntervalMinutes,
+    virtual bool begin(const char* loggerID, int16_t loggingIntervalMinutes,
                        VariableArray* inputArray);
     /**
      * @brief Set all pin levels and does initial communication with the
@@ -1535,20 +1472,10 @@ class Logger {
      * This is used for operations that cannot happen in the logger constructor
      * - they must happen at run time, not at compile time.
      *
-     * @param inputArray A variableArray object instance providing data to be
-     * logged.  This is NOT an array of variables, but an object of the variable
-     * array class.  Supplying a variableArray object here will override any
-     * value given in the constructor.
+     * @return `true` when initialization completes or `false` if no
+     * VariableArray has been attached.
      */
-    virtual void begin(VariableArray* inputArray);
-    /**
-     * @brief Set all pin levels and does initial communication with the
-     * real-time clock and SD card to prepare the logger for full functionality.
-     *
-     * This is used for operations that cannot happen in the logger constructor
-     * - they must happen at run time, not at compile time.
-     */
-    virtual void begin();
+    virtual bool begin();
 
     /**
      * @brief This is a one-and-done to log data
@@ -1558,7 +1485,7 @@ class Logger {
      * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
      * between readings.
      */
-    virtual void logData(bool sleepBeforeReturning = true);
+    virtual bool logData(bool sleepBeforeReturning = true);
 
     /**
      * @brief This is a one-and-done to log data and publish the results to any
@@ -1569,7 +1496,7 @@ class Logger {
      * @note If sleepBeforeReturning is set to false, the logger WILL NOT sleep
      * between readings.
      */
-    virtual void logDataAndPublish(bool sleepBeforeReturning = true);
+    virtual bool logDataAndPublish(bool sleepBeforeReturning = true);
 
     /**
      * @brief Wakes and sets up the modem, connects to the internet, syncs the

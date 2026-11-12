@@ -152,7 +152,7 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 /** Start [loggers] */
 // Create a new logger instance
-Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
+Logger dataLogger;
 /** End [loggers] */
 
 

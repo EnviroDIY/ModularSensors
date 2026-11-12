@@ -63,113 +63,6 @@ bool Logger::_peripheralShutdown = true;
 
 
 // Constructors
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes, int8_t SDCardSSPin,
-               int8_t mcuWakePin, VariableArray* inputArray)
-    : _SDCardSSPin(SDCardSSPin),
-      _mcuWakePin(mcuWakePin) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
-               int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray)
-    : _SDCardSSPin(SDCardSSPin),
-      _mcuWakePin(mcuWakePin) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes, VariableArray* inputArray) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
-               VariableArray* inputArray) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
 Logger::Logger() {
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -183,6 +76,13 @@ Logger::Logger() {
 
     // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
+}
+Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
+               VariableArray* inputArray)
+    : Logger() {
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
 }
 
 
@@ -399,56 +299,68 @@ void Logger::setVariableArray(VariableArray* inputArray) {
 
 // Returns the number of variables in the internal array
 uint8_t Logger::getArrayVarCount() {
+    if (_internalArray == nullptr) { return 0; }
     return _internalArray->getVariableCount();
 }
 
 
 // This gets the name of the parent sensor, if applicable
 String Logger::getParentSensorNameAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getParentSensorName();
 }
 // This gets the name and location of the parent sensor, if applicable
 String Logger::getParentSensorNameAndLocationAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]
         ->getParentSensorNameAndLocation();
 }
 // This gets the variable's name using http://vocabulary.odm2.org/variablename/
 String Logger::getVarNameAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarName();
 }
 // This gets the variable's unit using http://vocabulary.odm2.org/units/
 String Logger::getVarUnitAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUnit();
 }
 // This returns a customized code for the variable, if one is given, and a
 // default if not
 String Logger::getVarCodeAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarCode();
 }
 // This returns the variable UUID, if one has been assigned
 String Logger::getVarUUIDStringAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUUIDString();
 }
 // This returns the variable UUID, if one has been assigned
 const char* Logger::getVarUUIDAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
 // This returns the variable resolution
 uint8_t Logger::getVarResolutionAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return 0; }
     return _internalArray->arrayOfVars[position_i]->getResolution();
 }
 // This returns the current value of the variable as a float
 float Logger::getValueAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return 0; }
     return _internalArray->arrayOfVars[position_i]->getValue();
 }
 // This returns the current value of the variable as a string with the
 // correct number of significant figures
 String Logger::getValueStringAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getValueString();
 }
 // This returns a particular value of the variable as a string with the
 // correct number of significant figures
 String Logger::formatValueStringAtI(uint8_t position_i, float value) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->formatValueString(value);
 }
 
@@ -1655,6 +1567,10 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
         MS_DEEP_DBG(F("Bench testing is not enabled."));
         return;
     }
+    if (_internalArray == nullptr) {
+        MS_DBG(F("No internal array attached."));
+        return;
+    }
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
@@ -1752,17 +1668,19 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
-void Logger::begin(const char* loggerID, int16_t loggingIntervalMinutes,
+bool Logger::begin(const char* loggerID, int16_t loggingIntervalMinutes,
                    VariableArray* inputArray) {
     setLoggerID(loggerID);
     setLoggingInterval(loggingIntervalMinutes);
-    begin(inputArray);
-}
-void Logger::begin(VariableArray* inputArray) {
     setVariableArray(inputArray);
-    begin();
+    return begin();
 }
-void Logger::begin() {
+bool Logger::begin() {
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
+
     MS_DBG(F("Logger ID is:"), _loggerID);
     MS_DBG(F("Logger is set to record at"), _loggingIntervalMinutes,
            F("minute intervals."));
@@ -1891,13 +1809,19 @@ void Logger::begin() {
     enableTestingISR();
 
     PRINTOUT(F("Logger portion of setup finished.\n"));
+    return true;
 }
 
 
 // This is a one-and-done to log data
-void Logger::logData(bool sleepBeforeReturning) {
+bool Logger::logData(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
+
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
 
     // If bench testing is enabled and button was pressed, do the bench test
     if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
@@ -1962,12 +1886,18 @@ void Logger::logData(bool sleepBeforeReturning) {
         // Sleep
         systemSleep();
     }
+    return true;
 }
 
 // This is a one-and-done to log data and publish it to various endpoints
-void Logger::logDataAndPublish(bool sleepBeforeReturning) {
+bool Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
+
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
 
     // If bench testing is enabled and button was pressed, do the bench test
     if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
@@ -2124,6 +2054,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
             F("Requested sleep before returning, calling systemSleep()"));
         systemSleep();
     }
+    return true;
 }
 
 

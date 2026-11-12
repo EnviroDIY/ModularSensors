@@ -134,6 +134,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 #### Loggers and Variable Arrays
 
+- **BREAKING** Reduced the `Logger` constructor matrix to the default constructor
+  and `Logger(const char*, int16_t, VariableArray&)`.
+  Use the logger setters for staged configuration when the variable array is not
+  available at construction.
+- **BREAKING** Changed `Logger::begin()` to return `bool`.
+  It now returns `false` without performing hardware initialization when no
+  variable array is attached.
+- Initialized the logger's internal variable-array pointer to `nullptr` so a
+  default-constructed logger has a deterministic incomplete state.
 - Added `Logger::syncRTC(Client&)` to synchronize the real-time clock with a caller-owned Arduino Client on an already-connected network.
 - Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
 - Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.

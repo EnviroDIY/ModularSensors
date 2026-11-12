@@ -419,9 +419,9 @@ const int8_t sdi12DataPin  = 3;
 // ==========================================================================
 /** Start [loggers] */
 // Create a new logger instance
-// NOTE: We haven't set the pins or variable array here! We will need to call
-// setVariableArray and the various pin assignment functions in the setup!
-Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
+// NOTE: We haven't configured the logger here! We will need to call the
+// parameter setters and various pin assignment functions in the setup!
+Logger dataLogger;
 /** End [loggers] */
 
 
