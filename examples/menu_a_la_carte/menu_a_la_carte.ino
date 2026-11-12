@@ -3719,75 +3719,6 @@ UbidotsPublisher ubidots(dataLogger, ubidotsClient, ubidotsToken,
 #endif
 
 
-#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER) && \
-    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
-// ==========================================================================
-//  AWS S3 Pre-signed URL Publisher
-// ==========================================================================
-#include <publishers/S3PresignedPublisher.h>
-
-// You MUST have already uploaded your certificate to your modem. This will most
-// likely be the Amazon Root CA 1 (RSA 2048 bit key) certificate. You can find
-// Amazon's current CA certificates here:
-// https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html.
-// Depending on your module, you may instead need a certificate chain file or to
-// use Amazon's older top-chain certificate (Starfield Services Root Certificate
-// Authority - G2).
-
-// This is exactly the same CA certificate as you would use for an MQTT
-// connection to AWS IoT (i.e., the AWS IoT Publisher). For supported modules
-// you can use the AWS_IOT_SetCertificates sketch in the extras folder to upload
-// your certificate.
-
-/** Start [s3_presigned_publisher] */
-#ifdef BUILD_MODEM_ESPRESSIF_ESP32
-// For Espressif modules, only two certificate sets are supported and the
-// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
-// "client_key.{0|1}"
-// The name of your certificate authority certificate file
-const char* caCertName = "client_ca.0";
-#else
-// The name of your certificate authority certificate file
-const char* caCertName = "AmazonRootCA1.pem";
-#endif
-
-// The S3 host (need for region specific requests)
-const char* s3Host = "s3.YOUR-REGION.amazonaws.com";
-// Expand the expected S3 publish topic into a buffer
-String s3URLPubTopic = "$aws/rules/GetUploadURL/" + String(LoggerID);
-// Expand the expected S3 subscribe topic into a buffer
-String s3URLSubTopic = String(LoggerID) + "/upload_url";
-// A function for the IoT core publisher to call to get the message content for
-// a new URL request
-#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
-String s3URLMsgGetter() {
-    return String("{\"file\": \"") + hydrocam.getLastSavedImageName() +
-        String("\"}");
-}
-#else
-String s3URLMsgGetter() {
-    return String("{\"file\": \"image.jpg\"}");
-}
-#endif
-
-// Create a security context for S3
-// S3 requires TLS >= 1.2, with certificate authority certificate verification
-TinyGsmSecureContext s3SecureContext(gsmModem, SSLAuthMode::CA_VALIDATION,
-                                     SSLVersion::TLS1_2, caCertName);
-// Create a client for S3 - this needs to be secured
-// This client can only be shared with other publishers that share the same
-// security context.
-// NOTE: Here we set the client index to -1 to have the modem tell us the next
-// context and we SSL context index for the secure client to use the previously
-// created security context.
-TinyGsmClientSecure s3SecureClient(gsmModem, -1,
-                                   s3SecureContext.getSSLContextIndex());
-// Create a data publisher for AWS IoT Core
-S3PresignedPublisher s3pub(dataLogger, s3SecureClient);
-/** End [s3_presigned_publisher] */
-#endif
-
-
 #if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) && \
     (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
 // ==========================================================================
@@ -3838,10 +3769,8 @@ const char* awsIoTEndpoint = "xxx-ats.iot.xxx.amazonaws.com";
 // For Espressif modules, only two certificate sets are supported and the
 // certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
 // "client_key.{0|1}"
-#if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
 // The name of your certificate authority certificate file
 const char* caCertName = "client_ca.0";
-#endif
 // The name of your client certificate file
 const char* clientCertName = "client_cert.0";
 // The name of your client private key file
@@ -3853,10 +3782,8 @@ const char* clientKeyName = "client_key.0";
 // those, too.
 // NOTE: The certificate names as they are downloaded from AWS IoT Core are
 // often too long for the modem to handle. Pick something shorter.
-#if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
 // The name of your certificate authority certificate file
 const char* caCertName = "AmazonRootCA1.pem";
-#endif
 // The name of your client certificate file
 const char* clientCertName = "thing-certificate.pem.crt";
 // The name of your client private key file
@@ -3880,8 +3807,81 @@ TinyGsmClientSecure iotSecureClient(gsmModem, -1,
 // Create a data publisher for AWS IoT Core
 AWS_IoT_Publisher awsIoTPub(dataLogger, iotSecureClient, awsIoTEndpoint,
                             samplingFeature);
+/** End [aws_io_t_publisher] */
+#endif
 
-#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+
+#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+// ==========================================================================
+//  AWS S3 Pre-signed URL Publisher
+// ==========================================================================
+#include <publishers/S3PresignedPublisher.h>
+
+// You MUST have already uploaded your certificate to your modem. This will most
+// likely be the Amazon Root CA 1 (RSA 2048 bit key) certificate. You can find
+// Amazon's current CA certificates here:
+// https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html.
+// Depending on your module, you may instead need a certificate chain file or to
+// use Amazon's older top-chain certificate (Starfield Services Root Certificate
+// Authority - G2).
+
+// This is exactly the same CA certificate as you would use for an MQTT
+// connection to AWS IoT (i.e., the AWS IoT Publisher). For supported modules
+// you can use the AWS_IOT_SetCertificates sketch in the extras folder to upload
+// your certificate.
+
+/** Start [s3_presigned_publisher] */
+#ifdef BUILD_MODEM_ESPRESSIF_ESP32
+// For Espressif modules, only two certificate sets are supported and the
+// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
+// "client_key.{0|1}"
+#if !defined(BUILD_PUB_AWS_IO_T_PUBLISHER)
+// The name of your certificate authority certificate file
+const char* caCertName = "client_ca.0";
+#endif
+#else
+#if !defined(BUILD_PUB_AWS_IO_T_PUBLISHER)
+// The name of your certificate authority certificate file
+const char* caCertName = "AmazonRootCA1.pem";
+#endif
+#endif
+
+// The S3 host (need for region specific requests)
+const char* s3Host = "s3.YOUR-REGION.amazonaws.com";
+// Expand the expected S3 publish topic into a buffer
+String s3URLPubTopic = "$aws/rules/GetUploadURL/" + String(LoggerID);
+// Expand the expected S3 subscribe topic into a buffer
+String s3URLSubTopic = String(LoggerID) + "/upload_url";
+// A function for the IoT core publisher to call to get the message content for
+// a new URL request
+#if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
+String s3URLMsgGetter() {
+    return String("{\"file\": \"") + hydrocam.getLastSavedImageName() +
+        String("\"}");
+}
+#else
+String s3URLMsgGetter() {
+    return String("{\"file\": \"image.jpg\"}");
+}
+#endif
+
+// Create a security context for S3
+// S3 requires TLS >= 1.2, with certificate authority certificate verification
+TinyGsmSecureContext s3SecureContext(gsmModem, SSLAuthMode::CA_VALIDATION,
+                                     SSLVersion::TLS1_2, caCertName);
+// Create a client for S3 - this needs to be secured
+// This client can only be shared with other publishers that share the same
+// security context.
+// NOTE: Here we set the client index to -1 to have the modem tell us the next
+// context and we SSL context index for the secure client to use the previously
+// created security context.
+TinyGsmClientSecure s3SecureClient(gsmModem, -1,
+                                   s3SecureContext.getSSLContextIndex());
+// Create a data publisher for S3
+S3PresignedPublisher s3pub(dataLogger, s3SecureClient);
+
+#if defined(BUILD_PUB_AWS_IO_T_PUBLISHER)
 // Callback function
 void IoTCallback(char* topic, byte* payload, unsigned int length) {
     PRINTOUT(F("Got message of length"), length, F("on topic"), topic);
@@ -3907,7 +3907,7 @@ void IoTCallback(char* topic, byte* payload, unsigned int length) {
     }
 }
 #endif
-/** End [aws_io_t_publisher] */
+/** End [s3_presigned_publisher] */
 #endif
 
 
@@ -4135,8 +4135,6 @@ void setup() {
 #if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
     // Set the S3 host and certificate authority name
     s3pub.setHost(s3Host);
-    // Attach to the logger
-    s3pub.attachToLogger(dataLogger);
 #endif
 
 #if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) &&     \
