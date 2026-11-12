@@ -93,7 +93,7 @@ class loggerModemSensingMixin {
         // NOTE:  The TinyGSM getSignalQuality function in versions > 0.12
         // consistently returns -9999 for any failure.
         /// @todo Consider rejecting the XBee no-data RSSI value (162).
-        return rssi != -9999;
+        return rssi != MS_INVALID_VALUE;
     }
 
     /**

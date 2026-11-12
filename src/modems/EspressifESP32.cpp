@@ -73,14 +73,16 @@ bool EspressifESP32::modemSleepFxn() {
             //     closed according to listen interval set by AT+CWJAP.
             gsmModem.sendAT(GF("+SLEEP=2"));
             success &= gsmModem.waitResponse() == 1;
-            delay(5);
-            MS_DBG(F("Setting pin"), _modemSleepRqPin,
-                   !_wakeLevel ? F("HIGH") : F("LOW"),
-                   F("to allow the Espressif module to enter light sleep"));
-            digitalWrite(_modemSleepRqPin, !_wakeLevel);
-            MS_DBG(
-                F("Module MIGHT enter light sleep mode if it has been idle for "
-                  "sufficient time."));
+            if (success) {
+                delay(5);
+                MS_DBG(
+                    F("Setting pin"), _modemSleepRqPin,
+                    !_wakeLevel ? F("HIGH") : F("LOW"),
+                    F("to allow the Espressif module to enter light sleep"));
+                digitalWrite(_modemSleepRqPin, !_wakeLevel);
+                MS_DBG(F("Module MIGHT enter light sleep mode if it has been "
+                         "idle for sufficient time."));
+            }
         }
         return success;
     } else {  // DON'T go to sleep if we can't wake up!

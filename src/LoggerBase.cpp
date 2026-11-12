@@ -354,13 +354,13 @@ float Logger::getValueAtI(uint8_t position_i) {
 // This returns the current value of the variable as a string with the
 // correct number of significant figures
 String Logger::getValueStringAtI(uint8_t position_i) {
-    if (_internalArray == nullptr) { return String(MS_INVALID_VALUE, 0); }
+    if (_internalArray == nullptr) { return String(MS_INVALID_VALUE); }
     return _internalArray->arrayOfVars[position_i]->getValueString();
 }
 // This returns a particular value of the variable as a string with the
 // correct number of significant figures
 String Logger::formatValueStringAtI(uint8_t position_i, float value) {
-    if (_internalArray == nullptr) { return String(MS_INVALID_VALUE, 0); }
+    if (_internalArray == nullptr) { return String(MS_INVALID_VALUE); }
     return _internalArray->arrayOfVars[position_i]->formatValueString(value);
 }
 
