@@ -19,31 +19,13 @@ const char* S3PresignedPublisher::contentTypeHeader   = "\r\nContent-Type: ";
 
 // Constructors
 // Primary constructor with all parameters
-S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                                           const char* caCertName,
+S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client& inClient,
                                            String (*getUrlFxn)(String),
                                            String (*getFileNameFxn)())
     : dataPublisher(baseLogger, inClient) {
-    if (caCertName) setCACertName(caCertName);
     if (getUrlFxn) setURLUpdateFunction(getUrlFxn);
     if (getFileNameFxn) setFileUpdateFunction(getFileNameFxn);
 }
-
-// Delegating constructors
-S3PresignedPublisher::S3PresignedPublisher(Logger&     baseLogger,
-                                           const char* caCertName,
-                                           String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)())
-    : S3PresignedPublisher(baseLogger, nullptr, caCertName, getUrlFxn,
-                           getFileNameFxn) {}
-S3PresignedPublisher::S3PresignedPublisher(Logger& baseLogger, Client* inClient,
-                                           String (*getUrlFxn)(String),
-                                           String (*getFileNameFxn)())
-    : S3PresignedPublisher(baseLogger, inClient, nullptr, getUrlFxn,
-                           getFileNameFxn) {}
-S3PresignedPublisher::S3PresignedPublisher() : dataPublisher() {}
-
-
 void S3PresignedPublisher::setPort(int port) {
     s3Port = port;
 }
@@ -72,54 +54,6 @@ void S3PresignedPublisher::setFileParams(const char* extension,
                                          const char* filePrefix) {
     _fileExtension = extension;
     _filePrefix    = filePrefix;
-}
-
-
-void S3PresignedPublisher::setCACertName(const char* caCertName) {
-    _caCertName = caCertName;
-}
-
-
-// A way to set members in the begin to use with a bare constructor
-void S3PresignedPublisher::begin(Logger& baseLogger, Client* inClient,
-                                 String (*getUrlFxn)(String)) {
-    setURLUpdateFunction(getUrlFxn);
-    dataPublisher::begin(baseLogger, inClient);
-}
-void S3PresignedPublisher::begin(Logger& baseLogger,
-                                 String (*getUrlFxn)(String),
-                                 const char* caCertName) {
-    setURLUpdateFunction(getUrlFxn);
-    setCACertName(caCertName);
-    dataPublisher::begin(baseLogger);
-}
-
-Client* S3PresignedPublisher::createClient() {
-    if (_baseModem == nullptr) {
-        PRINTOUT(F("ERROR! No web client assigned and cannot access a "
-                   "logger modem to create one!"));
-        return nullptr;
-    }
-    if (_caCertName == nullptr) {
-        PRINTOUT(F("Cannot create a new S3 secure client without a CA "
-                   "certificate name!"));
-        return nullptr;
-    }
-    MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number."));
-    MS_DBG(F("Using CA cert:"), _caCertName);
-    Client* newClient = _baseModem->createSecureClient(
-        SSLAuthMode::CA_VALIDATION, SSLVersion::TLS1_3, _caCertName);
-    if (newClient == nullptr) {
-        PRINTOUT(F("Failed to create a new secure client!"));
-        return nullptr;
-    }
-    return newClient;
-}
-void S3PresignedPublisher::deleteClient(Client* client) {
-    if (_baseModem != nullptr) {
-        MS_DBG(F("Attempting to delete the client"));
-        return _baseModem->deleteSecureClient(client);
-    }
 }
 
 bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
@@ -227,7 +161,7 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
 }
 
 // Post the data to S3.
-int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
+int16_t S3PresignedPublisher::publishData(Client& outClient, bool) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[12] = "";
     uint16_t did_respond    = 0;
@@ -318,9 +252,9 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
     // NOTE: always use port 443 for SSL connections to S3
-    if (outClient->connect(s3_parent_host, s3Port)) {
+    if (outClient.connect(s3_parent_host, s3Port)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
-        txBufferInit(outClient);
+        txBufferInit(&outClient);
 
         // copy the initial post header into the tx buffer
         txBufferAppend(putHeader);
@@ -362,15 +296,15 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
 
         // Wait 60 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 60000L && outClient->connected() &&
-               outClient->available() < 12) {
+        while ((millis() - start) < 60000L && outClient.connected() &&
+               outClient.available() < 12) {
             delay(10);
         }
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = outClient->readBytes(tempBuffer, 12);
+        did_respond = outClient.readBytes(tempBuffer, 12);
         // Process the HTTP response code
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond >= 12) {
@@ -390,8 +324,8 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         // throw the rest of the response into the tx buffer so we can debug it
         txBufferInit(nullptr);
         txBufferAppend(tempBuffer, 12, true);
-        while (outClient->available()) {
-            char c = outClient->read();
+        while (outClient.available()) {
+            char c = outClient.read();
             txBufferAppend(c);
         }
         txBufferFlush();
@@ -400,7 +334,7 @@ int16_t S3PresignedPublisher::publishData(Client* outClient, bool) {
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
-        outClient->stop();
+        outClient.stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to S3 --"));

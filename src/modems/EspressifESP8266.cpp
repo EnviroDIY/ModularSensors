@@ -10,67 +10,77 @@
 
 // Included Dependencies
 #include "EspressifESP8266.h"
-#include "LoggerModemMacros.h"
 
 // Constructors
-EspressifESP8266::EspressifESP8266(Stream* modemStream, int8_t powerPin,
+EspressifESP8266::EspressifESP8266(TinyGsmESP8266& xxxxxModem, int8_t powerPin,
                                    int8_t modemResetPin, const char* ssid,
-                                   const char* pwd)
-    : Espressif(modemStream, powerPin, modemResetPin, ssid, pwd),
-#if defined(MS_ESPRESSIFESP8266_DEBUG_DEEP)
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger)
-#else
-      gsmModem(*modemStream)
-#endif
-{
-}
+                                   const char* pwd, int8_t modemSleepRqPin,
+                                   int8_t espSleepRqPin)
+    : Espressif<TinyGsmESP8266>(xxxxxModem, powerPin, modemResetPin, ssid, pwd,
+                                modemSleepRqPin, espSleepRqPin) {}
 
-MS_IS_MODEM_AWAKE(EspressifESP8266);
-MS_MODEM_WAKE(EspressifESP8266);
-
-MS_MODEM_CONNECT_INTERNET(EspressifESP8266, ESPRESSIF_RECONNECT_TIME_MS);
-MS_MODEM_DISCONNECT_INTERNET(EspressifESP8266);
-MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP8266);
-
-MS_MODEM_CREATE_CLIENT(EspressifESP8266, ESP8266);
-MS_MODEM_DELETE_CLIENT(EspressifESP8266, ESP8266);
-MS_MODEM_CREATE_SECURE_CLIENT(EspressifESP8266, ESP8266);
-MS_MODEM_DELETE_SECURE_CLIENT(EspressifESP8266, ESP8266);
-
-MS_MODEM_GET_NIST_TIME(EspressifESP8266, ESP8266);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP8266);
-MS_MODEM_GET_MODEM_BATTERY_DATA(EspressifESP8266);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(EspressifESP8266);
 
 bool EspressifESP8266::modemSleepFxn() {
-    // Use this if you have an MCU pin connected to the ESP's reset pin to wake
-    // from deep sleep.  We'll also put it in deep sleep before yanking power.
-    if (_modemResetPin >= 0 || _powerPin >= 0) {
+    // Use this if you have an MCU pin connected to the ESP's reset pin to
+    // wake from deep sleep.
+    if (_modemResetPin >= 0) {
         MS_DBG(F("Requesting deep sleep for ESP8266"));
-        bool retVal = gsmModem.poweroff();
+        // On the ESP8266, we can request indefinite deep sleep by setting the
+        // deep sleep timer time to 0.
+        gsmModem.sendAT(GF("+GSLP=0"));
+        bool success = gsmModem.waitResponse() == 1;
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
-        _modemStream->flush();
-        return retVal;
+        gsmModem.stream.flush();
+        return success;
+    } else if (_modemSleepRqPin >= 0 && _espSleepRqPin >= 0) {
+        // Light sleep without the status pin
+        MS_DBG(F("Configuring light sleep for the Espressif module"));
+        // AT+SLEEPWKCFG=<wakeup source>,<param1>[,<param2>]
+        // <wakeup source>:
+        //     0: reserved, not supported now.
+        //     1: reserved, not supported now.
+        //     2: wakeup by GPIO.
+        // <param1>:
+        //     - If the wakeup source is a timer, it means the time before
+        //     wakeup. Unit: millisecond.
+        //     - If the wakeup source is GPIO, it means the GPIO number.
+        // <param2>:
+        //     If the wakeup source is GPIO, it means the wakeup level:
+        //         0: low level.
+        //         1: high level.
+        gsmModem.sendAT(GF("+SLEEPWKCFG=2,"), String(_espSleepRqPin), ',',
+                        ESPRESSIF_WAKE_LEVEL ? 1 : 0);
+        bool success = gsmModem.waitResponse() == 1;
+        if (success) {
+            // AT+SLEEP=<sleep mode>
+            // <sleep mode>:
+            //     0: Disable the sleep mode.
+            //     1: Modem-sleep DTIM mode. RF will be periodically closed
+            //     according to AP DTIM.
+            //     2: Light-sleep mode. CPU will automatically sleep and RF will
+            //     be periodically closed according to listen interval set by
+            //     AT+CWJAP.
+            //     3: Modem-sleep listen interval mode. RF will be periodically
+            //     closed according to listen interval set by AT+CWJAP.
+            gsmModem.sendAT(GF("+SLEEP=2"));
+            success &= gsmModem.waitResponse() == 1;
+            delay(5);
+            MS_DBG(F("Setting pin"), _modemSleepRqPin,
+                   !_wakeLevel ? F("HIGH") : F("LOW"),
+                   F("to allow the Espressif module to enter light sleep"));
+            digitalWrite(_modemSleepRqPin, !_wakeLevel);
+            MS_DBG(
+                F("Module MIGHT enter light sleep mode if it has been idle for "
+                  "sufficient time."));
+        }
+        return success;
     } else {  // DON'T go to sleep if we can't wake up!
-        MS_DEEP_DBG(F("No pins for sleeping the ESP8266. Hopefully it's in the "
+        MS_DEEP_DBG(F("No pins for sleeping the Espressif module. "
+                      "Hopefully it's in the "
                       "state you want."));
-        _modemStream->flush();
+        gsmModem.stream.flush();
         return true;
     }
-}
-
-// Set up the light-sleep status pin, if applicable
-bool EspressifESP8266::extraModemSetup() {
-    if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
-    bool success = gsmModem.init();
-    // Attempt to get the modem name even without a successful init
-    // The full make and model won't be returned, but it will at least be
-    // something that identifies the modem as an ESP8266, which is helpful for
-    // debugging.
-    _modemName = gsmModem.getModemName();
-    return success;
 }

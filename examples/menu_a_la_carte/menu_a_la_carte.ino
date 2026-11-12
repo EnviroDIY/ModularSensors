@@ -56,7 +56,8 @@ AltSoftSerial altSoftSerial;
 /** End [altsoftserial] */
 #endif  // #if defined (BUILD_TEST_ALTSOFTSERIAL)
 
-#if defined(BUILD_TEST_NEOSWSERIAL)
+#if defined(BUILD_TEST_NEOSWSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // NeoSWSerial (https://github.com/SRGDamia1/NeoSWSerial) is the best software
 // serial that can be used on any pin supporting interrupts.
 // You can use as many instances of NeoSWSerial as you need.
@@ -74,7 +75,8 @@ void neoSSerial1ISR() {
 /** End [neoswserial] */
 #endif  // #if defined (BUILD_TEST_NEOSWSERIAL)
 
-#if defined(BUILD_TEST_SOFTSERIAL)
+#if defined(BUILD_TEST_SOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // The "standard" software serial library uses interrupts that conflict
 // with several other libraries used within this program.  I've created a
 // [version of software serial that has been stripped of
@@ -270,13 +272,19 @@ void SERCOM1_3_Handler() {
 
 // Since the Maxbotix only needs one-way communication and sends a simple text
 // string repeatedly, almost any software serial port will do for it.
-#if defined(BUILD_TEST_ALTSOFTSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) &&     \
+    defined(BUILD_SENSOR_MAX_BOTIX_SONAR) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For AltSoftSerial
 #define sonarSerial altSoftSerial
-#elif defined(BUILD_TEST_NEOSWSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+#elif defined(BUILD_TEST_NEOSWSERIAL) &&     \
+    defined(BUILD_SENSOR_MAX_BOTIX_SONAR) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For Neo software serial
 #define sonarSerial neoSSerial1
-#elif defined(BUILD_TEST_SOFTSERIAL) && defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+#elif defined(BUILD_TEST_SOFTSERIAL) &&      \
+    defined(BUILD_SENSOR_MAX_BOTIX_SONAR) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
 // For software serial
 #define sonarSerial softSerial1
 #elif defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
@@ -370,8 +378,8 @@ uint8_t      wakePinMode = INPUT_PULLUP;  // mode for wake pin
 // on the onboard RV-8803 RTC.  The interrupt from the RV-8803 will pull the pin
 // DOWN, so we want the pin mode to be INPUT_PULLUP - i.e., pulled up until the
 // RTC pulls it down.
-const int8_t sdCardPwrPin = -1;  // MCU SD card power pin
 // const int8_t sdCardPwrPin   = 32;  // MCU SD card power pin
+const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 29;  // SD card chip select/slave select pin
 const int8_t flashSSPin     = 20;  // onboard flash chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
@@ -411,9 +419,9 @@ const int8_t sdi12DataPin  = 3;
 // ==========================================================================
 /** Start [loggers] */
 // Create a new logger instance
-// NOTE: We haven't set the pins or variable array here! We will need to call
-// setVariableArray and the various pin assignment functions in the setup!
-Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
+// NOTE: We haven't configured the logger here! We will need to call the
+// parameter setters and various pin assignment functions in the setup!
+Logger dataLogger;
 /** End [loggers] */
 
 
@@ -440,6 +448,9 @@ Logger dataLogger(LoggerID, samplingFeature, loggingInterval);
 // The Telit based Digi XBees (LTE Cat1) can only use this mode.
 #include <modems/DigiXBeeCellularTransparent.h>
 
+// Type alias for easier use of the TinyGSM XBee classes
+using TinyGsm = TinyGsmXBee;
+
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
 const int32_t modemBaud = 9600;  // All XBee's use 9600 by default
@@ -461,14 +472,16 @@ const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
-                                      useCTSforStatus, modemResetPin,
-                                      modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-DigiXBeeCellularTransparent modem = modemXBCT;
+// Create a TinyGsm modem
+TinyGsmXBee gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+DigiXBeeCellularTransparent modem(gsmModem, modemVccPin, modemStatusPin,
+                                  useCTSforStatus, modemResetPin,
+                                  modemSleepRqPin, apn);
 /** End [digi_xbee_cellular_transparent] */
 // ==========================================================================
 
@@ -480,6 +493,9 @@ DigiXBeeCellularTransparent modem = modemXBCT;
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
 #include <modems/DigiXBeeLTEBypass.h>
+
+// Type alias for easier use of the TinyGSM UBLOX SARA R410M classes
+using TinyGsm = TinyGsmSaraR4;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -499,14 +515,15 @@ const int8_t modemLEDPin = redLED;     // MCU pin connected an LED to show modem
                                        // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-DigiXBeeLTEBypass modemXBLTEB(&modemSerial, modemVccPin, modemStatusPin,
-                              useCTSforStatus, modemResetPin, modemSleepRqPin,
-                              apn);
-// Create an extra reference to the modem by a generic name
-DigiXBeeLTEBypass modem = modemXBLTEB;
+// Create a TinyGsm modem
+TinyGsmSaraR4 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+DigiXBeeLTEBypass modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
+                        modemResetPin, modemSleepRqPin, apn);
 /** End [digi_xbee_lte_bypass] */
 // ==========================================================================
 
@@ -518,6 +535,9 @@ DigiXBeeLTEBypass modem = modemXBLTEB;
 // NOTE:  According to the manual, this should be less stable than transparent
 // mode, but my experience is the complete reverse.
 #include <modems/DigiXBee3GBypass.h>
+
+// Type alias for easier use of the TinyGSM UBLOX classes
+using TinyGsm = TinyGsmUBLOX;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -537,14 +557,15 @@ const int8_t modemLEDPin = redLED;     // MCU pin connected an LED to show modem
                                        // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-DigiXBee3GBypass modemXB3GB(&modemSerial, modemVccPin, modemStatusPin,
-                            useCTSforStatus, modemResetPin, modemSleepRqPin,
-                            apn);
-// Create an extra reference to the modem by a generic name
-DigiXBee3GBypass modem = modemXB3GB;
+// Create a TinyGsm modem
+TinyGsmUBLOX gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+DigiXBee3GBypass modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
+                       modemResetPin, modemSleepRqPin, apn);
 /** End [digi_xbee_3g_bypass] */
 // ==========================================================================
 
@@ -554,6 +575,9 @@ DigiXBee3GBypass modem = modemXB3GB;
 /** Start [digi_xbee_wifi] */
 // For the Digi Wifi XBee (S6B)
 #include <modems/DigiXBeeWifi.h>
+
+// Type alias for easier use of the TinyGSM XBee classes
+using TinyGsm = TinyGsmXBee;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -576,12 +600,13 @@ const int8_t modemLEDPin = redLED;    // MCU pin connected an LED to show modem
 const char* wifiId  = WIFI_ID;      // WiFi access point name
 const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
-// Create the modem object
-DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
-                       useCTSforStatus, modemResetPin, modemSleepRqPin, wifiId,
-                       wifiPwd);
-// Create an extra reference to the modem by a generic name
-DigiXBeeWifi modem = modemXBWF;
+// Create a TinyGsm modem
+TinyGsmXBee gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+DigiXBeeWifi modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
+                   modemResetPin, modemSleepRqPin, wifiId, wifiPwd);
 /** End [digi_xbee_wifi] */
 // ==========================================================================
 
@@ -592,6 +617,9 @@ DigiXBeeWifi modem = modemXBWF;
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
 #include <modems/EspressifESP8266.h>
+
+// Type alias for easier use of the TinyGSM ESP8266 classes
+using TinyGsm = TinyGsmESP8266;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -611,11 +639,12 @@ const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
 const char* wifiId  = WIFI_ID;      // WiFi access point name
 const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
-// Create the modem object
-EspressifESP8266 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
-                          wifiPwd);
-// Create an extra reference to the modem by a generic name
-EspressifESP8266 modem = modemESP;
+// Create a TinyGsm modem
+TinyGsmESP8266 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+EspressifESP8266 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 /** End [espressif_esp8266] */
 // ==========================================================================
 
@@ -626,6 +655,9 @@ EspressifESP8266 modem = modemESP;
 // For almost anything based on the Espressif ESP8266 using the
 // AT command firmware
 #include <modems/EspressifESP32.h>
+
+// Type alias for easier use of the TinyGSM ESP32 classes
+using TinyGsm = TinyGsmESP32;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -647,11 +679,12 @@ const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
 const char* wifiId  = WIFI_ID;      // WiFi access point name
 const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 
-// Create the modem object
-EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
-                        wifiPwd);
-// Create an extra reference to the modem by a generic name
-EspressifESP32 modem = modemESP;
+// Create a TinyGsm modem
+TinyGsmESP32 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+EspressifESP32 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 /** End [espressif_esp32] */
 // ==========================================================================
 
@@ -661,6 +694,9 @@ EspressifESP32 modem = modemESP;
 /** Start [quectel_bg96] */
 // For the Dragino, Nimbelink or other boards based on the Quectel BG96
 #include <modems/QuectelBG96.h>
+
+// Type alias for easier use of the TinyGSM Quectel BG96 classes
+using TinyGsm = TinyGsmBG96;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -680,13 +716,15 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-QuectelBG96 modemBG96(&modemSerial, modemVccPin, modemStatusPin, modemResetPin,
-                      modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-QuectelBG96 modem = modemBG96;
+// Create a TinyGsm modem
+TinyGsmBG96 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+QuectelBG96 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
+                  modemSleepRqPin, apn);
 /** End [quectel_bg96] */
 // ==========================================================================
 
@@ -697,6 +735,9 @@ QuectelBG96 modem = modemBG96;
 // For the Nimbelink LTE-M Verizon/Sequans or other boards based on the Sequans
 // Monarch series
 #include <modems/SequansMonarch.h>
+
+// Type alias for easier use of the TinyGSM Sequans Monarch classes
+using TinyGsm = TinyGsmSequansMonarch;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -716,13 +757,15 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-SequansMonarch modemSVZM(&modemSerial, modemVccPin, modemStatusPin,
-                         modemResetPin, modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-SequansMonarch modem = modemSVZM;
+// Create a TinyGsm modem
+TinyGsmSequansMonarch gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+SequansMonarch modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
+                     modemSleepRqPin, apn);
 /** End [sequans_monarch] */
 // ==========================================================================
 
@@ -733,6 +776,9 @@ SequansMonarch modem = modemSVZM;
 // For almost anything based on the SIMCom SIM800 EXCEPT the Sodaq 2GBee R6 and
 // higher
 #include <modems/SIMComSIM800.h>
+
+// Type alias for easier use of the TinyGSM SIMCOM SIM800 classes
+using TinyGsm = TinyGsmSim800;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -749,13 +795,15 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-SIMComSIM800 modemS800(&modemSerial, modemVccPin, modemStatusPin, modemResetPin,
-                       modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-SIMComSIM800 modem = modemS800;
+// Create a TinyGsm modem
+TinyGsmSim800 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+SIMComSIM800 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
+                   modemSleepRqPin, apn);
 /** End [sim_com_sim800] */
 // ==========================================================================
 
@@ -765,6 +813,9 @@ SIMComSIM800 modem = modemS800;
 /** Start [sim_com_sim7000] */
 // For almost anything based on the SIMCom SIM7000
 #include <modems/SIMComSIM7000.h>
+
+// Type alias for easier use of the TinyGSM SIMCom SIM7000 (SSL) classes
+using TinyGsm = TinyGsmSim7000SSL;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -780,13 +831,15 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-SIMComSIM7000 modem7000(&modemSerial, modemVccPin, modemStatusPin,
-                        modemResetPin, modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-SIMComSIM7000 modem = modem7000;
+// Create a TinyGsm modem
+TinyGsmSim7000SSL gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+SIMComSIM7000 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
+                    modemSleepRqPin, apn);
 /** End [sim_com_sim7000] */
 // ==========================================================================
 
@@ -796,6 +849,9 @@ SIMComSIM7000 modem = modem7000;
 /** Start [sim_com_sim7080] */
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
+
+// Type alias for easier use of the TinyGSM SIMCom SIM7080 classes
+using TinyGsm = TinyGsmSim7080;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -811,13 +867,15 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-SIMComSIM7080 modem7080(&modemSerial, modemVccPin, modemStatusPin,
-                        modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-SIMComSIM7080 modem = modem7080;
+// Create a TinyGsm modem
+TinyGsmSim7080 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+SIMComSIM7080 modem(gsmModem, modemVccPin, modemStatusPin, modemSleepRqPin,
+                    apn);
 /** End [sim_com_sim7080] */
 // ==========================================================================
 
@@ -828,6 +886,9 @@ SIMComSIM7080 modem = modem7080;
 // For the Sodaq 2GBee R6 and R7 based on the SIMCom SIM800
 // NOTE:  The Sodaq GPRSBee doesn't expose the SIM800's reset pin
 #include <modems/Sodaq2GBeeR6.h>
+
+// Type alias for easier use of the TinyGSM SIMCom SIM800 classes
+using TinyGsm = TinyGsmSim800;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -844,12 +905,14 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
-// Create an extra reference to the modem by a generic name
-Sodaq2GBeeR6 modem = modem2GB;
+// Create a TinyGsm modem
+TinyGsmSim800 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+Sodaq2GBeeR6 modem(gsmModem, modemVccPin, modemStatusPin, apn);
 /** End [sodaq_2g_bee_r6] */
 // ==========================================================================
 
@@ -859,6 +922,9 @@ Sodaq2GBeeR6 modem = modem2GB;
 /** Start [sodaq_ubee_r410m] */
 // For the Sodaq UBee based on the 4G LTE-M u-blox SARA R410M
 #include <modems/SodaqUBeeR410M.h>
+
+// Type alias for easier use of the TinyGSM UBLOX SARA R410M classes
+using TinyGsm = TinyGsmSaraR4;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -882,13 +948,15 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-SodaqUBeeR410M modemR410(&modemSerial, modemVccPin, modemStatusPin,
-                         modemResetPin, modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-SodaqUBeeR410M modem = modemR410;
+// Create a TinyGsm modem
+TinyGsmSaraR4 gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+SodaqUBeeR410M modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
+                     modemSleepRqPin, apn);
 /** End [sodaq_ubee_r410m] */
 // ==========================================================================
 
@@ -898,6 +966,9 @@ SodaqUBeeR410M modem = modemR410;
 /** Start [sodaq_ubee_u201] */
 // For the Sodaq UBee based on the 3G u-blox SARA U201
 #include <modems/SodaqUBeeU201.h>
+
+// Type alias for easier use of the TinyGSM UBLOX classes
+using TinyGsm = TinyGsmUBLOX;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
 // for Additional Serial Ports" section
@@ -915,13 +986,15 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = CELLULAR_APN;  // APN for GPRS connection
+const char* apn = CELLULAR_APN;  // APN for cellular connection
 
-// Create the modem object
-SodaqUBeeU201 modemU201(&modemSerial, modemVccPin, modemStatusPin,
-                        modemResetPin, modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-SodaqUBeeU201 modem = modemU201;
+// Create a TinyGsm modem
+TinyGsmUBLOX gsmModem(modemSerial);
+// Create a unsecured TinyGSM client that can be shared with multiple publishers
+TinyGsm::TinyGsmClient gsmClient(gsmModem);
+// Create a loggerModem object
+SodaqUBeeU201 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
+                    modemSleepRqPin, apn);
 /** End [sodaq_ubee_u201] */
 // ==========================================================================
 #endif
@@ -2050,9 +2123,11 @@ Variable* ds18Temp = new MaximDS18_Temp(&ds18,
 #endif
 
 
-#if defined(BUILD_SENSOR_MEA_SPEC_MS5803)
+#if defined(BUILD_SENSOR_MEA_SPEC_MS5803) && \
+    !defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
 // ==========================================================================
 //  Measurement Specialties MS5803-14BA pressure sensor
+//  This cannot be used together with the TE Connectivity MS5837 sensor.
 // ==========================================================================
 /** Start [mea_spec_ms5803] */
 #include <sensors/MeaSpecMS5803.h>
@@ -2078,10 +2153,12 @@ Variable* ms5803Temp =
 #endif
 
 
-#if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
+#if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837) && \
+    !defined(BUILD_SENSOR_MEA_SPEC_MS5803)
 // ==========================================================================
-//  TE Connectivity MS5837 Pressure Sensor (deployed in Blue Robotics
-//  Bar02/Bar30)
+//  TE Connectivity / Measurement Specialties MS5837 Pressure Sensor (deployed
+//  in Blue Robotics Bar02/Bar30)
+//  This cannot be used together with the Measurement Specialties MS5803 sensor.
 // ==========================================================================
 /** Start [te_connectivity_ms5837] */
 #include <sensors/TEConnectivityMS5837.h>
@@ -2094,7 +2171,8 @@ const MS5837Model MS5837model = MS5837Model::MS5837_02BA;
 // - MS5837Model::MS5803_01BA for 1 bar range sensors (MS5803-01BA)
 const uint8_t MS5837ReadingsToAvg = 1;
 
-// Create a TE Connectivity MS5837 pressure and temperature sensor object
+// Create a TE Connectivity / Measurement Specialties MS5837 pressure and
+// temperature sensor object
 TEConnectivityMS5837 ms5837(MS5837Power, MS5837model, MS5837ReadingsToAvg);
 
 // Create pressure, temperature, depth, and altitude variable pointers for the
@@ -3500,6 +3578,8 @@ VariableArray varArray(variableCount, variableList);
 //  A Publisher to Monitor My Watershed
 // ==========================================================================
 /** Start [monitor_my_watershed_publisher] */
+#include <publishers/MonitorMyWatershedPublisher.h>
+
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org
 const char* registrationToken =
@@ -3509,11 +3589,23 @@ const char* registrationToken =
 // const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  //
 // Sampling feature UUID
 
-// Create a data publisher for the Monitor My Watershed POST endpoint
-#include <publishers/MonitorMyWatershedPublisher.h>
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken);
+#if defined(BUILD_NO_SHARED_CLIENTS)
+// Create a client for Monitor My Watershed - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsm::TinyGsmClient mmwClient(gsmModem);
+// Create a data publisher for the Monitor My Watershed POST endpoint using the
+// unique client
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
+                                          registrationToken);
+#else
+// Create a data publisher for the Monitor My Watershed POST endpoint using the
+// shared unsecured client
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, gsmClient,
+                                          registrationToken);
+#endif  // BUILD_NO_SHARED_CLIENTS
 /** End [monitor_my_watershed_publisher] */
-#endif
+#endif  // BUILD_PUB_MONITOR_MY_WATERSHED_PUBLISHER
 
 
 #if defined(BUILD_PUB_DREAM_HOST_PUBLISHER) && \
@@ -3522,16 +3614,25 @@ MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken);
 //  A Publisher to DreamHost
 // ==========================================================================
 /** Start [dream_host_publisher] */
+#include <publishers/DreamHostPublisher.h>
+
 // NOTE:  This is an outdated data collection tool used by the Stroud Center.
 // It very, very unlikely that you will use this.
-
 const char* DreamHostPortalRX = "xxxx";
 
-// Create a data publisher to DreamHost
-#include <publishers/DreamHostPublisher.h>
-DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
+#if defined(BUILD_NO_SHARED_CLIENTS)
+// Create a client for Dreamhost - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsm::TinyGsmClient dhClient(gsmModem);
+// Create a data publisher to DreamHost using the unique client
+DreamHostPublisher DreamHostGET(dataLogger, dhClient, DreamHostPortalRX);
 /** End [dream_host_publisher] */
-#endif
+#else
+// Create a data publisher to DreamHost using the shared unsecured client
+DreamHostPublisher DreamHostGET(dataLogger, gsmClient, DreamHostPortalRX);
+#endif  // BUILD_NO_SHARED_CLIENTS
+#endif  // BUILD_PUB_DREAM_HOST_PUBLISHER
 
 
 #if defined(BUILD_PUB_THING_SPEAK_PUBLISHER) && \
@@ -3540,6 +3641,8 @@ DreamHostPublisher DreamHostGET(dataLogger, DreamHostPortalRX);
 //  ThingSpeak Data Publisher
 // ==========================================================================
 /** Start [thing_speak_publisher] */
+#include <publishers/ThingSpeakPublisher.h>
+
 // Create a channel with fields on ThingSpeak in advance.
 // The fields will be sent in exactly the order they are in the variable array.
 // Any custom name or identifier given to the field on ThingSpeak is irrelevant.
@@ -3556,12 +3659,23 @@ const char* thingSpeakChannelID =
 const char* thingSpeakAPIKey =
     "XXXXXXXXXXXXXXXX";  // The ThingSpeak user REST API key
 
-// Create a data publisher for ThingSpeak
-#include <publishers/ThingSpeakPublisher.h>
-ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
-                           thingSpeakMQTTPassword, thingSpeakChannelID);
+#if defined(BUILD_NO_SHARED_CLIENTS)
+// Create a client for ThingSpeak MQTT - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsm::TinyGsmClient tsClient(gsmModem);
+// Create a data publisher for ThingSpeak with the unique client
+ThingSpeakPublisher TsMqtt(dataLogger, tsClient, thingSpeakClientName,
+                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                           thingSpeakChannelID);
+#else
+// Create a data publisher for ThingSpeak with the shared unsecured client
+ThingSpeakPublisher TsMqtt(dataLogger, gsmClient, thingSpeakClientName,
+                           thingSpeakMQTTUser, thingSpeakMQTTPassword,
+                           thingSpeakChannelID);
+#endif  // BUILD_NO_SHARED_CLIENTS
 /** End [thing_speak_publisher] */
-#endif
+#endif  // BUILD_PUB_THING_SPEAK_PUBLISHER
 
 
 #if defined(BUILD_PUB_UBIDOTS_PUBLISHER) && \
@@ -3570,6 +3684,7 @@ ThingSpeakPublisher TsMqtt(dataLogger, thingSpeakClientName, thingSpeakMQTTUser,
 //  Ubidots Data Publisher
 // ==========================================================================
 /** Start [ubidots_publisher] */
+#include <publishers/UbidotsPublisher.h>
 // The authentication token from Ubidots, either the Organization's Integration
 // Token (under Users > Organization menu,visible by Admin only) OR the STEM
 // User's Device Token (under the specific device's setup panel).
@@ -3578,10 +3693,110 @@ const char* ubidotsToken = "XXXXXXXXXXXXXXXX";
 // name.
 const char* ubidotsDeviceID = "######";
 
-// Create a data publisher for Ubidots
-#include <publishers/UbidotsPublisher.h>
-UbidotsPublisher ubidots(dataLogger, ubidotsToken, ubidotsDeviceID);
+#if defined(BUILD_NO_SHARED_CLIENTS)
+// Create a client for Ubidots - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsm::TinyGsmClient ubidotsClient(gsmModem);
+// Create a data publisher for Ubidots using the unique client
+UbidotsPublisher ubidots(dataLogger, ubidotsClient, ubidotsToken,
+                         ubidotsDeviceID);
 /** End [ubidots_publisher] */
+#else
+// Create a data publisher for Ubidots with the shared unsecured client
+UbidotsPublisher ubidots(dataLogger, gsmClient, ubidotsToken, ubidotsDeviceID);
+#endif  // BUILD_NO_SHARED_CLIENTS
+#endif  // BUILD_PUB_UBIDOTS_PUBLISHER
+
+
+#if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) && \
+    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
+// ==========================================================================
+//  AWS IoT Core MQTT Publisher
+// ==========================================================================
+/** Start [aws_io_t_publisher] */
+#include <publishers/AWS_IoT_Publisher.h>
+
+// The endpoint for your AWS IoT instance
+const char* awsIoTEndpoint = "xxx-ats.iot.xxx.amazonaws.com";
+
+// If using a TinyGSM modem and secure client and context, you MUST have already
+// uploaded all of your certificates to your modem.  For supported modules you
+// can use the AWS_IOT_SetCertificates sketch in the extras folder to upload
+// your certificates.
+
+// The CA (certificate authority) certificate will most likely be the Amazon
+// Root CA 1 (RSA 2048 bit key) certificate. You can find Amazon's current CA
+// certificates here:
+// https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html.
+// Depending on your module, you may instead need a certificate chain file or to
+// use Amazon's older top-chain certificate (Starfield Services Root Certificate
+// Authority - G2).  The CA certificate for AWS IoT Core is exactly the same CA
+// certificate as you would use to upload to S3 (i.e., the S3 Presigned
+// Publisher).
+
+// You must download the client certificate and client key for a thing when you
+// create the certificate. Your certificate should be tied to a security policy
+// that allows connection, publishing, and subscribing by thing name.
+
+// The certificates should generally be formatted as ".pem", ".der", or (for
+// some modules) ".p7b" files.
+
+// For most modules the actual filename doesn't matter much but it CANNOT
+// HAVE SPACES and should be less than 64 characters.
+// Some modules will not accept filenames with special characters so avoid
+// those, too.
+
+// NOTE: The certificate names as they are downloaded from AWS IoT Core are
+// often too long for the modem to handle. Pick something shorter.  Here we use
+// the thing name.
+
+// Sampling feature UUID, this will be the sub-topic for your data
+// NOTE: Because we already set the sampling feature with the logger
+// constructor, don't do it here.
+// const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
+#ifdef BUILD_MODEM_ESPRESSIF_ESP32
+// For Espressif modules, only two certificate sets are supported and the
+// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
+// "client_key.{0|1}"
+// The name of your certificate authority certificate file
+const char* caCertName = "client_ca.0";
+// The name of your client certificate file
+const char* clientCertName = "client_cert.0";
+// The name of your client private key file
+const char* clientKeyName = "client_key.0";
+#else
+// For most modules the actual filename doesn't matter much but it CANNOT
+// HAVE SPACES and should be less than 64 characters.
+// Some modules will not accept filenames with special characters so avoid
+// those, too.
+// NOTE: The certificate names as they are downloaded from AWS IoT Core are
+// often too long for the modem to handle. Pick something shorter.
+// The name of your certificate authority certificate file
+const char* caCertName = "AmazonRootCA1.pem";
+// The name of your client certificate file
+const char* clientCertName = "thing-certificate.pem.crt";
+// The name of your client private key file
+const char* clientKeyName = "thing-private.pem.key";
+#endif
+
+// Create a security context for S3
+// AWS IoT Core requires TLS >= 1.2, with mutual certificate verification
+TinyGsm::TinyGsmSecureContext iotSecureContext(
+    gsmModem, SSLAuthMode::MUTUAL_AUTHENTICATION, SSLVersion::TLS1_2,
+    caCertName, clientCertName, clientKeyName);
+// Create a client for IoT Core - this needs to be secured
+// This client can only be shared with other publishers that share the same
+// security context/credentials.
+// NOTE: Here we set the client index to -1 to have the modem tell us the next
+// context and we SSL context index for the secure client to use the previously
+// created security context.
+TinyGsm::TinyGsmClientSecure iotSecureClient(
+    gsmModem, -1, iotSecureContext.getSSLContextIndex());
+// Create a data publisher for AWS IoT Core
+AWS_IoT_Publisher awsIoTPub(dataLogger, iotSecureClient, awsIoTEndpoint,
+                            samplingFeature);
+/** End [aws_io_t_publisher] */
 #endif
 
 
@@ -3590,15 +3805,35 @@ UbidotsPublisher ubidots(dataLogger, ubidotsToken, ubidotsDeviceID);
 // ==========================================================================
 //  AWS S3 Pre-signed URL Publisher
 // ==========================================================================
+#include <publishers/S3PresignedPublisher.h>
+
+// You MUST have already uploaded your certificate to your modem. This will most
+// likely be the Amazon Root CA 1 (RSA 2048 bit key) certificate. You can find
+// Amazon's current CA certificates here:
+// https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html.
+// Depending on your module, you may instead need a certificate chain file or to
+// use Amazon's older top-chain certificate (Starfield Services Root Certificate
+// Authority - G2).
+
+// This is exactly the same CA certificate as you would use for an MQTT
+// connection to AWS IoT (i.e., the AWS IoT Publisher). For supported modules
+// you can use the AWS_IOT_SetCertificates sketch in the extras folder to upload
+// your certificate.
+
 /** Start [s3_presigned_publisher] */
 #ifdef BUILD_MODEM_ESPRESSIF_ESP32
 // For Espressif modules, only two certificate sets are supported and the
 // certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
 // "client_key.{0|1}"
+#if !defined(BUILD_PUB_AWS_IO_T_PUBLISHER)
+// The name of your certificate authority certificate file
 const char* caCertName = "client_ca.0";
+#endif
 #else
+#if !defined(BUILD_PUB_AWS_IO_T_PUBLISHER)
 // The name of your certificate authority certificate file
 const char* caCertName = "AmazonRootCA1.pem";
+#endif
 #endif
 
 // The S3 host (need for region specific requests)
@@ -3620,51 +3855,23 @@ String s3URLMsgGetter() {
 }
 #endif
 
-// Create a data publisher for AWS IoT Core
-#include <publishers/S3PresignedPublisher.h>
-S3PresignedPublisher s3pub;
-/** End [s3_presigned_publisher] */
-#endif
+// Create a security context for S3
+// S3 requires TLS >= 1.2, with certificate authority certificate verification
+TinyGsm::TinyGsmSecureContext s3SecureContext(gsmModem,
+                                              SSLAuthMode::CA_VALIDATION,
+                                              SSLVersion::TLS1_2, caCertName);
+// Create a client for S3 - this needs to be secured
+// This client can only be shared with other publishers that share the same
+// security context/credentials.
+// NOTE: Here we set the client index to -1 to have the modem tell us the next
+// context and we SSL context index for the secure client to use the previously
+// created security context.
+TinyGsm::TinyGsmClientSecure s3SecureClient(
+    gsmModem, -1, s3SecureContext.getSSLContextIndex());
+// Create a data publisher for S3
+S3PresignedPublisher s3pub(dataLogger, s3SecureClient);
 
-
-#if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) && \
-    (!defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM))
-// ==========================================================================
-//  AWS IoT Core MQTT Publisher
-// ==========================================================================
-/** Start [aws_io_t_publisher] */
-// The endpoint for your AWS IoT instance
-const char* awsIoTEndpoint = "xxx-ats.iot.xxx.amazonaws.com";
-// Sampling feature UUID, this will be the sub-topic for your data
-// NOTE: Because we already set the sampling feature with the logger
-// constructor, don't do it here.
-// const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
-#ifdef BUILD_MODEM_ESPRESSIF_ESP32
-// For Espressif modules, only two certificate sets are supported and the
-// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
-// "client_key.{0|1}"
-#if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
-const char* caCertName = "client_ca.0";
-#endif
-const char* clientCertName = "client_cert.0";
-const char* clientKeyName  = "client_key.0";
-#else
-#if !defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
-// The name of your certificate authority certificate file
-const char* caCertName = "AmazonRootCA1.pem";
-#endif
-// The name of your client certificate file
-const char* clientCertName = "thing-certificate.pem.crt";
-// The name of your client private key file
-const char* clientKeyName = "thing-private.pem.key";
-#endif
-
-// Create a data publisher for AWS IoT Core
-#include <publishers/AWS_IoT_Publisher.h>
-AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
-                            clientCertName, clientKeyName);
-
-#if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
+#if defined(BUILD_PUB_AWS_IO_T_PUBLISHER)
 // Callback function
 void IoTCallback(char* topic, byte* payload, unsigned int length) {
     PRINTOUT(F("Got message of length"), length, F("on topic"), topic);
@@ -3690,7 +3897,7 @@ void IoTCallback(char* topic, byte* payload, unsigned int length) {
     }
 }
 #endif
-/** End [aws_io_t_publisher] */
+/** End [s3_presigned_publisher] */
 #endif
 
 
@@ -3805,12 +4012,14 @@ void setup() {
 
 /** Start [setup_softserial] */
 // Allow interrupts for software serial
-#if defined(BUILD_TEST_SOFTSERIAL)
+#if defined(BUILD_TEST_SOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     PRINTOUT(F("Enabling interrupts for SoftwareSerial"));
     enableInterrupt(softSerialRx, SoftwareSerial_ExtInts::handle_interrupt,
                     CHANGE);
 #endif
-#if defined(BUILD_TEST_NEOSWSERIAL)
+#if defined(BUILD_TEST_NEOSWSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     PRINTOUT(F("Enabling interrupts for NeoSoftSerial"));
     enableInterrupt(neoSSerial1Rx, neoSSerial1ISR, CHANGE);
 #endif
@@ -3826,17 +4035,20 @@ void setup() {
 
 #if defined(BUILD_MODBUS_SENSOR)
     // Start the stream for the modbus sensors;
+    PRINTOUT(F("Starting modbus connection at"), 9600, F("baud"));
     // modbusSerial.begin(57600);  // 57600 is the default for ANB pH sensors
     modbusSerial.begin(9600);  // All other modbus sensors use 9600 baud
 #endif
 
 #if defined(BUILD_SENSOR_MAX_BOTIX_SONAR)
+    PRINTOUT(F("Starting sonar connection at"), 9600, F("baud"));
     // Start the stream for the sonar; it will always be at 9600 baud
     sonarSerial.begin(9600);
 #endif
 
 #if defined(BUILD_SENSOR_GEOLUX_HYDRO_CAM)
     // Start the stream for the camera; it will always be at 115200 baud
+    PRINTOUT(F("Starting camera connection at"), 115200, F("baud"));
     cameraSerial.begin(115200L);
 #endif
 /** End [setup_serial_begins] */
@@ -3861,8 +4073,8 @@ void setup() {
 
 #if defined(EXTERNAL_FLASH_DEVICES)
     PRINTOUT(F("Setting onboard flash pin modes"));
-    pinMode(flashSSPin,
-            OUTPUT);  // for proper operation of the onboard flash memory
+    pinMode(flashSSPin, OUTPUT);     // set to output
+    digitalWrite(flashSSPin, HIGH);  // deselect the flash chip
 #endif
 
     PRINTOUT(F("Starting I2C (Wire)"));
@@ -3913,9 +4125,6 @@ void setup() {
 #if defined(BUILD_PUB_S3_PRESIGNED_PUBLISHER)
     // Set the S3 host and certificate authority name
     s3pub.setHost(s3Host);
-    s3pub.setCACertName(caCertName);
-    // Attach to the logger
-    s3pub.attachToLogger(dataLogger);
 #endif
 
 #if defined(BUILD_PUB_AWS_IO_T_PUBLISHER) &&     \
@@ -3943,6 +4152,13 @@ void setup() {
         varArray.sensorsPowerDown();  // only needed if you have sensors that
                                       // need power for setups
     }
+#if defined(BUILD_SENSOR_TE_CONNECTIVITY_MS5837)
+    // This sensor can be a little finicky, so allow for some retries
+    // The default maximum number of retries for the MS5837
+    // (`MS5837_DEFAULT_MEASUREMENT_RETRIES`) is already five, so this isn't
+    // necessary, it just demonstrates how to set it manually.
+    ms5837.setMaxRetries(5);
+#endif
     /** End [setup_sensors] */
 
 #if (defined BUILD_MODEM_ESPRESSIF_ESP8266 || \
@@ -4185,7 +4401,8 @@ void loop() {
         if (getBatteryVoltage() > 3.55) modem.modemPowerUp();
         extendedWatchDog::resetWatchDog();
 
-#if defined(BUILD_TEST_ALTSOFTSERIAL)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
         // Start the stream for the modbus sensors, if your RS485 adapter bleeds
         // current from data pins when powered off & you stop modbus serial
         // connection with digitalWrite(5, LOW), below.
@@ -4201,7 +4418,8 @@ void loop() {
         varArray.completeUpdate();
         extendedWatchDog::resetWatchDog();
 
-#if defined(BUILD_TEST_ALTSOFTSERIAL)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
         // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
         // on sleep, because Modbus Stop bit leaves these pins HIGH.
         // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833
@@ -4312,7 +4530,8 @@ void loop() {
         Logger::startTesting = false;
     }
 
-#if defined(BUILD_TEST_ALTSOFTSERIAL)
+#if defined(BUILD_TEST_ALTSOFTSERIAL) && \
+    (defined(__AVR__) || defined(ARDUINO_ARCH_AVR))
     // Reset modbus serial pins to LOW, if your RS485 adapter bleeds power
     // on sleep, because Modbus Stop bit leaves these pins HIGH.
     // https://github.com/EnviroDIY/ModularSensors/issues/140#issuecomment-389380833

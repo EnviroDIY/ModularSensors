@@ -9,7 +9,13 @@
  */
 
 #include "LoggerBase.h"
+#include "NISTTime.h"
 #include "dataPublisherBase.h"
+
+#include <string.h>
+
+// Include the EpochTime library
+#include <EpochTime.h>
 
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && \
     not defined(SDI12_INTERNAL_PCINT)
@@ -57,113 +63,6 @@ bool Logger::_peripheralShutdown = true;
 
 
 // Constructors
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes, int8_t SDCardSSPin,
-               int8_t mcuWakePin, VariableArray* inputArray)
-    : _SDCardSSPin(SDCardSSPin),
-      _mcuWakePin(mcuWakePin) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
-               int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray)
-    : _SDCardSSPin(SDCardSSPin),
-      _mcuWakePin(mcuWakePin) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes, VariableArray* inputArray) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
-               VariableArray* inputArray) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
 Logger::Logger() {
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -177,6 +76,13 @@ Logger::Logger() {
 
     // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
+}
+Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
+               VariableArray* inputArray)
+    : Logger() {
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
 }
 
 
@@ -393,56 +299,68 @@ void Logger::setVariableArray(VariableArray* inputArray) {
 
 // Returns the number of variables in the internal array
 uint8_t Logger::getArrayVarCount() {
+    if (_internalArray == nullptr) { return 0; }
     return _internalArray->getVariableCount();
 }
 
 
 // This gets the name of the parent sensor, if applicable
 String Logger::getParentSensorNameAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getParentSensorName();
 }
 // This gets the name and location of the parent sensor, if applicable
 String Logger::getParentSensorNameAndLocationAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]
         ->getParentSensorNameAndLocation();
 }
 // This gets the variable's name using http://vocabulary.odm2.org/variablename/
 String Logger::getVarNameAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarName();
 }
 // This gets the variable's unit using http://vocabulary.odm2.org/units/
 String Logger::getVarUnitAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUnit();
 }
 // This returns a customized code for the variable, if one is given, and a
 // default if not
 String Logger::getVarCodeAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarCode();
 }
 // This returns the variable UUID, if one has been assigned
 String Logger::getVarUUIDStringAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUUIDString();
 }
 // This returns the variable UUID, if one has been assigned
 const char* Logger::getVarUUIDAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
 // This returns the variable resolution
 uint8_t Logger::getVarResolutionAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return 0; }
     return _internalArray->arrayOfVars[position_i]->getResolution();
 }
 // This returns the current value of the variable as a float
 float Logger::getValueAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return MS_INVALID_VALUE; }
     return _internalArray->arrayOfVars[position_i]->getValue();
 }
 // This returns the current value of the variable as a string with the
 // correct number of significant figures
 String Logger::getValueStringAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return String(MS_INVALID_VALUE); }
     return _internalArray->arrayOfVars[position_i]->getValueString();
 }
 // This returns a particular value of the variable as a string with the
 // correct number of significant figures
 String Logger::formatValueStringAtI(uint8_t position_i, float value) {
+    if (_internalArray == nullptr) { return String(MS_INVALID_VALUE); }
     return _internalArray->arrayOfVars[position_i]->formatValueString(value);
 }
 
@@ -457,12 +375,6 @@ String Logger::formatValueStringAtI(uint8_t position_i, float value) {
 void Logger::attachModem(loggerModem& modem) {
     _logModem = &modem;
     _logModem->setModemTimeZone(_loggerUTCOffset);
-    // update the modem pointer for all of the publishers
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        if (dataPublishers[i] != nullptr) {
-            dataPublishers[i]->setModemPointer(modem);
-        }
-    }
 }
 
 
@@ -476,11 +388,12 @@ bool Logger::syncRTC() {
         PRINTOUT(F("This may take up to two minutes!"));
         if (_logModem->modemWake()) {
             if (_logModem->connectInternet(120000L)) {
-                loggerClock::setRTClock(_logModem->getNISTTime(), 0,
-                                        epochStart::unix_epoch);
+                success = loggerClock::setRTClock(_logModem->getNISTTime(), 0,
+                                                  epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                 MS_DBG(F("Current logger time after sync is"),
                        formatDateTime_ISO8601(getNowLocalEpoch()));
-                success = true;
+#endif
                 _logModem->updateModemMetadata();
             } else {
                 PRINTOUT(F("Could not connect to internet for clock sync."));
@@ -500,20 +413,34 @@ bool Logger::syncRTC() {
 }
 
 
-loggerModem* Logger::registerDataPublisher(dataPublisher* publisher) {
+// Synchronize the clock with NIST using a caller-owned client on an already
+// active network connection.
+bool Logger::syncRTC(Client& nistClient) {
+    PRINTOUT(F("Attempting to synchronize RTC with NIST using the provided "
+               "client"));
+    bool success = loggerClock::setRTClock(NISTTime::query(nistClient), 0,
+                                           epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
+    MS_DBG(F("Current logger time after sync is"),
+           formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
+    extendedWatchDog::resetWatchDog();
+    return success;
+}
+
+
+void Logger::registerDataPublisher(dataPublisher* publisher) {
     // find the next empty spot in the publisher array
     uint8_t i = 0;
     for (; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] == publisher) {
             MS_DBG(F("dataPublisher already registered."));
-            return nullptr;
+            return;
         }
         if (dataPublishers[i] == nullptr) break;
     }
     // register the publisher to the empty spot
     dataPublishers[i] = publisher;
-    // return a pointer to the modem for the publisher to use
-    return _logModem;
 }
 
 bool Logger::checkRemotesConnectionNeeded() {
@@ -631,17 +558,26 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                                Logger::_loggerUTCOffset);
 }
 
-// This converts an epoch time (unix time) into a ISO8601 formatted string.
+// This converts an epoch time (unix time) into an ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
 // Code modified from parts of the SparkFun RV-8803 library.
-String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
-    return TimeUtils::formatISO8601(
+void Logger::formatDateTime_ISO8601(char* buffer, time_t epochSeconds) {
+    TimeUtils::formatISO8601(
+        buffer,
         epochTime(epochSeconds,
                   static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
                   Logger::_loggerEpoch),
-        Logger::_loggerUTCOffset);
+        static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600);
 }
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
+String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
+    char buffer[26] = {'\0'};
+    formatDateTime_ISO8601(buffer, epochSeconds);
+    return String(buffer);
+}
+#endif
+#if EPOCHTIME_ENABLE_STRFTIME
 void Logger::formatDateTime(char* buffer, const char* fmt,
                             time_t epochSeconds) {
     TimeUtils::formatDateTime(
@@ -650,6 +586,7 @@ void Logger::formatDateTime(char* buffer, const char* fmt,
                   static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
                   Logger::_loggerEpoch));
 }
+#endif
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane() {
     return loggerClock::isRTCSane();
@@ -683,8 +620,10 @@ bool Logger::checkInterval() {
         interval = 1;
     }
 
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
+#endif
     MS_DBG(F("Logging interval in seconds:"), (interval * 60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
@@ -1222,15 +1161,32 @@ String Logger::generateFileName(bool include_time, const char* extension,
     const char* use_ext = extension != nullptr ? extension : ".csv";
     MS_DEEP_DBG(F("Generating filename with extension:"), use_ext);
     uint8_t len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
-    // length: YYYYMMDD_HHMMSS = 15 + 1 for null or YYYYMMDD = 8 + 1 for null
-    uint8_t len_time            = include_time ? 16 : 9;
-    char    time_buff[len_time] = {'\0'};
+    // The EpochTime library by default compiles with the generic
+    // formatDateTime function disabled (that is, without
+    // `EPOCHTIME_ENABLE_STRFTIME` defined).  Instead of using strftime to get
+    // the date-time for the filename, we use a sub-string of the ISO8601
+    // formatted datetime.
+    char isoBuf[26] = {'\0'};  // buffer for ISO8601 formatted datetime
+    // NOTE: the format function will not convert time zones, only use the input
+    // zone to print the zone info. Since we're going to crop off that part
+    // anyway, it doesn't matter what we put in as the offset.
+    TimeUtils::formatISO8601(
+        isoBuf,
+        epochTime(Logger::markedLocalUnixTime,
+                  static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600,
+                  Logger::_loggerEpoch),
+        static_cast<int32_t>(Logger::_loggerUTCOffset) * 3600);
+
+    // Extract YYYYMMDD or YYYYMMDD_HHMMSS from YYYY-MM-DDTHH:MM:SS+HH:MM.
+    char time_buff[16] = {'\0'};
+    memcpy(time_buff, isoBuf, 4);
+    memcpy(time_buff + 4, isoBuf + 5, 2);
+    memcpy(time_buff + 6, isoBuf + 8, 2);
     if (include_time) {
-        formatDateTime(time_buff, "%Y%m%d_%H%M%S", Logger::markedLocalUnixTime);
-        time_buff[15] = '\0';  // just to be sure
-    } else {
-        formatDateTime(time_buff, "%Y%m%d", Logger::markedLocalUnixTime);
-        time_buff[8] = '\0';  // just to be sure
+        time_buff[8] = '_';
+        memcpy(time_buff + 9, isoBuf + 11, 2);
+        memcpy(time_buff + 11, isoBuf + 14, 2);
+        memcpy(time_buff + 13, isoBuf + 17, 2);
     }
     MS_DEEP_DBG(F("Generating filename with timestamp string:"), time_buff);
     String filename = String(use_prefix);
@@ -1315,12 +1271,12 @@ void Logger::printFileHeader(Stream* stream) {
 // This prints a comma separated list of values of sensor data - including the
 // time -  out over an Arduino stream
 void Logger::printVariableValuesCSV(Stream* stream) {
-    String csvString = "";
-    String iso8601   = formatDateTime_ISO8601(Logger::markedLocalUnixTime);
-    iso8601.replace("T", " ");
-    csvString += iso8601.substring(0, 19);
-    csvString += ',';
-    stream->print(csvString);
+    char iso8601[26] = {'\0'};
+    formatDateTime_ISO8601(iso8601, Logger::markedLocalUnixTime);
+    iso8601[10] = ' ';
+    iso8601[19] = '\0';
+    stream->print(iso8601);
+    stream->print(',');
     for (uint8_t i = 0; i < getArrayVarCount(); i++) {
         stream->print(getValueStringAtI(i));
         if (i + 1 != getArrayVarCount()) { stream->print(','); }
@@ -1611,6 +1567,10 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
         MS_DEEP_DBG(F("Bench testing is not enabled."));
         return;
     }
+    if (_internalArray == nullptr) {
+        MS_DBG(F("No internal array attached."));
+        return;
+    }
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
@@ -1656,8 +1616,10 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
         // powered and awake between iterations in testing mode.
         _internalArray->completeUpdate(false, false, false, false);
         // Print out the current logger time
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
         PRINTOUT(F("Current logger time is"),
                  formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
 #if !defined(MS_SILENT)
@@ -1706,17 +1668,19 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
-void Logger::begin(const char* loggerID, int16_t loggingIntervalMinutes,
+bool Logger::begin(const char* loggerID, int16_t loggingIntervalMinutes,
                    VariableArray* inputArray) {
     setLoggerID(loggerID);
     setLoggingInterval(loggingIntervalMinutes);
-    begin(inputArray);
-}
-void Logger::begin(VariableArray* inputArray) {
     setVariableArray(inputArray);
-    begin();
+    return begin();
 }
-void Logger::begin() {
+bool Logger::begin() {
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
+
     MS_DBG(F("Logger ID is:"), _loggerID);
     MS_DBG(F("Logger is set to record at"), _loggingIntervalMinutes,
            F("minute intervals."));
@@ -1814,8 +1778,10 @@ void Logger::begin() {
 
     MS_DEEP_DBG(F("Beginning the logger clock"));
     loggerClock::begin();
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     PRINTOUT(F("Current localized logger time is:"),
              formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
 
@@ -1843,13 +1809,19 @@ void Logger::begin() {
     enableTestingISR();
 
     PRINTOUT(F("Logger portion of setup finished.\n"));
+    return true;
 }
 
 
 // This is a one-and-done to log data
-void Logger::logData(bool sleepBeforeReturning) {
+bool Logger::logData(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
+
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
 
     // If bench testing is enabled and button was pressed, do the bench test
     if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
@@ -1914,12 +1886,18 @@ void Logger::logData(bool sleepBeforeReturning) {
         // Sleep
         systemSleep();
     }
+    return true;
 }
 
 // This is a one-and-done to log data and publish it to various endpoints
-void Logger::logDataAndPublish(bool sleepBeforeReturning) {
+bool Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
+
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
 
     // If bench testing is enabled and button was pressed, do the bench test
     if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
@@ -2000,8 +1978,10 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                                  "NIST..."));
                         loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                                 epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                         MS_DBG(F("Current logger time after sync is"),
                                formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
                         extendedWatchDog::resetWatchDog();
                         // NOTE: This is the only time we publish **metadata**
                         // to remotes during a normal logging cycle
@@ -2074,6 +2054,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
             F("Requested sleep before returning, calling systemSleep()"));
         systemSleep();
     }
+    return true;
 }
 
 
@@ -2090,8 +2071,10 @@ void Logger::makeInitialConnections() {
             if (_logModem->connectInternet(120000L)) {
                 loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                         epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                 MS_DBG(F("Current logger time after sync is"),
                        formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
                 _logModem->updateModemMetadata();
 
                 MS_DBG(F("Publishing configuration metadata to remotes"));
@@ -2117,3 +2100,4 @@ void Logger::makeInitialConnections() {
 
 // cSpell:ignore prtout1 DFLLVAL DFLLSYNC
 // cSpell:ignore DIRCLR INEN PULLEN HIBCFG BRAMCFG MAINVREG FRZCLK BODSE
+// cSpell:ignore EPOCHTIME_ENABLE_STRFTIME EPOCHTIME_ENABLE_STRING_FORMATTING

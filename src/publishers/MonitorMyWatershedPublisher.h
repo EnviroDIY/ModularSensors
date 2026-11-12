@@ -46,130 +46,59 @@
  * publishing data to Monitor My Watershed at https://monitormywatershed.org/
  * (formerly at http://data.enviroDIY.org).
  *
+ * The MonitorMyWatershedPublisher requires an unsecured Client.  It can (and
+ * should) share the Client with other services that require unsecured
+ * connections. In order to use the same Client object for connection with any
+ * _secured_ service, you must reconfigure the Client between connections.  That
+ * type of reconfiguration does not happen automatically and is the
+ * responsibility of the application.
+ *
  * @ingroup the_publishers
  */
 class MonitorMyWatershedPublisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new Monitor My Watershed Publisher object
+     * @brief Construct a new Monitor My Watershed Publisher object.
      *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on
-     * Monitor My Watershed.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param startupTransmissions Number of transmissions to send
-     * immediately after each data point is logged, before beginning to cache
-     * data and only transmit every sendEveryX times the logger records data
-     * (default: 5). This allows faster in-field validation of startup data.
+     * @param baseLogger The logger supplying the data to be published.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
+     * @param registrationToken The registration token for the site.
+     * @param samplingFeatureUUID The sampling feature UUID for the site.
+     * @param sendEveryX Interval between attempted transmissions, in logging
+     * intervals.
+     * @param startupTransmissions Number of startup transmissions.
      */
-    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
+    MonitorMyWatershedPublisher(Logger& baseLogger, Client& inClient,
                                 const char* registrationToken,
                                 const char* samplingFeatureUUID,
                                 int         sendEveryX           = 1,
                                 uint8_t     startupTransmissions = 5);
     /**
-     * @brief Construct a new Monitor My Watershed Publisher object
+     * @brief Construct without setting a sampling feature UUID.
      *
-     * @param baseLogger The logger supplying the data to be published
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on
-     * Monitor My Watershed.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param startupTransmissions Number of transmissions to send
-     * immediately after each data point is logged, before beginning to cache
-     * data and only transmit every sendEveryX times the logger records data
-     * (default: 5). This allows faster in-field validation of startup data.
+     * @param baseLogger The logger supplying the data to be published.
+     * @param inClient An application-owned Arduino client.
+     * @param registrationToken The registration token for the site.
+     * @param sendEveryX Interval between attempted transmissions.
+     * @param startupTransmissions Number of startup transmissions.
      */
-    MonitorMyWatershedPublisher(Logger&     baseLogger,
-                                const char* registrationToken,
-                                const char* samplingFeatureUUID,
-                                int         sendEveryX           = 1,
-                                uint8_t     startupTransmissions = 5);
-    /**
-     * @brief Construct a new Monitor My Watershed Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param startupTransmissions Number of transmissions to send
-     * immediately after each data point is logged, before beginning to cache
-     * data and only transmit every sendEveryX times the logger records data
-     * (default: 5). This allows faster in-field validation of startup data.
-     */
-    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
+    MonitorMyWatershedPublisher(Logger& baseLogger, Client& inClient,
                                 const char* registrationToken,
                                 int         sendEveryX           = 1,
                                 uint8_t     startupTransmissions = 5);
     /**
-     * @brief Construct a new Monitor My Watershed Publisher object
+     * @brief Construct without setting registration credentials.
      *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param startupTransmissions Number of transmissions to send
-     * immediately after each data point is logged, before beginning to cache
-     * data and only transmit every sendEveryX times the logger records data
-     * (default: 5). This allows faster in-field validation of startup data.
+     * @param baseLogger The logger supplying the data to be published.
+     * @param inClient An application-owned Arduino client.
+     * @param sendEveryX Interval between attempted transmissions.
+     * @param startupTransmissions Number of startup transmissions.
      */
-    MonitorMyWatershedPublisher(Logger& baseLogger, Client* inClient,
+    MonitorMyWatershedPublisher(Logger& baseLogger, Client& inClient,
                                 int     sendEveryX           = 1,
                                 uint8_t startupTransmissions = 5);
-    /**
-     * @brief Construct a new Monitor My Watershed Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param startupTransmissions Number of transmissions to send
-     * immediately after each data point is logged, before beginning to cache
-     * data and only transmit every sendEveryX times the logger records data
-     * (default: 5). This allows faster in-field validation of startup data.
-     */
-    MonitorMyWatershedPublisher(Logger&     baseLogger,
-                                const char* registrationToken,
-                                int         sendEveryX           = 1,
-                                uint8_t     startupTransmissions = 5);
-    /**
-     * @brief Construct a new Monitor My Watershed Publisher object
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions.
-     * @param startupTransmissions Number of transmissions to send
-     * immediately after each data point is logged, before beginning to cache
-     * data and only transmit every sendEveryX times the logger records data
-     * (default: 5). This allows faster in-field validation of startup data.
-     */
-    explicit MonitorMyWatershedPublisher(Logger& baseLogger, int sendEveryX = 1,
-                                         uint8_t startupTransmissions = 5);
-    /**
-     * @brief Construct a new Monitor My Watershed Publisher object with only
-     * default values for all parameters.
-     */
-    MonitorMyWatershedPublisher();
     /**
      * @brief Destroy the Monitor My Watershed Publisher object
      */
@@ -247,32 +176,6 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      */
     uint16_t calculateJsonSize();
 
-
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on
-     * Monitor My Watershed.
-     */
-    void begin(Logger& baseLogger, Client* inClient,
-               const char* registrationToken, const char* samplingFeatureUUID);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     * @param samplingFeatureUUID The sampling feature UUID for the site on
-     * Monitor My Watershed.
-     */
-    void begin(Logger& baseLogger, const char* registrationToken,
-               const char* samplingFeatureUUID);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param registrationToken The registration token for the site on Monitor
-     * My Watershed.
-     */
-    void begin(Logger& baseLogger, const char* registrationToken);
-
     /**
      * @brief Checks if the publisher needs an Internet connection for the next
      * publishData call (as opposed to just buffering data internally).
@@ -281,8 +184,9 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      */
     bool connectionNeeded() override;
 
+    using dataPublisher::publishData;
     /**
-     * @brief Utilize an attached modem to open a TCP connection to Monitor My
+     * @brief Utilize the supplied client to open a TCP connection to Monitor My
      * Watershed and then stream out a post request over that connection.
      *
      * This depends on an internet connection already having been made and a
@@ -294,7 +198,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The http status code of the response.
      */
-    int16_t publishData(Client* outClient,
+    int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
  protected:
@@ -336,7 +240,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * @note A 504 will be returned automatically if the server does not
      * respond within 30 seconds.
      */
-    int16_t flushDataBuffer(Client* outClient);
+    int16_t flushDataBuffer(Client& outClient);
 
  private:
     /**

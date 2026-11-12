@@ -73,8 +73,20 @@ const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
 // In a SAMD system where you are using the built-in rtc, set wakePin to 1
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
+const int8_t flashSSPin     = 20;  // onboard flash chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 /** End [logging_options] */
+
+
+// ==========================================================================
+//  The Logger Object[s]
+// ==========================================================================
+/** Start [loggers] */
+// Create a new logger instance
+// NOTE: We haven't configured the logger here! We will need to call the
+// parameter setters and various pin assignment functions in the setup!
+Logger dataLogger;
+/** End [loggers] */
 
 
 // ==========================================================================
@@ -94,7 +106,7 @@ const int32_t   modemBaud   = 115200;   // Communication speed of the modem
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
 const int8_t modemVccPin   = -2;  // MCU pin controlling modem power
-const int8_t modemResetPin = 20;  // MCU pin connected to modem reset pin
+const int8_t modemResetPin = 27;  // MCU pin connected to modem reset pin
 const int8_t modemLEDPin =
     redLED;  // MCU pin connected an LED to show modem status
 
@@ -102,11 +114,10 @@ const int8_t modemLEDPin =
 const char* wifiId  = "YourWiFiSSID";  // The WiFi access point
 const char* wifiPwd = "YourWiFiPassword";       // The WiFi password
 
-// Create the loggerModem object
-EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
-                        wifiPwd);
-// Create an extra reference to the modem by a generic name
-EspressifESP32 modem = modemESP;
+// Create a TinyGsm modem
+TinyGsmESP32 gsmModem(modemSerial);
+// Create a loggerModem object
+EspressifESP32 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 /** End [espressif_esp32] */
 
 /** Start [modem_variables] */
@@ -216,31 +227,84 @@ VariableArray varArray;
 
 
 // ==========================================================================
-//  The Logger Object[s]
-// ==========================================================================
-/** Start [loggers] */
-// Create a logger instance
-Logger dataLogger;
-/** End [loggers] */
-
-
-// ==========================================================================
 //  AWS IoT Core MQTT Publisher
 // ==========================================================================
 /** Start [aws_io_t_publisher] */
 // The endpoint for your AWS IoT instance
 const char* awsIoTEndpoint = AWS_IOT_ENDPOINT;
+
+// If using a TinyGSM modem and secure client and context, you MUST have already
+// uploaded all of your certificates to your modem.  For supported modules you
+// can use the AWS_IOT_SetCertificates sketch in the extras folder to upload
+// your certificates.
+
+// The CA (certificate authority) certificate will most likely be the Amazon
+// Root CA 1 (RSA 2048 bit key) certificate. You can find Amazon's current CA
+// certificates here:
+// https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html.
+// Depending on your module, you may instead need a certificate chain file or to
+// use Amazon's older top-chain certificate (Starfield Services Root Certificate
+// Authority - G2).  The CA certificate for AWS IoT Core is exactly the same CA
+// certificate as you would use to upload to S3 (i.e., the S3 Presigned
+// Publisher).
+
+// You must download the client certificate and client key for a thing when you
+// create the certificate. Your certificate should be tied to a security policy
+// that allows connection, publishing, and subscribing by thing name.
+
+// The certificates should generally be formatted as ".pem", ".der", or (for
+// some modules) ".p7b" files.
+
+// For most modules the actual filename doesn't matter much but it CANNOT
+// HAVE SPACES and should be less than 64 characters.
+// Some modules will not accept filenames with special characters so avoid
+// those, too.
+
+// NOTE: The certificate names as they are downloaded from AWS IoT Core are
+// often too long for the modem to handle. Pick something shorter.  Here we use
+// the thing name.
+
+// For Espressif modules, only two certificate sets are supported and the
+// certificates must be named "client_ca.{0|1}", "client_cert.{0|1}", or
+// "client_key.{0|1}"
+
+// The name of your certificate authority certificate file
+const char* caCertName = "client_ca.1";
+// The name of your client certificate file
+const char* clientCertName = "client_cert.1";
+// The name of your client private key file
+const char* clientKeyName = "client_key.1";
+
+#if 0
+// For most modules the actual filename doesn't matter much but it CANNOT
+// HAVE SPACES and should be less than 64 characters.
+// Some modules will not accept filenames with special characters so avoid
+// those, too.
+// NOTE: The certificate names as they are downloaded from AWS IoT Core are
+// often too long for the modem to handle. Pick something shorter.
 // The name of your certificate authority certificate file
 const char* caCertName = "AmazonRootCA1.pem";
 // The name of your client certificate file
 const char* clientCertName = THING_NAME "-certificate.pem.crt";
 // The name of your client private key file
 const char* clientKeyName = THING_NAME "-private-key.pem.key";
+#endif
+
+// Create a secure context for the modem with context ID 0, mutual
+// authentication, TLS 1.2, and the specified certificates
+TinyGsmESP32::GsmSecureContextESP32 secureContext(
+    gsmModem, (uint8_t)0, SSLAuthMode::MUTUAL_AUTHENTICATION,
+    SSLVersion::TLS1_2, caCertName, clientCertName, clientKeyName);
+// Create a secure client for the modem with client ID 0 and assign that client
+// the secure context with context ID 0
+TinyGsmESP32::GsmClientSecureESP32 secureClient(gsmModem, (uint8_t)0,
+                                                (uint8_t)0);
 
 // Create a data publisher for AWS IoT Core
 #include <publishers/AWS_IoT_Publisher.h>
-AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
-                            clientCertName, clientKeyName, samplingFeature);
+AWS_IoT_Publisher awsIoTPub(dataLogger, secureClient, awsIoTEndpoint,
+                            samplingFeature);
+
 /** End [aws_io_t_publisher] */
 
 
@@ -250,6 +314,12 @@ AWS_IoT_Publisher awsIoTPub(dataLogger, awsIoTEndpoint, caCertName,
 /** Start [working_functions] */
 // Flashes the LED's on the primary board
 void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
+    // Set up pins for the LED's
+    pinMode(greenLED, OUTPUT);
+    digitalWrite(greenLED, LOW);
+    pinMode(redLED, OUTPUT);
+    digitalWrite(redLED, LOW);
+    // Flash the lights
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -260,12 +330,14 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
     }
     digitalWrite(redLED, LOW);
 }
-
-// Reads the battery voltage
+// Uses the processor sensor object to read the battery voltage
 // NOTE: This will actually return the battery level from the previous update!
 float getBatteryVoltage() {
-    if (mcuBoard.sensorValues[0] == MS_INVALID_VALUE) mcuBoard.update();
-    return mcuBoard.sensorValues[0];
+    if (mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == MS_INVALID_VALUE ||
+        mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM] == 0) {
+        mcuBoard.update();
+    }
+    return mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM];
 }
 /** End [working_functions] */
 
@@ -273,84 +345,174 @@ float getBatteryVoltage() {
 // ==========================================================================
 //  Arduino Setup Function
 // ==========================================================================
-/** Start [setup] */
 void setup() {
+    /** Start [setup_flashing_led] */
+    // Blink the LEDs to show the board is on and starting up
+    greenRedFlash(3, 35);
+    /** End [setup_flashing_led] */
+
+    /** Start [setup_prints] */
     // Start the primary serial connection
     Serial.begin(serialBaud);
+#if defined(MS_2ND_OUTPUT)
+    MS_2ND_OUTPUT.begin(serialBaud);
+#endif
+    greenRedFlash(5, 50);
+
+/** Start [setup_wait] */
+// Wait for USB connection to be established by PC
+// NOTE:  Only use this when debugging - if not connected to a PC, this adds an
+// unnecessary startup delay
+#if defined(SERIAL_PORT_USBVIRTUAL)
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) { delay(10); }
+    greenRedFlash(3, 10);
+#endif
+    /** End [setup_wait] */
 
     // Print a start-up note to the first serial port
-    Serial.print(F("Now running "));
-    Serial.print(sketchName);
-    Serial.print(F(" on Logger "));
-    Serial.println(LoggerID);
-    Serial.println();
+    PRINTOUT("\n\n\n=============================");
+    PRINTOUT("=============================");
+    PRINTOUT("=============================");
+    PRINTOUT(F("\n\nNow running"), sketchName, F("on Logger"), LoggerID, '\n');
 
-    Serial.print(F("Using ModularSensors Library version "));
-    Serial.println(MODULAR_SENSORS_VERSION);
-    Serial.print(F("TinyGSM Library version "));
-    Serial.println(TINYGSM_VERSION);
-    Serial.println();
+    PRINTOUT(F("Using ModularSensors Library version"),
+             MODULAR_SENSORS_VERSION);
+#if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
+    PRINTOUT(F("TinyGSM Library version"), TINYGSM_VERSION, '\n');
+#endif
+    PRINTOUT(F("Processor:"), mcuBoard.getSensorLocation());
+    PRINTOUT(F("The most recent reset cause was"), mcuBoard.getLastResetCode(),
+             '(', mcuBoard.getLastResetCause(), ")\n");
+    /** End [setup_prints] */
 
+    /** Start [setup_serial_begins] */
     // Start the serial connection with the modem
     modemSerial.begin(modemBaud);
+    /** End [setup_serial_begins] */
 
-    // Set up pins for the LED's
-    pinMode(greenLED, OUTPUT);
-    digitalWrite(greenLED, LOW);
-    pinMode(redLED, OUTPUT);
-    digitalWrite(redLED, LOW);
-    // Blink the LEDs to show the board is on and starting up
-    greenRedFlash();
+    // Start the SPI library
+    PRINTOUT(F("Starting SPI"));
+    SPI.begin();
+
+#if defined(EXTERNAL_FLASH_DEVICES)
+    PRINTOUT(F("Setting onboard flash pin modes"));
+    pinMode(flashSSPin, OUTPUT);     // set to output
+    digitalWrite(flashSSPin, HIGH);  // deselect the flash chip
+#endif
+
+    PRINTOUT(F("Starting I2C (Wire)"));
+    Wire.begin();
+
+    /** Start [setup_logger] */
 
     // Set the timezones for the logger/data and the RTC
     // Logging in the given time zone
+    PRINTOUT(F("Setting logger time zone"));
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    PRINTOUT(F("Setting RTC time zone"));
     loggerClock::setRTCOffset(0);
 
     // Attach the modem and information pins to the logger
+    PRINTOUT(F("Attaching the modem"));
     dataLogger.attachModem(modem);
+    PRINTOUT(F("Setting modem LEDs"));
     modem.setModemLED(modemLEDPin);
     dataLogger.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED);
 
     // Begin the variable array[s], logger[s], and publisher[s]
+    PRINTOUT(F("Beginning the variable array"));
     varArray.begin(variableCount, variableList);
-    dataLogger.begin(LoggerID, loggingInterval, &varArray);
 
+    // Begin the logger
+    PRINTOUT(F("Configuring and beginning the logger"));
+    dataLogger.setLoggerID(LoggerID);
+    dataLogger.setSamplingFeatureUUID(samplingFeature);
+    dataLogger.setLoggingInterval(loggingInterval);
+    dataLogger.setVariableArray(&varArray);
+    dataLogger.begin();
+
+    /** Start [setup_sensors] */
     // Note:  Please change these battery voltages to match your battery
     // Set up the sensors, except at lowest battery level
     if (getBatteryVoltage() > 3.4) {
-        Serial.println(F("Setting up sensors..."));
+        PRINTOUT(F("Setting up sensors..."));
         varArray.setupSensors();
     }
+    /** End [setup_sensors] */
 
+#if (defined BUILD_MODEM_ESPRESSIF_ESP8266 || \
+     defined BUILD_MODEM_ESPRESSIF_ESP32)
+    /** Start [setup_esp] */
+    PRINTOUT(F("Waking the modem.."));
+    PRINTOUT(F("Attempting to begin modem communication at"), modemBaud,
+             F("baud.  This will fail if the baud is mismatched.."));
+    modemSerial.begin(modemBaud);
+    modem.modemWake();  // NOTE:  This will also set up the modem
+    if (!modem.gsmModem.testAT()) {
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
+    }
+/** End [setup_esp] */
+#endif
+
+#if defined(BUILD_MODEM_SIM_COM_SIM7080)
+    /** Start [setup_sim7080] */
+    modem.setModemWakeLevel(HIGH);   // ModuleFun Bee inverts the signal
+    modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
+    PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
+    modem.modemWake();  // NOTE:  This will also set up the modem
+    if (!modem.gsmModem.testAT()) {
+        PRINTOUT(F("Attempting to force the modem baud rate."));
+        modem.gsmModem.forceModemBaud(modemSerial,
+                                      static_cast<uint32_t>(modemBaud));
+    }
+    modem.gsmModem.setBaud(modemBaud);   // Make sure we're *NOT* auto-bauding!
+    modem.gsmModem.setNetworkMode(38);   // set to LTE only
+                                         // 2 Automatic
+                                         // 13 GSM only
+                                         // 38 LTE only
+                                         // 51 GSM and LTE only
+    modem.gsmModem.setPreferredMode(1);  // set to CAT-M
+                                         // 1 CAT-M
+                                         // 2 NB-IoT
+                                         // 3 CAT-M and NB-IoT
+    /** End [setup_sim7080] */
+#endif
+
+    /** Start [setup_clock] */
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
         // Synchronize the RTC with NIST
         // This will also set up the modem
         dataLogger.syncRTC();
     }
+    /** End [setup_clock] */
 
+    /** Start [setup_file] */
     // Create the log file, adding the default header to it
     // Do this last so we have the best chance of getting the time correct and
-    // all sensor names correct
-    // Writing to the SD card can be power intensive, so if we're skipping
-    // the sensor setup we'll skip this too.
+    // all sensor names correct.
+    // Writing to the SD card can be power intensive, so if we're skipping the
+    // sensor setup we'll skip this too.
     if (getBatteryVoltage() > 3.4) {
-        Serial.println(F("Setting up file on SD card"));
-        dataLogger.turnOnSDcard(
-            true);  // true = wait for card to settle after power up
+        PRINTOUT(F("Setting up file on SD card"));
+        dataLogger.turnOnSDcard(true);
+        // true = wait for card to settle after power up
         dataLogger.createLogFile(true);  // true = write a new header
-        dataLogger.turnOffSDcard(
-            true);  // true = wait for internal housekeeping after write
+        dataLogger.turnOffSDcard(true);
+        // true = wait for internal housekeeping after write
     }
+    /** End [setup_file] */
 
+    /** Start [setup_sleep] */
     // Call the processor sleep
-    Serial.println(F("Putting processor to sleep"));
+    PRINTOUT(F("Putting processor to sleep\n"));
     dataLogger.systemSleep();
+    /** End [setup_sleep] */
 }
-/** End [setup] */
 
 
 // ==========================================================================

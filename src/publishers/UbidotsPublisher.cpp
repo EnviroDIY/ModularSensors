@@ -33,7 +33,7 @@ const char* UbidotsPublisher::payload = "{";
 
 // Constructors
 // Primary constructor with all authentication parameters and client
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client& inClient,
                                    const char* authenticationToken,
                                    const char* deviceID)
     : dataPublisher(baseLogger, inClient) {
@@ -44,17 +44,9 @@ UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient,
         _baseLogger->setSamplingFeatureUUID(deviceID);
     }
 }
-
 // Delegating constructors
-UbidotsPublisher::UbidotsPublisher(Logger&     baseLogger,
-                                   const char* authenticationToken,
-                                   const char* deviceID)
-    : UbidotsPublisher(baseLogger, nullptr, authenticationToken, deviceID) {}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client* inClient)
+UbidotsPublisher::UbidotsPublisher(Logger& baseLogger, Client& inClient)
     : UbidotsPublisher(baseLogger, inClient, nullptr, nullptr) {}
-UbidotsPublisher::UbidotsPublisher(Logger& baseLogger)
-    : UbidotsPublisher(baseLogger, nullptr, nullptr, nullptr) {}
-UbidotsPublisher::UbidotsPublisher() : dataPublisher() {}
 
 
 void UbidotsPublisher::setToken(const char* authenticationToken) {
@@ -86,36 +78,10 @@ uint16_t UbidotsPublisher::calculateJsonSize() {
     return jsonLength;
 }
 
-
-// A way to set members in the begin to use with a bare constructor
-void UbidotsPublisher::begin(Logger& baseLogger, Client* inClient,
-                             const char* authenticationToken,
-                             const char* deviceID) {
-    if (authenticationToken && authenticationToken[0] != '\0') {
-        setToken(authenticationToken);
-    }
-    dataPublisher::begin(baseLogger, inClient);
-    if (deviceID && deviceID[0] != '\0') {
-        _baseLogger->setSamplingFeatureUUID(deviceID);
-    }
-}
-void UbidotsPublisher::begin(Logger&     baseLogger,
-                             const char* authenticationToken,
-                             const char* deviceID) {
-    if (authenticationToken && authenticationToken[0] != '\0') {
-        setToken(authenticationToken);
-    }
-    dataPublisher::begin(baseLogger);
-    if (deviceID && deviceID[0] != '\0') {
-        _baseLogger->setSamplingFeatureUUID(deviceID);
-    }
-}
-
-
-// This utilizes an attached modem to make a TCP connection to Ubidots and then
-// streams out a post request over that connection. The return is the http
+// This utilizes the supplied client to make a TCP connection to Ubidots and
+// then streams out a post request over that connection. The return is the http
 // status code of the response.
-int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
+int16_t UbidotsPublisher::publishData(Client& outClient, bool) {
     // Create a buffer for the portions of the request and response
     char     tempBuffer[12] = "";
     uint16_t did_respond    = 0;
@@ -137,9 +103,9 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
     // Open a TCP/IP connection to Ubidots
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
-    if (outClient->connect(ubidotsHost, ubidotsPort)) {
+    if (outClient.connect(ubidotsHost, ubidotsPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
-        txBufferInit(outClient);
+        txBufferInit(&outClient);
 
         // copy the initial post header into the tx buffer
         txBufferAppend(postHeader);
@@ -184,15 +150,15 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->connected() &&
-               outClient->available() < 12) {
+        while ((millis() - start) < 10000L && outClient.connected() &&
+               outClient.available() < 12) {
             delay(10);
         }
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = outClient->readBytes(tempBuffer, 12);
+        did_respond = outClient.readBytes(tempBuffer, 12);
         // Process the HTTP response code
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond >= 12) {
@@ -212,8 +178,8 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         // throw the rest of the response into the tx buffer so we can debug it
         txBufferInit(nullptr);
         txBufferAppend(tempBuffer, 12, true);
-        while (outClient->available()) {
-            char c = outClient->read();
+        while (outClient.available()) {
+            char c = outClient.read();
             txBufferAppend(c);
         }
         txBufferFlush();
@@ -222,7 +188,7 @@ int16_t UbidotsPublisher::publishData(Client* outClient, bool) {
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
-        outClient->stop();
+        outClient.stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to Ubidots --"));

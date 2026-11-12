@@ -66,7 +66,7 @@
       "name": "EpochTime",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/EpochTime",
-      "version": "~1.1.1",
+      "version": "~1.2.0",
       "note": "An Arduino library for converting between time in parts as used by core gmtime functions and epoch time (Unix time).",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"
@@ -124,9 +124,9 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "https://github.com/EnviroDIY/TinyGSM.git",
+      "version": "https://github.com/EnviroDIY/TinyGSM",
       "version_note": "~0.13.0",
-      "note": "A small Arduino library for GPRS modules.",
+      "note": "A small Arduino library for AT-command-based internet modules.",
       "authors": ["Volodymyr Shymanskyy", "Sara Damiano"],
       "frameworks": "arduino"
     },
@@ -355,7 +355,7 @@
       "name": "GeoluxCamera",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/GeoluxCamera",
-      "version": "~0.1.3",
+      "version": "~0.1.4",
       "note": "Arduino library for communication with Geolux serial camera.",
       "authors": ["Sara Damiano"],
       "frameworks": "arduino"

@@ -52,6 +52,13 @@
  * be "Field3".  Any text names you have given to your fields in ThingSpeak are
  * also irrelevant.
  *
+ * The ThingSpeakPublisher requires an unsecured Client.  It can (and should)
+ * share the Client with other services that require unsecured connections. In
+ * order to use the same Client object for connection with any _secured_
+ * service, you must reconfigure the Client between connections.  That type of
+ * reconfiguration does not happen automatically and is the responsibility of
+ * the application.
+ *
  * @ingroup the_publishers
  */
 class ThingSpeakPublisher : public dataPublisher {
@@ -61,7 +68,8 @@ class ThingSpeakPublisher : public dataPublisher {
      * @brief Construct a new ThingSpeak Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param thingSpeakClientName The client name for your MQTT device. This is
@@ -71,7 +79,7 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param thingSpeakMQTTPassword The password for your MQTT device.
      * @param thingSpeakChannelID The numeric channel id for your channel.
      */
-    ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
+    ThingSpeakPublisher(Logger& baseLogger, Client& inClient,
                         const char* thingSpeakClientName,
                         const char* thingSpeakMQTTUser,
                         const char* thingSpeakMQTTPassword,
@@ -80,41 +88,12 @@ class ThingSpeakPublisher : public dataPublisher {
      * @brief Construct a new ThingSpeak Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param thingSpeakClientName The client name for your MQTT device. This is
-     * probably the same as your MQTT device's user name.
-     * @param thingSpeakMQTTUser The user name for your MQTT device. This is
-     * probably the same as your MQTT device's client name.
-     * @param thingSpeakMQTTPassword The password for your MQTT device.
-     * @param thingSpeakChannelID The numeric channel id for your channel.
-     */
-    ThingSpeakPublisher(Logger& baseLogger, const char* thingSpeakClientName,
-                        const char* thingSpeakMQTTUser,
-                        const char* thingSpeakMQTTPassword,
-                        const char* thingSpeakChannelID);
-    /**
-     * @brief Construct a new ThingSpeak Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      */
-    ThingSpeakPublisher(Logger& baseLogger, Client* inClient);
-    /**
-     * @brief Construct a new ThingSpeak Publisher object
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     */
-    explicit ThingSpeakPublisher(Logger& baseLogger);
-    /**
-     * @brief Construct a new ThingSpeak Publisher object with all members set
-     * to defaults or null.
-     */
-    ThingSpeakPublisher();
+    ThingSpeakPublisher(Logger& baseLogger, Client& inClient);
     /**
      * @brief Destroy the ThingSpeak Publisher object
      */
@@ -184,35 +163,9 @@ class ThingSpeakPublisher : public dataPublisher {
                              const char* thingSpeakMQTTPassword,
                              const char* thingSpeakChannelID);
 
+    using dataPublisher::publishData;
     /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param thingSpeakClientName The client name for your MQTT device. This is
-     * probably the same as your MQTT device's user name.
-     * @param thingSpeakMQTTUser The user name for your MQTT device. This is
-     * probably the same as your MQTT device's client name.
-     * @param thingSpeakMQTTPassword The password for your MQTT device.
-     * @param thingSpeakChannelID The numeric channel id for your channel.
-     */
-    void begin(Logger& baseLogger, Client* inClient,
-               const char* thingSpeakClientName, const char* thingSpeakMQTTUser,
-               const char* thingSpeakMQTTPassword,
-               const char* thingSpeakChannelID);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param thingSpeakClientName The client name for your MQTT device. This is
-     * probably the same as your MQTT device's user name.
-     * @param thingSpeakMQTTUser The user name for your MQTT device. This is
-     * probably the same as your MQTT device's client name.
-     * @param thingSpeakMQTTPassword The password for your MQTT device.
-     * @param thingSpeakChannelID The numeric channel id for your channel.
-     */
-    void begin(Logger& baseLogger, const char* thingSpeakClientName,
-               const char* thingSpeakMQTTUser,
-               const char* thingSpeakMQTTPassword,
-               const char* thingSpeakChannelID);
-
-    /**
-     * @brief Utilize an attached modem to open a TCP connection to ThingSpeak
+     * @brief Utilize the supplied client to open a TCP connection to ThingSpeak
      * and publish data over that connection.
      *
      * This depends on an internet connection already having been made and a
@@ -224,9 +177,10 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The PubSubClient status code of the response.
      */
-    int16_t publishData(Client* outClient,
+    int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
-    int16_t publishMetadata(Client* outClient) override;
+    using dataPublisher::publishMetadata;
+    int16_t publishMetadata(Client& outClient) override;
 
  protected:
     /**

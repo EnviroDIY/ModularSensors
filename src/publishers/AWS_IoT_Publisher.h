@@ -82,107 +82,49 @@
  * @brief The AWS_IoT_Publisher subclass of dataPublisher for publishing data
  * to AWS IoT Core using the MQTT protocol.
  *
+ * The AWS_IoT_Publisher requires a secure Client that has been configured with
+ * the certificates downloaded from AWS IoT Core for mutual TLS.  In order to
+ * use the same Client object for connection with any other service, you must
+ * reconfigure the Client between connections.  That type of reconfiguration
+ * does not happen automatically and is the responsibility of the application.
+ *
  * @ingroup the_publishers
  */
 class AWS_IoT_Publisher : public dataPublisher {
  public:
     // Constructors
     /**
-     * @brief Construct a new AWS IoT Core Publisher object
+     * @brief Construct a new AWS IoT Core Publisher object with all required
+     * parameters.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param caCertName The name of your certificate authority certificate
-     * file
-     * @param clientCertName The name of your client certificate file
-     * @param clientKeyName The name of your client private key file
-     * @param samplingFeatureUUID The sampling feature UUID
-     *
-     * @note The inputs to this are the **NAMES** of the certificate **files**
-     * as they are stored on your modem module, not the content of the
-     * certificates.
-     */
-    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
-                      const char* awsIoTEndpoint, const char* caCertName,
-                      const char* clientCertName, const char* clientKeyName,
-                      const char* samplingFeatureUUID);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param caCertName The name of your certificate authority certificate
-     * file
-     * @param clientCertName The name of your client certificate file
-     * @param clientKeyName The name of your client private key file
-     * @param samplingFeatureUUID The sampling feature UUID
-     *
-     * @note The inputs to this are the **NAMES** of the certificate **files**
-     * as they are stored on you modem module, not the content of the
-     * certificates.
-     */
-    AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
-                      const char* caCertName, const char* clientCertName,
-                      const char* clientKeyName,
-                      const char* samplingFeatureUUID);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param caCertName The name of your certificate authority certificate
-     * file
-     * @param clientCertName The name of your client certificate file
-     * @param clientKeyName The name of your client private key file
-     *
-     * @note The inputs to this are the **NAMES** of the certificate **files**
-     * as they are stored on you modem module, not the content of the
-     * certificates.
-     */
-    AWS_IoT_Publisher(Logger& baseLogger, const char* awsIoTEndpoint,
-                      const char* caCertName, const char* clientCertName,
-                      const char* clientKeyName);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance
      * @param samplingFeatureUUID The sampling feature UUID
+     *
+     * @todo Reject an unsecured Client.
      */
-    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
+    AWS_IoT_Publisher(Logger& baseLogger, Client& inClient,
                       const char* awsIoTEndpoint,
                       const char* samplingFeatureUUID);
     /**
      * @brief Construct a new AWS IoT Core Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     */
-    AWS_IoT_Publisher(Logger& baseLogger, Client* inClient);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object
+     * single TinyGSM modem instance.  The provided client must already be
+     * configured with the correct security context and connection parameters.
+     * The AWS_IoT_Publisher must be configured with an endpoint and either a
+     * sampling feature UUID or MQTT topics before use.
      *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
+     * @todo Reject an unsecured Client.
      */
-    explicit AWS_IoT_Publisher(Logger& baseLogger);
-    /**
-     * @brief Construct a new AWS IoT Core Publisher object with all members set
-     * to defaults or nulls.  This cannot be used without setting up the AWS IoT
-     * connection parameters and client before use.
-     */
-    AWS_IoT_Publisher();
+    AWS_IoT_Publisher(Logger& baseLogger, Client& inClient);
     /**
      * @brief Destroy the AWS IoT Core Publisher object
      */
@@ -202,69 +144,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param awsIoTEndpoint The endpoint for your AWS IoT instance.
      */
     void setEndpoint(const char* awsIoTEndpoint);
-
-    /**
-     * @brief Set the name of your certificate authority certificate file.
-     *
-     * You MUST have already uploaded your certificate to your modem. This will
-     * most likely be the Amazon Root CA 1 (RSA 2048 bit key) certificate. You
-     * can find Amazon's current CA certificates here:
-     * https://docs.aws.amazon.com/iot/latest/developerguide/server-authentication.html.
-     * Depending on your module, you may instead need a certificate chain file
-     * or to use Amazon's older top-chain certificate (Starfield Services Root
-     * Certificate Authority - G2).
-     *
-     * This is exactly the same CA certificate as you would use to upload to S3
-     * (i.e., the S3 Presigned Publisher). For supported modules you can use the
-     * AWS_IOT_SetCertificates sketch in the extras folder to upload your
-     * certificate.
-     *
-     * @param caCertName The name of your certificate authority certificate
-     * file.
-     */
-    void setCACertName(const char* caCertName);
-
-    /**
-     * @brief Set the name of your client certificate file.
-     *
-     * You MUST have already uploaded your certificate to your modem. You must
-     * download the certificate when you create it. Your certificate should be
-     * tied to a security policy that allows connection, publishing, and
-     * subscribing by thing name.
-     *
-     * For supported modules you can use the AWS_IOT_SetCertificates sketch in
-     * the extras folder to upload your certificate.
-     *
-     * @param clientCertName The name of your client certificate file.
-     */
-    void setClientCertName(const char* clientCertName);
-
-    /**
-     * @brief Set the name of your client private key file
-     *
-     * You MUST have have already uploaded your certificate to your modem. You
-     * must download the certificate when you create it. Your certificate should
-     * be tied to a security policy that allows connection, publishing, and
-     * subscribing by thing name.
-     *
-     * For supported modules you can use the AWS_IOT_SetCertificates sketch in
-     * the extras folder to upload your certificate.
-     *
-     * @param clientKeyName The name of your client private key file.
-     */
-    void setClientKeyName(const char* clientKeyName);
-
-    /**
-     * @brief Sets all of the AWS IoT Core parameters
-     *
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param caCertName The name of your certificate authority certificate
-     * file
-     * @param clientCertName The name of your client certificate file
-     * @param clientKeyName The name of your client private key file
-     */
-    void setAWSIoTParams(const char* awsIoTEndpoint, const char* caCertName,
-                         const char* clientCertName, const char* clientKeyName);
     /**
      * @brief Set the topic to use for publishing data.
      *
@@ -396,46 +275,10 @@ class AWS_IoT_Publisher : public dataPublisher {
      */
     void closeConnection();
 
+    using dataPublisher::publishData;
     /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param samplingFeatureUUID The sampling feature UUID
-     */
-    void begin(Logger& baseLogger, Client* inClient, const char* awsIoTEndpoint,
-               const char* samplingFeatureUUID);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     */
-    void begin(Logger& baseLogger, Client* inClient,
-               const char* awsIoTEndpoint);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param caCertName The name of your certificate authority certificate
-     * file
-     * @param clientCertName The name of your client certificate file
-     * @param clientKeyName The name of your client private key file
-     * @param samplingFeatureUUID The sampling feature UUID
-     */
-    void begin(Logger& baseLogger, const char* awsIoTEndpoint,
-               const char* caCertName, const char* clientCertName,
-               const char* clientKeyName, const char* samplingFeatureUUID);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param awsIoTEndpoint The endpoint for your AWS IoT instance
-     * @param caCertName The name of your certificate authority certificate
-     * file
-     * @param clientCertName The name of your client certificate file
-     * @param clientKeyName The name of your client private key file
-     */
-    void begin(Logger& baseLogger, const char* awsIoTEndpoint,
-               const char* caCertName, const char* clientCertName,
-               const char* clientKeyName);
-
-    /**
-     * @brief Utilize an attached modem to open a SSL connection to AWS IoT Core
-     * and publish data over that connection.
+     * @brief Utilize the supplied client to open an SSL connection to AWS IoT
+     * Core and publish data over that connection.
      *
      * This depends on an internet connection already having been made and a
      * client being available.
@@ -446,9 +289,10 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The PubSubClient status code of the response.
      */
-    int16_t publishData(Client* outClient,
+    int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
-    int16_t publishMetadata(Client* outClient) override;
+    using dataPublisher::publishMetadata;
+    int16_t publishMetadata(Client& outClient) override;
 
  protected:
     /**
@@ -458,29 +302,15 @@ class AWS_IoT_Publisher : public dataPublisher {
     static const int   mqttPort;
     static const char* samplingFeatureTag;  ///< The JSON feature UUID tag
     static const char* timestampTag;        ///< The JSON feature timestamp tag
-    Client*            createClient() override;
-    void               deleteClient(Client* client) override;
 
  private:
     // Keys for AWS IoT Core
     /**
      * @brief The endpoint for your AWS IoT instance
      */
-    const char* _awsIoTEndpoint;
-    /**
-     * @brief The name of your certificate authority certificate file
-     */
-    const char* _caCertName;
-    /**
-     * @brief The name of your client certificate file
-     */
-    const char* _clientCertName;
-    /**
-     * @brief The name of your client private key file
-     */
-    const char* _clientKeyName;
-    const char* _dataTopic;      ///< The topic for data
-    const char* _metadataTopic;  ///< The topic for metadata
+    const char* _awsIoTEndpoint = nullptr;
+    const char* _dataTopic      = nullptr;  ///< The topic for data
+    const char* _metadataTopic  = nullptr;  ///< The topic for metadata
     /**
      * @brief True to continue waiting for subscriptions after publishing data
      */

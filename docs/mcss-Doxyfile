@@ -1,8 +1,0 @@
-@INCLUDE                = doxyfile
-GENERATE_HTML           = NO
-GENERATE_XML            = YES
-XML_PROGRAMLISTING      = NO
-HTML_OUTPUT             = ../ModularSensors_Doxygen/m.css
-SHOW_INCLUDE_FILES = YES
-WARN_LOGFILE           = mcssDoxygenOutput.log
-PROJECT_REPOSITORY = https://github.com/EnviroDIY/ModularSensors

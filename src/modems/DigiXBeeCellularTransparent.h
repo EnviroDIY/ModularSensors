@@ -84,10 +84,8 @@
 #define MS_DEBUGGING_STD "DigiXBeeCellularTransparent"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
-#define TINY_GSM_MODEM_XBEE
+/// The modem type for the underlying TinyGSM library.
+// #define TINY_GSM_MODEM_XBEE
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -96,13 +94,10 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientXBee.h"
+#include <modems/TinyGsmClientXBee.h>
 #undef TINY_GSM_MODEM_HAS_WIFI
 #include "DigiXBee.h"
 
-#ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_digi_cellular */
 /**@{*/
@@ -119,27 +114,26 @@
  * stable used in bypass mode.  The Telit based Digi XBees (LTE Cat1 both
  * Verizon and AT&T) can only use this mode.
  */
-class DigiXBeeCellularTransparent : public DigiXBee {
+class DigiXBeeCellularTransparent : public DigiXBee<TinyGsmXBee> {
  public:
     /**
      * @brief Construct a new Digi XBee Cellular Transparent object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param xbeeModem A TinyGsmXBee instance.
+     * @param powerPin @copydoc _powerPin
+     * @param statusPin @copydoc _statusPin
      * This can be either the pin named `ON/SLEEP_N/DIO9` or `CTS_N/DIO7` pin in
      * Digi's hardware reference.
      * @param useCTSStatus True to use the `CTS_N/DIO7` pin of the XBee as a
      * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
      * This inverts the loggerModem::_statusLevel.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This should be the pin called `RESET_N` in Digi's hardware reference.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This should be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      * @param apn The Access Point Name (APN) for the SIM card.
@@ -150,7 +144,7 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      *
      * @see DigiXBee::DigiXBee
      */
-    DigiXBeeCellularTransparent(Stream* modemStream, int8_t powerPin,
+    DigiXBeeCellularTransparent(TinyGsmXBee& xbeeModem, int8_t powerPin,
                                 int8_t statusPin, bool useCTSStatus,
                                 int8_t modemResetPin, int8_t modemSleepRqPin,
                                 const char* apn, const char* user = nullptr,
@@ -161,51 +155,15 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      */
     ~DigiXBeeCellularTransparent() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
     uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
 
     bool updateModemMetadata() override;
 
-#ifdef MS_DIGIXBEECELLULARTRANSPARENT_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmXBee gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemWakeFxn() override;
     bool modemSleepFxn() override;
     /**
-     * @copybrief loggerModem::extraModemSetup()
+     * @copybrief loggerModemImpl::extraModemSetup()
      *
      * For XBees, this sets the appropriate operating mode (transparent or
      * bypass), enables pin sleep, sets the DIO pins to the expected functions,
@@ -214,7 +172,9 @@ class DigiXBeeCellularTransparent : public DigiXBee {
      * @return True if the extra setup succeeded.
      */
     bool extraModemSetup() override;
-    bool isModemAwake() override;
+
+    // Do NOTHING for this - credentials set in flash memory during setup
+    bool connectWithCredentials() override;
 
  private:
     const char* _apn;   ///< Internal reference to the cellular APN

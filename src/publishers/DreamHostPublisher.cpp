@@ -23,21 +23,14 @@ const char* DreamHostPublisher::timestampTagDH = "&Loggertime=";
 
 // Constructors
 // Primary constructor with all parameters
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient,
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client& inClient,
                                        const char* dhUrl)
     : dataPublisher(baseLogger, inClient) {
     if (dhUrl) setDreamHostPortalRX(dhUrl);
 }
-
 // Delegating constructors
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client* inClient)
+DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, Client& inClient)
     : DreamHostPublisher(baseLogger, inClient, nullptr) {}
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger, const char* dhUrl)
-    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr), dhUrl) {}
-DreamHostPublisher::DreamHostPublisher(Logger& baseLogger)
-    : DreamHostPublisher(baseLogger, static_cast<Client*>(nullptr),
-                         static_cast<const char*>(nullptr)) {}
-DreamHostPublisher::DreamHostPublisher() : dataPublisher() {}
 
 
 // Functions for private SWRC server
@@ -45,24 +38,11 @@ void DreamHostPublisher::setDreamHostPortalRX(const char* dhUrl) {
     _DreamHostPortalRX = dhUrl;
 }
 
-
-// A way to set members in the begin to use with a bare constructor
-void DreamHostPublisher::begin(Logger& baseLogger, Client* inClient,
-                               const char* dhUrl) {
-    setDreamHostPortalRX(dhUrl);
-    dataPublisher::begin(baseLogger, inClient);
-}
-void DreamHostPublisher::begin(Logger& baseLogger, const char* dhUrl) {
-    setDreamHostPortalRX(dhUrl);
-    dataPublisher::begin(baseLogger);
-}
-
-
 // Post the data to dream host.
-int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
+int16_t DreamHostPublisher::publishData(Client& outClient, bool) {
     // Validate required DreamHost URL is set before proceeding
     if (_DreamHostPortalRX == nullptr) {
-        MS_DBG(F("ERROR: DreamHost Portal RX URL not set. Call begin() or "
+        MS_DBG(F("ERROR: DreamHost Portal RX URL not set. Call "
                  "setDreamHostPortalRX() first."));
         return -1;
     }
@@ -75,9 +55,9 @@ int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
     // Open a TCP/IP connection to DreamHost
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
-    if (outClient->connect(dreamhostHost, dreamhostPort)) {
+    if (outClient.connect(dreamhostHost, dreamhostPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
-        txBufferInit(outClient);
+        txBufferInit(&outClient);
 
         // copy the initial post header into the tx buffer
         txBufferAppend(getHeader);
@@ -116,15 +96,15 @@ int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->connected() &&
-               outClient->available() < 12) {
+        while ((millis() - start) < 10000L && outClient.connected() &&
+               outClient.available() < 12) {
             delay(10);
         }
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = outClient->readBytes(tempBuffer, 12);
+        did_respond = outClient.readBytes(tempBuffer, 12);
         // Process the HTTP response code
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond >= 12) {
@@ -144,8 +124,8 @@ int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
         // throw the rest of the response into the tx buffer so we can debug it
         txBufferInit(nullptr);
         txBufferAppend(tempBuffer, 12, true);
-        while (outClient->available()) {
-            char c = outClient->read();
+        while (outClient.available()) {
+            char c = outClient.read();
             txBufferAppend(c);
         }
         txBufferFlush();
@@ -154,7 +134,7 @@ int16_t DreamHostPublisher::publishData(Client* outClient, bool) {
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
-        outClient->stop();
+        outClient.stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to DreamHost --"));

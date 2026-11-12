@@ -10,85 +10,88 @@
 
 // Included Dependencies
 #include "EspressifESP32.h"
-#include "LoggerModemMacros.h"
 
 // Constructors
-EspressifESP32::EspressifESP32(Stream* modemStream, int8_t powerPin,
+EspressifESP32::EspressifESP32(TinyGsmESP32& esp32Modem, int8_t powerPin,
                                int8_t modemResetPin, const char* ssid,
-                               const char* pwd)
-    : Espressif(modemStream, powerPin, modemResetPin, ssid, pwd),
-#if defined(MS_ESPRESSIFESP32_DEBUG_DEEP)
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger)
-#else
-      gsmModem(*modemStream)
-#endif
-{
-}
+                               const char* pwd, int8_t modemSleepRqPin,
+                               int8_t espSleepRqPin)
+    : Espressif<TinyGsmESP32>(esp32Modem, powerPin, modemResetPin, ssid, pwd,
+                              modemSleepRqPin, espSleepRqPin) {}
 
-MS_IS_MODEM_AWAKE(EspressifESP32);
-MS_MODEM_WAKE(EspressifESP32);
-
-MS_MODEM_CONNECT_INTERNET(EspressifESP32, ESPRESSIF_RECONNECT_TIME_MS);
-MS_MODEM_DISCONNECT_INTERNET(EspressifESP32);
-MS_MODEM_IS_INTERNET_AVAILABLE(EspressifESP32);
-
-MS_MODEM_CREATE_CLIENT(EspressifESP32, ESP32);
-MS_MODEM_DELETE_CLIENT(EspressifESP32, ESP32);
-MS_MODEM_CREATE_SECURE_CLIENT(EspressifESP32, ESP32);
-MS_MODEM_DELETE_SECURE_CLIENT(EspressifESP32, ESP32);
-
-MS_MODEM_GET_NIST_TIME(EspressifESP32, ESP32);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(EspressifESP32);
-MS_MODEM_GET_MODEM_BATTERY_DATA(EspressifESP32);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(EspressifESP32);
 
 bool EspressifESP32::modemSleepFxn() {
-    // Use this if you have an MCU pin connected to the ESP's reset pin to wake
-    // from deep sleep.  We'll also put it in deep sleep before yanking power.
-    if (_modemResetPin >= 0 || _powerPin >= 0) {
+    // Use this if you have an MCU pin connected to the ESP's reset pin to
+    // wake from deep sleep.
+    if (_modemResetPin >= 0) {
         MS_DBG(F("Requesting deep sleep for ESP32"));
-        bool retVal = gsmModem.poweroff();
+        // On the ESP32, we cannot request indefinite deep sleep.  We can only
+        // request a deep sleep for a specific time, but that time can be as
+        // long as about 28.8 days (2^31 - 1 milliseconds).  Theoretically, a
+        // user could set their logging interval to be 32767 minutes (~22.7
+        // days).  So here I'll tell the ESP32 to sleep for 1 second longer than
+        // that knowing we can use the reset pin or power cycle to wake it up if
+        // we're ready sooner.
+        // AT+GSLP=<time>
+        // <time>: sleep time in milliseconds
+        gsmModem.sendAT(GF("+GSLP=1966021000"));
+        bool success = gsmModem.waitResponse() == 1;
         if (_modemSleepRqPin >= 0) {
             digitalWrite(_modemSleepRqPin, !_wakeLevel);
         }
-        _modemStream->flush();
-        return retVal;
+        gsmModem.stream.flush();
+        return success;
+    } else if (_modemSleepRqPin >= 0 && _espSleepRqPin >= 0) {
+        // Light sleep without the status pin
+        MS_DBG(F("Configuring light sleep for the Espressif module"));
+        // AT+SLEEPWKCFG=<wakeup source>,<param1>[,<param2>]
+        // <wakeup source>:
+        //     0: reserved, not supported now.
+        //     1: reserved, not supported now.
+        //     2: wakeup by GPIO.
+        // <param1>:
+        //     - If the wakeup source is a timer, it means the time before
+        //     wakeup. Unit: millisecond.
+        //     - If the wakeup source is GPIO, it means the GPIO number.
+        // <param2>:
+        //     If the wakeup source is GPIO, it means the wakeup level:
+        //         0: low level.
+        //         1: high level.
+        gsmModem.sendAT(GF("+SLEEPWKCFG=2,"), String(_espSleepRqPin), ',',
+                        ESPRESSIF_WAKE_LEVEL ? 1 : 0);
+        bool success = gsmModem.waitResponse() == 1;
+        if (success) {
+            // AT+SLEEP=<sleep mode>
+            // <sleep mode>:
+            //     0: Disable the sleep mode.
+            //     1: Modem-sleep DTIM mode. RF will be periodically closed
+            //     according to AP DTIM.
+            //     2: Light-sleep mode. CPU will automatically sleep and RF will
+            //     be periodically closed according to listen interval set by
+            //     AT+CWJAP.
+            //     3: Modem-sleep listen interval mode. RF will be periodically
+            //     closed according to listen interval set by AT+CWJAP.
+            gsmModem.sendAT(GF("+SLEEP=2"));
+            success &= gsmModem.waitResponse() == 1;
+            if (success) {
+                delay(5);
+                MS_DBG(
+                    F("Setting pin"), _modemSleepRqPin,
+                    !_wakeLevel ? F("HIGH") : F("LOW"),
+                    F("to allow the Espressif module to enter light sleep"));
+                digitalWrite(_modemSleepRqPin, !_wakeLevel);
+                MS_DBG(F("Module MIGHT enter light sleep mode if it has been "
+                         "idle for sufficient time."));
+            }
+        }
+        return success;
     } else {  // DON'T go to sleep if we can't wake up!
-        MS_DEEP_DBG(F("No pins for sleeping the ESP32. Hopefully it's in the "
+        MS_DEEP_DBG(F("No pins for sleeping the Espressif module. "
+                      "Hopefully it's in the "
                       "state you want."));
-        _modemStream->flush();
+        gsmModem.stream.flush();
         return true;
     }
-}
-
-// Set up the light-sleep status pin, if applicable
-bool EspressifESP32::extraModemSetup() {
-    if (_modemSleepRqPin >= 0) { digitalWrite(_modemSleepRqPin, !_wakeLevel); }
-    bool success = gsmModem.init();
-    // Attempt to get the modem name even without a successful init
-    // The full make and model won't be returned, but it will at least be
-    // something that identifies the modem as an ESP32, which is helpful for
-    // debugging.
-    _modemName = gsmModem.getModemName();
-    if (success) {
-        // AT+CWCOUNTRY=<country_policy>,<country_code>,<start_channel>,<total_channel_count>
-        // <country_policy>:
-        //     0: will change the county code to be the same as the AP that the
-        //     ESP32 is connected to.
-        //     1: the country code will not change, always be the one set by
-        //     command.
-        // <country_code>: country code. Maximum length: 3 characters. Refer to
-        //     ISO 3166-1 alpha-2 for country codes.
-        // <start_channel>: the channel number to start. Range: [1,14].
-        // <total_channel_count>: total number of channels.
-        // We set the country code to default to US, but allow it to change if
-        // the AP is in a different country.
-        gsmModem.sendAT(GF("+CWCOUNTRY=0,\"US\",1,13"));
-        success &= (gsmModem.waitResponse() == 1);
-    }
-    return success;
 }
 
 // cSpell:ignore CWCOUNTRY

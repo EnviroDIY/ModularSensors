@@ -17,10 +17,13 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[],
                              const char* uuids[])
     : arrayOfVars(variableList),
       _variableCount(variableCount) {
-    // Match UUIDs first, before populating sensor list
-    if (uuids && arrayOfVars != nullptr && _variableCount > 0)
-        matchUUIDs(uuids);
-    populateSensorList();
+    if (validateVariableList()) {
+        // Match UUIDs first, before populating sensor list
+        if (uuids != nullptr) { matchUUIDs(uuids); }
+        populateSensorList();
+    } else {
+        _sensorCount = 0;
+    }
 }
 
 // Delegating constructor - delegates to primary constructor with null UUIDs
@@ -31,40 +34,65 @@ VariableArray::VariableArray(uint8_t variableCount, Variable* variableList[])
 VariableArray::VariableArray() : VariableArray(0, nullptr) {}
 
 
-void VariableArray::begin(uint8_t variableCount, Variable* variableList[],
+bool VariableArray::begin(uint8_t variableCount, Variable* variableList[],
                           const char* uuids[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
-    if (_variableCount == 0 || arrayOfVars == nullptr) {
-        MS_DBG(F("No variable array in the VariableArray object!"));
-        return;
+    if (!validateVariableList(true)) {
+        _sensorCount = 0;
+        return false;
     }
     matchUUIDs(uuids);
-    if (!populateSensorList()) {
+    bool success = populateSensorList();
+    if (!success) {
         MS_DBG(F("Warning: Sensor list may be truncated - exceeded "
                  "MAX_NUMBER_SENSORS limit."));
     }
-    checkVariableUUIDs();
+    success &= checkVariableUUIDs();
+    return success;
 }
-void VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
+bool VariableArray::begin(uint8_t variableCount, Variable* variableList[]) {
     _variableCount = variableCount;
     arrayOfVars    = variableList;
-    begin();
+    return begin();
 }
-void VariableArray::begin() {
-    if (_variableCount == 0 || arrayOfVars == nullptr) {
-        MS_DBG(F("No variable array in the VariableArray object!"));
-        return;
+bool VariableArray::begin() {
+    if (!validateVariableList(true)) {
+        _sensorCount = 0;
+        return false;
     }
-    if (!populateSensorList()) {
+    bool success = populateSensorList();
+    if (!success) {
         MS_DBG(F("Warning: Sensor list may be truncated - exceeded "
                  "MAX_NUMBER_SENSORS limit."));
     }
-    checkVariableUUIDs();
+    success &= checkVariableUUIDs();
+    return success;
+}
+
+// This checks that every variable pointer can be safely dereferenced
+bool VariableArray::validateVariableList(bool reportErrors) {
+    if (_variableCount == 0 || arrayOfVars == nullptr) {
+        if (reportErrors) {
+            MS_DBG(F("No variable array in the VariableArray object!"));
+        }
+        return false;
+    }
+    for (uint8_t i = 0; i < _variableCount; i++) {
+        if (arrayOfVars[i] == nullptr) {
+            if (reportErrors) {
+                MS_DBG(F("Variable array contains a null variable at index"),
+                       i);
+            }
+            return false;
+        }
+    }
+    return true;
 }
 
 // This counts and returns the number of calculated variables
 uint8_t VariableArray::getCalculatedVariableCount() {
+    if (!validateVariableList(true)) { return 0; }
     uint8_t numCalc = 0;
     // Check for unique sensors
     for (uint8_t i = 0; i < _variableCount; i++) {
@@ -82,7 +110,7 @@ uint8_t VariableArray::getSensorCount() {
 
 // This matches UUIDs from an array of pointers to the variable array
 void VariableArray::matchUUIDs(const char* uuids[]) {
-    if (uuids == nullptr) return;
+    if (uuids == nullptr || !validateVariableList(true)) return;
     for (uint8_t i = 0; i < _variableCount; i++) {
         arrayOfVars[i]->setVarUUID(uuids[i]);
     }
@@ -98,9 +126,9 @@ bool VariableArray::populateSensorList() {
     }
 
     // Early exit if no valid variable array
-    if (arrayOfVars == nullptr) {
+    if (!validateVariableList()) {
         _sensorCount = 0;
-        return true;
+        return false;
     }
 
     for (uint8_t i = 0; i < _variableCount; i++) {
@@ -126,6 +154,7 @@ bool VariableArray::populateSensorList() {
             if (addedSensors >= MAX_NUMBER_SENSORS) {
                 // Unfortunately silent so this can be run in the constructor
                 // before the serial port is set up.
+                _sensorCount = addedSensors;
                 return false;
             }
             _sensorList[addedSensors++] = currentSensor;
@@ -421,6 +450,7 @@ bool VariableArray::updateAllSensors() {
 
 bool VariableArray::completeUpdate(bool powerUp, bool wake, bool sleep,
                                    bool powerDown) {
+    if (!validateVariableList(true)) { return false; }
     bool    success           = true;
     uint8_t nSensorsCompleted = 0;
     MS_DBG(F("Using internal sensor list for measurements..."));
@@ -661,6 +691,7 @@ void VariableArray::printSensorData(Stream* stream) {
 // This function prints out the results for any connected sensors to a stream
 //  Calculated Variable results will be included
 void VariableArray::printVariableData(Stream* stream) {
+    if (!validateVariableList(true)) { return; }
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (i > 0) {
             // Check if we need to add a line break between different sensors
@@ -708,6 +739,10 @@ void VariableArray::printVariableData(Stream* stream) {
 
 // Check for unique sensors
 bool VariableArray::isLastVarFromSensor(int arrayIndex) {
+    if (arrayIndex < 0 || arrayIndex >= _variableCount ||
+        !validateVariableList(true)) {
+        return false;
+    }
     // Calculated Variables are never the last variable from a sensor, simply
     // because the don't come from a sensor at all.
     if (arrayOfVars[arrayIndex]->isCalculated) {
@@ -728,13 +763,18 @@ bool VariableArray::isLastVarFromSensor(int arrayIndex) {
 
 bool VariableArray::getSensorStatusBit(int                        arrayIndex,
                                        Sensor::sensor_status_bits bitToGet) {
-    if (arrayIndex < 0 || arrayIndex >= _variableCount) { return false; }
+    if (arrayIndex < 0 || arrayIndex >= _variableCount ||
+        !validateVariableList(true) ||
+        arrayOfVars[arrayIndex]->parentSensor == nullptr) {
+        return false;
+    }
     return arrayOfVars[arrayIndex]->parentSensor->getStatusBit(bitToGet);
 }
 
 
 // Check that all variable have valid UUIDs, if they are assigned
 bool VariableArray::checkVariableUUIDs() {
+    if (!validateVariableList(true)) { return false; }
     bool success = true;
     for (uint8_t i = 0; i < _variableCount; i++) {
         if (!arrayOfVars[i]->checkUUIDFormat()) {

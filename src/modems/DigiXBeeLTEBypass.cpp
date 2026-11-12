@@ -10,41 +10,23 @@
 
 // Included Dependencies
 #include "DigiXBeeLTEBypass.h"
-#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
-DigiXBeeLTEBypass::DigiXBeeLTEBypass(Stream* modemStream, int8_t powerPin,
-                                     int8_t statusPin, bool useCTSStatus,
-                                     int8_t modemResetPin,
+DigiXBeeLTEBypass::DigiXBeeLTEBypass(TinyGsmSaraR4& saraR4Modem,
+                                     int8_t powerPin, int8_t statusPin,
+                                     bool useCTSStatus, int8_t modemResetPin,
                                      int8_t modemSleepRqPin, const char* apn)
-    : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
-               modemSleepRqPin),
-#ifdef MS_DIGIXBEELTEBYPASS_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      _apn(apn) {
+    : DigiXBee<TinyGsmSaraR4, false>(saraR4Modem, powerPin, statusPin,
+                                     useCTSStatus, modemResetPin,
+                                     modemSleepRqPin),
+
+      _apn(apn) {}
+
+
+bool DigiXBeeLTEBypass::connectWithCredentials() {
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
-MS_IS_MODEM_AWAKE(DigiXBeeLTEBypass);
-MS_MODEM_WAKE(DigiXBeeLTEBypass);
-
-MS_MODEM_CONNECT_INTERNET(DigiXBeeLTEBypass);
-MS_MODEM_DISCONNECT_INTERNET(DigiXBeeLTEBypass);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBeeLTEBypass);
-
-MS_MODEM_CREATE_CLIENT(DigiXBeeLTEBypass, SaraR4);
-MS_MODEM_DELETE_CLIENT(DigiXBeeLTEBypass, SaraR4);
-MS_MODEM_CREATE_SECURE_CLIENT(DigiXBeeLTEBypass, SaraR4);
-MS_MODEM_DELETE_SECURE_CLIENT(DigiXBeeLTEBypass, SaraR4);
-
-MS_MODEM_GET_NIST_TIME(DigiXBeeLTEBypass, SaraR4);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBeeLTEBypass);
-MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBeeLTEBypass);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBeeLTEBypass);
 
 bool DigiXBeeLTEBypass::extraModemSetup() {
     bool success = false;
@@ -53,10 +35,12 @@ bool DigiXBeeLTEBypass::extraModemSetup() {
         /** First, wait the required guard time before entering command mode. */
         delay(1010);
         /** Now, enter command mode to set all pin I/O functionality. */
-        gsmModem.streamWrite(GF("+++"));
+        gsmModem.streamPrint(GF("+++"));
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
+    /// @todo Consider failing if any individual XBee command mode setting
+    /// change fails.
     if (success) {
         MS_DBG(F("Setting I/O Pins..."));
         /** Enable pin sleep functionality on `DIO9`.
@@ -145,7 +129,7 @@ bool DigiXBeeLTEBypass::extraModemSetup() {
     return success;
 }
 
-bool DigiXBeeLTEBypass::modemHardReset() {
+bool DigiXBeeLTEBypass::modemHardResetImpl() {
     bool success = false;
     // If the u-blox cellular component isn't responding but the Digi processor
     // is, use the Digi API to reset the cellular component
@@ -153,7 +137,7 @@ bool DigiXBeeLTEBypass::modemHardReset() {
     for (uint8_t i = 0; i < 5; i++) {
         // Wait the required guard time before entering command mode
         delay(1010);
-        gsmModem.streamWrite(GF("+++"));  // enter command mode
+        gsmModem.streamPrint(GF("+++"));  // enter command mode
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
@@ -167,7 +151,7 @@ bool DigiXBeeLTEBypass::modemHardReset() {
         success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
     } else {
         MS_DBG(F("... failed!  Using a pin reset on the XBee."));
-        success = loggerModem::modemHardReset();
+        success = loggerModemImpl::modemHardResetImpl();
     }
     return success;
 }

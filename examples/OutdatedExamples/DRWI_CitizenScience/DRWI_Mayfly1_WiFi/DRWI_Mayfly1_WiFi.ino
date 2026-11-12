@@ -80,11 +80,10 @@ const int8_t modemLEDPin   = redLED;  // MCU pin connected an LED to show modem
 const char* wifiId  = "YourWiFiSSID";  // WiFi access point name
 const char* wifiPwd = "YourWiFiPassword";       // WiFi password (WPA2)
 
-// Create the modem object
-EspressifESP32 modemESP(&modemSerial, modemVccPin, modemResetPin, wifiId,
-                        wifiPwd);
-// Create an extra reference to the modem by a generic name
-EspressifESP32 modem = modemESP;
+// Create a TinyGsm modem
+TinyGsmESP32 gsmModem(modemSerial);
+// Create a loggerModem object
+EspressifESP32 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 /** End [espressif_esp32] */
 
 
@@ -215,10 +214,14 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/MonitorMyWatershedPublisher.h>
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
-                                          samplingFeature);
+// Create a client for Monitor My Watershed - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsmESP32::GsmClientESP32 mmwClient(gsmModem);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
+                                          registrationToken, samplingFeature);
 /** End [publishers] */
 
 

@@ -68,7 +68,7 @@
 #undef MS_DEBUGGING_STD
 
 // Include other in-library and external dependencies
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 /** @ingroup modem_espressif */
 /**@{*/
@@ -79,31 +79,6 @@
  * The timing and pin level settings for most Espressif modules
  */
 /**@{*/
-/**
- * @brief The loggerModem::_statusLevel.
- *
- * It is not possible to get status from the Espressif modules in deep sleep
- * mode - during deep sleep the pin state is undefined.
- *
- * For cases where a pin is defined for light sleep mode, the Espressif
- * documentation states:
- * > since the system needs some time to wake up from light sleep, it is
- * > suggested that wait at least 5ms before sending next AT command.
- * The documentation doesn't say anything about the time before the pin reaches
- * the expected level.  The status level during light sleep is user selectable,
- * this library sets it low for wake and high for sleep.  Of course, despite
- * being able to configure light sleep mode for the module, it's not actually
- * possible to purposefully enter light sleep via AT commands, so we are
- * dependent on the module deciding it's been idle long enough and entering
- * sleep on its own.  It is a terrible system.  **Use a deep-sleep with reset if
- * possible.**
- */
-#define ESPRESSIF_STATUS_LEVEL HIGH
-/**
- * @brief The loggerModem::_statusTime_ms.
- * @copydetails #ESPRESSIF_STATUS_LEVEL
- */
-#define ESPRESSIF_STATUS_TIME_MS 350
 
 /**
  * @brief The loggerModem::_resetLevel.
@@ -140,6 +115,16 @@
  */
 #define ESPRESSIF_WAKE_DELAY_MS 0
 /**
+ * @brief The minimum time before the Espressif module will spit out it's boot
+ * log after power on or reset.
+ */
+#define ESPRESSIF_BOOT_LOG_DELAY_MS 200L
+/**
+ * @brief The maximum time to listen for the Espressif module's boot log after
+ * power on or reset.
+ */
+#define ESPRESSIF_BOOT_LOG_TIMEOUT_MS 1000L
+/**
  * @brief The loggerModem::_max_at_response_time_ms.
  *
  * The serial response time after boot (via power on or reset) is undocumented
@@ -171,47 +156,143 @@
  * @brief The loggerModem subclass for almost any Espressif wifi or
  * wifi/bluetooth chip that has been flashed with Espressif's AT command
  * firmware.
- *
- * @warning Light sleep modes on the ESP8266 may not function as expected (or at
- * all).
  */
-class Espressif : public loggerModem {
+template <typename GsmModemType_T>
+class Espressif : public loggerModemImpl<GsmModemType_T, true> {
  public:
     // Constructors/Destructor
     /**
      * @brief Construct a new Espressif object.
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @remark The Espressif modules do not have any status pin capabilites.  In
+     * older firmware versions, AT commands were provided to set up pins to
+     * check the status of the module, but these have been deprecated and
+     * removed in newer firmware versions.  The status pin is not used in this
+     * library.
+     *
+     * @param gsmModem A TinyGsmEspressif instance.
+     * @param powerPin @copydoc _powerPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This is the ESP's `RSTB/DIO16` pin.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, **assuming WPA2**.
-     *
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin  On Espressif modules,
+     * the sleep request pin *only applies to light sleep*.  You cannot select a
+     * pin to wake from deep sleep.  The only pin that can wake from deep sleep
+     * is the reset pin, which is handled by the `modemResetPin`
+     * parameter.
+     * @param espSleepRqPin the Espressif sleep request pin for light sleep.
+     * This is a GPIO on the Espressif module, not a pin on the MCU.
      * @see loggerModem::loggerModem
      */
-    Espressif(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
-              const char* ssid, const char* pwd);
+    Espressif(GsmModemType_T& gsmModem, int8_t powerPin, int8_t modemResetPin,
+              const char* ssid, const char* pwd, int8_t modemSleepRqPin = -1,
+              int8_t espSleepRqPin = -1)
+        : loggerModemImpl<GsmModemType_T, true>(
+              gsmModem, powerPin, -1, LOW, modemResetPin, ESPRESSIF_RESET_LEVEL,
+              ESPRESSIF_RESET_PULSE_MS, modemSleepRqPin, ESPRESSIF_WAKE_LEVEL,
+              ESPRESSIF_WAKE_PULSE_MS, 0, ESPRESSIF_DISCONNECT_TIME_MS,
+              ESPRESSIF_WAKE_DELAY_MS, ESPRESSIF_AT_RESPONSE_TIME_MS),
+          _ssid(ssid),
+          _pwd(pwd),
+          _espSleepRqPin(espSleepRqPin) {}
     /**
      * @brief Destroy the Espressif object - no action taken
      */
     ~Espressif() override = default;
 
-    /**
-     * @brief A pointer to the Arduino serial Stream used for communication
-     * between the MCU and the Espressif module.
-     *
-     * We need to keep the pointer to the stream for tossing junk on boot.
-     */
-    Stream* _modemStream;
-
  protected:
-    bool modemWakeFxn() override;
+    bool connectWithCredentials() override {
+        return this->gsmModem.networkConnect(this->_ssid, this->_pwd);
+    }
+
+
+    bool extraModemSetup() override {
+        bool success = this->gsmModem.init();
+        // Attempt to get the modem name even without a successful init
+        // The full make and model won't be returned, but it will at least be
+        // something that identifies the modem as an ESP32, which is helpful for
+        // debugging.
+        this->_modemName = this->gsmModem.getModemName();
+        if (success) {
+            // AT+CWCOUNTRY=<country_policy>,<country_code>,<start_channel>,<total_channel_count>
+            // <country_policy>:
+            //     0: will change the county code to be the same as the AP that
+            //     the ESP32 is connected to. 1: the country code will not
+            //     change, always be the one set by command.
+            // <country_code>: country code. Maximum length: 3 characters. Refer
+            // to
+            //     ISO 3166-1 alpha-2 for country codes.
+            // <start_channel>: the channel number to start. Range: [1,14].
+            // <total_channel_count>: total number of channels.
+            // We set the country code to default to US, but allow it to change
+            // if the AP is in a different country.
+            this->gsmModem.sendAT(GF("+CWCOUNTRY=0,\"US\",1,13"));
+            success &= (this->gsmModem.waitResponse() == 1);
+        }
+#if 0
+        // Make sure we're staying in station mode so sleep can happen
+        this->gsmModem.sendAT(GF("+CWMODE_DEF=1"));
+        gsmModem.waitResponse();
+        // Make sure that, at minimum, modem-sleep is on
+        this->gsmModem.sendAT(GF("+SLEEP=2"));
+        this->gsmModem.waitResponse();
+#endif
+#if 0
+        // Set the wifi settings as default
+        // This will speed up connecting after resets
+        this->gsmModem.sendAT(GF("+CWJAP_DEF=\""), _ssid, GF("\",\""), _pwd,
+                              GF("\""));
+        success = (this->gsmModem.waitResponse(30000L, GFP(GSM_OK), GF("FAIL\r\n")) != 1);
+#endif
+        return success;
+    }
+
+    bool modemWakeFxn() override {
+        bool success = true;
+        if (this->_powerPin >= 0) {  // Turns on when power is applied
+            MS_DEEP_DBG(
+                F("Power pin"), this->_powerPin,
+                F("takes priority over reset pin, modem wakes on power on"));
+            if (this->_modemSleepRqPin >= 0) {
+                digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
+            }
+            success &= this->ESPwaitForBoot();
+            if (this->_modemSleepRqPin >= 0) {
+                digitalWrite(this->_modemSleepRqPin, this->_wakeLevel);
+            }
+            return success;
+        } else if (this->_modemResetPin >= 0) {
+            MS_DBG(F("Sending a reset pulse to pin"), this->_modemResetPin,
+                   F("to wake Espressif module from deep sleep"));
+            digitalWrite(this->_modemResetPin, ESPRESSIF_RESET_LEVEL);
+            delay(this->_resetPulse_ms);
+            digitalWrite(this->_modemResetPin, !ESPRESSIF_RESET_LEVEL);
+            if (this->_modemSleepRqPin >= 0) {
+                digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
+            }
+            success &= this->ESPwaitForBoot();
+            if (this->_modemSleepRqPin >= 0) {
+                digitalWrite(this->_modemSleepRqPin, this->_wakeLevel);
+            }
+            return success;
+        } else if (this->_modemSleepRqPin >= 0) {
+            MS_DBG(F("Setting pin"), this->_modemSleepRqPin,
+                   this->_wakeLevel ? F("HIGH") : F("LOW"),
+                   F("to wake Espressif module from light sleep"));
+            digitalWrite(this->_modemSleepRqPin, this->_wakeLevel);
+            return success;
+        } else {
+            MS_DEEP_DBG(F("No pins for waking the Espressif module. Hopefully "
+                          "it's in the state you want."));
+            return success;
+        }
+    }
+
 
  protected:
     /**
@@ -222,9 +303,36 @@ class Espressif : public loggerModem {
      * @return True if text (assumed to be the start message) was received;
      * false if text was received after boot.
      */
-    bool        ESPwaitForBoot();
+    bool ESPwaitForBoot() {
+        // Wait for boot - finished when characters start coming
+        // NOTE: After every "hard" reset (either power off or via RST-B), the
+        // ESP sends out a boot log from the ROM on UART1 at 74880 baud.  We're
+        // not going to worry about the odd baud rate since we're simply
+        // throwing the characters away.
+        MS_DBG(F("Waiting for boot-up message from Espressif module"));
+        delay(ESPRESSIF_BOOT_LOG_DELAY_MS);  // It will take at least this long
+        uint32_t start   = millis();
+        bool     success = false;
+        while (!this->gsmModem.stream.available() &&
+               millis() - start < ESPRESSIF_BOOT_LOG_TIMEOUT_MS) {
+            yield();
+        }
+        if (this->gsmModem.stream.available()) {
+            success = true;
+            // Read the boot log to empty it from the serial buffer
+            while (this->gsmModem.stream.available()) {
+                this->gsmModem.stream.read();
+                delay(2);
+            }
+        }
+        return success;
+    }
     const char* _ssid;  ///< Internal reference to the WiFi SSID
     const char* _pwd;   ///< Internal reference to the WiFi password
+
+    /// Internal reference to the Espressif sleep request pin for light sleep
+    /// This is a GPIO on the espressif module, not a pin on the MCU.
+    int8_t _espSleepRqPin = -1;
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIF_H_

@@ -24,7 +24,9 @@ on:
                 default: false
 
 permissions:
+    id-token: write
     contents: read
+    pages: write
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}

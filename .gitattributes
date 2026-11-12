@@ -38,6 +38,7 @@ platformio.ini export-ignore
 # Shell Scripts
 *.sh export-ignore
 
-# filters
+# Filters
 *.ino filter=smudgePasswords
 ModSensorDebugConfig.h filter=disableDebug
+continuous_integration/build_job_matrix.py text diff=python filter=localTestPaths

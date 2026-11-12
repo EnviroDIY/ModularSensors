@@ -62,9 +62,9 @@ class Sensor;
  * @ingroup base_classes
  */
 class Variable {
- public:
+ protected:
     /**
-     * @brief Construct a new Variable objectfor a measured variable - that is,
+     * @brief Construct a new Variable object for a measured variable - that is,
      * one whose values are updated by a sensor.
      *
      * @note This constructor is NOT intended to be used outside of this
@@ -88,11 +88,12 @@ class Variable {
              const char* varUnit, const char* varCode, const char* uuid);
 
 
+ public:
     /**
      * @brief Construct a new Variable object for a calculated variable - that
      * is, one whose value is calculated by the calcFxn which returns a float.
      *
-     * @param calcFxn Any function returning a float value
+     * @param calcFxn A non-null function returning a float value.
      * @param decimalResolution The resolution (in decimal places) of the value.
      * @param varName The name of the variable per the [ODM2 variable name
      * controlled vocabulary](http://vocabulary.odm2.org/variablename/)
@@ -121,7 +122,11 @@ class Variable {
      *
      * @note This should never be called for a calculated variable.
      *
-     * @param parentSense The Sensor object supplying values.
+     * A null sensor or an invalid sensor variable number is rejected, and the
+     * variable is not attached.
+     *
+     * @param parentSense The Sensor object supplying values.  Must not be
+     * nullptr.
      */
     void attachSensor(Sensor* parentSense);
     /**
@@ -155,7 +160,9 @@ class Variable {
     /**
      * @brief Set the calculation function for a calculated variable
      *
-     * @param calcFxn Any function returning a float value.
+     * A null function is rejected without changing the variable.
+     *
+     * @param calcFxn A non-null function returning a float value.
      */
     void setCalculation(float (*calcFxn)());
 

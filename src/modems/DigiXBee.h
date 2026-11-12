@@ -109,7 +109,7 @@
 #undef MS_DEBUGGING_STD
 
 // Include other in-library and external dependencies
-#include "LoggerModem.h"
+#include "LoggerModemImpl.h"
 
 /** @ingroup modem_digi */
 /**@{*/
@@ -195,37 +195,70 @@
  *
  * @note The ZigBee, 900mHZ, and other radio-based XBee's are **not**
  * supported.
+ *
+ * @tparam GsmModemType_T The TinyGSM modem type.
+ * @tparam signalQualityIsRSSI Whether signal quality is RSSI (true) or CSQ
+ * (false).
  */
-class DigiXBee : public loggerModem {
+template <typename GsmModemType_T, bool signalQualityIsRSSI = true>
+class DigiXBee
+    : public loggerModemImpl<GsmModemType_T, signalQualityIsRSSI> {
  public:
     /**
      * @brief Construct a new Digi XBee object
      *
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param gsmModem A TinyGSM modem instance.  This will be of type
+     * TinyGsmXBee in transparent mode or of the type of cellular chip in bypass
+     * mode.
+     * @param powerPin @copydoc _powerPin
+     * @param statusPin @copydoc _statusPin
      * This can be either the pin named `ON/SLEEP_N/DIO9` or `CTS_N/DIO7` pin in
      * Digi's hardware reference.
      * @param useCTSStatus True to use the `CTS_N/DIO7` pin of the XBee as a
      * status indicator rather than the true status (`ON/SLEEP_N/DIO9`) pin.
      * This inverts the loggerModem::_statusLevel.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This should be the pin called `RESET_N` in Digi's hardware reference.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This should be the pin called `DTR_N/SLEEP_RQ/DIO8` in Digi's hardware
      * reference.
      *
      * @see loggerModem::loggerModem
      */
-    DigiXBee(int8_t powerPin, int8_t statusPin, bool useCTSStatus,
-             int8_t modemResetPin, int8_t modemSleepRqPin);
+    DigiXBee(GsmModemType_T& gsmModem, int8_t powerPin, int8_t statusPin,
+             bool useCTSStatus, int8_t modemResetPin, int8_t modemSleepRqPin)
+        : loggerModemImpl<GsmModemType_T, signalQualityIsRSSI>(
+              gsmModem, powerPin, statusPin, !useCTSStatus, modemResetPin,
+              XBEE_RESET_LEVEL, XBEE_RESET_PULSE_MS, modemSleepRqPin,
+              XBEE_WAKE_LEVEL, XBEE_WAKE_PULSE_MS, XBEE_STATUS_TIME_MS,
+              XBEE_DISCONNECT_TIME_MS, XBEE_WAKE_DELAY_MS,
+              XBEE_AT_RESPONSE_TIME_MS) {}
+
     /**
      * @brief Destroy the Digi XBee object - no action taken
      */
     ~DigiXBee() override = default;
 
  protected:
-    bool modemSleepFxn() override;
-    bool modemWakeFxn() override;
+    bool modemSleepFxn() override {
+        if (this->_modemSleepRqPin >= 0) {
+            MS_DBG(F("Setting pin"), this->_modemSleepRqPin,
+                   !this->_wakeLevel ? F("HIGH") : F("LOW"), F("to put"),
+                   this->_modemName, F("to sleep"));
+            digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
+        }
+        return true;
+    }
+
+    bool modemWakeFxn() override {
+        if (this->_modemSleepRqPin >= 0) {
+            MS_DBG(F("Setting pin"), this->_modemSleepRqPin,
+                   this->_wakeLevel ? F("HIGH") : F("LOW"), F("to wake"),
+                   this->_modemName);
+            digitalWrite(this->_modemSleepRqPin, this->_wakeLevel);
+        }
+        return true;
+    }
 };
 /**@}*/
 #endif  // SRC_MODEMS_DIGIXBEE_H_

@@ -66,10 +66,8 @@
 #define MS_DEBUGGING_STD "SIMComSIM800"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
-#define TINY_GSM_MODEM_SIM800
+/// The modem type for the underlying TinyGSM library.
+// #define TINY_GSM_MODEM_SIM800
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -78,12 +76,9 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSIM800.h"
-#include "LoggerModem.h"
+#include <modems/TinyGsmClientSIM800.h>
+#include "LoggerModemImpl.h"
 
-#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_sim800 */
 /**@{*/
@@ -164,77 +159,38 @@
  * and almost any other module based on the [SIMCOM SIM800 or SIM900 modules and
  * their variants](@ref modem_sim800).
  */
-class SIMComSIM800 : public loggerModem {
+class SIMComSIM800 : public loggerModemImpl<TinyGsmSim800, false> {
  public:
     /**
      * @brief Construct a new SIMComSIM800 object
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param sim800Modem A TinyGsmSim800 instance.
+     * @param powerPin @copydoc _powerPin
+     * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in SIMCom's integration guide.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This is the pin labeled `RESET` in SIMCom's integration guide.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This is the pin labeled `PWRKEY` in SIMCom's integration guide.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
      * @see loggerModem::loggerModem
      */
-    SIMComSIM800(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+    SIMComSIM800(TinyGsmSim800& sim800Modem, int8_t powerPin, int8_t statusPin,
                  int8_t modemResetPin, int8_t modemSleepRqPin, const char* apn);
     /**
      * @brief Destroy the SIMComSIM800 object - no action taken
      */
     ~SIMComSIM800() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
-#ifdef MS_SIMCOMSIM800_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmSim800 gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
-    bool isModemAwake() override;
+    bool connectWithCredentials() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

@@ -63,10 +63,8 @@
 #define MS_DEBUGGING_STD "SodaqUBeeU201"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
-#define TINY_GSM_MODEM_UBLOX
+/// The modem type for the underlying TinyGSM library.
+// #define TINY_GSM_MODEM_UBLOX
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -75,12 +73,9 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientUBLOX.h"
-#include "LoggerModem.h"
+#include <modems/TinyGsmClientUBLOX.h>
+#include "LoggerModemImpl.h"
 
-#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_ubee_3g */
 /**@{*/
@@ -161,36 +156,35 @@
  * [Sodaq UBee](@ref modem_ublox) based on the u-blox SARA U201 2G/3G cellular
  * module.
  */
-class SodaqUBeeU201 : public loggerModem {
+class SodaqUBeeU201 : public loggerModemImpl<TinyGsmUBLOX, false> {
  public:
     /**
      * @brief Construct a new Sodaq UBee U201 object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
+     * @param ubloxModem A TinyGsmUBLOX instance.
+     * @param powerPin @copydoc _powerPin
      * For the Sodaq UBee, this is the pin labeled `ON/OFF`; pin 9 on the bee
      * socket.  The fact that this pin controls the power to the u-blox module
      * is not clear in the Sodaq documentation.
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param statusPin @copydoc _statusPin
      * This is the pin labeled `V_INT` in the u-blox integration guide.  It is
      * (misleadingly) called `CTS` in some of the Sodaq UBee documentation
      * because Sodaq wired the `V_INT` from the u-blox to the pin usually
      * reserved for `CTS` on the bee socket.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This is the pin labeled `RESET_N` in both u-blox and Sodaq documentation.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This is the pin labeled `PWR_ON` in both u-blox and Sodaq
      * documentation.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
      * @see loggerModem::loggerModem
      */
-    SodaqUBeeU201(Stream* modemStream, int8_t powerPin, int8_t statusPin,
+    SodaqUBeeU201(TinyGsmUBLOX& ubloxModem, int8_t powerPin, int8_t statusPin,
                   int8_t modemResetPin, int8_t modemSleepRqPin,
                   const char* apn);
     /**
@@ -198,49 +192,11 @@ class SodaqUBeeU201 : public loggerModem {
      */
     ~SodaqUBeeU201() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
-#ifdef MS_SODAQUBEEU201_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmUBLOX gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
-    bool isModemAwake() override;
+    bool connectWithCredentials() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

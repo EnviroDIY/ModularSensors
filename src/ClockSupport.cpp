@@ -377,7 +377,7 @@ inline time_t loggerClock::tsFromRawRTC(time_t rtc_ts, int8_t utcOffset,
             TimeUtils::printEpochName(epoch),
             "but not applying the UTC offset because the timestamp is "
             "obviously bad");
-        return rtc_ts;
+        return ts_conv;
     }
 }
 

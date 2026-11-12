@@ -54,10 +54,8 @@
 #define MS_DEBUGGING_STD "SIMComSIM7080"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
-#define TINY_GSM_MODEM_SIM7080
+/// The modem type for the underlying TinyGSM library.
+// #define TINY_GSM_MODEM_SIM7080
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -66,12 +64,9 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSIM7080.h"
-#include "LoggerModem.h"
+#include <modems/TinyGsmClientSIM7080.h>
+#include "LoggerModemImpl.h"
 
-#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_sim7080 */
 /**@{*/
@@ -156,20 +151,19 @@
  * @brief The loggerModem subclass for modules based on the [SIMCOM
  * SIM7080](@ref modem_sim7080).
  */
-class SIMComSIM7080 : public loggerModem {
+class SIMComSIM7080 : public loggerModemImpl<TinyGsmSim7080, false> {
  public:
     /**
      * @brief Construct a new SIMComSIM7080 object
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param sim7080Modem A TinyGsmSim7080 instance.
+     * @param powerPin @copydoc _powerPin
+     * @param statusPin @copydoc _statusPin
      * This is the pin labeled `STATUS` in SIMCom's integration guide.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This is the pin labeled `PWRKEY` in SIMCom's integration guide.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
@@ -178,56 +172,18 @@ class SIMComSIM7080 : public loggerModem {
      * @note The SIM7080G does not have a `RESET` pin.  Resets are done using
      * the `PWRKEY`.
      */
-    SIMComSIM7080(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                  int8_t modemSleepRqPin, const char* apn);
+    SIMComSIM7080(TinyGsmSim7080& sim7080Modem, int8_t powerPin,
+                  int8_t statusPin, int8_t modemSleepRqPin, const char* apn);
     /**
      * @brief Destroy the SIMComSIM7080 object - no action needed
      */
     ~SIMComSIM7080() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
-#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmSim7080 gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
-    bool isModemAwake() override;
+    bool connectWithCredentials() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

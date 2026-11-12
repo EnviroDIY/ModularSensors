@@ -51,7 +51,7 @@ reviews:
       instructions: >-
         Review the C++ code, point out issues relative to principles of clean code, expressiveness, and performance.
         C++ code should be C++11 compatible, and should not use later features.
-        Since this is an Arduino project, never suggest using the standard library (std::).
+        Since this is an Arduino project, never suggest using the standard library (std::) or run time type information.
         For memory savings, prefer defines to const variables, and prefer using the F() macro for string literals longer than a single character.
         Defines should be in the headers.
         Unique functions, defines, and parameters must be documented with Doxygen comments in the header files.
@@ -63,7 +63,7 @@ reviews:
       instructions: >-
         Review the C++ code, point out issues relative to principles of clean code, expressiveness, and performance.
         C++ code should be C++11 compatible, and should not use later features.
-        Since this is an Arduino project, never suggest using the standard library (std::).
+        Since this is an Arduino project, never suggest using the standard library (std::) or run time type information.
         For memory savings, prefer defines to const variables, and prefer using the F() macro for string literals longer than a single character.
         Defines should be in the headers.
         Doxygen documentation should be in the header files.

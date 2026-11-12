@@ -2626,7 +2626,7 @@ PREDEFINED             = DOXYGEN=1 \
                          STANDARD_SERIAL_OUTPUT=Serial \
                          DEBUGGING_SERIAL_OUTPUT=Serial \
                          DEEP_DEBUGGING_SERIAL_OUTPUT=Serial \
-                         TINY_GSM_MODEM_HAS_GPRS \
+                         TINY_GSM_MODEM_HAS_CELLULAR_DATA \
                          TINY_GSM_MODEM_HAS_WIFI \
                          TINY_GSM_MODEM_HAS_BATTERY \
                          TINY_GSM_MODEM_HAS_TEMPERATURE

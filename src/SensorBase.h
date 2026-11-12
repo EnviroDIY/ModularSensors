@@ -65,6 +65,8 @@ class Sensor {
  public:
     friend class Variable;
     friend class VariableArray;
+
+ protected:
     /**
      * @brief Construct a new Sensor object.
      *
@@ -95,6 +97,8 @@ class Sensor {
            uint32_t stabilizationTime_ms = 0, uint32_t measurementTime_ms = 0,
            int8_t powerPin = -1, int8_t dataPin = -1,
            uint8_t measurementsToAverage = 1, uint8_t incCalcValues = 0);
+
+ public:
     /**
      * @brief Dis-allowed constructor for a new Sensor object from a copy of
      * another Sensor object - the deleted copy constructor.
@@ -655,10 +659,12 @@ class Sensor {
      * @param sensorVarNum The position the variable result holds in the
      * variable result array.
      * @param var A pointer to the Variable object.
+     * @return True if the variable position is within the sensor's result
+     * array and the variable was registered.
      *
      * @note Only one variable can be assigned to each place in the array!
      */
-    void registerVariable(int sensorVarNum, Variable* var);
+    bool registerVariable(int sensorVarNum, Variable* var);
     /**
      * @brief Notify attached variables of new values.
      */

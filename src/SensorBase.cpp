@@ -338,8 +338,15 @@ bool Sensor::startSingleMeasurement() {
 }
 
 
-void Sensor::registerVariable(int sensorVarNum, Variable* var) {
+bool Sensor::registerVariable(int sensorVarNum, Variable* var) {
+    if (sensorVarNum < 0 || sensorVarNum >= _numReturnedValues ||
+        sensorVarNum >= MAX_NUMBER_VARS) {
+        MS_DBG(F("Cannot register variable at invalid sensor result index"),
+               sensorVarNum, F("for"), getSensorNameAndLocation());
+        return false;
+    }
     variables[sensorVarNum] = var;
+    return true;
 }
 
 void Sensor::notifyVariables() {

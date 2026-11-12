@@ -10,44 +10,26 @@
 
 // Included Dependencies
 #include "SequansMonarch.h"
-#include "LoggerModemMacros.h"
 
 // Constructor
-SequansMonarch::SequansMonarch(Stream* modemStream, int8_t powerPin,
-                               int8_t statusPin, int8_t modemResetPin,
-                               int8_t modemSleepRqPin, const char* apn)
-    : loggerModem(powerPin, statusPin, VZM20Q_STATUS_LEVEL, modemResetPin,
-                  VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS, modemSleepRqPin,
-                  VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS,
-                  VZM20Q_STATUS_TIME_MS, VZM20Q_DISCONNECT_TIME_MS,
-                  VZM20Q_WAKE_DELAY_MS, VZM20Q_AT_RESPONSE_TIME_MS),
-#ifdef MS_SEQUANSMONARCH_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      _apn(apn) {
+SequansMonarch::SequansMonarch(TinyGsmSequansMonarch& monarchModem,
+                               int8_t powerPin, int8_t statusPin,
+                               int8_t modemResetPin, int8_t modemSleepRqPin,
+                               const char* apn)
+    : loggerModemImpl<TinyGsmSequansMonarch, false>(
+          monarchModem, powerPin, statusPin, VZM20Q_STATUS_LEVEL, modemResetPin,
+          VZM20Q_RESET_LEVEL, VZM20Q_RESET_PULSE_MS, modemSleepRqPin,
+          VZM20Q_WAKE_LEVEL, VZM20Q_WAKE_PULSE_MS, VZM20Q_STATUS_TIME_MS,
+          VZM20Q_DISCONNECT_TIME_MS, VZM20Q_WAKE_DELAY_MS,
+          VZM20Q_AT_RESPONSE_TIME_MS),
+
+      _apn(apn) {}
+
+
+bool SequansMonarch::connectWithCredentials() {
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
-
-MS_IS_MODEM_AWAKE(SequansMonarch);
-MS_MODEM_WAKE(SequansMonarch);
-
-MS_MODEM_CONNECT_INTERNET(SequansMonarch);
-MS_MODEM_DISCONNECT_INTERNET(SequansMonarch);
-MS_MODEM_IS_INTERNET_AVAILABLE(SequansMonarch);
-
-MS_MODEM_CREATE_CLIENT(SequansMonarch, SequansMonarch);
-MS_MODEM_DELETE_CLIENT(SequansMonarch, SequansMonarch);
-MS_MODEM_CREATE_SECURE_CLIENT(SequansMonarch, SequansMonarch);
-MS_MODEM_DELETE_SECURE_CLIENT(SequansMonarch, SequansMonarch);
-
-MS_MODEM_GET_NIST_TIME(SequansMonarch, SequansMonarch);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SequansMonarch);
-MS_MODEM_GET_MODEM_BATTERY_DATA(SequansMonarch);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SequansMonarch);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -94,7 +76,7 @@ bool SequansMonarch::modemSleepFxn() {
         // Easiest to just go to sleep with the AT command rather than using
         // pins The only way to wake from this is via a hard reset
         MS_DBG(F("Asking Sequans Monarch to power down"));
-        bool retVal = gsmModem.poweroff();
+        bool retVal = gsmModem.powerOff();
         // Also going to pull the RTS high if it's connected
         // Only doing this so as not to get the library confused because it will
         // check this pin as an indication of whether the board is awake even if

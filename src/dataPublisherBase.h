@@ -67,42 +67,19 @@
  * logger for new data and correctly formats and sends that data to some online
  * web service.
  *
+ * Every publisher requires an application-owned Client. The publisher stores a
+ * pointer to that Client but does not create, own, or replace it with a client
+ * from the logger's modem.  Publishers that require unsecured clients can (and
+ * should) share one common Client instance.  Publishers that require secure
+ * clients can only share a client with another publisher with identical
+ * credentials and security requirements.  If you are using TinyGSM to create
+ * Client objects, remember that each TinyGSM modem instance can only support a
+ * limited number of concurrent clients, so plan accordingly.
+ *
  * @ingroup base_classes
  */
 class dataPublisher {
- public:
-    /**
-     * @brief Construct a new data publisher object untied to any logger or
-     * client.
-     *
-     * @note Using the default empty constructor requires you to use a the
-     * begin(Logger& baseLogger, Client* inClient) function to initialize
-     * the logger and client values.  If a client is never specified, the
-     * publisher will attempt to create and use a client on a LoggerModem
-     * instance tied to the attached logger.  If a logger is never specified the
-     * publisher will not function.
-     */
-    dataPublisher();
-    /**
-     * @brief Construct a new data publisher object using a single client
-     * created on the TinyGSM based logger modem.
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param sendEveryX Interval (in units of the logging interval) between
-     * attempted data transmissions. Not respected by all publishers.
-     * @param startupTransmissions Number of transmissions to send immediately
-     * after each data point is logged, before beginning to cache data and only
-     * transmit every sendEveryX times the logger records data (default: 5).
-     * This allows faster in-field validation of startup data. Not respected by
-     * all publishers.
-     */
-    explicit dataPublisher(
-        Logger& baseLogger, int sendEveryX = 1,
-        uint8_t startupTransmissions = DEFAULT_STARTUP_TRANSMISSIONS);
+ protected:
     /**
      * @brief Construct a new data publisher object.
      *
@@ -111,7 +88,8 @@ class dataPublisher {
      * requires it.
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client instance to use to
+     * print data. It must remain valid for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param sendEveryX Interval (in units of the logging interval) between
@@ -122,8 +100,10 @@ class dataPublisher {
      * This allows faster in-field validation of startup data. Not respected by
      * all publishers.
      */
-    dataPublisher(Logger& baseLogger, Client* inClient, int sendEveryX = 1,
+    dataPublisher(Logger& baseLogger, Client& inClient, int sendEveryX = 1,
                   uint8_t startupTransmissions = DEFAULT_STARTUP_TRANSMISSIONS);
+
+ public:
     /**
      * @brief Destroy the data publisher object - no action is taken.
      */
@@ -137,9 +117,9 @@ class dataPublisher {
      * @note This can be used to set a client that is not tied to a logger
      * modem or to TinyGSM!
      *
-     * @param inClient A pointer to an Arduino client instance
+     * @param inClient An application-owned Arduino client instance.
      */
-    void setClient(Client* inClient);
+    void setClient(Client& inClient);
 
     /**
      * @brief Sets the interval (in units of the logging interval) between
@@ -182,42 +162,6 @@ class dataPublisher {
      */
     void attachToLogger(Logger& baseLogger);
 
-    /**
-     * @brief Set the pointer to a loggerModem instance.
-     *
-     * @param modemPointer A reference to the ModularSensors loggerModem
-     * instance
-     */
-    void setModemPointer(loggerModem& modemPointer);
-
-    /**
-     * @brief Begin the publisher - linking it to the client and logger.
-     *
-     * This can be used as an alternative to adding the logger and client in the
-     * constructor.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
-     * Allows the use of any type of client and multiple clients tied to a
-     * single TinyGSM modem instance
-     */
-    void begin(Logger& baseLogger, Client* inClient);
-
-    /**
-     * @brief Begin the publisher - linking it to the logger but not
-     * attaching a client.
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * This can be used as an alternative to adding the logger and client in the
-     * constructor.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     */
-    void begin(Logger& baseLogger);
-
 
     /**
      * @brief Get the destination for published data - generally the host name
@@ -240,8 +184,8 @@ class dataPublisher {
      * @brief Opens a socket to the correct receiver and sends out the formatted
      * data.
      *
-     * This depends on an internet connection already having been made and a
-     * client being available.
+     * This depends on an internet connection already having been made and the
+     * required application-owned client being available.
      *
      * @param outClient An Arduino client instance to use to print data to.
      * Allows the use of any type of client and multiple clients tied to a
@@ -251,20 +195,18 @@ class dataPublisher {
      * result code from PubSubClient.
      */
     virtual int16_t publishData(
-        Client* outClient, bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) = 0;
+        Client& outClient, bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) = 0;
     /**
      * @brief Open a socket to the correct receiver and send out the formatted
      * data.
      *
-     * This depends on an internet connection already having been made and
-     * either a client having been linked to the publisher or a logger modem
-     * having been linked to the logger linked to the publisher.
+     * This depends on an internet connection already having been made and an
+     * application-owned client having been linked to the publisher.
      *
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      *
      * @return The result of publishing data.  May be an http response code or a
-     * result code from PubSubClient. Defaults to -2 if the publisher fails to
-     * create a client.
+     * result code from PubSubClient. Defaults to -2 if no client is linked.
      */
     virtual int16_t publishData(bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS);
 
@@ -275,7 +217,7 @@ class dataPublisher {
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      */
-    virtual int16_t publishMetadata(Client* outClient);
+    virtual int16_t publishMetadata(Client& outClient);
     /**
      * @brief Open a socket to the correct receiver and send out *metadata*
      * about the current logger setup.
@@ -288,8 +230,8 @@ class dataPublisher {
      * is no sensor data included in this metadata and it's only to be called at
      * boot, there's no `forceFlush` option for this function.
      *
-     * This depends on an internet connection already having been made and a
-     * client being available.
+     * This depends on an internet connection already having been made and the
+     * required application-owned client being available.
      *
      * @note This does *not* have to be implemented for each publisher! If it is
      * not implemented, it will return 0.
@@ -300,8 +242,7 @@ class dataPublisher {
     virtual int16_t publishMetadata();
 
     /**
-     * @brief Retained for backwards compatibility; use publishData(Client*
-     * outClient) in new code.
+     * @brief Deprecated alias for publishData(Client& outClient).
      *
      * @m_deprecated_since{0,22,5}
      *
@@ -311,10 +252,9 @@ class dataPublisher {
      * @return The result of publishing data.  May be an http response code or a
      * result code from PubSubClient.
      */
-    virtual int16_t sendData(Client* outClient);
+    virtual int16_t sendData(Client& outClient);
     /**
-     * @brief Retained for backwards compatibility; use publishData() in new
-     * code.
+     * @brief Deprecated alias for publishData().
      *
      * @m_deprecated_since{0,22,5}
      *
@@ -338,11 +278,6 @@ class dataPublisher {
      * @brief The internal pointer to the logger instance to be used.
      */
     Logger* _baseLogger = nullptr;
-    /**
-     * @brief The internal pointer to the base logger's modem instance to be
-     * used.
-     */
-    loggerModem* _baseModem = nullptr;
     /**
      * @brief The internal pointer to the client instance to be used.
      */
@@ -396,34 +331,6 @@ class dataPublisher {
      * @param debug_flush If true, flush the TX buffer to the debugging port.
      */
     static void txBufferFlush(bool debug_flush = true);
-
-    /**
-     * @brief Use the connected base logger's logger modem and underlying
-     * TinyGSM instance to create a new client for the publisher.
-     *
-     * @note This does *NOT* override any client set by the
-     * constructor/begin/setClient functions. If you set an external client by
-     * any of those methods, this function should not be called. It is protected
-     * to prevent being called by external code.
-     *
-     * @note The default implementation of this function creates an insecure
-     * client. Publishers that require SSL must re-implement this function.
-     *
-     * @return A pointer to an Arduino client instance
-     */
-    virtual Client* createClient();
-    /**
-     * @brief Delete a created client. We need to pass this through to avoid a
-     * memory leak because we cannot delete from the pointer because the
-     * destructor for a client in the Arduino core isn't virtual.
-     *
-     * @note The client must be deleted by the same type of modem that created
-     * it.  This is unlikely to be an issue unless you're trying to use two
-     * modems on the same logger.
-     *
-     * @param client The client to delete
-     */
-    virtual void deleteClient(Client* client);
 
     /**
      * @brief Interval (in units of the logging interval) between
