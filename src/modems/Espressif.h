@@ -212,9 +212,6 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
 
 
     bool extraModemSetup() override {
-        if (this->_modemSleepRqPin >= 0) {
-            digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
-        }
         bool success = this->gsmModem.init();
         // Attempt to get the modem name even without a successful init
         // The full make and model won't be returned, but it will at least be
@@ -272,9 +269,9 @@ class Espressif : public loggerModemImpl<GsmModemType_T, true> {
         } else if (this->_modemResetPin >= 0) {
             MS_DBG(F("Sending a reset pulse to pin"), this->_modemResetPin,
                    F("to wake Espressif module from deep sleep"));
-            digitalWrite(this->_modemResetPin, LOW);
+            digitalWrite(this->_modemResetPin, ESPRESSIF_RESET_LEVEL);
             delay(this->_resetPulse_ms);
-            digitalWrite(this->_modemResetPin, HIGH);
+            digitalWrite(this->_modemResetPin, !ESPRESSIF_RESET_LEVEL);
             if (this->_modemSleepRqPin >= 0) {
                 digitalWrite(this->_modemSleepRqPin, !this->_wakeLevel);
             }

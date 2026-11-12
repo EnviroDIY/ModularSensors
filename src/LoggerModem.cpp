@@ -46,9 +46,9 @@ bool loggerModem::updateModemMetadata() {
     // Initialize variable
     int16_t rssi     = MS_INVALID_VALUE;
     int16_t percent  = MS_INVALID_VALUE;
-    int8_t  state    = 99;
+    int8_t  state    = -99;
     int8_t  bpercent = -99;
-    int16_t volt     = 9999;
+    int16_t volt     = -9999;
 
     MS_DBG(F("Modem polling settings:"), String(_pollModemMetaData, BIN));
 

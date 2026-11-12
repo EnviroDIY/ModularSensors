@@ -22,9 +22,8 @@ EspressifESP8266::EspressifESP8266(TinyGsmESP8266& xxxxxModem, int8_t powerPin,
 
 bool EspressifESP8266::modemSleepFxn() {
     // Use this if you have an MCU pin connected to the ESP's reset pin to
-    // wake from deep sleep.  We'll also put it in deep sleep before yanking
-    // power.
-    if (_modemResetPin >= 0 || _powerPin >= 0) {
+    // wake from deep sleep.
+    if (_modemResetPin >= 0) {
         MS_DBG(F("Requesting deep sleep for ESP8266"));
         // On the ESP8266, we can request indefinite deep sleep by setting the
         // deep sleep timer time to 0.
@@ -54,25 +53,28 @@ bool EspressifESP8266::modemSleepFxn() {
         gsmModem.sendAT(GF("+SLEEPWKCFG=2,"), String(_espSleepRqPin), ',',
                         ESPRESSIF_WAKE_LEVEL ? 1 : 0);
         bool success = gsmModem.waitResponse() == 1;
-        // AT+SLEEP=<sleep mode>
-        // <sleep mode>:
-        //     0: Disable the sleep mode.
-        //     1: Modem-sleep DTIM mode. RF will be periodically closed
-        //     according to AP DTIM.
-        //     2: Light-sleep mode. CPU will automatically sleep and RF will
-        //     be periodically closed according to listen interval set by
-        //     AT+CWJAP.
-        //     3: Modem-sleep listen interval mode. RF will be periodically
-        //     closed according to listen interval set by AT+CWJAP.
-        gsmModem.sendAT(GF("+SLEEP=2"));
-        success &= gsmModem.waitResponse() == 1;
-        delay(5);
-        MS_DBG(F("Setting pin"), _modemSleepRqPin,
-               !_wakeLevel ? F("HIGH") : F("LOW"),
-               F("to allow the Espressif module to enter light sleep"));
-        digitalWrite(_modemSleepRqPin, !_wakeLevel);
-        MS_DBG(F("Module MIGHT enter light sleep mode if it has been idle for "
-                 "sufficient time."));
+        if (success) {
+            // AT+SLEEP=<sleep mode>
+            // <sleep mode>:
+            //     0: Disable the sleep mode.
+            //     1: Modem-sleep DTIM mode. RF will be periodically closed
+            //     according to AP DTIM.
+            //     2: Light-sleep mode. CPU will automatically sleep and RF will
+            //     be periodically closed according to listen interval set by
+            //     AT+CWJAP.
+            //     3: Modem-sleep listen interval mode. RF will be periodically
+            //     closed according to listen interval set by AT+CWJAP.
+            gsmModem.sendAT(GF("+SLEEP=2"));
+            success &= gsmModem.waitResponse() == 1;
+            delay(5);
+            MS_DBG(F("Setting pin"), _modemSleepRqPin,
+                   !_wakeLevel ? F("HIGH") : F("LOW"),
+                   F("to allow the Espressif module to enter light sleep"));
+            digitalWrite(_modemSleepRqPin, !_wakeLevel);
+            MS_DBG(
+                F("Module MIGHT enter light sleep mode if it has been idle for "
+                  "sufficient time."));
+        }
         return success;
     } else {  // DON'T go to sleep if we can't wake up!
         MS_DEEP_DBG(F("No pins for sleeping the Espressif module. "
