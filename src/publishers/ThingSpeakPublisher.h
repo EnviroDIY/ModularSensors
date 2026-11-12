@@ -169,6 +169,8 @@ class ThingSpeakPublisher : public dataPublisher {
                const char* thingSpeakClientName, const char* thingSpeakMQTTUser,
                const char* thingSpeakMQTTPassword,
                const char* thingSpeakChannelID);
+
+    using dataPublisher::publishData;
     /**
      * @brief Utilize the supplied client to open a TCP connection to ThingSpeak
      * and publish data over that connection.
@@ -182,7 +184,6 @@ class ThingSpeakPublisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The PubSubClient status code of the response.
      */
-    using dataPublisher::publishData;
     int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
     using dataPublisher::publishMetadata;

@@ -235,6 +235,8 @@ class S3PresignedPublisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, Client& inClient,
                String (*getUrlFxn)(String));
+
+    using dataPublisher::publishData;
     /**
      * @brief Utilizes the supplied client to make a TCP connection to the
      * S3 URL and then stream out a get request over that connection.
@@ -249,7 +251,6 @@ class S3PresignedPublisher : public dataPublisher {
      *
      * @return The http status code of the response.
      */
-    using dataPublisher::publishData;
     int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 

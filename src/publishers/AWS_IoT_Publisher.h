@@ -278,6 +278,8 @@ class AWS_IoT_Publisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, Client& inClient,
                const char* awsIoTEndpoint);
+
+    using dataPublisher::publishData;
     /**
      * @brief Utilize the supplied client to open an SSL connection to AWS IoT
      * Core and publish data over that connection.
@@ -291,7 +293,6 @@ class AWS_IoT_Publisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The PubSubClient status code of the response.
      */
-    using dataPublisher::publishData;
     int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
     using dataPublisher::publishMetadata;

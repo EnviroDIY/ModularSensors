@@ -118,7 +118,8 @@ class UbidotsPublisher : public dataPublisher {
      */
     void begin(Logger& baseLogger, Client& inClient,
                const char* authenticationToken, const char* deviceID);
-    // Post Data to Ubidots
+
+    using dataPublisher::publishData;
     /**
      * @brief Utilize the supplied client to open a TCP connection to the
      * Ubidots API and then stream out a post request over
@@ -133,7 +134,6 @@ class UbidotsPublisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The http status code of the response.
      */
-    using dataPublisher::publishData;
     int16_t publishData(Client& outClient, bool forceFlush) override;
 
  protected:

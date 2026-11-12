@@ -187,6 +187,7 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      */
     bool connectionNeeded() override;
 
+    using dataPublisher::publishData;
     /**
      * @brief Utilize the supplied client to open a TCP connection to Monitor My
      * Watershed and then stream out a post request over that connection.
@@ -200,7 +201,6 @@ class MonitorMyWatershedPublisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The http status code of the response.
      */
-    using dataPublisher::publishData;
     int16_t publishData(Client& outClient,
                         bool forceFlush = MS_ALWAYS_FLUSH_PUBLISHERS) override;
 
