@@ -31,10 +31,6 @@ ___
   - [Logger Settings](#logger-settings)
     - [Creating Extra Serial Ports](#creating-extra-serial-ports)
       - [AVR Boards](#avr-boards)
-        - [AltSoftSerial](#altsoftserial)
-        - [NeoSWSerial](#neoswserial)
-        - [SoftwareSerial with External Interrupts](#softwareserial-with-external-interrupts)
-        - [Software I2C/Wire](#software-i2cwire)
       - [SAMD Boards](#samd-boards)
     - [Assigning Serial Port Functionality](#assigning-serial-port-functionality)
     - [Logging Options](#logging-options)
@@ -90,7 +86,7 @@ ___
     - [Maxbotix HRXL Ultrasonic Range Finder](#maxbotix-hrxl-ultrasonic-range-finder)
     - [Maxim DS18 One Wire Temperature Sensor](#maxim-ds18-one-wire-temperature-sensor)
     - [Measurement Specialties MS5803-14BA Pressure Sensor](#measurement-specialties-ms5803-14ba-pressure-sensor)
-    - [TE Connectivity / Measurement Specialties MS5837 Pressure Sensor](#te-connectivity-ms5837-pressure-sensor)
+    - [TE Connectivity MS5837 Pressure Sensor](#te-connectivity-ms5837-pressure-sensor)
     - [Meter SDI-12 Sensors](#meter-sdi-12-sensors)
       - [Meter ECH2O Soil Moisture Sensor](#meter-ech2o-soil-moisture-sensor)
       - [Meter Hydros 21 Conductivity, Temperature, and Depth Sensor](#meter-hydros-21-conductivity-temperature-and-depth-sensor)
@@ -958,9 +954,9 @@ Keep in mind that the I2C address (0x76) of the MS5803 matches those of some con
 
 ___
 
-### TE Connectivity / Measurement Specialties MS5837 Pressure Sensor<!--! {#menu_walk_te_connectivity_ms5837} -->
+### TE Connectivity MS5837 Pressure Sensor<!--! {#menu_walk_te_connectivity_ms5837} -->
 
-The MS5837 is commonly used in Blue Robotics Bar02/Bar30 pressure sensors for underwater applications and depth measurement.
+The TE Connectivity / Measurement Specialties MS5837 is commonly used in Blue Robotics Bar02/Bar30 pressure sensors for underwater applications and depth measurement.
 The only required input is the Arduino pin controlling power on/off; the sensor model, fluid density, air pressure, and number of readings to average are optional.
 Keep in mind that the I2C address (0x76) of the MS5837 matches that of some configurations of the MS5803, BME280, BMP388, and BMP390 sensors; when using those sensors together, make sure they are set to different addresses.
 
