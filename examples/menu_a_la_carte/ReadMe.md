@@ -12,7 +12,7 @@ ___
 
 > [!NOTE]
 > This walkthrough is intended to be viewed on GitHub pages at <https://envirodiy.github.io/ModularSensors/example_menu.html>*
-
+<!-- end note -->
 > [!WARNING]
 > This example is long.
 > This walk-through is really, really long.
@@ -847,7 +847,7 @@ ___
 
 > [!NOTE]
 > Use hardware serial if at all possible!
-
+<!-- end note -->
 > [!WARNING]
 > The camera only communicates at 115200 baud.
 > This is too fast for an 8MHz board like the EnviroDIY Mayfly.
