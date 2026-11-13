@@ -75,10 +75,9 @@ bool EspressifESP32::modemSleepFxn() {
             success &= gsmModem.waitResponse() == 1;
             if (success) {
                 delay(5);
-                MS_DBG(
-                    F("Setting pin"), _modemSleepRqPin,
-                    !_wakeLevel ? F("HIGH") : F("LOW"),
-                    F("to allow the Espressif module to enter light sleep"));
+                MS_DBG(F("Setting pin"), _modemSleepRqPin,
+                       !_wakeLevel ? F("HIGH") : F("LOW"),
+                       F("to allow the Espressif module to enter light sleep"));
                 digitalWrite(_modemSleepRqPin, !_wakeLevel);
                 MS_DBG(F("Module MIGHT enter light sleep mode if it has been "
                          "idle for sufficient time."));

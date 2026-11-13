@@ -122,7 +122,7 @@
  * This contains the main I2C functionality for all Atlas EZO circuits.
  */
 class AtlasParent : public Sensor {
- public:
+ protected:
     /**
      * @brief Construct a new Atlas Parent object using a secondary *hardware*
      * I2C instance.
@@ -191,6 +191,7 @@ class AtlasParent : public Sensor {
                 uint32_t warmUpTime_ms = 0, uint32_t stabilizationTime_ms = 0,
                 uint32_t measurementTime_ms = 0, uint8_t incCalcValues = 0);
 
+ public:
     /**
      * @brief Destroy the Atlas Parent object.
      */

@@ -94,9 +94,6 @@
 #define CTD_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; maximum measurement duration: 500ms.
 #define CTD_MEASUREMENT_TIME_MS 500
-/// @brief Extra wake time required for an SDI-12 sensor between the "break"
-/// and the time the command is sent.  The CTD requires no extra time.
-#define CTD_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -245,7 +242,7 @@ class DecagonCTD : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
-                       CTD_EXTRA_WAKE_TIME_MS, CTD_INC_CALC_VARIABLES) {}
+                       CTD_INC_CALC_VARIABLES) {}
     /**
      * @copydoc DecagonCTD::DecagonCTD
      */
@@ -254,7 +251,7 @@ class DecagonCTD : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
-                       CTD_EXTRA_WAKE_TIME_MS, CTD_INC_CALC_VARIABLES) {}
+                       CTD_INC_CALC_VARIABLES) {}
     /**
      * @copydoc DecagonCTD::DecagonCTD
      */
@@ -263,7 +260,7 @@ class DecagonCTD : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "DecagonCTD", CTD_NUM_VARIABLES, CTD_WARM_UP_TIME_MS,
                        CTD_STABILIZATION_TIME_MS, CTD_MEASUREMENT_TIME_MS,
-                       CTD_EXTRA_WAKE_TIME_MS, CTD_INC_CALC_VARIABLES) {}
+                       CTD_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Decagon CTD object
      */

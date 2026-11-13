@@ -758,17 +758,31 @@ class Logger {
      *
      * @note This must be set.
      *
-     * @param timeZone The timezone data should be saved to the SD card in. This
-     * need not be the same as the timezone of the real time clock.
+     * @param utcOffsetSeconds The timezone data should be saved to the SD card
+     * in. This need not be the same as the timezone of the real time clock.
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static void setLoggerTimeZone(int8_t timeZone);
+    static void setLoggerTimeZone(int32_t utcOffsetSeconds);
     /**
      * @brief Get the Logger Time Zone.
      *
-     * @return The timezone data is be saved to the SD card in.  This
-     * is not be the same as the timezone of the real time clock.
+     * @return The UTC offset in hours for the timezone data is be saved to the
+     * SD card in.  This is not be the same as the timezone of the real time
+     * clock.
      */
     static int8_t getLoggerTimeZone();
+    /**
+     * @brief Get the Logger UTC offset in seconds.
+     *
+     * @return The UTC offset in seconds for the timezone data is be saved to
+     * the SD card in.  This is not be the same as the timezone of the real time
+     * clock.
+     */
+    static int32_t getLoggerOffsetSeconds();
 
     /**
      * @brief A passthrough to loggerClock::setRTCOffset(int8_t offsetHours);
@@ -780,9 +794,10 @@ class Logger {
      *
      * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
      *
-     * @param timeZone The offset of the real-time clock (RTC) from UTC in hours
+     * @param utcOffsetHours The offset of the real-time clock (RTC) from UTC in
+     * **hours**
      */
-    static void setRTCTimeZone(int8_t timeZone);
+    static void setRTCTimeZone(int8_t utcOffsetHours);
     /**
      * @brief A passthrough to loggerClock::getRTCOffset(); get the timezone of
      * the real-time clock (RTC).
@@ -802,18 +817,31 @@ class Logger {
      * be -5.  If your RTC is set in EST and your timezone is EST this does not
      * need to be called.
      *
-     * @param offset The difference between the timezone of the RTC and the
-     * saved data
-     */
-    static void setTZOffset(int8_t offset);
-    /**
-     * @brief Get the offset between the built-in clock and the time zone
-     * where the data is being recorded.
+     * @param offsetSeconds The difference between the timezone of the RTC and
+     * the saved data
      *
-     * @return The offset between the built-in clock and the time
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
+     */
+    static void setTZOffset(int32_t offsetSeconds);
+    /**
+     * @brief Get the offset **in hours** between the built-in clock and the
+     * time zone where the data is being recorded.
+     *
+     * @return The offset **in hours** between the built-in clock and the time
      * zone where the data is being recorded.
      */
     static int8_t getTZOffset();
+    /**
+     * @brief Get the offset **in seconds** between the built-in clock and the
+     * time zone where the data is being recorded.
+     *
+     * @return The offset **in seconds** between the built-in clock and the time
+     * zone where the data is being recorded.
+     */
+    static int32_t getTZOffsetSeconds();
 
     /**
      * @brief Get the current epoch time from the RTC and correct it to the
@@ -836,8 +864,9 @@ class Logger {
      * @param day [out] Reference to a variable where the day will be stored
      * @param month [out] Reference to a variable where the month will be stored
      * @param year [out] Reference to a variable where the year will be stored
-     * @param tz_offset [out] Reference to a variable where the timezone offset
-     * will be stored
+     * @param tz_offset_s [out] Reference to a variable where the timezone
+     * offset
+     * **in seconds** will be stored
      *
      * @remark Unlike the near-identical loggerClock::getNowAsParts(), this
      * function converts all of the parts to the loggers timezone and writes the
@@ -845,7 +874,7 @@ class Logger {
      */
     static void getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                             int8_t& day, int8_t& month, int16_t& year,
-                            uint8_t& tz_offset);
+                            int32_t& tz_offset_s);
 
     /**
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
@@ -866,7 +895,6 @@ class Logger {
      * epoch (#MS_LOGGER_EPOCH).
      */
     static void formatDateTime_ISO8601(char* buffer, time_t epochSeconds);
-#if EPOCHTIME_ENABLE_STRING_FORMATTING || defined(DOXYGEN)
     /**
      * @brief Convert an epoch time into a ISO8601 formatted string.
      *
@@ -884,7 +912,6 @@ class Logger {
      * file.  The default options for EpochTime enable this feature.
      */
     static String formatDateTime_ISO8601(time_t epochSeconds);
-#endif
 #if EPOCHTIME_ENABLE_STRFTIME || defined(DOXYGEN)
     /**
      * @brief Convert an epoch time into a character string based on the input
@@ -982,12 +1009,12 @@ class Logger {
 
  protected:
     /**
-     * @brief The static timezone data is being logged in.
+     * @brief The static offset of the logger from UTC in seconds
      *
      * @note All logger objects, if multiple are used, will be in the same
      * timezone.
      */
-    static int8_t _loggerUTCOffset;
+    static int32_t _loggerOffsetSeconds;
     /**
      * @brief The start of the epoch for the logger.
      *
@@ -995,13 +1022,13 @@ class Logger {
      */
     static epochStart _loggerEpoch;
     /**
-     * @brief The static difference between the timezone of the RTC and the
-     * timezone data is being logged in.
+     * @brief The static difference **in seconds** between the timezone of the
+     * RTC and the timezone data is being logged in.
      *
      * @note All logger objects, if multiple are used, will be will have the
      * same offset.
      */
-    static int8_t _loggerRTCOffset;
+    static int32_t _loggerRTCOffsetSeconds;
 
     // ===================================================================== //
     /**

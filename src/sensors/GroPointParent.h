@@ -91,7 +91,7 @@
  */
 /* clang-format on */
 class GroPointParent : public Sensor {
- public:
+ protected:
     /**
      * @brief Construct a new GroPoint Parent object.  This is only intended
      * to be used within this library.
@@ -148,6 +148,8 @@ class GroPointParent : public Sensor {
                    uint32_t stabilizationTime_ms = 100,
                    uint32_t measurementTime_ms   = 200,
                    uint8_t  incCalcValues        = 0);
+
+ public:
     /**
      * @brief Destroy the GroPoint Parent object - no action taken
      */

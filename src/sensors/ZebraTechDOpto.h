@@ -98,9 +98,6 @@
  * possibly colliding with and confusing other sensor results.
  */
 #define DOPTO_MEASUREMENT_TIME_MS 5335
-/// @brief Extra wake time required for an SDI-12 sensor between the "break"
-/// and the time the command is sent.  The D-Opto requires no extra time.
-#define DOPTO_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -236,8 +233,7 @@ class ZebraTechDOpto : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS,
-                       DOPTO_INC_CALC_VARIABLES) {}
+                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_INC_CALC_VARIABLES) {}
     /**
      * @copydoc ZebraTechDOpto::ZebraTechDOpto
      */
@@ -246,8 +242,7 @@ class ZebraTechDOpto : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS,
-                       DOPTO_INC_CALC_VARIABLES) {}
+                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_INC_CALC_VARIABLES) {}
     /**
      * @copydoc ZebraTechDOpto::ZebraTechDOpto
      */
@@ -256,8 +251,7 @@ class ZebraTechDOpto : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "ZebraTech D-Opto", DOPTO_NUM_VARIABLES,
                        DOPTO_WARM_UP_TIME_MS, DOPTO_STABILIZATION_TIME_MS,
-                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_EXTRA_WAKE_TIME_MS,
-                       DOPTO_INC_CALC_VARIABLES) {}
+                       DOPTO_MEASUREMENT_TIME_MS, DOPTO_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Zebra-Tech DOpto object
      */

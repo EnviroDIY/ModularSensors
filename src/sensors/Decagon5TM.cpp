@@ -13,6 +13,7 @@
 bool Decagon5TM::getResults(bool verify_crc) {
     // run the parent getResults method
     bool success = SDI12Sensors::getResults(verify_crc);
+    if (!success) { return false; }
 
     // pull the ea and temperature values from the buffer that getResults filled
     float ea   = sensorValues[TM_EA_VAR_NUM];

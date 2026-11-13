@@ -128,9 +128,6 @@
 /// @brief Sensor::_measurementTime_ms; the Teros 11 takes25 ms to 50 ms to
 /// complete a measurement.
 #define TEROS11_MEASUREMENT_TIME_MS 50
-/// @brief Extra wake time required for an SDI-12 sensor between the "break"
-/// and the time the command is sent.  The Teros-11 requires no extra time.
-#define TEROS11_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -320,7 +317,7 @@ class MeterTeros11 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS,
-                       TEROS11_MEASUREMENT_TIME_MS, TEROS11_EXTRA_WAKE_TIME_MS,
+                       TEROS11_MEASUREMENT_TIME_MS,
                        TEROS11_INC_CALC_VARIABLES) {}
     /**
      * @copydoc MeterTeros11::MeterTeros11
@@ -330,7 +327,7 @@ class MeterTeros11 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS,
-                       TEROS11_MEASUREMENT_TIME_MS, TEROS11_EXTRA_WAKE_TIME_MS,
+                       TEROS11_MEASUREMENT_TIME_MS,
                        TEROS11_INC_CALC_VARIABLES) {}
     /**
      * @copydoc MeterTeros11::MeterTeros11
@@ -340,7 +337,7 @@ class MeterTeros11 : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "MeterTeros11", TEROS11_NUM_VARIABLES,
                        TEROS11_WARM_UP_TIME_MS, TEROS11_STABILIZATION_TIME_MS,
-                       TEROS11_MEASUREMENT_TIME_MS, TEROS11_EXTRA_WAKE_TIME_MS,
+                       TEROS11_MEASUREMENT_TIME_MS,
                        TEROS11_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Meter Teros 11 object

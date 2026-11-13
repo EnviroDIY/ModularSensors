@@ -116,9 +116,6 @@
 #define TM_STABILIZATION_TIME_MS 0
 /// @brief Sensor::_measurementTime_ms; maximum measurement duration: 200ms
 #define TM_MEASUREMENT_TIME_MS 200
-/// @brief Extra wake time required for an SDI-12 sensor between the "break" and
-/// the time the command is sent.  The 5TM requires no extra time.
-#define TM_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -272,7 +269,7 @@ class Decagon5TM : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS,
-                       TM_EXTRA_WAKE_TIME_MS, TM_INC_CALC_VARIABLES) {}
+                       TM_INC_CALC_VARIABLES) {}
     /**
      * @copydoc Decagon5TM::Decagon5TM
      */
@@ -281,7 +278,7 @@ class Decagon5TM : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS,
-                       TM_EXTRA_WAKE_TIME_MS, TM_INC_CALC_VARIABLES) {}
+                       TM_INC_CALC_VARIABLES) {}
     /**
      * @copydoc Decagon5TM::Decagon5TM
      */
@@ -290,7 +287,7 @@ class Decagon5TM : public SDI12Sensors {
         : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
                        "Decagon5TM", TM_NUM_VARIABLES, TM_WARM_UP_TIME_MS,
                        TM_STABILIZATION_TIME_MS, TM_MEASUREMENT_TIME_MS,
-                       TM_EXTRA_WAKE_TIME_MS, TM_INC_CALC_VARIABLES) {}
+                       TM_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Decagon 5TM object
      */
