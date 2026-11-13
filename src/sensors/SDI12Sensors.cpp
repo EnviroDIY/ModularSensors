@@ -330,7 +330,7 @@ bool SDI12Sensors::getResults(bool verify_crc) {
     (void)verify_crc;
 
     uint8_t expectedResults = _numReturnedValues - _incCalcValues;
-    float   results[_numReturnedValues];
+    float   results[MAX_NUMBER_VARS];
     _SDI12Recorder.requestData(_SDI12address, results, expectedResults);
     while (_SDI12Recorder.isBusy()) {
         _SDI12Recorder.update();
