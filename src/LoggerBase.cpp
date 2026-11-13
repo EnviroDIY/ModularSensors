@@ -557,12 +557,13 @@ void Logger::setTZOffset(int32_t offsetSeconds) {
     if (_loggerRTCOffsetSeconds == 0) {
         PRINTOUT(F("RTC and Logger are set in the same timezone."));
     } else if (_loggerRTCOffsetSeconds < 0) {
-        PRINTOUT(F("RTC is set"),
-                 -1 * static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds),
-                 F("hours ahead of logging timezone"));
+        PRINTOUT(
+            F("RTC is set"),
+            -1 * static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds / 3600),
+            F("hours ahead of logging timezone"));
     } else {
         PRINTOUT(F("RTC is set"),
-                 static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds),
+                 static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds / 3600),
                  F("hours behind the logging timezone"));
     }
 }

@@ -203,8 +203,7 @@ void loggerClock::setNextRTCInterrupt(epochTime in_time,
     time_t t = TimeUtils::convertOffsetAndEpoch(
                    in_time.getTimestamp(),
                    normalizeUtcOffsetSeconds(utcOffsetSeconds),
-                   epochStart::unix_epoch,
-                   static_cast<int32_t>(_rtcOffsetSeconds) * 3600, _rtcEpoch) -
+                   epochStart::unix_epoch, _rtcOffsetSeconds, _rtcEpoch) -
         normalizeUtcOffsetSeconds(utcOffsetSeconds);
     MS_DBG(F("Setting the next alarm on the"), MS_CLOCK_NAME, F("to"),
            static_cast<uint32_t>(t));
