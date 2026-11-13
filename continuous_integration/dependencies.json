@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 54,
+  "action_cache_version": 55,
   "dependencies": [
     {
       "name": "EpochTime",
@@ -259,7 +259,8 @@
       "name": "SDI-12",
       "owner": "envirodiy",
       "library id": "1486",
-      "version": "https://github.com/EnviroDIY/Arduino-SDI-12#ext_int_dep_2",
+      "url": "https://github.com/EnviroDIY/Arduino-SDI-12",
+      "version": "~3.0.0",
       "note": "EnviroDIY SDI-12 Library for Arduino",
       "author_notes": [
         "Kevin M. Smith",
