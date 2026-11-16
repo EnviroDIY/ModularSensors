@@ -57,8 +57,6 @@ int32_t normalizeUtcOffsetSeconds(int32_t utcOffsetSeconds) {
 
 // Initialize the static timezone
 int32_t Logger::_loggerOffsetSeconds = 0;
-// Initialize the static epoch
-epochStart Logger::_loggerEpoch = MS_LOGGER_EPOCH;
 // Initialize the static time adjustment
 int32_t Logger::_loggerRTCOffsetSeconds = 0;
 // Initialize the static timestamps
@@ -575,17 +573,23 @@ int32_t Logger::getTZOffsetSeconds() {
 }
 time_t Logger::getNowLocalEpoch() {
     return loggerClock::getNowAsEpoch(Logger::_loggerOffsetSeconds,
-                                      Logger::_loggerEpoch);
+                                      epochStart::unix_epoch);
 }
 time_t Logger::getNowUTCEpoch() {
-    return loggerClock::getNowAsEpoch(0, Logger::_loggerEpoch);
+    return loggerClock::getNowAsEpoch(0, epochStart::unix_epoch);
 }
 void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                          int8_t& day, int8_t& month, int16_t& year,
                          int32_t& tz_offset_s) {
     tz_offset_s = Logger::_loggerOffsetSeconds;
-    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerOffsetSeconds);
+    tm timeParts;
+    getNowLocalTimeParts(timeParts);
+    seconds = timeParts.tm_sec;
+    minutes = timeParts.tm_min;
+    hours   = timeParts.tm_hour;
+    day     = timeParts.tm_mday;
+    month   = timeParts.tm_mon + 1;
+    year    = timeParts.tm_year + 1900;
 }
 
 // This converts an epoch time (unix time) into an ISO8601 formatted string.
@@ -593,24 +597,24 @@ void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
 // the LOGGER's offset as the time zone offset in the string.
 // Code modified from parts of the SparkFun RV-8803 library.
 void Logger::formatDateTime_ISO8601(char* buffer, time_t epochSeconds) {
-    TimeUtils::formatISO8601(buffer,
-                             epochTime(epochSeconds,
-                                       Logger::_loggerOffsetSeconds,
-                                       Logger::_loggerEpoch),
-                             Logger::_loggerOffsetSeconds);
+    epochTime loggerTime(epochSeconds, Logger::_loggerOffsetSeconds,
+                         epochStart::unix_epoch);
+    TimeUtils::formatISO8601(buffer, loggerTime);
 }
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
 String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
     char buffer[26] = {'\0'};
     formatDateTime_ISO8601(buffer, epochSeconds);
     return String(buffer);
 }
+#endif
 #if EPOCHTIME_ENABLE_STRFTIME
 void Logger::formatDateTime(char* buffer, const char* fmt,
                             time_t epochSeconds) {
     TimeUtils::formatDateTime(buffer, fmt,
                               epochTime(epochSeconds,
                                         Logger::_loggerOffsetSeconds,
-                                        Logger::_loggerEpoch));
+                                        epochStart::unix_epoch));
 }
 #endif
 // This checks that the logger time is within a "sane" range
@@ -628,9 +632,10 @@ bool Logger::isRTCSane() {
 // called before updating the sensors, not after.
 void Logger::markTime() {
     MS_DEEP_DBG(F("Marking time..."));
-    Logger::markedUTCUnixTime   = getNowUTCEpoch();
-    Logger::markedLocalUnixTime = markedUTCUnixTime +
-        Logger::_loggerOffsetSeconds;
+    Logger::markedUTCUnixTime = getNowUTCEpoch();
+    epochTime markedTime(Logger::markedUTCUnixTime, 0, epochStart::unix_epoch);
+    Logger::markedLocalUnixTime = markedTime.getTimestamp(
+        Logger::_loggerOffsetSeconds, epochStart::unix_epoch);
 }
 
 
@@ -1186,33 +1191,13 @@ String Logger::generateFileName(bool include_time, const char* extension,
     MS_DEEP_DBG(F("Generating filename with prefix:"), use_prefix);
     const char* use_ext = extension != nullptr ? extension : ".csv";
     MS_DEEP_DBG(F("Generating filename with extension:"), use_ext);
-    uint8_t len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
-    // The EpochTime library by default compiles with the generic
-    // formatDateTime function disabled (that is, without
-    // `EPOCHTIME_ENABLE_STRFTIME` defined).  Instead of using strftime to get
-    // the date-time for the filename, we use a sub-string of the ISO8601
-    // formatted datetime.
-    char isoBuf[26] = {'\0'};  // buffer for ISO8601 formatted datetime
-    // NOTE: the format function will not convert time zones, only use the input
-    // zone to print the zone info. Since we're going to crop off that part
-    // anyway, it doesn't matter what we put in as the offset.
-    TimeUtils::formatISO8601(isoBuf,
-                             epochTime(Logger::markedLocalUnixTime,
-                                       Logger::_loggerOffsetSeconds,
-                                       Logger::_loggerEpoch),
-                             Logger::_loggerOffsetSeconds);
-
-    // Extract YYYYMMDD or YYYYMMDD_HHMMSS from YYYY-MM-DDTHH:MM:SS+HH:MM.
-    char time_buff[16] = {'\0'};
-    memcpy(time_buff, isoBuf, 4);
-    memcpy(time_buff + 4, isoBuf + 5, 2);
-    memcpy(time_buff + 6, isoBuf + 8, 2);
-    if (include_time) {
-        time_buff[8] = '_';
-        memcpy(time_buff + 9, isoBuf + 11, 2);
-        memcpy(time_buff + 11, isoBuf + 14, 2);
-        memcpy(time_buff + 13, isoBuf + 17, 2);
-    }
+    uint8_t   len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
+    char      time_buff[16]  = {'\0'};
+    epochTime markedTime(Logger::markedLocalUnixTime,
+                         Logger::_loggerOffsetSeconds, epochStart::unix_epoch);
+    TimeUtils::formatTimestamp(time_buff, sizeof(time_buff), markedTime,
+                               include_time ? fixedTimeFormat::compact_date_time
+                                            : fixedTimeFormat::compact_date);
     MS_DEEP_DBG(F("Generating filename with timestamp string:"), time_buff);
     String filename = String(use_prefix);
     if (len_underscore) { filename += String("_"); }
@@ -1284,10 +1269,12 @@ void Logger::printFileHeader(Stream* stream) {
 
     // We'll finish up with the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
-    if (_loggerOffsetSeconds > 0) {
-        dtRowHeader += '+' + static_cast<int8_t>(_loggerOffsetSeconds / 3600);
-    } else if (_loggerOffsetSeconds < 0) {
-        dtRowHeader += '-' + static_cast<int8_t>(_loggerOffsetSeconds / 3600);
+    if (_loggerOffsetSeconds != 0) {
+        char utcOffset[7] = {'\0'};
+        if (TimeUtils::formatUtcOffset(utcOffset, sizeof(utcOffset),
+                                       _loggerOffsetSeconds) != 0) {
+            dtRowHeader += utcOffset;
+        }
     }
     STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i))
 }
@@ -1296,11 +1283,13 @@ void Logger::printFileHeader(Stream* stream) {
 // This prints a comma separated list of values of sensor data - including the
 // time -  out over an Arduino stream
 void Logger::printVariableValuesCSV(Stream* stream) {
-    char iso8601[26] = {'\0'};
-    formatDateTime_ISO8601(iso8601, Logger::markedLocalUnixTime);
-    iso8601[10] = ' ';
-    iso8601[19] = '\0';
-    stream->print(iso8601);
+    char calendarDateTime[20] = {'\0'};
+    TimeUtils::formatTimestamp(calendarDateTime, sizeof(calendarDateTime),
+                               epochTime(Logger::markedLocalUnixTime,
+                                         Logger::_loggerOffsetSeconds,
+                                         epochStart::unix_epoch),
+                               fixedTimeFormat::calendar_date_time);
+    stream->print(calendarDateTime);
     stream->print(',');
     for (uint8_t i = 0; i < getArrayVarCount(); i++) {
         stream->print(getValueStringAtI(i));
@@ -1397,26 +1386,42 @@ bool Logger::initializeSDCard() {
 // provided date time callback function. See SdFile::dateTimeCallback() for
 // usage.
 void Logger::fileDateTimeCallback(uint16_t* date, uint16_t* time) {
-    int8_t  seconds, minutes, hours, day, month;
-    int16_t year;
-    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerOffsetSeconds);
+    tm timeParts;
+    getNowLocalTimeParts(timeParts);
 
     // return date using FAT_DATE macro to format fields
-    *date = FAT_DATE(year, month, day);
+    *date = FAT_DATE(timeParts.tm_year + 1900, timeParts.tm_mon + 1,
+                     timeParts.tm_mday);
 
     // return time using FAT_TIME macro to format fields
-    *time = FAT_TIME(hours, minutes, seconds);
+    *time = FAT_TIME(timeParts.tm_hour, timeParts.tm_min, timeParts.tm_sec);
 }
 
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
-    int8_t  seconds, minutes, hours, day, month;
-    int16_t year;
-    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerOffsetSeconds);
-    fileToStamp.timestamp(stampFlag, year, month, day, hours, minutes, seconds);
+    tm timeParts;
+    getNowLocalTimeParts(timeParts);
+    fileToStamp.timestamp(stampFlag, timeParts.tm_year + 1900,
+                          timeParts.tm_mon + 1, timeParts.tm_mday,
+                          timeParts.tm_hour, timeParts.tm_min,
+                          timeParts.tm_sec);
+}
+
+
+bool Logger::getNowLocalTimeParts(tm& timeParts) {
+    epochTime now(getNowUTCEpoch(), 0, epochStart::unix_epoch);
+    if (TimeUtils::fillTimeParts(now, Logger::_loggerOffsetSeconds,
+                                 timeParts)) {
+        return true;
+    }
+
+    PRINTOUT(F("Failed to convert the current time to calendar parts; using "
+               "2000-01-01 00:00:00."));
+    timeParts         = {};
+    timeParts.tm_mday = 1;
+    timeParts.tm_year = 100;
+    return false;
 }
 
 

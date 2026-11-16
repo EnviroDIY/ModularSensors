@@ -41,8 +41,8 @@
 #include "ClockSupport.h"
 #include <Client.h>
 #include <Wire.h>
-// // For time
-// #include <time.h>
+// For time parts
+#include <time.h>
 
 // Bring in the libraries to handle the processor sleep/standby modes
 // The SAMD library can also the built-in clock on those modules
@@ -869,8 +869,8 @@ class Logger {
      * **in seconds** will be stored
      *
      * @remark Unlike the near-identical loggerClock::getNowAsParts(), this
-     * function converts all of the parts to the loggers timezone and writes the
-     * logger timezone to the tz_offset variable.
+     * function converts all of the parts to the logger's timezone and writes
+     * the logger timezone to the tz_offset variable.
      */
     static void getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                             int8_t& day, int8_t& month, int16_t& year,
@@ -886,24 +886,25 @@ class Logger {
     /**
      * @brief Convert an epoch time into an ISO8601 formatted character buffer.
      *
-     * This assumes the supplied date/time is in the LOGGER's timezone and the
-     * LOGGER's epoch start. It adds the LOGGER's offset as the time zone offset
-     * in the buffer.
+     * This assumes the supplied date/time is a local wall timestamp in the
+     * LOGGER's timezone and the Unix epoch. It adds the LOGGER's offset as the
+     * time zone offset in the buffer.
      *
      * @param buffer A character buffer with space for at least 26 characters.
-     * @param epochSeconds The number of seconds since the start of the logger's
-     * epoch (#MS_LOGGER_EPOCH).
+     * @param epochSeconds The number of seconds since the start of the Unix
+     * epoch in the LOGGER's timezone.
      */
     static void formatDateTime_ISO8601(char* buffer, time_t epochSeconds);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING || defined(DOXYGEN)
     /**
-     * @brief Convert an epoch time into a ISO8601 formatted string.
+     * @brief Convert an epoch time into an ISO8601 formatted string.
      *
-     * This assumes the supplied date/time is in the LOGGER's timezone and the
-     * LOGGER's epoch start. It adds the LOGGER's offset as the time zone offset
-     * in the string.
+     * This assumes the supplied date/time is a local wall timestamp in the
+     * LOGGER's timezone and the Unix epoch. It adds the LOGGER's offset as the
+     * time zone offset in the string.
      *
-     * @param epochSeconds The number of seconds since the start of the logger's
-     * epoch (#MS_LOGGER_EPOCH).
+     * @param epochSeconds The number of seconds since the start of the Unix
+     * epoch in the LOGGER's timezone.
      * @return An ISO8601 formatted String.
      *
      * @remark This is only available if EPOCHTIME_ENABLE_STRING_FORMATTING is
@@ -912,6 +913,7 @@ class Logger {
      * file.  The default options for EpochTime enable this feature.
      */
     static String formatDateTime_ISO8601(time_t epochSeconds);
+#endif
 #if EPOCHTIME_ENABLE_STRFTIME || defined(DOXYGEN)
     /**
      * @brief Convert an epoch time into a character string based on the input
@@ -923,14 +925,14 @@ class Logger {
      * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible
      * formatting strings.
      *
-     * @note This function DOES NOTE SUPPORT TIMEZONES. Do not use the %z or %Z
+     * @note This function DOES NOT SUPPORT TIMEZONES. Do not use the %z or %Z
      * inputs!
      *
      * @param buffer A buffer to put the finished string into. Make sure that
      * the buffer is big enough to hold all of the characters!
      * @param fmt The strftime format string.
-     * @param epochSeconds The number of seconds since the start of the given
-     * epoch in the given offset from UTC.
+     * @param epochSeconds The number of seconds since the start of the Unix
+     * epoch in the LOGGER's timezone.
      *
      * @important This is only available if EPOCHTIME_ENABLE_STRFTIME is defined
      * as a build flag for the entire build. It cannot be enabled or disabled on
@@ -1015,12 +1017,6 @@ class Logger {
      * timezone.
      */
     static int32_t _loggerOffsetSeconds;
-    /**
-     * @brief The start of the epoch for the logger.
-     *
-     * @note This is fixed as #MS_LOGGER_EPOCH
-     */
-    static epochStart _loggerEpoch;
     /**
      * @brief The static difference **in seconds** between the timezone of the
      * RTC and the timezone data is being logged in.
@@ -1400,6 +1396,15 @@ class Logger {
     static void fileDateTimeCallback(uint16_t* date, uint16_t* time);
 
     /**
+     * @brief Get the current local time as calendar parts.
+     *
+     * @param timeParts The calendar parts to populate.
+     * @return True on successful conversion.
+     * On failure, timeParts is set to 1980-01-01 00:00:00.
+     */
+    static bool getNowLocalTimeParts(tm& timeParts);
+
+    /**
      * @brief Set a timestamp on a file.
      *
      * @param fileToStamp The filename to change the timestamp of
@@ -1545,12 +1550,12 @@ class Logger {
     virtual void makeInitialConnections();
 
     /**
-     * @brief The static "marked" epoch time for the local timezone.
+     * @brief The static marked local wall timestamp in the Unix epoch.
      */
     static time_t markedLocalUnixTime;
 
     /**
-     * @brief The static "marked" epoch time for UTC.
+     * @brief The static marked UTC timestamp in the Unix epoch.
      */
     static time_t markedUTCUnixTime;
 
