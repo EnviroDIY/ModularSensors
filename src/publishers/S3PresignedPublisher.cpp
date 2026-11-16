@@ -118,8 +118,7 @@ bool S3PresignedPublisher::validateS3URL(String& s3url, char* s3host,
 
     uint32_t expiration = atol(start_expiration);
     // Check basic validity of the timestamp
-    if (expiration < EARLIEST_SANE_UNIX_TIMESTAMP ||
-        expiration > LATEST_SANE_UNIX_TIMESTAMP) {
+    if (TimeUtils::isTimeSane(expiration, 0, epochStart::unix_epoch) == false) {
         PRINTOUT(F("The S3 URL timestamp outside of sane ranges:"), expiration);
         return false;
     }

@@ -1,11 +1,11 @@
 {
-  "action_cache_version": 56,
+  "action_cache_version": 57,
   "dependencies": [
     {
       "name": "EpochTime",
       "owner": "envirodiy",
       "url": "https://github.com/EnviroDIY/EpochTime",
-      "version": "~1.2.0",
+      "version": "~1.3.0",
       "note": "An Arduino library for converting between time in parts as used by core gmtime functions and epoch time (Unix time).",
       "authors": [
         "Sara Damiano"

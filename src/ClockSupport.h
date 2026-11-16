@@ -251,8 +251,10 @@ class loggerClock {
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
-     * To be sane the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
-     * #LATEST_SANE_UNIX_TIMESTAMP.
+     * To be sane the clock must be between EARLIEST_SANE_UNIX_TIMESTAMP and
+     * LATEST_SANE_UNIX_TIMESTAMP.  These defines are set in the EpochTime
+     * library or as **global** build flags.  They cannot be configured within
+     * the ModularSensors config.
      *
      * @return True if the current time on the RTC passes sanity range
      * checking

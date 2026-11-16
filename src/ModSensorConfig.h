@@ -47,37 +47,20 @@
 //==============================================================
 // Time-stamp configurations
 //==============================================================
-#if !defined(MS_LOGGER_EPOCH) || defined(DOXYGEN)
-/**
- * @def MS_LOGGER_EPOCH
- * @brief The epoch start to use for the logger
- */
-#define MS_LOGGER_EPOCH epochStart::unix_epoch
+#if defined(MS_LOGGER_EPOCH)
+#pragma message( \
+    "MS_LOGGER_EPOCH is deprecated and ignored; the logger always uses Unix internally.  Use the explicit epoch parameters of loggerClock and EpochTime for alternate epoch conversions.")
 #endif
 
-#if !defined(EARLIEST_SANE_UNIX_TIMESTAMP) || defined(DOXYGEN)
-/**
- * @def EARLIEST_SANE_UNIX_TIMESTAMP
- * @brief The earliest unix timestamp that can be considered sane.
- *
- * January 1, 2025
- */
-#define EARLIEST_SANE_UNIX_TIMESTAMP 1735689600
+#if defined(EARLIEST_SANE_UNIX_TIMESTAMP)
+#pragma message( \
+    "EARLIEST_SANE_UNIX_TIMESTAMP is deprecated and ignored within the ModularSensors config.  You must define it as a global build flag.")
 #endif
 
 #if !defined(LATEST_SANE_UNIX_TIMESTAMP) || defined(DOXYGEN)
-/**
- * @def LATEST_SANE_UNIX_TIMESTAMP
- * @brief The latest unix timestamp that can be considered sane.
- *
- * January 1, 2035
- */
-#define LATEST_SANE_UNIX_TIMESTAMP 2051222400
+#pragma message( \
+    "LATEST_SANE_UNIX_TIMESTAMP is deprecated and ignored within the ModularSensors config.  You must define it as a global build flag.")
 #endif
-// Static assert to validate timestamp bounds relationship
-static_assert(EARLIEST_SANE_UNIX_TIMESTAMP < LATEST_SANE_UNIX_TIMESTAMP,
-              "EARLIEST_SANE_UNIX_TIMESTAMP must be less than "
-              "LATEST_SANE_UNIX_TIMESTAMP");
 //==============================================================
 
 
