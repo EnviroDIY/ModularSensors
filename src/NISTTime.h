@@ -33,7 +33,6 @@
 // Include other external dependencies
 #include <Arduino.h>
 #include <Client.h>
-#include <EpochTime.h>
 
 /**
  * @brief A helper class for using the NIST TIME protocol over an Arduino

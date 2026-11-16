@@ -47,17 +47,9 @@
 //==============================================================
 // Time-stamp configurations
 //==============================================================
-#if !defined(MS_LOGGER_EPOCH) || defined(DOXYGEN)
-/**
- * @def MS_LOGGER_EPOCH
- * @brief Deprecated epoch start setting retained for source compatibility.
- *
- * @deprecated Since 0.38.0, Logger APIs documented as Unix timestamps always
- * use the Unix epoch and ignore this macro.
- * Use the explicit epoch parameters of loggerClock and EpochTime for alternate
- * epoch conversions.
- */
-#define MS_LOGGER_EPOCH epochStart::unix_epoch
+#if defined(MS_LOGGER_EPOCH)
+#pragma message( \
+    "MS_LOGGER_EPOCH is deprecated and ignored; the logger always uses Unix internally.  Use the explicit epoch parameters of loggerClock and EpochTime for alternate epoch conversions.")
 #endif
 
 #if !defined(EARLIEST_SANE_UNIX_TIMESTAMP) || defined(DOXYGEN)

@@ -9,6 +9,7 @@
  */
 
 #include "NISTTime.h"
+#include <EpochTime.h>
 
 uint32_t NISTTime::_lastRequest = 0;
 
@@ -82,11 +83,12 @@ uint32_t NISTTime::parseResponse(
 
     // Convert from NIST epoch (seconds since Jan 1, 1900) to Unix epoch
     // (seconds since Jan 1, 1970).
-    uint32_t unixTimeStamp = secFrom1900 - EPOCH_NIST_TO_UNIX;
+    uint32_t unixTimeStamp = TimeUtils::getTimestamp(
+        epochTime(secFrom1900, 0, epochStart::nist_epoch), 0,
+        epochStart::unix_epoch);
     MS_DBG(F("Unix Timestamp returned by NIST (UTC):"), unixTimeStamp);
 
-    if (unixTimeStamp < EARLIEST_SANE_UNIX_TIMESTAMP ||
-        unixTimeStamp > LATEST_SANE_UNIX_TIMESTAMP) {
+    if (!TimeUtils::isTimeSane(unixTimeStamp, 0, epochStart::unix_epoch)) {
         return 0;
     }
     return unixTimeStamp;

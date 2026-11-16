@@ -70,7 +70,9 @@ int16_t DreamHostPublisher::publishData(Client& outClient, bool) {
         txBufferAppend(_baseLogger->getLoggerID());
 
         txBufferAppend(timestampTagDH);
-        ltoa(static_cast<uint32_t>(Logger::markedLocalUnixTime - 946684800),
+        ltoa(static_cast<uint32_t>(TimeUtils::convertEpoch(
+                 Logger::markedLocalUnixTime, epochStart::unix_epoch,
+                 epochStart::y2k_epoch)),
              tempBuffer,
              10);  // BASE 10
         txBufferAppend(tempBuffer);
