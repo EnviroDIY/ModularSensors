@@ -112,7 +112,6 @@ CLASS_INDEX_EXPAND_LEVELS = 2
 STYLESHEETS = [
     "css/m-EnviroDIY+documentation.compiled.css",
 ]
-
 EXTRA_FILES = [
     "gp-desktop-logo.png",
     "gp-mobile-logo.png",

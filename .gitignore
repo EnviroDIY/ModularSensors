@@ -77,6 +77,11 @@ __pycache__/
 # PyCharm
 .idea/
 
+# Node.js Dependency directories
+**/node_modules/*
+**/jspm_packages/*
+**/web_modules/*
+
 # Atom
 .atomrc.cson
 .clang_complete
@@ -138,8 +143,6 @@ filters/*
 **/*.*_archive
 
 # Local Agent Instructions
-AGENTS.md
-.github/copilot-instructions.md
 .bumpversion.toml
 
 # Other stuff
@@ -158,3 +161,5 @@ docs/footer.html
 docs/header.html
 tests/SL099_certificates/*
 tests/test_certificates/*
+runDoxygen.bat
+buildCI.bat
