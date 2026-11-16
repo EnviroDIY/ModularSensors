@@ -376,8 +376,8 @@ An example simple local script for testing is (replace `tests/logger_test` with 
 ```powershell
 # Compile one one example in one environment
 $env:PLATFORMIO_CORE_DIR = "C:\platformio"
-$env:PLATFORMIO_SRC_DIR = "tests/logger_test"
-C:\platformio\penv\Scripts\platformio.exe ci --project-conf platformio.ini -e=mayfly -e=envirodiy_stonefly_m4
+$env:PLATFORMIO_LIB_EXTRA_DIRS = Split-Path (Get-Location).Path -Parent
+C:\platformio\penv\Scripts\platformio.exe ci extras/TestCommands --project-conf platformio.ini -e mayfly -e stonefly
 ```
 
 After testing, review compiler warnings and errors and correct problems they reveal.
