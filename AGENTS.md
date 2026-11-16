@@ -377,7 +377,7 @@ An example simple local script for testing is (replace `tests/logger_test` with 
 # Compile one one example in one environment
 $env:PLATFORMIO_CORE_DIR = "C:\platformio"
 $env:PLATFORMIO_LIB_EXTRA_DIRS = Split-Path (Get-Location).Path -Parent
-C:\platformio\penv\Scripts\platformio.exe ci extras/TestCommands --project-conf platformio.ini -e mayfly -e stonefly
+C:\platformio\penv\Scripts\platformio.exe ci tests/logger_test --project-conf platformio.ini -e mayfly -e envirodiy_stonefly_m4
 ```
 
 After testing, review compiler warnings and errors and correct problems they reveal.

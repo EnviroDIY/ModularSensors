@@ -1400,7 +1400,7 @@ class Logger {
      *
      * @param timeParts The calendar parts to populate.
      * @return True on successful conversion.
-     * On failure, timeParts is set to 1980-01-01 00:00:00.
+     * On failure, timeParts is set to 2000-01-01 00:00:00.
      */
     static bool getNowLocalTimeParts(tm& timeParts);
 
