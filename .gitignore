@@ -82,15 +82,46 @@ boards/*
 *.cert
 *.key
 
-# Other
-archive/
-compile_tests/
-logger_test*/
-ex_one_offs/*
-filters/*
-runDoxygen.bat
-docs/examples/*
-docs/examples.dox_x
+# Python
+__pycache__/
+
+# PyCharm
+.idea/
+
+# Node.js Dependency directories
+**/node_modules/*
+**/jspm_packages/*
+**/web_modules/*
+
+# Atom
+.atomrc.cson
+.clang_complete
+.gcc-flags.json
+
+# VSCode
+.vscode
+.history
+.settings
+
+# PlatformIO
+.pioenvs
+.piolibdeps
+.pio
+lib
+lib/readme.txt
+/include
+include/readme.txt
+pioScripts
+/tests
+tests/readme.txt
+/boards
+/variants
+/pioScripts
+.sconsign.dblite
+platformio.ini
+extra_envs.ini
+.clang-tidy
+compile_commands.json
 platformio_extra_envs.ini
 src/sensors/table.md
 cache
@@ -116,9 +147,34 @@ sync.ffs_db
 .github/workflows/compile_platformio.yaml
 .github/workflows/determine_library_source.yaml
 run_mcss.bat
+
+# Filters
+filters/*
+
+# Planning and Archive Folders
+/archive
+/planning
+**/*.*_archive
+
+# Local Agent Instructions
+.bumpversion.toml
+
+# Other stuff
+compile_tests
+logger_test*
+ex_one_offs
+**/sensor_tests
+.clang-tidy
+.github/workflows/LibraryBuild.yml
+datasheets/*
+Datasheets.md
+src/sensors/table.md
+docs/Doxyfile.bak
 docs/customdoxygen.css
 docs/footer.html
 docs/header.html
 installWorkingDependencies.bat
 tests/SL099_certificates/*
 tests/test_certificates/*
+runDoxygen.bat
+buildCI.bat

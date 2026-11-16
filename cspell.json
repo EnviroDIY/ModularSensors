@@ -55,11 +55,13 @@
     {
       "name": "doxygen-commands-custom",
       "pattern": [
+        "anchor-command",
+        "examplenavigation",
+        "footernavigation",
+        "group-command",
         "hash-reference",
         "menusnip-command",
         "ref-command",
-        "anchor-command",
-        "group-command",
         "section-command"
       ]
     },
@@ -68,7 +70,39 @@
       "pattern": "/BUILD_[A-Z0-9_]+/g"
     }
   ],
+  "ignorePaths": [
+    "**/lib/**",
+    ".clang-format",
+    ".clang-tidy",
+    ".gitattributes",
+    ".github/**/*.yaml",
+    ".github/**/*.yml",
+    ".gitignore",
+    ".history",
+    ".vscode",
+    "*doxyfile*",
+    "archive/*",
+    "compile_commands.json",
+    "dependencies.json",
+    "docs/Doxyfile",
+    "example_dependencies.json",
+    "keywords.txt",
+    "library.json",
+    "platformio.ini"
+  ],
   "words": [
+    "Adafruit",
+    "CodeRabbit",
+    "Damiano",
+    "doxyfile",
+    "EnviroDIY",
+    "Espressif",
+    "Geleskie",
+    "microcontroller",
+    "sdamiano",
+    "SRGDamia1"
+  ],
+  "ignoreWords": [
     "_CHLORO_",
     "_domgl",
     "_DOMGL_",
@@ -296,13 +330,5 @@
     "μmol",
     "µmol",
     "µsec"
-  ],
-  "ignoreWords": [],
-  "ignorePaths": [
-    "platformio.ini",
-    "*doxyfile*",
-    ".vscode",
-    "library.json",
-    "**/lib/**"
   ]
 }

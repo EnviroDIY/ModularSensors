@@ -3,6 +3,9 @@ name: Build Examples
 # Triggers the workflow on push or pull request events
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -11,7 +14,7 @@ jobs:
   build_examples:
     name: Build Examples
     if: ${{ ! contains(github.event.head_commit.message, 'ci skip') }}
+    secrets: inherit
     uses: EnviroDIY/workflows/.github/workflows/build_examples.yaml@main
     with:
-      boards_to_build: 'all'
-    secrets: inherit
+      boards_to_build: "all"

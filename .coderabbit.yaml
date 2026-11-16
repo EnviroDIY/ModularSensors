@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
-early_access: false
-enable_free_tier: true
 language: en
 tone_instructions: ''
+early_access: false
+enable_free_tier: true
 knowledge_base:
   learnings:
     scope: auto
@@ -15,61 +15,112 @@ knowledge_base:
 chat:
   auto_reply: true
 reviews:
-  profile: chill
   request_changes_workflow: false
   high_level_summary: true
   high_level_summary_placeholder: '@coderabbitai summary'
-  poem: false
+  auto_title_placeholder: '@coderabbitai'
   review_status: true
+  commit_status: true
   collapse_walkthrough: true
+  poem: false
+  profile: 'chill' # Options: quiet, chill, assertive
   path_filters:
     - '!**/dependencies.json'
+    - '!**/example_dependencies.json'
     - '!**/cspell.json'
+    - '!**/.bumpversion.toml'
+    - '!**/.gitattributes'
+    - '!**/.gitignore'
+    - '!**/.history'
+    - '!**/keywords.txt'
     - '!**/platformio.ini'
+    - '!**/*Certificate*.h'
+    - '!archive/**'
+    - '!planning/**'
+    - '!planning/finished/**'
+    - '!planning/shelved/**'
+    - '!continuous_integration_artifacts/**'
   path_instructions:
+    - path: '**/*'
+      instructions: |
+        - Where available, review the repository's Agents.md or equivalent files for instructions and guidelines related to the repository.
+        - Review newly-added source-code directories for required ReadMe.md files.
+        - For existing code, do not suggest refactors, renaming, file reorganization, abstraction changes, or clean-code improvements unless:
+          - they fix a correctness issue
+          - they fix a maintainability issue introduced by this PR
+          - they are necessary to implement the requested change
     - path: '**/*.md'
       instructions: >-
         Review for grammar, spelling, and clarity.
-        Each sentence should be on a new line.
-        Markdown files should follow rules of markdownlint.
+        Each sentence should be on a new line, except within lists.
+        There is no maximum line length.
+        Markdown files should follow rules of markdownlint using the `.markdownlint-cli2.yaml` configuration file in the repository.
         Check C++ and Arduino code snippets as C++ code.
+    - path: 'ChangeLog.md'
+      instructions: >-
+        In addition to the general markdown review, check the completeness and accuracy of the changelog entries.
     - path: '**/*.dox'
       instructions: >-
         Review for grammar, spelling, and clarity.
         Ensure that Doxygen comments are clear and follow Doxygen conventions, using java-style @commands rather than Qt-style \commands.
         Check C++ and Arduino code snippets as C++ code.
+    - path: '**/*.{h,cpp,tpp,ino}'
+      instructions: >-
+        Review priorities:
+          1. Correctness defects
+          2. API compatibility risks
+          3. Arduino compatibility issues
+          4. Embedded memory/performance issues
+          5. Documentation defects
+          6. Formatting and style
+
+          Do not report lower-priority findings when they only reflect repository-wide existing patterns or subjective preferences.
+
+          Avoid suggesting:
+          - refactors
+          - renaming
+          - abstraction changes
+          - file reorganization
+          - cleanup-only modifications
+
+        unless necessary to fix a defect or introduced by the current PR.
+
+        C++ code must be compatible with the Arduino IDE 2.x.
+        C++ code must be C++11 compatible.
+        Code must be suitable for embedded Arduino platforms with limited memory and processing resources.
+        Since this is an Arduino project, code must not use the standard library (std::) or run time type information.
+        Follow the project's existing configuration mechanisms.
+        Do not suggest replacing typed constants with macros solely for style or perceived memory savings.
+        Defines should be in `.h` or `.tpp` files, not `.cpp` files.
+        User configurable defines should be in a single configuration header file, not scattered across multiple files.
+        Doxygen documentation should be `.h` or `.tpp` files, not `.cpp` files.
+        Template mixin files should have the `.tpp` extension, and should not be included in `.ino` files.
+        Unique functions, defines, and parameters must be documented with Doxygen comments in the header files.
+        Functions marked as `override` do not need Doxygen comments in the header files, unless they have unique parameters or behavior that needs to be documented.
+        Ensure that Doxygen comments follow Doxygen conventions, using java-style @commands rather than Qt-style \commands.
+        Review Doxygen comments for grammar, spelling, completeness, and clarity.
+        Files should be formatted according to the .clang-format file in the repo.
+        Do not report style-only, naming-only, or formatting-only findings unless they are newly introduced by the current change.
     - path: '**/*.ino'
       instructions: >-
         Treat Arduino code in ino files as C++ code.
-        Review the C++ code, point out issues relative to principles of clean code, expressiveness, and performance.
-        Since this is an Arduino project, never suggest using the standard library (std::).
-        For memory savings, prefer defines to const variables, and prefer using the F() macro for string literals longer than a single character.
+        ino files in the in the examples folder should have a Doxygen file header, but do not need individual function-level Doxygen comments.
         Files should be formatted according to the .clang-format file in the repo.
-        Template files used as includes should have the .tpp extension, and should not be included directly by the user.
-        Credential information should be removed by local smudge filters in the filters folder.
-    - path: '**/*.h'
+        When filters are present, do not report credentials that are confirmed to be removed by repository clean filters.
+    - path: 'src/ModSensorConfig.h'
       instructions: >-
-        Review the C++ code, point out issues relative to principles of clean code, expressiveness, and performance.
-        C++ code should be C++11 compatible, and should not use later features.
-        Since this is an Arduino project, never suggest using the standard library (std::).
-        For memory savings, prefer defines to const variables, and prefer using the F() macro for string literals longer than a single character.
-        Defines should be in the headers.
-        Unique functions, defines, and parameters must be documented with Doxygen comments in the header files.
-        Ensure that Doxygen comments are clear and follow Doxygen conventions, using java-style @commands rather than Qt-style \commands.
-        Override functions don't need Doxygen comments in the header files, unless they have unique parameters or behavior that needs to be documented.
-        Files should be formatted according to the .clang-format file in the repo.
-        Don't suggest making getter functions const.
-    - path: '**/*.cpp'
+        This file must contain examples of all user-configurable non-debugging defines for the project.
+    - path: 'src/ModSensorDebugConfig.h'
       instructions: >-
-        Review the C++ code, point out issues relative to principles of clean code, expressiveness, and performance.
-        C++ code should be C++11 compatible, and should not use later features.
-        Since this is an Arduino project, never suggest using the standard library (std::).
-        For memory savings, prefer defines to const variables, and prefer using the F() macro for string literals longer than a single character.
-        Defines should be in the headers.
-        Doxygen documentation should be in the header files.
-        Files should be formatted according to the .clang-format file in the repo.
-        Don't suggest making getter functions const.
+        This file must contain examples of all user-configurable debug defines for the project.
+    - path: 'examples/menu_a_la_carte/menu_a_la_carte.ino'
+      instructions: >-
+        This file must contain example code for every implemented sensor, modem, and data publisher within the library.
   tools:
+    # clang:
+    #   enabled: true
+    cppcheck:
+      enabled: true
     shellcheck:
       enabled: true
     ruff:
@@ -95,6 +146,7 @@ reviews:
       enabled: true
   auto_review:
     enabled: true
+    auto_incremental_review: false
     ignore_title_keywords:
       - WIP
     labels: []
