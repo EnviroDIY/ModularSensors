@@ -52,15 +52,10 @@
     "MS_LOGGER_EPOCH is deprecated and ignored; the logger always uses Unix internally.  Use the explicit epoch parameters of loggerClock and EpochTime for alternate epoch conversions.")
 #endif
 
-#if defined(EARLIEST_SANE_UNIX_TIMESTAMP)
-#pragma message( \
-    "EARLIEST_SANE_UNIX_TIMESTAMP is deprecated and ignored within the ModularSensors config.  You must define it as a global build flag.")
-#endif
-
-#if !defined(LATEST_SANE_UNIX_TIMESTAMP) || defined(DOXYGEN)
-#pragma message( \
-    "LATEST_SANE_UNIX_TIMESTAMP is deprecated and ignored within the ModularSensors config.  You must define it as a global build flag.")
-#endif
+// NOTE: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` are
+// deprecated within the ModularSensors config.  You must define them as global
+// build flags that can be used by both ModularSensors and the EpochTime
+// dependency.
 //==============================================================
 
 
