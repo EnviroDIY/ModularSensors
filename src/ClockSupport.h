@@ -91,8 +91,6 @@
  * @note This is effectively a static class, with all static functions and a
  * deleted constructor.
  *
- * @todo Support half/quarter hour time zones
- *
  * Dealing with time is **hard**! This library only supports the bare minimum of
  * what I think is necessary to get the logger's clock working and to convert
  * between different epoch types. It does not support time zones (other than a

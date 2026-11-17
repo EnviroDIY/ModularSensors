@@ -82,8 +82,6 @@ class dataPublisher;  // Forward declaration
  * In this library, all loggers are Arduino-style small processor circuit
  * boards.
  *
- * @todo Support half/quarter hour time zones
- *
  * @ingroup base_classes
  */
 class Logger {
