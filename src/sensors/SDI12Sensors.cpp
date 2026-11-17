@@ -320,14 +320,11 @@ bool SDI12Sensors::startSingleMeasurement() {
 }
 #endif
 
-bool SDI12Sensors::getResults(bool verify_crc) {
+bool SDI12Sensors::getResults() {
     // activate the SDI-12 object
     activate();
 
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
-    // CRC validation is retained with the recorder's measurement context.
-    // Keep the parameter for compatibility with existing derived classes.
-    (void)verify_crc;
 
     uint8_t expectedResults = _numReturnedValues - _incCalcValues;
     float   results[MAX_NUMBER_VARS];
@@ -370,7 +367,7 @@ bool SDI12Sensors::addSingleMeasurementResult() {
     // Perform common initialization checks
     if (!initializeMeasurementResult()) { return false; }
 
-    bool success = getResults(MS_SDI12_USE_CRC);
+    bool success = getResults();
 
     // Return success value when finished
     return finalizeMeasurementAttempt(success);
@@ -403,7 +400,7 @@ bool SDI12Sensors::addSingleMeasurementResult() {
             setStatusBit(MEASUREMENT_SUCCESSFUL);
 
             // get the results
-            success = getResults(MS_SDI12_USE_CRC);
+            success = getResults();
         } else {
             // If there's no measurement, need to make sure we send over all
             // of the "failed" result values

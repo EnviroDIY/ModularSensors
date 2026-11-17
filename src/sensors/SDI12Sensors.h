@@ -266,14 +266,10 @@ class SDI12Sensors : public Sensor {
     int16_t startSDI12Measurement(bool isConcurrent = true);
     /**
      * @brief Gets the results of either a standard or a concurrent measurement
-     *
-     * @param verify_crc Legacy CRC setting retained for compatibility.  The
-     * recorder uses the CRC policy retained from the measurement request.
-     *
      * @return True if the full number of expected results was
      * returned.
      */
-    virtual bool getResults(bool verify_crc);
+    virtual bool getResults();
     /**
      * @brief Internal reference to the SDI-12 object.
      */

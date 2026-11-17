@@ -1,5 +1,5 @@
 {
-  "action_cache_version": 57,
+  "action_cache_version": 58,
   "dependencies": [
     {
       "name": "EpochTime",
@@ -79,8 +79,8 @@
     {
       "name": "TinyGSM",
       "owner": "vshymanskyy",
-      "version": "https://github.com/EnviroDIY/TinyGSM",
-      "version_note": "~0.13.0",
+      "url": "https://github.com/EnviroDIY/TinyGSM",
+      "version": "0.13.0-rc.1",
       "note": "A small Arduino library for AT-command-based internet modules.",
       "authors": [
         "Volodymyr Shymanskyy",
