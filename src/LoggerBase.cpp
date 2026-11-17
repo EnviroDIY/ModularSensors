@@ -1338,20 +1338,28 @@ bool Logger::initializeSDCard() {
     // The Adafruit SAMD core does NOT automatically manage the SPI speed, so
     // this needs to be set.
     MS_DEEP_DBG(F("Setting up SD card with SS pin"), _SDCardSSPin);
+    MS_DEEP_DBG(F("Using option DEDICATED_SPI on SDCARD_SPI"));
     MS_DEEP_DBG(F("SPI speed: 12 MHz"));
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
                                (uint8_t)(DEDICATED_SPI), SD_SCK_MHZ(12),
                                &SDCARD_SPI);
-#else
+#elif defined(ARDUINO_ARCH_SAMD) && defined(__SAMD51__)
     // The SAMD51 is fast enough to handle SPI_FULL_SPEED=SD_SCK_MHZ(50).
     // The SPI library of the Adafruit/Arduino AVR core will automatically
     // adjust the full speed of the SPI clock down to whatever the board can
     // handle.
     MS_DEEP_DBG(F("Setting up SD card with SS pin"), _SDCardSSPin);
-    MS_DEEP_DBG(F("SPI speed:"), SPI_FULL_SPEED / 1000000, "MHz");
+    MS_DEEP_DBG(F("Using option DEDICATED_SPI on SDCARD_SPI"));
+    MS_DEEP_DBG(F("SPI speed:"), SPI_FULL_SPEED / 1000000, F("MHz"));
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
                                (uint8_t)(DEDICATED_SPI), SPI_FULL_SPEED,
                                &SDCARD_SPI);
+#else
+    // Default case for other architectures
+    MS_DEEP_DBG(F("Setting up SD card with SS pin"), _SDCardSSPin);
+    MS_DEEP_DBG(F("Using option DEDICATED_SPI"));
+    SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
+                               (uint8_t)(DEDICATED_SPI));
 #endif
 
     if (!sd.cardBegin(customSdConfig)) {

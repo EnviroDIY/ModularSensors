@@ -863,8 +863,7 @@ class Logger {
      * @param month [out] Reference to a variable where the month will be stored
      * @param year [out] Reference to a variable where the year will be stored
      * @param tz_offset_s [out] Reference to a variable where the timezone
-     * offset
-     * **in seconds** will be stored
+     * offset **in seconds** will be stored
      *
      * @remark Unlike the near-identical loggerClock::getNowAsParts(), this
      * function converts all of the parts to the logger's timezone and writes
