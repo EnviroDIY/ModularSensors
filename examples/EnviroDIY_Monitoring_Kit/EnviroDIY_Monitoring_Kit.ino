@@ -206,7 +206,7 @@ typedef TinyGsmSim7080                          TinyGsm;
 typedef TinyGsmSim7080::GsmClientSim7080        TinyGsmClient;
 typedef TinyGsmSim7080::GsmClientSecureSim7080  TinyGsmClientSecure;
 typedef TinyGsmSim7080::GsmSecureContextSim7080 TinyGsmSecureContext;
-typedef Sim7080RegStatus                        RegStatus;
+typedef Sim70xxRegStatus                        RegStatus;
 
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
@@ -534,8 +534,9 @@ void setup() {
     /** Start [setup_clock] */
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
-        // Set up the modem, synchronize the RTC with NIST, and publish
-        // configuration information to publishers that support it.
+        // Set up the modem, synchronize the RTC with NIST, publish
+        // configuration information to publishers that support it, and put the
+        // modem back to sleep.
         dataLogger.makeInitialConnections();
     }
     /** End [setup_clock] */

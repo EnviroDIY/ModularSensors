@@ -477,6 +477,11 @@ const char* apn = CELLULAR_APN;  // APN for cellular connection
 // Create a TinyGsm modem
 TinyGsmXBee gsmModem(modemSerial);
 // Create a unsecured TinyGSM client that can be shared with multiple publishers
+// **WARNING:**  The XBee only supports a single client and a single security
+// context!  In order to share the client among multiple publishers with
+// different security settings, you must manually detach and reattach clients
+// and contexts as needed to match the required security settings.  This is not
+// done automatically by the library!
 TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 DigiXBeeCellularTransparent modem(gsmModem, modemVccPin, modemStatusPin,
@@ -603,6 +608,11 @@ const char* wifiPwd = WIFI_PASSWD;  // WiFi password (WPA2)
 // Create a TinyGsm modem
 TinyGsmXBee gsmModem(modemSerial);
 // Create a unsecured TinyGSM client that can be shared with multiple publishers
+// **WARNING:**  The XBee only supports a single client and a single security
+// context!  In order to share the client among multiple publishers with
+// different security settings, you must manually detach and reattach clients
+// and contexts as needed to match the required security settings.  This is not
+// done automatically by the library!
 TinyGsm::TinyGsmClient gsmClient(gsmModem);
 // Create a loggerModem object
 DigiXBeeWifi modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
@@ -3780,6 +3790,13 @@ const char* clientCertName = "thing-certificate.pem.crt";
 const char* clientKeyName = "thing-private.pem.key";
 #endif
 
+// **WARNING:**  Be aware of how many clients and security contexts your modem
+// supports! The XBee only supports a single client and a single security
+// context and several others only support 2.  In order to share the client
+// among multiple publishers with different security settings, you must manually
+// detach and reattach clients and contexts as needed to match the required
+// security settings.  This is not done automatically by the library!
+
 // Create a security context for S3
 // AWS IoT Core requires TLS >= 1.2, with mutual certificate verification
 TinyGsm::TinyGsmSecureContext iotSecureContext(
@@ -3854,6 +3871,13 @@ String s3URLMsgGetter() {
     return String("{\"file\": \"image.jpg\"}");
 }
 #endif
+
+// **WARNING:**  Be aware of how many clients and security contexts your modem
+// supports! The XBee only supports a single client and a single security
+// context and several others only support 2.  In order to share the client
+// among multiple publishers with different security settings, you must manually
+// detach and reattach clients and contexts as needed to match the required
+// security settings.  This is not done automatically by the library!
 
 // Create a security context for S3
 // S3 requires TLS >= 1.2, with certificate authority certificate verification

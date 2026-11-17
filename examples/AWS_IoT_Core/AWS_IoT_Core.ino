@@ -485,8 +485,9 @@ void setup() {
     /** Start [setup_clock] */
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
-        // Synchronize the RTC with NIST
-        // This will also set up the modem
+        // Set up the modem, synchronize the RTC with NIST, publish
+        // configuration information to publishers that support it, and put the
+        // modem back to sleep.
         dataLogger.syncRTC();
     }
     /** End [setup_clock] */
