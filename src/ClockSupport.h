@@ -228,8 +228,6 @@ class loggerClock {
      * clock to the given time.
      *
      * @param in_time An epochTime object
-     * @param utcOffsetSeconds The offset of the epoch time from UTC **in
-     * seconds**.
      *
      * @return True if the input timestamp passes sanity checks **and**
      * the clock is now at or within tolerance (±5 seconds) of the target time.
@@ -246,7 +244,7 @@ class loggerClock {
      * assuming any offset of magnitude <= 24 is in hours and converts it to
      * seconds.
      */
-    static bool setRTClock(epochTime in_time, int32_t utcOffsetSeconds);
+    static bool setRTClock(epochTime in_time);
 
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
@@ -281,17 +279,9 @@ class loggerClock {
     /**
      * @brief Set an alarm to fire a clock interrupt at a specific epoch time
      *
-     * @param in_time An epochTime object
-     * @param utcOffsetSeconds The offset of the epoch time from UTC **in
-     * seconds**.
-     *
-     * @important Releases up to 0.37.0 used hours instead of seconds for the
-     * UTC offset.  This fuction attempts to preserve backwards compatibility by
-     * assuming any offset of magnitude <= 24 is in hours and converts it to
-     * seconds.
+     * @param in_time An epochTime object representing the next interrupt time
      */
-    static void setNextRTCInterrupt(epochTime in_time,
-                                    int32_t   utcOffsetSeconds);
+    static void setNextRTCInterrupt(epochTime in_time);
 
     /**
      * @brief Enable 1 minute interrupts on the RTC

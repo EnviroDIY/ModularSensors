@@ -95,8 +95,10 @@ void loggerClock::getNowAsParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
     time_t rtc_as_core = tsFromRawRTC(rtc_return,
                                       normalizeUtcOffsetSeconds(tz_offset_s),
                                       TimeUtils::getCoreEpochStart());
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     MS_DEEP_DBG(F("Input time converted to processor epoch:"), rtc_as_core, '(',
                 TimeUtils::printEpochName(TimeUtils::getCoreEpochStart()), ')');
+#endif
 
     // create a temporary time struct
     // tm is a struct for time parts, defined in time.h
@@ -118,10 +120,9 @@ bool loggerClock::setRTClock(time_t ts, int32_t utcOffsetSeconds,
                              epochStart epoch) {
     MS_DEEP_DBG(F("Raw input timestamp:"), ts);
     return setRTClock(
-        epochTime(ts, normalizeUtcOffsetSeconds(utcOffsetSeconds), epoch),
-        utcOffsetSeconds);
+        epochTime(ts, normalizeUtcOffsetSeconds(utcOffsetSeconds), epoch));
 }
-bool loggerClock::setRTClock(epochTime in_time, int32_t utcOffsetSeconds) {
+bool loggerClock::setRTClock(epochTime in_time) {
     // If the timestamp is not in the valid range, just exit
     if (!TimeUtils::isTimeSane(in_time)) {
         PRINTOUT(F("Bad timestamp, not setting clock."));
@@ -132,15 +133,16 @@ bool loggerClock::setRTClock(epochTime in_time, int32_t utcOffsetSeconds) {
     // epoch We're interested in the setTime in the logger's and RTC's
     // timezone The RTC's timezone is equal to the logger's timezone minus
     // the offset between the logger and the RTC.
-    time_t new_rtc_value = TimeUtils::convertOffsetAndEpoch(
-        in_time.getTimestamp(), normalizeUtcOffsetSeconds(utcOffsetSeconds),
-        epochStart::unix_epoch, _rtcOffsetSeconds, _rtcEpoch);
+    time_t new_rtc_value = in_time.getTimestamp(_rtcOffsetSeconds, _rtcEpoch);
 
     // Check the current RTC time
     time_t prev_rtc_value = getNowAsEpoch(_rtcOffsetSeconds, _rtcEpoch);
-    MS_DBG(
-        F("    Current Time on RTC (in RTC's epoch):"), prev_rtc_value, F("->"),
-        TimeUtils::formatISO8601(prev_rtc_value, _rtcOffsetSeconds, _rtcEpoch));
+    // format time for printing
+    char rtcTimeISO8601[26] = {'\0'};
+    TimeUtils::formatISO8601(rtcTimeISO8601, prev_rtc_value, _rtcOffsetSeconds,
+                             _rtcEpoch);
+    MS_DBG(F("    Current Time on RTC (in RTC's epoch):"), prev_rtc_value,
+           F("->"), rtcTimeISO8601);
     MS_DBG(F("    Offset between input and RTC (seconds):"),
            abs(new_rtc_value - prev_rtc_value));
 
@@ -161,10 +163,11 @@ bool loggerClock::setRTClock(epochTime in_time, int32_t utcOffsetSeconds) {
     MS_DEEP_DBG(F("Setting raw RTC value to:"), new_rtc_value);
     setRawRTCNow(new_rtc_value);
     PRINTOUT(F("Clock set!"));
-    PRINTOUT(
-        F("Current RTC time is now"),
-        TimeUtils::formatISO8601(getNowAsEpoch(_rtcOffsetSeconds, _rtcEpoch),
-                                 _rtcOffsetSeconds, _rtcEpoch));
+    // format updated time for printing
+    TimeUtils::formatISO8601(rtcTimeISO8601,
+                             getNowAsEpoch(_rtcOffsetSeconds, _rtcEpoch),
+                             _rtcOffsetSeconds, _rtcEpoch);
+    PRINTOUT(F("Current RTC time is now"), rtcTimeISO8601);
     return true;
 }
 
@@ -189,22 +192,16 @@ void loggerClock::setNextRTCInterrupt(time_t ts, int32_t utcOffsetSeconds,
                                       epochStart epoch) {
     MS_DEEP_DBG(F("Raw input alarm timestamp:"), ts);
     setNextRTCInterrupt(
-        epochTime(ts, normalizeUtcOffsetSeconds(utcOffsetSeconds), epoch),
-        utcOffsetSeconds);
+        epochTime(ts, normalizeUtcOffsetSeconds(utcOffsetSeconds), epoch));
 }
-void loggerClock::setNextRTCInterrupt(epochTime in_time,
-                                      int32_t   utcOffsetSeconds) {
+void loggerClock::setNextRTCInterrupt(epochTime in_time) {
     // Disable any previous interrupts
     disableRTCInterrupts();
     resetClockInterruptStatus();
 
     // Use the conversion function to get a temporary variable for the epoch
     // time in the epoch used by the processor core (i.e., used by gmtime).
-    time_t t = TimeUtils::convertOffsetAndEpoch(
-                   in_time.getTimestamp(),
-                   normalizeUtcOffsetSeconds(utcOffsetSeconds),
-                   epochStart::unix_epoch, _rtcOffsetSeconds, _rtcEpoch) -
-        normalizeUtcOffsetSeconds(utcOffsetSeconds);
+    time_t t = in_time.getTimestamp(_rtcOffsetSeconds, _rtcEpoch);
     MS_DBG(F("Setting the next alarm on the"), MS_CLOCK_NAME, F("to"),
            static_cast<uint32_t>(t));
 
@@ -334,10 +331,14 @@ void loggerClock::begin() {
     MS_DBG(F("Beginning"), MS_CLOCK_NAME, F("real time clock"));
     rtcBegin();
     // Print out the current time
-    PRINTOUT(
-        F("Current"), MS_CLOCK_NAME, F("time is:"),
-        TimeUtils::formatISO8601(getNowAsEpoch(_rtcOffsetSeconds, _rtcEpoch),
-                                 _rtcOffsetSeconds, _rtcEpoch));
+    char rtcTimeISO8601[26] = {'\0'};
+    TimeUtils::formatISO8601(rtcTimeISO8601,
+                             getNowAsEpoch(_rtcOffsetSeconds, _rtcEpoch),
+                             _rtcOffsetSeconds, _rtcEpoch);
+    PRINTOUT(F("Current"), MS_CLOCK_NAME, F("time is:"), rtcTimeISO8601);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
+    // print out RTC epoch information, if string formatting is enabled in
+    // EpochTime
     MS_DBG(F("The processor uses a"),
            TimeUtils::printEpochName(TimeUtils::getCoreEpochStart()),
            F("epoch internally, which starts"),
@@ -347,10 +348,14 @@ void loggerClock::begin() {
                static_cast<uint32_t>(TimeUtils::getCoreEpochStart()) -
                static_cast<uint32_t>(epochStart::unix_epoch)),
            F("seconds"));
+#endif
     MS_DBG(F("The processor considers local time to be"),
            static_cast<uint32_t>(TimeUtils::getCoreTimeZone()), F("seconds ("),
            static_cast<int8_t>(TimeUtils::getCoreTimeZone() / 3600),
            F("hours) offset from UTC"));
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
+    // print out processor epoch information, if string formatting is enabled in
+    // EpochTime
     MS_DBG(F("The attached"), MS_CLOCK_NAME, F("uses a"),
            TimeUtils::printEpochName(_rtcEpoch),
            F("epoch internally, which starts"),
@@ -359,6 +364,7 @@ void loggerClock::begin() {
            static_cast<uint32_t>(static_cast<uint32_t>(_rtcEpoch) -
                                  static_cast<uint32_t>(epochStart::unix_epoch)),
            F("seconds"));
+#endif
 }
 
 inline time_t loggerClock::tsToRawRTC(time_t ts, int32_t utcOffsetSeconds,
@@ -366,6 +372,7 @@ inline time_t loggerClock::tsToRawRTC(time_t ts, int32_t utcOffsetSeconds,
     time_t ts_conv = TimeUtils::convertOffsetAndEpoch(
         ts, normalizeUtcOffsetSeconds(utcOffsetSeconds), epoch,
         loggerClock::_rtcOffsetSeconds, loggerClock::_rtcEpoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     MS_DEEP_DBG(
         F("Converted input timestamp of"), ts, F("with epoch"),
         TimeUtils::printEpochName(epoch), F("and timezone"),
@@ -375,6 +382,7 @@ inline time_t loggerClock::tsToRawRTC(time_t ts, int32_t utcOffsetSeconds,
         TimeUtils::printEpochName(loggerClock::_rtcEpoch), F("and timezone"),
         (loggerClock::_rtcOffsetSeconds >= 0) ? '+' : '-',
         abs(static_cast<int8_t>(loggerClock::_rtcOffsetSeconds / 3600)));
+#endif
     return ts_conv;
 }
 inline time_t loggerClock::tsFromRawRTC(time_t rtc_ts, int32_t utcOffsetSeconds,
@@ -384,6 +392,7 @@ inline time_t loggerClock::tsFromRawRTC(time_t rtc_ts, int32_t utcOffsetSeconds,
         time_t ts_conv = TimeUtils::convertOffsetAndEpoch(
             rtc_ts, loggerClock::_rtcOffsetSeconds, loggerClock::_rtcEpoch,
             normalizeUtcOffsetSeconds(utcOffsetSeconds), epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
         MS_DEEP_DBG(
             F("Converted raw RTC timestamp of"), rtc_ts, F("with epoch"),
             TimeUtils::printEpochName(loggerClock::_rtcEpoch),
@@ -394,11 +403,13 @@ inline time_t loggerClock::tsFromRawRTC(time_t rtc_ts, int32_t utcOffsetSeconds,
             TimeUtils::printEpochName(epoch), F("and timezone"),
             (utcOffsetSeconds >= 0) ? '+' : '-',
             abs(static_cast<int8_t>(utcOffsetSeconds / 3600)));
+#endif
         return ts_conv;
     } else {
         // Do NOT apply an offset if the timestamp is obviously bad
         time_t ts_conv = TimeUtils::convertEpoch(rtc_ts, loggerClock::_rtcEpoch,
                                                  epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
         MS_DEEP_DBG(
             F("Converted raw RTC timestamp of"), rtc_ts, F("with epoch"),
             TimeUtils::printEpochName(loggerClock::_rtcEpoch),
@@ -408,6 +419,7 @@ inline time_t loggerClock::tsFromRawRTC(time_t rtc_ts, int32_t utcOffsetSeconds,
             TimeUtils::printEpochName(epoch),
             "but not applying the UTC offset because the timestamp is "
             "obviously bad");
+#endif
         return ts_conv;
     }
 }
@@ -436,11 +448,13 @@ time_t loggerClock::getRawRTCNow() {
 
     // Get the epoch - with the time zone subtracted (i.e. return UTC epoch)
     rtc.updateTime();
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     MS_DEEP_DBG(F("Set use1970sEpoch to"),
                 TimeUtils::getCoreEpochStart() == epochStart::y2k_epoch,
                 F("because the processor epoch is"),
                 TimeUtils::printEpochName(TimeUtils::getCoreEpochStart()), '(',
                 static_cast<uint32_t>(TimeUtils::getCoreEpochStart()), ')');
+#endif
     return static_cast<time_t>(
         rtc.getEpoch(TimeUtils::getCoreEpochStart() == epochStart::y2k_epoch));
 }
