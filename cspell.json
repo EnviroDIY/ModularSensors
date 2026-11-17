@@ -91,7 +91,9 @@
     "example_dependencies.json",
     "keywords.txt",
     "library.json",
-    "platformio.ini"
+    "platformio.ini",
+    "library.properties",
+    "docs/For-Developers/Developer-Setup.md"
   ],
   "words": [
     "Adafruit",

@@ -127,7 +127,7 @@ lib_deps =
     sparkfun/SparkFun Qwiic RTC RV8803 Arduino Library@^1.2.10
     greygnome/EnableInterrupt@^1.1.0
     greiman/SdFat@=2.3.0
-    TinyGSM=https://github.com/EnviroDIY/TinyGSM
+    vshymanskyy/TinyGSM=0.13.0-rc.1
     knolleary/PubSubClient@^2.8
     adafruit/Adafruit BusIO@^1.17.4
     adafruit/Adafruit Unified Sensor@^1.1.15
@@ -141,11 +141,11 @@ lib_deps =
     adafruit/Adafruit SHT4x Library@^1.0.5
     paulstoffregen/OneWire@^2.3.8
     milesburton/DallasTemperature@^4.0.6
-    envirodiy/SDI-12@^2.5.0
+    envirodiy/SDI-12@^3.0.0
     SDI-12_ExtInts=https://github.com/EnviroDIY/Arduino-SDI-12#ExtInts
     northernwidget/MS5803@^0.1.2
     Tally_Library_I2C=https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
-    envirodiy/EpochTime@^1.2.0
+    envirodiy/EpochTime@^1.3.0
     envirodiy/SensorModbusMaster@^1.7.0
     envirodiy/KellerModbus@^0.2.7
     envirodiy/YosemitechModbus@^0.5.4
