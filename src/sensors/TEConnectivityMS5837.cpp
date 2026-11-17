@@ -309,6 +309,7 @@ bool TEConnectivityMS5837::validateAndCorrectModel() {
 
     // Values from
     // https://github.com/ArduPilot/ardupilot/pull/29122#issuecomment-2877269114
+    // NOTE: These are **not** user configurable values; they're set constants!
     const uint16_t MS5837_02BA_MAX_SENSITIVITY = 49000;
     const uint16_t MS5837_02BA_30BA_SEPARATION = 37000;
     const uint16_t MS5837_30BA_MIN_SENSITIVITY = 26000;

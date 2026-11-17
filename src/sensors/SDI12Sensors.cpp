@@ -181,6 +181,10 @@ bool SDI12Sensors::getSensorInfo() {
             _SDI12Recorder.startRawCommand(_SDI12address, F("XO1"));
             while (_SDI12Recorder.isBusy()) {
                 _SDI12Recorder.update();
+#if defined(MS_SDI12SENSORS_DEBUG_DEEP)
+                _SDI12Recorder.printPhase(MS_OUTPUT);
+                MS_OUTPUT.println();
+#endif
                 yield();
             }
             MS_DEEP_DBG(F("    <<<"), _SDI12address, _SDI12Recorder.response());
@@ -240,9 +244,18 @@ int16_t SDI12Sensors::startSDI12Measurement(bool isConcurrent) {
 
     while (_SDI12Recorder.isBusy()) {
         _SDI12Recorder.update();
+#if defined(MS_SDI12SENSORS_DEBUG_DEEP)
+        _SDI12Recorder.printPhase(MS_OUTPUT);
+        MS_OUTPUT.println();
+#endif
         yield();
     }
 
+#if defined(MS_DEBUGGING_STD)
+    MS_DBG(F("  SDI-12 start measurement request completed with result:"));
+    _SDI12Recorder.printRecorderResult(MS_OUTPUT);
+    MS_OUTPUT.println();
+#endif
     if (_SDI12Recorder.result() != SDI12Recorder::RESULT_SUCCESS) {
         MS_DBG(F("   SDI-12 measurement request failed with recorder result"),
                static_cast<uint8_t>(_SDI12Recorder.result()));
@@ -328,14 +341,27 @@ bool SDI12Sensors::getResults() {
 
     uint8_t expectedResults = _numReturnedValues - _incCalcValues;
     float   results[MAX_NUMBER_VARS];
+    // start a data request to the SDI-12 sensor
     _SDI12Recorder.requestData(_SDI12address, results, expectedResults);
+    // wait for the SDI-12 sensor to finish sending data (and any needed
+    // retries)
     while (_SDI12Recorder.isBusy()) {
         _SDI12Recorder.update();
+#if defined(MS_SDI12SENSORS_DEBUG_DEEP)
+        _SDI12Recorder.printPhase(MS_OUTPUT);
+        MS_OUTPUT.println();
+#endif
         yield();
     }
 
+#if defined(MS_DEBUGGING_STD)
+    MS_DBG(F("  SDI-12 data request completed with result:"));
+    _SDI12Recorder.printRecorderResult(MS_OUTPUT);
+    MS_OUTPUT.println();
+#endif
     bool success = _SDI12Recorder.result() == SDI12Recorder::RESULT_SUCCESS &&
         _SDI12Recorder.dataValueCount() == expectedResults;
+    /// TODO: In SDI-12 handle variable number of returned values dynamically.
     if (success) {
         for (uint8_t resultNumber = 0; resultNumber < expectedResults;
              resultNumber++) {

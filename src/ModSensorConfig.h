@@ -296,6 +296,11 @@ static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
 // NOTE: This single setting applies to all SDI-12 sensors; it cannot be set on
 // a per-sensor basis.
 // #define MS_SDI12_NO_CRC_CHECK
+
+
+// For the InSitu RDO sensor, disable reporting of the O2 partial pressure, if
+// needed.
+// #define INSITU_RDO_NO_O2_PARTIAL_PRESSURE
 //==============================================================
 
 

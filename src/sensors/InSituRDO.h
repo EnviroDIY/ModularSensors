@@ -82,9 +82,14 @@
  *
  * @warning The order of variables returned on the SDI-12 bus from the RDO PRO-X
  * can be changed using the Win-Situ software.  This library assumes the default
- * ordering of variables: DO concentration, DO % saturation, Temperature.  If
- * added manually, O2 partial pressure is last.  **If you change reorder the
- * variables with Win-Situ, your results will be labeled incorrectly!**
+ * ordering of variables, and the addition of O2 partial pressure, the default
+ * ordering is: DO concentration, DO % saturation, Temperature, O2 partial
+ * pressure.  **If you change reorder the variables with Win-Situ, your results
+ * will be labeled incorrectly!**
+ *
+ * @attention If you do not want to enable partial pressure, you must compile with
+ * the build flag `INSITU_RDO_NO_O2_PARTIAL_PRESSURE` or change that setting in the
+ * ModSensorConfig.h configuration.
  *
  * @section sensor_insitu_rdo_calib Calibration
  * This library DOES NOT support calibrating the DO probe.  Per the manufacturer:
@@ -168,14 +173,21 @@
  * The number of variables that can be returned by the RDO PRO-X
  */
 /**@{*/
+#if !defined(INSITU_RDO_NO_O2_PARTIAL_PRESSURE) || defined(DOXYGEN)
 /**
  * @brief Sensor::_numReturnedValues; the RDO PRO-X can report 4 values.
  *
  * It reports 3 values (DO concentration, DO % saturation, and temperature) by
  * default.  Partial pressure of oxygen can be added to the output using
  * Win-Situ software.
+ *
+ * TODO: In SDI-12 / InSituRDO, handle variable number of returned values
+ * dynamically.
  */
 #define INSITU_RDO_NUM_VARIABLES 4
+#else
+#define INSITU_RDO_NUM_VARIABLES 3
+#endif  // !defined(INSITU_RDO_NO_O2_PARTIAL_PRESSURE) || defined(DOXYGEN)
 /// @brief Sensor::_incCalcValues; we don't calculate any additional values.
 #define INSITU_RDO_INC_CALC_VARIABLES 0
 /**@}*/

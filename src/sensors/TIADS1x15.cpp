@@ -108,7 +108,7 @@ String TIADS1x15Reader::getAnalogLocation(int8_t analogChannel,
 bool TIADS1x15Reader::readVoltageSingleEnded(int8_t analogChannel,
                                              float& resultValue) {
     bool    success      = false;
-    int16_t adcCounts    = MS_INVALID_VALUE;
+    int16_t adcCounts    = 0;  // Will be set by readADC_SingleEnded
     float   adcVoltage   = MS_INVALID_VALUE;
     float   scaledResult = MS_INVALID_VALUE;
 
@@ -172,7 +172,7 @@ bool TIADS1x15Reader::readVoltageDifferential(int8_t analogChannel,
                                               int8_t analogReferenceChannel,
                                               float& resultValue) {
     bool    success      = false;
-    int16_t adcCounts    = MS_INVALID_VALUE;
+    int16_t adcCounts    = 0;  // Will be set by differential read
     float   adcVoltage   = MS_INVALID_VALUE;
     float   scaledResult = MS_INVALID_VALUE;
 
