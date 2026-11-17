@@ -94,7 +94,7 @@ class AnalogVoltageReader {
     virtual void setVoltageMultiplier(float voltageMultiplier) {
         // If the input voltage multiplier is not positive, set it to 1.
         if (!(voltageMultiplier > 0.0f)) {  // rejects NaN, -inf, and <= 0
-            MS_DBG(F("Invalid voltage multiplier "), voltageMultiplier,
+            MS_DBG(F("Invalid voltage multiplier"), voltageMultiplier,
                    F(", clamping to 1.0"));
             _voltageMultiplier = 1.0f;
         } else {
@@ -122,7 +122,7 @@ class AnalogVoltageReader {
     virtual void setSupplyVoltage(float supplyVoltage) {
         if (!(supplyVoltage > 0.0f)) {  // rejects NaN, -inf, and <= 0
             MS_DBG(F("Invalid supply voltage "), supplyVoltage,
-                   F(", clamping to "), OPERATING_VOLTAGE, F("V"));
+                   F(", clamping to"), OPERATING_VOLTAGE, F("V"));
             _supplyVoltage = OPERATING_VOLTAGE;
         } else {
             _supplyVoltage = supplyVoltage;

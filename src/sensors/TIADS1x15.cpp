@@ -120,7 +120,7 @@ bool TIADS1x15Reader::readVoltageSingleEnded(int8_t analogChannel,
     // Read Analog to Digital Converter (ADC)
     // Validate ADS1x15 channel range for single-ended measurements
     if (analogChannel < 0 || analogChannel > 3) {
-        MS_DBG(F("  Invalid ADS1x15 channel "), analogChannel,
+        MS_DBG(F("  Invalid ADS1x15 channel"), analogChannel,
                F(", valid range is 0-3"));
         return false;
     }
@@ -161,7 +161,7 @@ bool TIADS1x15Reader::readVoltageSingleEnded(int8_t analogChannel,
         resultValue = scaledResult;
         success     = true;
     } else {
-        MS_DBG(F("  ADC voltage "), adcVoltage, F("V out of valid range"));
+        MS_DBG(F("  ADC voltage"), adcVoltage, F("V out of valid range"));
         resultValue = MS_INVALID_VALUE;
     }
 
@@ -182,7 +182,7 @@ bool TIADS1x15Reader::readVoltageDifferential(int8_t analogChannel,
 
     // Validate differential channel combination
     if (!isValidDifferentialPair(analogChannel, analogReferenceChannel)) {
-        MS_DBG(F("  Unsupported differential channel combination: "),
+        MS_DBG(F("  Unsupported differential channel combination:"),
                analogChannel, F("-"), analogReferenceChannel);
         MS_DBG(F("  Use canonical ordered pairs: 0-1, 0-3, 1-3, or 2-3"));
         return false;
@@ -277,11 +277,11 @@ uint16_t TIADS1x15Reader::getADSDataRate() {
 void TIADS1x15Reader::setSupplyVoltage(float supplyVoltage) {
     // Validate supply voltage range: 0.0V to 5.5V per datasheet
     if (supplyVoltage < 0.0f) {
-        MS_DBG(F("ADS supply voltage "), supplyVoltage,
+        MS_DBG(F("ADS supply voltage"), supplyVoltage,
                F("V is below minimum, clamping to 0.0V"));
         _supplyVoltage = 0.0f;
     } else if (supplyVoltage > 5.5f) {
-        MS_DBG(F("ADS supply voltage "), supplyVoltage,
+        MS_DBG(F("ADS supply voltage"), supplyVoltage,
                F("V exceeds maximum, clamping to 5.5V"));
         _supplyVoltage = 5.5f;
     } else {
@@ -325,12 +325,12 @@ float TIADS1x15Reader::calculateAnalogResolutionVolts() {
 #else
     MS_DBG(F("  ADC model: ADS1015 (12-bit)"));
 #endif
-    MS_DBG(F("  PGA full scale range: "), pgaFullScaleRange, F("V"));
-    MS_DBG(F("  Supply voltage: "), _supplyVoltage, F("V"));
-    MS_DBG(F("  Effective full scale: "), effectiveFullScale, F("V"));
-    MS_DBG(F("  Resolution bits: "), resolutionBits);
-    MS_DBG(F("  Total codes: "), totalCodes);
-    MS_DBG(F("  Voltage resolution: "), resolutionVolts, F("V/LSB"));
+    MS_DBG(F("  PGA full scale range:"), pgaFullScaleRange, F("V"));
+    MS_DBG(F("  Supply voltage:"), _supplyVoltage, F("V"));
+    MS_DBG(F("  Effective full scale:"), effectiveFullScale, F("V"));
+    MS_DBG(F("  Resolution bits:"), resolutionBits);
+    MS_DBG(F("  Total codes:"), totalCodes);
+    MS_DBG(F("  Voltage resolution:"), resolutionVolts, F("V/LSB"));
 
     return resolutionVolts;
 }

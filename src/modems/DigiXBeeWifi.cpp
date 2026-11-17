@@ -261,10 +261,7 @@ bool DigiXBeeWifi::extraModemSetup() {
         // NOTE: This will write to the flash every time if there is a password
         // set!
         success &= gsmModem.networkConnect(_ssid, _pwd);
-        if (!success) {
-            MS_DBG(F("Fail Connect "), success);
-            success = true;
-        }
+        if (!success) { MS_DBG(F("Failed to change network settings")); }
 
         // Set to TCP mode
         changesMade        = false;

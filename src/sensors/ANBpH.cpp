@@ -60,8 +60,8 @@ bool ANBpH::setup() {
 
     // Confirm Modbus Address
     MS_DBG(F("Selected modbus address:"));
-    MS_DBG(F("- Decimal: "), String(_modbusAddress, DEC));
-    MS_DBG(F("- Hexidecimal: "), _modbusAddress < 16 ? F("0x0") : F("0x"),
+    MS_DBG(F("- Decimal:"), String(_modbusAddress, DEC));
+    MS_DBG(F("- Hexidecimal:"), _modbusAddress < 16 ? F("0x0") : F("0x"),
            String(_modbusAddress, HEX));
 
     MS_DEEP_DBG(F("Waiting for warm-up..."));

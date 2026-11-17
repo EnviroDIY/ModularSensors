@@ -683,7 +683,7 @@ bool Logger::checkInterval() {
 #else
         if ((_startupMeasurements > 0)) {
 #endif
-            MS_DBG(F("Within initial 1-minute measurements; "),
+            MS_DBG(F("Within initial 1-minute measurements;"),
                    _startupMeasurements, F("left."));
             // once we've marked the time, we need to decrement the remaining
             // startup measurements by one. (IFF not in "log now" testing mode.)
@@ -717,7 +717,7 @@ bool Logger::checkMarkedInterval() {
         MS_DBG(F("Time to log!"));
         // Decrement the number of startup measurements after marking
         if (_startupMeasurements > 0) {
-            MS_DBG(F("Within startup measurements. There are "),
+            MS_DBG(F("Within startup measurements. There are"),
                    _startupMeasurements, F("left."));
             _startupMeasurements -= 1;
         }
