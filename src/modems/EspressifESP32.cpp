@@ -58,7 +58,7 @@ bool EspressifESP32::modemSleepFxn() {
         //         0: low level.
         //         1: high level.
         gsmModem.sendAT(GF("+SLEEPWKCFG=2,"), String(_espSleepRqPin), ',',
-                        ESPRESSIF_WAKE_LEVEL ? 1 : 0);
+                        _wakeLevel ? 1 : 0);
         bool success = gsmModem.waitResponse() == 1;
         if (success) {
             // AT+SLEEP=<sleep mode>

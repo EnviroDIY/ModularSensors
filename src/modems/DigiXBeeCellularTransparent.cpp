@@ -94,8 +94,14 @@ bool DigiXBeeCellularTransparent::extraModemSetup() {
         // Enable pin sleep functionality on `DIO9` if a pin is assigned.
         // NOTE: Only the `DTR_N/SLEEP_RQ/DIO8` pin (9 on the bee socket) can be
         // used for this pin sleep/wake.
-        changesMade |= gsmModem.changeSettingIfNeeded(GF("D8"),
-                                                      _modemSleepRqPin >= 0);
+        const uint16_t desiredD8Setting = _modemSleepRqPin >= 0;
+        const bool changedD8 = gsmModem.changeSettingIfNeeded(GF("D8"),
+                                                              desiredD8Setting);
+        changesMade |= changedD8;
+        // A false result can mean either no change was needed or the requested
+        // change was rejected. Verify this required setting explicitly.
+        gsmModem.sendAT(GF("D8"));
+        success &= gsmModem.readResponseInt() == desiredD8Setting;
         // Enable status indication on `DIO9` if a pin is assigned - it will be
         // HIGH when the XBee is awake.
         // NOTE: Only the `ON/SLEEP_N/DIO9` pin (13 on the bee socket) can be
@@ -212,7 +218,23 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         // Get the first registered unsecured client from the modem to use for
         // the connection.  The XBee only *has* one client socket available, so
         // we must use it carefully.
-        auto* nistClient = gsmModem.findFirstClient(false);
+        auto*                nistClient      = gsmModem.findFirstClient(false);
+        decltype(nistClient) displacedClient = nullptr;
+        // A disconnected secure client can temporarily release the sole XBee
+        // socket without losing the application-owned client object or its SSL
+        // configuration. Restore its registration after the NIST request.
+        if (nistClient == nullptr) {
+            auto* registeredClient = gsmModem.getClient(0);
+            if (registeredClient != nullptr) {
+                if (registeredClient->connected()) {
+                    MS_DBG(F("The sole GSM client is in use; cannot connect "
+                             "to NIST."));
+                    return 0;
+                }
+                displacedClient = registeredClient;
+                displacedClient->detach();
+            }
+        }
         // if no client already exists, create a new one
         if (nistClient == nullptr) {
             nistClient    = new TinyGsmXBee::TinyGsmClient(gsmModem);
@@ -221,6 +243,10 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         if (nistClient == nullptr || !nistClient->isAttached()) {
             MS_DBG(F("No available GSM client for NIST connection."));
             if (createdClient) { delete nistClient; }
+            if (displacedClient != nullptr &&
+                !displacedClient->init(&gsmModem, 0, true)) {
+                MS_DBG(F("Failed to restore the application GSM client."));
+            }
             return 0;
         }
         // NOTE:  This "connect" only sets up the connection parameters, the TCP
@@ -248,6 +274,12 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
                 uint32_t nistParsed = NISTTime::parseResponse(response);
                 if (nistParsed != 0) {
                     if (createdClient) { delete nistClient; }
+                    if (displacedClient != nullptr &&
+                        !displacedClient->init(&gsmModem, 0, true)) {
+                        MS_DBG(F("Failed to restore the application GSM "
+                                 "client."));
+                        return 0;
+                    }
                     return nistParsed;
                 } else {
                     MS_DBG(F("NIST response was invalid!"));
@@ -261,6 +293,11 @@ uint32_t DigiXBeeCellularTransparent::getNISTTime() {
         }
         // delete the client if we created it
         if (createdClient) { delete nistClient; }
+        if (displacedClient != nullptr &&
+            !displacedClient->init(&gsmModem, 0, true)) {
+            MS_DBG(F("Failed to restore the application GSM client."));
+            return 0;
+        }
     }
     return 0;
 }
@@ -313,14 +350,16 @@ bool DigiXBeeCellularTransparent::updateModemMetadata() {
             delay(250);
         } while ((rssi == -9999) && millis() - startMillis < 15000L);
 
-        // Convert signal quality to RSSI
-        loggerModem::_priorRSSI = rssi;
-        MS_DBG(F("CURRENT RSSI:"), rssi);
+        if (rssi != -9999) {
+            // Convert signal quality to RSSI
+            loggerModem::_priorRSSI = rssi;
+            MS_DBG(F("CURRENT RSSI:"), rssi);
 
-        // Convert signal quality to a percent
-        loggerModem::_priorSignalPercent = getPctFromRSSI(rssi);
-        MS_DBG(F("CURRENT Percent signal strength:"),
-               loggerModem::_priorSignalPercent);
+            // Convert signal quality to a percent
+            loggerModem::_priorSignalPercent = getPctFromRSSI(rssi);
+            MS_DBG(F("CURRENT Percent signal strength:"),
+                   loggerModem::_priorSignalPercent);
+        }
 
         success &= (rssi != -9999);
     } else {

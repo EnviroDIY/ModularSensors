@@ -51,7 +51,7 @@ bool EspressifESP8266::modemSleepFxn() {
         //         0: low level.
         //         1: high level.
         gsmModem.sendAT(GF("+SLEEPWKCFG=2,"), String(_espSleepRqPin), ',',
-                        ESPRESSIF_WAKE_LEVEL ? 1 : 0);
+                        _wakeLevel ? 1 : 0);
         bool success = gsmModem.waitResponse() == 1;
         if (success) {
             // AT+SLEEP=<sleep mode>
@@ -67,13 +67,14 @@ bool EspressifESP8266::modemSleepFxn() {
             gsmModem.sendAT(GF("+SLEEP=2"));
             success &= gsmModem.waitResponse() == 1;
             delay(5);
-            MS_DBG(F("Setting pin"), _modemSleepRqPin,
-                   !_wakeLevel ? F("HIGH") : F("LOW"),
-                   F("to allow the Espressif module to enter light sleep"));
-            digitalWrite(_modemSleepRqPin, !_wakeLevel);
-            MS_DBG(
-                F("Module MIGHT enter light sleep mode if it has been idle for "
-                  "sufficient time."));
+            if (success) {
+                MS_DBG(F("Setting pin"), _modemSleepRqPin,
+                       !_wakeLevel ? F("HIGH") : F("LOW"),
+                       F("to allow the Espressif module to enter light sleep"));
+                digitalWrite(_modemSleepRqPin, !_wakeLevel);
+                MS_DBG(F("Module MIGHT enter light sleep mode if it has been "
+                         "idle for sufficient time."));
+            }
         }
         return success;
     } else {  // DON'T go to sleep if we can't wake up!

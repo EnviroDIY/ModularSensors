@@ -398,14 +398,14 @@ class loggerModemCommMixin {
      */
     uint32_t getNISTTimeImpl(TinyGsmCapabilities::true_type) {
         derived().gsmModem.NTPServerSync("pool.ntp.org", 0);
-        derived().gsmModem.waitForTimeSync();
+        if (!derived().gsmModem.waitForTimeSync()) { return 0; }
         int   ntp_year     = 0;
         int   ntp_month    = 0;
         int   ntp_day      = 0;
         int   ntp_hour     = 0;
         int   ntp_min      = 0;
         int   ntp_sec      = 0;
-        float ntp_timezone = 0;  // in quarter hours!
+        float ntp_timezone = 0;  // in decimal hours!
         if (!derived().gsmModem.getNetworkTime(&ntp_year, &ntp_month, &ntp_day,
                                                &ntp_hour, &ntp_min, &ntp_sec,
                                                &ntp_timezone)) {
@@ -427,7 +427,7 @@ class loggerModemCommMixin {
         // cast into a timestamp_t
         timestamp_t ts = static_cast<timestamp_t>(t);
         //  convert to Unix/UTC
-        return TimeUtils::convertOffsetAndEpoch(ts, ntp_timezone * 15 * 60,
+        return TimeUtils::convertOffsetAndEpoch(ts, ntp_timezone * 60,
                                                 TimeUtils::getCoreEpochStart(),
                                                 0, epochStart::unix_epoch);
     }

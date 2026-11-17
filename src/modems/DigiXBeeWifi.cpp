@@ -501,13 +501,15 @@ bool DigiXBeeWifi::updateModemMetadata() {
             num_trys_remaining--;
         } while ((rssi == -9999) && num_trys_remaining);
 
-        loggerModem::_priorRSSI = rssi;
-        MS_DBG(F("CURRENT RSSI:"), rssi);
+        if (rssi != -9999) {
+            loggerModem::_priorRSSI = rssi;
+            MS_DBG(F("CURRENT RSSI:"), rssi);
 
-        // Convert signal quality to a percent
-        loggerModem::_priorSignalPercent = getPctFromRSSI(rssi);
-        MS_DBG(F("CURRENT Percent signal strength:"),
-               loggerModem::_priorSignalPercent);
+            // Convert signal quality to a percent
+            loggerModem::_priorSignalPercent = getPctFromRSSI(rssi);
+            MS_DBG(F("CURRENT Percent signal strength:"),
+                   loggerModem::_priorSignalPercent);
+        }
 
         success &= (rssi != -9999);
     } else {
