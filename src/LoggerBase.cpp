@@ -9,7 +9,28 @@
  */
 
 #include "LoggerBase.h"
+#include "NISTTime.h"
 #include "dataPublisherBase.h"
+
+#include <string.h>
+
+// Include the EpochTime library
+#include <EpochTime.h>
+
+namespace {
+
+int32_t normalizeUtcOffsetSeconds(int32_t utcOffsetSeconds) {
+    // Releases through 1.1.1 accepted hours in formatISO8601() and
+    // isTimeSane(). Preserve those calls while standardizing the API on
+    // seconds. Real-world UTC offsets expressed in seconds exceed this range,
+    // except UTC itself.
+    if (utcOffsetSeconds >= -24 && utcOffsetSeconds <= 24) {
+        return utcOffsetSeconds * 3600L;
+    }
+    return utcOffsetSeconds;
+}
+
+}  // namespace
 
 #if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) && \
     not defined(SDI12_INTERNAL_PCINT)
@@ -35,11 +56,9 @@
 
 
 // Initialize the static timezone
-int8_t Logger::_loggerUTCOffset = 0;
-// Initialize the static epoch
-epochStart Logger ::_loggerEpoch = MS_LOGGER_EPOCH;
+int32_t Logger::_loggerOffsetSeconds = 0;
 // Initialize the static time adjustment
-int8_t Logger::_loggerRTCOffset = 0;
+int32_t Logger::_loggerRTCOffsetSeconds = 0;
 // Initialize the static timestamps
 time_t Logger::markedLocalUnixTime = 0;
 time_t Logger::markedUTCUnixTime   = 0;
@@ -57,113 +76,6 @@ bool Logger::_peripheralShutdown = true;
 
 
 // Constructors
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes, int8_t SDCardSSPin,
-               int8_t mcuWakePin, VariableArray* inputArray)
-    : _SDCardSSPin(SDCardSSPin),
-      _mcuWakePin(mcuWakePin) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
-               int8_t SDCardSSPin, int8_t mcuWakePin, VariableArray* inputArray)
-    : _SDCardSSPin(SDCardSSPin),
-      _mcuWakePin(mcuWakePin) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes, VariableArray* inputArray) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, const char* samplingFeatureUUID,
-               int16_t loggingIntervalMinutes) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setSamplingFeatureUUID(samplingFeatureUUID);
-    setLoggingInterval(loggingIntervalMinutes);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
-Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
-               VariableArray* inputArray) {
-    // Set parameters from constructor
-    setLoggerID(loggerID);
-    setLoggingInterval(loggingIntervalMinutes);
-    setVariableArray(inputArray);
-
-    // Set the testing/logging flags to false
-    isLoggingNow = false;
-    isTestingNow = false;
-    startTesting = false;
-
-    // Clear arrays
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        dataPublishers[i] = nullptr;
-    }
-
-    // Set a datetime callback for automatic time-stamping of files by SdFat
-    SdFile::dateTimeCallback(fileDateTimeCallback);
-}
 Logger::Logger() {
     // Set the testing/logging flags to false
     isLoggingNow = false;
@@ -177,6 +89,13 @@ Logger::Logger() {
 
     // Set a datetime callback for automatic time-stamping of files by SdFat
     SdFile::dateTimeCallback(fileDateTimeCallback);
+}
+Logger::Logger(const char* loggerID, int16_t loggingIntervalMinutes,
+               VariableArray* inputArray)
+    : Logger() {
+    setLoggerID(loggerID);
+    setLoggingInterval(loggingIntervalMinutes);
+    setVariableArray(inputArray);
 }
 
 
@@ -393,56 +312,68 @@ void Logger::setVariableArray(VariableArray* inputArray) {
 
 // Returns the number of variables in the internal array
 uint8_t Logger::getArrayVarCount() {
+    if (_internalArray == nullptr) { return 0; }
     return _internalArray->getVariableCount();
 }
 
 
 // This gets the name of the parent sensor, if applicable
 String Logger::getParentSensorNameAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getParentSensorName();
 }
 // This gets the name and location of the parent sensor, if applicable
 String Logger::getParentSensorNameAndLocationAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]
         ->getParentSensorNameAndLocation();
 }
 // This gets the variable's name using http://vocabulary.odm2.org/variablename/
 String Logger::getVarNameAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarName();
 }
 // This gets the variable's unit using http://vocabulary.odm2.org/units/
 String Logger::getVarUnitAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUnit();
 }
 // This returns a customized code for the variable, if one is given, and a
 // default if not
 String Logger::getVarCodeAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarCode();
 }
 // This returns the variable UUID, if one has been assigned
 String Logger::getVarUUIDStringAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUUIDString();
 }
 // This returns the variable UUID, if one has been assigned
 const char* Logger::getVarUUIDAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return ""; }
     return _internalArray->arrayOfVars[position_i]->getVarUUID();
 }
 // This returns the variable resolution
 uint8_t Logger::getVarResolutionAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return 0; }
     return _internalArray->arrayOfVars[position_i]->getResolution();
 }
 // This returns the current value of the variable as a float
 float Logger::getValueAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return MS_INVALID_VALUE; }
     return _internalArray->arrayOfVars[position_i]->getValue();
 }
 // This returns the current value of the variable as a string with the
 // correct number of significant figures
 String Logger::getValueStringAtI(uint8_t position_i) {
+    if (_internalArray == nullptr) { return String(MS_INVALID_VALUE); }
     return _internalArray->arrayOfVars[position_i]->getValueString();
 }
 // This returns a particular value of the variable as a string with the
 // correct number of significant figures
 String Logger::formatValueStringAtI(uint8_t position_i, float value) {
+    if (_internalArray == nullptr) { return String(MS_INVALID_VALUE); }
     return _internalArray->arrayOfVars[position_i]->formatValueString(value);
 }
 
@@ -456,13 +387,9 @@ String Logger::formatValueStringAtI(uint8_t position_i, float value) {
 // loggerModem = TinyGSM modem + TinyGSM client + Modem On Off
 void Logger::attachModem(loggerModem& modem) {
     _logModem = &modem;
-    _logModem->setModemTimeZone(_loggerUTCOffset);
-    // update the modem pointer for all of the publishers
-    for (uint8_t i = 0; i < MAX_NUMBER_SENDERS; i++) {
-        if (dataPublishers[i] != nullptr) {
-            dataPublishers[i]->setModemPointer(modem);
-        }
-    }
+    // TinyGSM uses a timezone in units of quarter hours (15 minutes = 60*15 =
+    // 900)
+    _logModem->setModemTimeZone(_loggerOffsetSeconds / 900);
 }
 
 
@@ -476,11 +403,12 @@ bool Logger::syncRTC() {
         PRINTOUT(F("This may take up to two minutes!"));
         if (_logModem->modemWake()) {
             if (_logModem->connectInternet(120000L)) {
-                loggerClock::setRTClock(_logModem->getNISTTime(), 0,
-                                        epochStart::unix_epoch);
+                success = loggerClock::setRTClock(_logModem->getNISTTime(), 0,
+                                                  epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                 MS_DBG(F("Current logger time after sync is"),
                        formatDateTime_ISO8601(getNowLocalEpoch()));
-                success = true;
+#endif
                 _logModem->updateModemMetadata();
             } else {
                 PRINTOUT(F("Could not connect to internet for clock sync."));
@@ -500,20 +428,34 @@ bool Logger::syncRTC() {
 }
 
 
-loggerModem* Logger::registerDataPublisher(dataPublisher* publisher) {
+// Synchronize the clock with NIST using a caller-owned client on an already
+// active network connection.
+bool Logger::syncRTC(Client& nistClient) {
+    PRINTOUT(F("Attempting to synchronize RTC with NIST using the provided "
+               "client"));
+    bool success = loggerClock::setRTClock(NISTTime::query(nistClient), 0,
+                                           epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
+    MS_DBG(F("Current logger time after sync is"),
+           formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
+    extendedWatchDog::resetWatchDog();
+    return success;
+}
+
+
+void Logger::registerDataPublisher(dataPublisher* publisher) {
     // find the next empty spot in the publisher array
     uint8_t i = 0;
     for (; i < MAX_NUMBER_SENDERS; i++) {
         if (dataPublishers[i] == publisher) {
             MS_DBG(F("dataPublisher already registered."));
-            return nullptr;
+            return;
         }
         if (dataPublishers[i] == nullptr) break;
     }
     // register the publisher to the empty spot
     dataPublishers[i] = publisher;
-    // return a pointer to the modem for the publisher to use
-    return _logModem;
 }
 
 bool Logger::checkRemotesConnectionNeeded() {
@@ -563,29 +505,36 @@ void Logger::publishMetadataToRemotes() {
 // ===================================================================== //
 
 // Sets the static timezone that the data will be logged in - this must be set
-void Logger::setLoggerTimeZone(int8_t timeZone) {
-    _loggerUTCOffset = timeZone;
+void Logger::setLoggerTimeZone(int32_t utcOffsetSeconds) {
+    _loggerOffsetSeconds = normalizeUtcOffsetSeconds(utcOffsetSeconds);
 // Some helpful prints for debugging
 #if !defined(MS_SILENT)
     const char* prtout1 = "Logger timezone is set to UTC";
-    if (_loggerUTCOffset == 0) {
+    if (_loggerOffsetSeconds == 0) {
         PRINTOUT(prtout1);
-    } else if (_loggerUTCOffset > 0) {
-        PRINTOUT(prtout1, '+', _loggerUTCOffset);
+    } else if (_loggerOffsetSeconds > 0) {
+        PRINTOUT(prtout1, '+',
+                 static_cast<int8_t>(Logger::_loggerOffsetSeconds / 3600));
     } else {
-        PRINTOUT(prtout1, _loggerUTCOffset);
+        PRINTOUT(prtout1,
+                 static_cast<int8_t>(Logger::_loggerOffsetSeconds / 3600));
     }
 #endif
 }
 int8_t Logger::getLoggerTimeZone() {
-    return Logger::_loggerUTCOffset;
+    return static_cast<int8_t>(Logger::_loggerOffsetSeconds / 3600);
+}
+
+int32_t Logger::getLoggerOffsetSeconds() {
+    return Logger::_loggerOffsetSeconds;
 }
 // Sets the static timezone that the RTC is programmed in
 // I VERY VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
 // You can either set the RTC offset directly or set the offset between the
 // RTC and the logger
-void Logger::setRTCTimeZone(int8_t timeZone) {
-    loggerClock::setRTCOffset(timeZone);
+void Logger::setRTCTimeZone(int8_t utcOffsetHours) {
+    loggerClock::setRTCOffset(
+        normalizeUtcOffsetSeconds(static_cast<int32_t>(utcOffsetHours)));
 }
 int8_t Logger::getRTCTimeZone() {
     return loggerClock::getRTCOffset();
@@ -598,52 +547,76 @@ int8_t Logger::getRTCTimeZone() {
 // timezone is EST this does not need to be called.
 // You can either set the RTC offset directly or set the offset between the
 // RTC and the logger
-void Logger::setTZOffset(int8_t offset) {
-    _loggerRTCOffset = offset;
-    loggerClock::setRTCOffset(Logger::_loggerUTCOffset +
-                              Logger::_loggerRTCOffset);
+void Logger::setTZOffset(int32_t offsetSeconds) {
+    _loggerRTCOffsetSeconds = normalizeUtcOffsetSeconds(offsetSeconds);
+    loggerClock::setRTCOffset(Logger::_loggerOffsetSeconds +
+                              Logger::_loggerRTCOffsetSeconds);
     // Some helpful prints for debugging
-    if (_loggerRTCOffset == 0) {
+    if (_loggerRTCOffsetSeconds == 0) {
         PRINTOUT(F("RTC and Logger are set in the same timezone."));
-    } else if (_loggerRTCOffset < 0) {
-        PRINTOUT(F("RTC is set"), -1 * _loggerRTCOffset,
-                 F("hours ahead of logging timezone"));
+    } else if (_loggerRTCOffsetSeconds < 0) {
+        PRINTOUT(
+            F("RTC is set"),
+            -1 * static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds / 3600),
+            F("hours ahead of logging timezone"));
     } else {
-        PRINTOUT(F("RTC is set"), _loggerRTCOffset,
+        PRINTOUT(F("RTC is set"),
+                 static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds / 3600),
                  F("hours behind the logging timezone"));
     }
 }
 int8_t Logger::getTZOffset() {
-    return Logger::_loggerRTCOffset;
+    return static_cast<int8_t>(Logger::_loggerRTCOffsetSeconds / 3600);
+}
+int32_t Logger::getTZOffsetSeconds() {
+    return Logger::_loggerRTCOffsetSeconds;
 }
 time_t Logger::getNowLocalEpoch() {
-    return loggerClock::getNowAsEpoch(Logger::_loggerUTCOffset,
-                                      Logger::_loggerEpoch);
+    return loggerClock::getNowAsEpoch(Logger::_loggerOffsetSeconds,
+                                      epochStart::unix_epoch);
 }
 time_t Logger::getNowUTCEpoch() {
-    return loggerClock::getNowAsEpoch(0, Logger::_loggerEpoch);
+    return loggerClock::getNowAsEpoch(0, epochStart::unix_epoch);
 }
 void Logger::getNowParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                          int8_t& day, int8_t& month, int16_t& year,
-                         uint8_t& tz_offset) {
-    tz_offset = Logger::_loggerUTCOffset;
-    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerUTCOffset);
+                         int32_t& tz_offset_s) {
+    tz_offset_s = Logger::_loggerOffsetSeconds;
+    tm timeParts;
+    getNowLocalTimeParts(timeParts);
+    seconds = timeParts.tm_sec;
+    minutes = timeParts.tm_min;
+    hours   = timeParts.tm_hour;
+    day     = timeParts.tm_mday;
+    month   = timeParts.tm_mon + 1;
+    year    = timeParts.tm_year + 1900;
 }
 
-// This converts an epoch time (unix time) into a ISO8601 formatted string.
+// This converts an epoch time (unix time) into an ISO8601 formatted string.
 // It assumes the supplied date/time is in the LOGGER's timezone and adds
 // the LOGGER's offset as the time zone offset in the string.
 // Code modified from parts of the SparkFun RV-8803 library.
-String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
-    return loggerClock::formatDateTime_ISO8601(
-        epochSeconds, Logger::_loggerUTCOffset, Logger::_loggerEpoch);
+void Logger::formatDateTime_ISO8601(char* buffer, time_t epochSeconds) {
+    epochTime loggerTime(epochSeconds, Logger::_loggerOffsetSeconds,
+                         epochStart::unix_epoch);
+    TimeUtils::formatISO8601(buffer, loggerTime);
 }
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
+String Logger::formatDateTime_ISO8601(time_t epochSeconds) {
+    char buffer[26] = {'\0'};
+    formatDateTime_ISO8601(buffer, epochSeconds);
+    return String(buffer);
+}
+#endif
+#if EPOCHTIME_ENABLE_STRFTIME
 void Logger::formatDateTime(char* buffer, const char* fmt,
                             time_t epochSeconds) {
-    loggerClock::formatDateTime(buffer, fmt, epochSeconds,
-                                Logger::_loggerEpoch);
+    TimeUtils::formatDateTime(buffer, fmt,
+                              epochTime(epochSeconds,
+                                        Logger::_loggerOffsetSeconds,
+                                        epochStart::unix_epoch));
 }
+#endif
 // This checks that the logger time is within a "sane" range
 bool Logger::isRTCSane() {
     return loggerClock::isRTCSane();
@@ -659,9 +632,10 @@ bool Logger::isRTCSane() {
 // called before updating the sensors, not after.
 void Logger::markTime() {
     MS_DEEP_DBG(F("Marking time..."));
-    Logger::markedUTCUnixTime   = getNowUTCEpoch();
-    Logger::markedLocalUnixTime = markedUTCUnixTime +
-        static_cast<time_t>(Logger::_loggerUTCOffset * 3600);
+    Logger::markedUTCUnixTime = getNowUTCEpoch();
+    epochTime markedTime(Logger::markedUTCUnixTime, 0, epochStart::unix_epoch);
+    Logger::markedLocalUnixTime = markedTime.getTimestamp(
+        Logger::_loggerOffsetSeconds, epochStart::unix_epoch);
 }
 
 
@@ -670,15 +644,17 @@ void Logger::markTime() {
 bool Logger::checkInterval() {
     bool     retval;
     uint32_t checkTime = static_cast<uint32_t>(getNowLocalEpoch());
-    int16_t  interval  = _loggingIntervalMinutes;
+    int32_t  interval  = _loggingIntervalMinutes;
     if (_startupMeasurements > 0) {
         // log the first few samples at an interval of 1 minute so that
         // operation can be quickly verified in the field
         interval = 1;
     }
 
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     MS_DBG(F("Current Unix Timestamp:"), checkTime, F("->"),
            formatDateTime_ISO8601(checkTime));
+#endif
     MS_DBG(F("Logging interval in seconds:"), (interval * 60));
     MS_DBG(F("Mod of Logging Interval:"), checkTime % (interval * 60));
 
@@ -707,7 +683,7 @@ bool Logger::checkInterval() {
 #else
         if ((_startupMeasurements > 0)) {
 #endif
-            MS_DBG(F("Within initial 1-minute measurements; "),
+            MS_DBG(F("Within initial 1-minute measurements;"),
                    _startupMeasurements, F("left."));
             // once we've marked the time, we need to decrement the remaining
             // startup measurements by one. (IFF not in "log now" testing mode.)
@@ -724,7 +700,7 @@ bool Logger::checkInterval() {
 
 // This checks to see if the MARKED time is an even interval of the logging rate
 bool Logger::checkMarkedInterval() {
-    int16_t interval = _loggingIntervalMinutes;
+    int32_t interval = _loggingIntervalMinutes;
     // If we're within the range of our startup measurements, we're logging,
     // then set the interval to 1.
     if (_startupMeasurements > 0) { interval = 1; }
@@ -741,7 +717,7 @@ bool Logger::checkMarkedInterval() {
         MS_DBG(F("Time to log!"));
         // Decrement the number of startup measurements after marking
         if (_startupMeasurements > 0) {
-            MS_DBG(F("Within startup measurements. There are "),
+            MS_DBG(F("Within startup measurements. There are"),
                    _startupMeasurements, F("left."));
             _startupMeasurements -= 1;
         }
@@ -1215,17 +1191,13 @@ String Logger::generateFileName(bool include_time, const char* extension,
     MS_DEEP_DBG(F("Generating filename with prefix:"), use_prefix);
     const char* use_ext = extension != nullptr ? extension : ".csv";
     MS_DEEP_DBG(F("Generating filename with extension:"), use_ext);
-    uint8_t len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
-    // length: YYYYMMDD_HHMMSS = 15 + 1 for null or YYYYMMDD = 8 + 1 for null
-    uint8_t len_time            = include_time ? 16 : 9;
-    char    time_buff[len_time] = {'\0'};
-    if (include_time) {
-        formatDateTime(time_buff, "%Y%m%d_%H%M%S", Logger::markedLocalUnixTime);
-        time_buff[15] = '\0';  // just to be sure
-    } else {
-        formatDateTime(time_buff, "%Y%m%d", Logger::markedLocalUnixTime);
-        time_buff[8] = '\0';  // just to be sure
-    }
+    uint8_t   len_underscore = strlen(use_prefix) > 0 ? 1 : 0;
+    char      time_buff[16]  = {'\0'};
+    epochTime markedTime(Logger::markedLocalUnixTime,
+                         Logger::_loggerOffsetSeconds, epochStart::unix_epoch);
+    TimeUtils::formatTimestamp(time_buff, sizeof(time_buff), markedTime,
+                               include_time ? fixedTimeFormat::compact_date_time
+                                            : fixedTimeFormat::compact_date);
     MS_DEEP_DBG(F("Generating filename with timestamp string:"), time_buff);
     String filename = String(use_prefix);
     if (len_underscore) { filename += String("_"); }
@@ -1297,10 +1269,12 @@ void Logger::printFileHeader(Stream* stream) {
 
     // We'll finish up with the custom variable codes
     String dtRowHeader = F("Date and Time in UTC");
-    if (_loggerUTCOffset > 0) {
-        dtRowHeader += '+' + _loggerUTCOffset;
-    } else if (_loggerUTCOffset < 0) {
-        dtRowHeader += _loggerUTCOffset;
+    if (_loggerOffsetSeconds != 0) {
+        char utcOffset[7] = {'\0'};
+        if (TimeUtils::formatUtcOffset(utcOffset, sizeof(utcOffset),
+                                       _loggerOffsetSeconds) != 0) {
+            dtRowHeader += utcOffset;
+        }
     }
     STREAM_CSV_ROW(dtRowHeader, getVarCodeAtI(i))
 }
@@ -1309,12 +1283,14 @@ void Logger::printFileHeader(Stream* stream) {
 // This prints a comma separated list of values of sensor data - including the
 // time -  out over an Arduino stream
 void Logger::printVariableValuesCSV(Stream* stream) {
-    String csvString = "";
-    String iso8601   = formatDateTime_ISO8601(Logger::markedLocalUnixTime);
-    iso8601.replace("T", " ");
-    csvString += iso8601.substring(0, 19);
-    csvString += ',';
-    stream->print(csvString);
+    char calendarDateTime[20] = {'\0'};
+    TimeUtils::formatTimestamp(calendarDateTime, sizeof(calendarDateTime),
+                               epochTime(Logger::markedLocalUnixTime,
+                                         Logger::_loggerOffsetSeconds,
+                                         epochStart::unix_epoch),
+                               fixedTimeFormat::calendar_date_time);
+    stream->print(calendarDateTime);
+    stream->print(',');
     for (uint8_t i = 0; i < getArrayVarCount(); i++) {
         stream->print(getValueStringAtI(i));
         if (i + 1 != getArrayVarCount()) { stream->print(','); }
@@ -1362,20 +1338,28 @@ bool Logger::initializeSDCard() {
     // The Adafruit SAMD core does NOT automatically manage the SPI speed, so
     // this needs to be set.
     MS_DEEP_DBG(F("Setting up SD card with SS pin"), _SDCardSSPin);
+    MS_DEEP_DBG(F("Using option DEDICATED_SPI on SDCARD_SPI"));
     MS_DEEP_DBG(F("SPI speed: 12 MHz"));
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
                                (uint8_t)(DEDICATED_SPI), SD_SCK_MHZ(12),
                                &SDCARD_SPI);
-#else
+#elif defined(ARDUINO_ARCH_SAMD) && defined(__SAMD51__)
     // The SAMD51 is fast enough to handle SPI_FULL_SPEED=SD_SCK_MHZ(50).
     // The SPI library of the Adafruit/Arduino AVR core will automatically
     // adjust the full speed of the SPI clock down to whatever the board can
     // handle.
     MS_DEEP_DBG(F("Setting up SD card with SS pin"), _SDCardSSPin);
-    MS_DEEP_DBG(F("SPI speed:"), SPI_FULL_SPEED / 1000000, "MHz");
+    MS_DEEP_DBG(F("Using option DEDICATED_SPI on SDCARD_SPI"));
+    MS_DEEP_DBG(F("SPI speed:"), SPI_FULL_SPEED / 1000000, F("MHz"));
     SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
                                (uint8_t)(DEDICATED_SPI), SPI_FULL_SPEED,
                                &SDCARD_SPI);
+#else
+    // Default case for other architectures
+    MS_DEEP_DBG(F("Setting up SD card with SS pin"), _SDCardSSPin);
+    MS_DEEP_DBG(F("Using option DEDICATED_SPI"));
+    SdSpiConfig customSdConfig(static_cast<SdCsPin_t>(_SDCardSSPin),
+                               (uint8_t)(DEDICATED_SPI));
 #endif
 
     if (!sd.cardBegin(customSdConfig)) {
@@ -1410,26 +1394,42 @@ bool Logger::initializeSDCard() {
 // provided date time callback function. See SdFile::dateTimeCallback() for
 // usage.
 void Logger::fileDateTimeCallback(uint16_t* date, uint16_t* time) {
-    int8_t  seconds, minutes, hours, day, month;
-    int16_t year;
-    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerUTCOffset);
+    tm timeParts;
+    getNowLocalTimeParts(timeParts);
 
     // return date using FAT_DATE macro to format fields
-    *date = FAT_DATE(year, month, day);
+    *date = FAT_DATE(timeParts.tm_year + 1900, timeParts.tm_mon + 1,
+                     timeParts.tm_mday);
 
     // return time using FAT_TIME macro to format fields
-    *time = FAT_TIME(hours, minutes, seconds);
+    *time = FAT_TIME(timeParts.tm_hour, timeParts.tm_min, timeParts.tm_sec);
 }
 
 
 // Protected helper function - This sets a timestamp on a file
 void Logger::setFileTimestamp(File& fileToStamp, uint8_t stampFlag) {
-    int8_t  seconds, minutes, hours, day, month;
-    int16_t year;
-    loggerClock::getNowAsParts(seconds, minutes, hours, day, month, year,
-                               Logger::_loggerUTCOffset);
-    fileToStamp.timestamp(stampFlag, year, month, day, hours, minutes, seconds);
+    tm timeParts;
+    getNowLocalTimeParts(timeParts);
+    fileToStamp.timestamp(stampFlag, timeParts.tm_year + 1900,
+                          timeParts.tm_mon + 1, timeParts.tm_mday,
+                          timeParts.tm_hour, timeParts.tm_min,
+                          timeParts.tm_sec);
+}
+
+
+bool Logger::getNowLocalTimeParts(tm& timeParts) {
+    epochTime now(getNowUTCEpoch(), 0, epochStart::unix_epoch);
+    if (TimeUtils::fillTimeParts(now, Logger::_loggerOffsetSeconds,
+                                 timeParts)) {
+        return true;
+    }
+
+    PRINTOUT(F("Failed to convert the current time to calendar parts; using "
+               "2000-01-01 00:00:00."));
+    timeParts         = {};
+    timeParts.tm_mday = 1;
+    timeParts.tm_year = 100;
+    return false;
 }
 
 
@@ -1605,6 +1605,10 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
         MS_DEEP_DBG(F("Bench testing is not enabled."));
         return;
     }
+    if (_internalArray == nullptr) {
+        MS_DBG(F("No internal array attached."));
+        return;
+    }
     // Flag to notify that we're in testing mode
     Logger::isTestingNow = true;
     // Unset the startTesting flag
@@ -1650,8 +1654,10 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
         // powered and awake between iterations in testing mode.
         _internalArray->completeUpdate(false, false, false, false);
         // Print out the current logger time
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
         PRINTOUT(F("Current logger time is"),
                  formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
         PRINTOUT(F("-----------------------"));
 // Print out the sensor data
 #if !defined(MS_SILENT)
@@ -1700,17 +1706,19 @@ void Logger::benchTestingMode(bool sleepBeforeReturning) {
 // This does all of the setup that can't happen in the constructors
 // That is, things that require the actual processor/MCU to do something
 // rather than the compiler to do something.
-void Logger::begin(const char* loggerID, int16_t loggingIntervalMinutes,
+bool Logger::begin(const char* loggerID, int16_t loggingIntervalMinutes,
                    VariableArray* inputArray) {
     setLoggerID(loggerID);
     setLoggingInterval(loggingIntervalMinutes);
-    begin(inputArray);
-}
-void Logger::begin(VariableArray* inputArray) {
     setVariableArray(inputArray);
-    begin();
+    return begin();
 }
-void Logger::begin() {
+bool Logger::begin() {
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
+
     MS_DBG(F("Logger ID is:"), _loggerID);
     MS_DBG(F("Logger is set to record at"), _loggingIntervalMinutes,
            F("minute intervals."));
@@ -1808,8 +1816,10 @@ void Logger::begin() {
 
     MS_DEEP_DBG(F("Beginning the logger clock"));
     loggerClock::begin();
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
     PRINTOUT(F("Current localized logger time is:"),
              formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
 
@@ -1837,13 +1847,19 @@ void Logger::begin() {
     enableTestingISR();
 
     PRINTOUT(F("Logger portion of setup finished.\n"));
+    return true;
 }
 
 
 // This is a one-and-done to log data
-void Logger::logData(bool sleepBeforeReturning) {
+bool Logger::logData(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
+
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
 
     // If bench testing is enabled and button was pressed, do the bench test
     if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
@@ -1908,12 +1924,18 @@ void Logger::logData(bool sleepBeforeReturning) {
         // Sleep
         systemSleep();
     }
+    return true;
 }
 
 // This is a one-and-done to log data and publish it to various endpoints
-void Logger::logDataAndPublish(bool sleepBeforeReturning) {
+bool Logger::logDataAndPublish(bool sleepBeforeReturning) {
     // Reset the watchdog
     extendedWatchDog::resetWatchDog();
+
+    if (_internalArray == nullptr) {
+        PRINTOUT(F("Logger cannot begin without an attached variable array."));
+        return false;
+    }
 
     // If bench testing is enabled and button was pressed, do the bench test
     if ((MS_LOGGERBASE_BUTTON_BENCH_TEST) && Logger::startTesting) {
@@ -1994,8 +2016,10 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
                                  "NIST..."));
                         loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                                 epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                         MS_DBG(F("Current logger time after sync is"),
                                formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
                         extendedWatchDog::resetWatchDog();
                         // NOTE: This is the only time we publish **metadata**
                         // to remotes during a normal logging cycle
@@ -2068,6 +2092,7 @@ void Logger::logDataAndPublish(bool sleepBeforeReturning) {
             F("Requested sleep before returning, calling systemSleep()"));
         systemSleep();
     }
+    return true;
 }
 
 
@@ -2084,8 +2109,10 @@ void Logger::makeInitialConnections() {
             if (_logModem->connectInternet(120000L)) {
                 loggerClock::setRTClock(_logModem->getNISTTime(), 0,
                                         epochStart::unix_epoch);
+#if EPOCHTIME_ENABLE_STRING_FORMATTING
                 MS_DBG(F("Current logger time after sync is"),
                        formatDateTime_ISO8601(getNowLocalEpoch()));
+#endif
                 _logModem->updateModemMetadata();
 
                 MS_DBG(F("Publishing configuration metadata to remotes"));
@@ -2111,3 +2138,4 @@ void Logger::makeInitialConnections() {
 
 // cSpell:ignore prtout1 DFLLVAL DFLLSYNC
 // cSpell:ignore DIRCLR INEN PULLEN HIBCFG BRAMCFG MAINVREG FRZCLK BODSE
+// cSpell:ignore EPOCHTIME_ENABLE_STRFTIME EPOCHTIME_ENABLE_STRING_FORMATTING

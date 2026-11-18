@@ -10,9 +10,10 @@
 
 #include "Decagon5TM.h"
 
-bool Decagon5TM::getResults(bool verify_crc) {
+bool Decagon5TM::getResults() {
     // run the parent getResults method
-    bool success = SDI12Sensors::getResults(verify_crc);
+    bool success = SDI12Sensors::getResults();
+    if (!success) { return false; }
 
     // pull the ea and temperature values from the buffer that getResults filled
     float ea   = sensorValues[TM_EA_VAR_NUM];

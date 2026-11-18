@@ -10,43 +10,20 @@
 
 // Included Dependencies
 #include "DigiXBee3GBypass.h"
-#include "LoggerModemMacros.h"
 
 // Constructor/Destructor
-DigiXBee3GBypass::DigiXBee3GBypass(Stream* modemStream, int8_t powerPin,
+DigiXBee3GBypass::DigiXBee3GBypass(TinyGsmUBLOX& ubloxModem, int8_t powerPin,
                                    int8_t statusPin, bool useCTSStatus,
                                    int8_t modemResetPin, int8_t modemSleepRqPin,
                                    const char* apn)
-    : DigiXBee(powerPin, statusPin, useCTSStatus, modemResetPin,
-               modemSleepRqPin),
-#ifdef MS_DIGIXBEE3GBYPASS_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      _apn(apn) {
+    : DigiXBee<TinyGsmUBLOX, false>(ubloxModem, powerPin, statusPin,
+                                    useCTSStatus, modemResetPin,
+                                    modemSleepRqPin),
+      _apn(apn) {}
+
+bool DigiXBee3GBypass::connectWithCredentials() {
+    return gsmModem.dataConnect(_apn, "", "");
 }
-
-MS_IS_MODEM_AWAKE(DigiXBee3GBypass);
-MS_MODEM_WAKE(DigiXBee3GBypass);
-
-MS_MODEM_CONNECT_INTERNET(DigiXBee3GBypass);
-MS_MODEM_DISCONNECT_INTERNET(DigiXBee3GBypass);
-MS_MODEM_IS_INTERNET_AVAILABLE(DigiXBee3GBypass);
-
-MS_MODEM_CREATE_CLIENT(DigiXBee3GBypass, UBLOX);
-MS_MODEM_DELETE_CLIENT(DigiXBee3GBypass, UBLOX);
-MS_MODEM_CREATE_SECURE_CLIENT(DigiXBee3GBypass, UBLOX);
-MS_MODEM_DELETE_SECURE_CLIENT(DigiXBee3GBypass, UBLOX);
-
-MS_MODEM_GET_NIST_TIME(DigiXBee3GBypass, UBLOX);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(DigiXBee3GBypass);
-MS_MODEM_GET_MODEM_BATTERY_DATA(DigiXBee3GBypass);
-// NOTE:  Could actually get temperature from the Digi chip by entering command
-// mode
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(DigiXBee3GBypass);
 
 bool DigiXBee3GBypass::extraModemSetup() {
     bool success = false;
@@ -55,10 +32,12 @@ bool DigiXBee3GBypass::extraModemSetup() {
         /** First, wait the required guard time before entering command mode. */
         delay(1010);
         /** Now, enter command mode to set all pin I/O functionality. */
-        gsmModem.streamWrite(GF("+++"));
+        gsmModem.streamPrint(GF("+++"));
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
+    /// @todo Consider failing if any individual XBee command mode setting
+    /// change fails.
     if (success) {
         MS_DBG(F("Setting I/O Pins..."));
         /** Enable pin sleep functionality on `DIO9`.
@@ -145,7 +124,7 @@ bool DigiXBee3GBypass::extraModemSetup() {
     return success;
 }
 
-bool DigiXBee3GBypass::modemHardReset() {
+bool DigiXBee3GBypass::modemHardResetImpl() {
     bool success = false;
     // If the u-blox cellular component isn't responding but the Digi processor
     // is, use the Digi API to reset the cellular component
@@ -153,7 +132,7 @@ bool DigiXBee3GBypass::modemHardReset() {
     for (uint8_t i = 0; i < 5; i++) {
         // Wait the required guard time before entering command mode
         delay(1010);
-        gsmModem.streamWrite(GF("+++"));  // enter command mode
+        gsmModem.streamPrint(GF("+++"));  // enter command mode
         success = gsmModem.waitResponse(2000, GF("OK\r")) == 1;
         if (success) break;
     }
@@ -167,7 +146,7 @@ bool DigiXBee3GBypass::modemHardReset() {
         success &= gsmModem.waitResponse(5000L, GF("OK\r")) == 1;
     } else {
         MS_DBG(F("... failed!  Using a pin reset on the XBee."));
-        success = loggerModem::modemHardReset();
+        success = loggerModemImpl::modemHardResetImpl();
     }
     return success;
 }

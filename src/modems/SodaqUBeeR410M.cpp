@@ -10,64 +10,30 @@
 
 // Included Dependencies
 #include "SodaqUBeeR410M.h"
-#include "LoggerModemMacros.h"
 
 // Constructor
-#if F_CPU == 8000000L
-SodaqUBeeR410M::SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
+SodaqUBeeR410M::SodaqUBeeR410M(TinyGsmSaraR4& saraR4Modem, int8_t powerPin,
                                int8_t statusPin, int8_t modemResetPin,
                                int8_t modemSleepRqPin, const char* apn)
-    : loggerModem(powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
-                  R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
-                  R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
-                  R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
-                  R410M_AT_RESPONSE_TIME_MS),
-#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger)
-#else
-      gsmModem(*modemStream)
-#endif
-{
-    _apn         = apn;
-    _modemSerial = modemStream;
-}
-#else
-SodaqUBeeR410M::SodaqUBeeR410M(Stream* modemStream, int8_t powerPin,
-                               int8_t statusPin, int8_t modemResetPin,
-                               int8_t modemSleepRqPin, const char* apn)
-    : loggerModem(powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
-                  R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
-                  R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
-                  R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
-                  R410M_AT_RESPONSE_TIME_MS),
-#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
+    : loggerModemImpl<TinyGsmSaraR4, false>(
+          saraR4Modem, powerPin, statusPin, R410M_STATUS_LEVEL, modemResetPin,
+          R410M_RESET_LEVEL, R410M_RESET_PULSE_MS, modemSleepRqPin,
+          R410M_WAKE_LEVEL, R410M_WAKE_PULSE_MS, R410M_STATUS_TIME_MS,
+          R410M_DISCONNECT_TIME_MS, R410M_WAKE_DELAY_MS,
+          R410M_AT_RESPONSE_TIME_MS),
       _apn(apn) {
-}
+#if F_CPU == 8000000L
+    // Only store the pointer for 8MHz processors. TinyGSM stores the serial
+    // interface as a Stream reference, so recover the required HardwareSerial
+    // interface to change its baud rate.
+    _modemSerial = &static_cast<HardwareSerial&>(saraR4Modem.stream);
 #endif
+}
 
-MS_IS_MODEM_AWAKE(SodaqUBeeR410M);
-MS_MODEM_WAKE(SodaqUBeeR410M);
 
-MS_MODEM_CONNECT_INTERNET(SodaqUBeeR410M);
-MS_MODEM_DISCONNECT_INTERNET(SodaqUBeeR410M);
-MS_MODEM_IS_INTERNET_AVAILABLE(SodaqUBeeR410M);
-
-MS_MODEM_CREATE_CLIENT(SodaqUBeeR410M, SaraR4);
-MS_MODEM_DELETE_CLIENT(SodaqUBeeR410M, SaraR4);
-MS_MODEM_CREATE_SECURE_CLIENT(SodaqUBeeR410M, SaraR4);
-MS_MODEM_DELETE_SECURE_CLIENT(SodaqUBeeR410M, SaraR4);
-
-MS_MODEM_GET_NIST_TIME(SodaqUBeeR410M, SaraR4);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SodaqUBeeR410M);
-MS_MODEM_GET_MODEM_BATTERY_DATA(SodaqUBeeR410M);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SodaqUBeeR410M);
+bool SodaqUBeeR410M::connectWithCredentials() {
+    return gsmModem.dataConnect(_apn, "", "");
+}
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -94,9 +60,7 @@ bool SodaqUBeeR410M::modemWakeFxn() {
             }
 
             // But at least 0.15s
-            while (millis() - startTimer < 150) {
-                // wait
-            }
+            while (millis() - startTimer < 150) { yield(); }
             // Say how long we pulsed for
             MS_DBG(F("Pulsed for"), millis() - startTimer, F("ms"));
 
@@ -130,14 +94,14 @@ bool SodaqUBeeR410M::modemSleepFxn() {
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking u-blox R410M to power down"));
-        res = gsmModem.poweroff();
+        res = gsmModem.powerOff();
     }
     gsmModem.stream.flush();
     return res;
 }
 
 
-bool SodaqUBeeR410M::modemHardReset() {
+bool SodaqUBeeR410M::modemHardResetImpl() {
     if (_modemResetPin >= 0) {
         MS_DBG(F("Doing a hard reset on the modem by setting pin"),
                _modemResetPin, _resetLevel ? F("HIGH") : F("LOW"), F("for"),

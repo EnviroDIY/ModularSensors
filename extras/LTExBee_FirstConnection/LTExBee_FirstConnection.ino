@@ -131,7 +131,7 @@ void loop() {
 
         DBG(F("Setting the APN..."));
         /** Save the network connection parameters. */
-        gsmModem.gprsConnect(apn);
+        gsmModem.dataConnect(apn);
         DBG(F("Ensuring XBee is in transparent mode..."));
         /* Make sure we're really in transparent mode. */
         gsmModem.sendAT(GF("AP0"));
@@ -191,7 +191,7 @@ void loop() {
 
 
     // Shut down
-    gsmModem.poweroff();
+    gsmModem.powerOff();
     DBG("Powering down.");
 
     while (1) {

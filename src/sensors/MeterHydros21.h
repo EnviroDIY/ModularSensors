@@ -112,9 +112,6 @@
  * `-D MS_SDI12_NON_CONCURRENT`.
  */
 #define HYDROS21_MEASUREMENT_TIME_MS 1000
-/// @brief Extra wake time required for an SDI-12 sensor between the "break"
-/// and the time the command is sent.  The Hydros 21 requires no extra time.
-#define HYDROS21_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -260,31 +257,31 @@ class MeterHydros21 : public SDI12Sensors {
      */
     MeterHydros21(char SDI12address, int8_t powerPin, int8_t dataPin,
                   uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(
-              SDI12address, powerPin, dataPin, measurementsToAverage,
-              "MeterHydros21", HYDROS21_NUM_VARIABLES, HYDROS21_WARM_UP_TIME_MS,
-              HYDROS21_STABILIZATION_TIME_MS, HYDROS21_MEASUREMENT_TIME_MS,
-              HYDROS21_EXTRA_WAKE_TIME_MS, HYDROS21_INC_CALC_VARIABLES) {}
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "MeterHydros21", HYDROS21_NUM_VARIABLES,
+                       HYDROS21_WARM_UP_TIME_MS, HYDROS21_STABILIZATION_TIME_MS,
+                       HYDROS21_MEASUREMENT_TIME_MS,
+                       HYDROS21_INC_CALC_VARIABLES) {}
     /**
      * @copydoc MeterHydros21::MeterHydros21
      */
     MeterHydros21(char* SDI12address, int8_t powerPin, int8_t dataPin,
                   uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(
-              SDI12address, powerPin, dataPin, measurementsToAverage,
-              "MeterHydros21", HYDROS21_NUM_VARIABLES, HYDROS21_WARM_UP_TIME_MS,
-              HYDROS21_STABILIZATION_TIME_MS, HYDROS21_MEASUREMENT_TIME_MS,
-              HYDROS21_EXTRA_WAKE_TIME_MS, HYDROS21_INC_CALC_VARIABLES) {}
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "MeterHydros21", HYDROS21_NUM_VARIABLES,
+                       HYDROS21_WARM_UP_TIME_MS, HYDROS21_STABILIZATION_TIME_MS,
+                       HYDROS21_MEASUREMENT_TIME_MS,
+                       HYDROS21_INC_CALC_VARIABLES) {}
     /**
      * @copydoc MeterHydros21::MeterHydros21
      */
     MeterHydros21(int SDI12address, int8_t powerPin, int8_t dataPin,
                   uint8_t measurementsToAverage = 1)
-        : SDI12Sensors(
-              SDI12address, powerPin, dataPin, measurementsToAverage,
-              "MeterHydros21", HYDROS21_NUM_VARIABLES, HYDROS21_WARM_UP_TIME_MS,
-              HYDROS21_STABILIZATION_TIME_MS, HYDROS21_MEASUREMENT_TIME_MS,
-              HYDROS21_EXTRA_WAKE_TIME_MS, HYDROS21_INC_CALC_VARIABLES) {}
+        : SDI12Sensors(SDI12address, powerPin, dataPin, measurementsToAverage,
+                       "MeterHydros21", HYDROS21_NUM_VARIABLES,
+                       HYDROS21_WARM_UP_TIME_MS, HYDROS21_STABILIZATION_TIME_MS,
+                       HYDROS21_MEASUREMENT_TIME_MS,
+                       HYDROS21_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Meter Hydros 21 object
      */

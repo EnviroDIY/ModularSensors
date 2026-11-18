@@ -41,6 +41,13 @@
  * @brief The UbidotsPublisher subclass of dataPublisher for publishing data
  * to the Ubidots data portal at https://ubidots.com
  *
+ * The UbidotsPublisher requires an unsecured Client.  It can (and should) share
+ * the Client with other services that require unsecured connections. In order
+ * to use the same Client object for connection with any _secured_ service, you
+ * must reconfigure the Client between connections.  That type of
+ * reconfiguration does not happen automatically and is the responsibility of
+ * the application.
+ *
  * @ingroup the_publishers
  */
 class UbidotsPublisher : public dataPublisher {
@@ -50,7 +57,8 @@ class UbidotsPublisher : public dataPublisher {
      * @brief Construct a new Ubidots Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      * @param authenticationToken The authentication token from Ubidots, either
@@ -60,45 +68,18 @@ class UbidotsPublisher : public dataPublisher {
      * @param deviceID The device API Label from Ubidots, derived from the
      * user-specified device name.
      */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient,
+    UbidotsPublisher(Logger& baseLogger, Client& inClient,
                      const char* authenticationToken, const char* deviceID);
     /**
      * @brief Construct a new Ubidots Publisher object
      *
      * @param baseLogger The logger supplying the data to be published
-     * @param authenticationToken The authentication token from Ubidots, either
-     * the Organization's Integration Token (under Users > Organization menu,
-     * visible by Admin only) OR the STEM User's Device Token (under the
-     * specific device's setup panel).
-     * @param deviceID The device API Label from Ubidots, derived from the
-     * user-specified device name.
-     */
-    UbidotsPublisher(Logger& baseLogger, const char* authenticationToken,
-                     const char* deviceID);
-    /**
-     * @brief Construct a new Ubidots Publisher object
-     *
-     * @param baseLogger The logger supplying the data to be published
-     * @param inClient An Arduino client instance to use to print data to.
+     * @param inClient An application-owned Arduino client that remains valid
+     * for the lifetime of the publisher.
      * Allows the use of any type of client and multiple clients tied to a
      * single TinyGSM modem instance
      */
-    UbidotsPublisher(Logger& baseLogger, Client* inClient);
-    /**
-     * @brief Construct a new Ubidots Publisher object
-     *
-     * @note If a client is never specified, the publisher will attempt to
-     * create and use a client on a LoggerModem instance tied to the attached
-     * logger.
-     *
-     * @param baseLogger The logger supplying the data to be published
-     */
-    explicit UbidotsPublisher(Logger& baseLogger);
-    /**
-     * @brief Construct a new Ubidots Publisher object with all members set to
-     * defaults or null.
-     */
-    UbidotsPublisher();
+    UbidotsPublisher(Logger& baseLogger, Client& inClient);
     /**
      * @brief Destroy the Ubidots Publisher object
      */
@@ -133,32 +114,9 @@ class UbidotsPublisher : public dataPublisher {
      */
     uint16_t calculateJsonSize();
 
+    using dataPublisher::publishData;
     /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger, Client* inClient)
-     * @param authenticationToken The authentication token from Ubidots, either
-     * the Organization's Integration Token (under Users > Organization menu,
-     * visible by Admin only) OR the STEM User's Device Token (under the
-     * specific device's setup panel).
-     * @param deviceID The device API Label from Ubidots, derived from the
-     * user-specified device name.
-     */
-    void begin(Logger& baseLogger, Client* inClient,
-               const char* authenticationToken, const char* deviceID);
-    /**
-     * @copydoc dataPublisher::begin(Logger& baseLogger)
-     * @param authenticationToken The authentication token from Ubidots, either
-     * the Organization's Integration Token (under Users > Organization menu,
-     * visible by Admin only) OR the STEM User's Device Token (under the
-     * specific device's setup panel).
-     * @param deviceID The device API Label from Ubidots, derived from the
-     * user-specified device name.
-     */
-    void begin(Logger& baseLogger, const char* authenticationToken,
-               const char* deviceID);
-
-    // Post Data to Ubidots
-    /**
-     * @brief Utilize an attached modem to open a TCP connection to the
+     * @brief Utilize the supplied client to open a TCP connection to the
      * Ubidots API and then stream out a post request over
      * that connection.
      *
@@ -171,7 +129,7 @@ class UbidotsPublisher : public dataPublisher {
      * @param forceFlush Ask the publisher to flush buffered data immediately.
      * @return The http status code of the response.
      */
-    int16_t publishData(Client* outClient, bool forceFlush) override;
+    int16_t publishData(Client& outClient, bool forceFlush) override;
 
  protected:
     /**

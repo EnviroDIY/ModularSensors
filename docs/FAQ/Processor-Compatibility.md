@@ -39,11 +39,11 @@
 
 ## Processor Configuration and Adding Support<!--! {#processor_configuration} -->
 
-The specific processors supported by the ModularSensors library are defined in the [KnownProcessors.h](../src/sensors/KnownProcessors.h) file. This file contains compiler defines for board names, operating voltages, battery monitoring pins, and other board-specific parameters.
+The specific processors supported by the ModularSensors library are defined in the KnownProcessors.h file. This file contains compiler defines for board names, operating voltages, battery monitoring pins, and other board-specific parameters.
 
 ### KnownProcessors.h Documentation
 
-The [KnownProcessors.h](../src/sensors/KnownProcessors.h) file defines board-specific parameters for optimal configuration:
+The KnownProcessors.h file defines board-specific parameters for optimal configuration:
 
 **Basic Board Information:**
 
@@ -109,7 +109,7 @@ To add support for a new board of a supported processor type:
 #endif
 ```
 
-4. **Submit contribution**: Create a pull request with your additions to help other users with the same board.
+1. **Submit contribution**: Create a pull request with your additions to help other users with the same board.
 
 ### Board-Specific Parameters
 

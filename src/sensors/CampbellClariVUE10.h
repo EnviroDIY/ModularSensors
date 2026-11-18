@@ -40,6 +40,18 @@
  * @note While it is supported, you should not average measurements for this sensor.
  * The sensor takes a burst of 30 readings and returns the median of those.
  *
+ * The ClariVUE10 returns the following values:
+ *
+ * | Order | Description                  | Units | Kept |
+ * | ----- | ---------------------------- | ----- | ---- |
+ * | 1     | Median turbidity             | FNU   | Yes  |
+ * | 2     | Mean turbidity               | FNU   | No   |
+ * | 3     | Standard deviation turbidity | FNU   | No   |
+ * | 4     | Minimum turbidity            | FNU   | No   |
+ * | 5     | Maximum turbidity            | FNU   | No   |
+ * | 6     | Average temperature          | °C    | Yes  |
+ * | 7     | Error code                   | N/A   | Yes  |
+ *
  * @section sensor_clarivue_datasheet Sensor Datasheet
  * The specifications and datasheet are available at https://www.campbellsci.com/clarivue10
  *
@@ -73,8 +85,10 @@
  * The number of variables that can be returned by the ClariVUE10
  */
 /**@{*/
-/// @brief Sensor::_numReturnedValues; the ClariVUE10 can report 7 values
-/// (although we only keep 3).
+/**
+ * @brief Sensor::_numReturnedValues; the ClariVUE10 can report 7 values.  We
+ * only keep three of the values.
+ */
 #define CLARIVUE10_NUM_VARIABLES 7
 /// @brief Sensor::_incCalcValues; The ClariVUE calculates averages and other
 /// stats on board, but we don't calculate any additional values.
@@ -97,16 +111,12 @@
 /// warms up (0ms stabilization).
 #define CLARIVUE10_STABILIZATION_TIME_MS 0
 /**
- * @brief Sensor::_measurementTime_ms; the ClariVUE10 takes ~9500ms to
- * complete a measurement.
- *
- * Spec sheet says the measurement time is 9s.  When taking a standard
- * measurement I was not getting a result until after about 9335ms.
+ * @brief Sensor::_measurementTime_ms; the returned measurement time from the
+ * ClariVUE10 in response to a measurement request is 11-12s.  I've found it to
+ * be a little faster than that, but inconsistent enough that 11.5s is a safe
+ * estimate.
  */
-#define CLARIVUE10_MEASUREMENT_TIME_MS 11000
-/// @brief Extra wake time required for an SDI-12 sensor between the "break"
-/// and the time the command is sent.  The ClariVUE requires no extra time.
-#define CLARIVUE10_EXTRA_WAKE_TIME_MS 0
+#define CLARIVUE10_MEASUREMENT_TIME_MS 11500
 /**@}*/
 
 /**
@@ -184,7 +194,7 @@
 /**@{*/
 /// @brief Decimal places in string representation; the error code has 0.
 #define CLARIVUE10_ERRORCODE_RESOLUTION 0
-/// @brief Sensor variable number; error code is stored in sensorValues[2]
+/// @brief Sensor variable number; error code is stored in sensorValues[6]
 #define CLARIVUE10_ERRORCODE_VAR_NUM 6
 /// @brief Variable name in
 /// [ODM2 controlled vocabulary](http://vocabulary.odm2.org/variablename/);
@@ -237,8 +247,7 @@ class CampbellClariVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
               CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
-              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
-              CLARIVUE10_INC_CALC_VARIABLES) {}
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_INC_CALC_VARIABLES) {}
     /**
      * @copydoc CampbellClariVUE10::CampbellClariVUE10
      */
@@ -248,8 +257,7 @@ class CampbellClariVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
               CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
-              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
-              CLARIVUE10_INC_CALC_VARIABLES) {}
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_INC_CALC_VARIABLES) {}
     /**
      * @copydoc CampbellClariVUE10::CampbellClariVUE10
      */
@@ -259,8 +267,7 @@ class CampbellClariVUE10 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "Campbell ClariVUE10", CLARIVUE10_NUM_VARIABLES,
               CLARIVUE10_WARM_UP_TIME_MS, CLARIVUE10_STABILIZATION_TIME_MS,
-              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_EXTRA_WAKE_TIME_MS,
-              CLARIVUE10_INC_CALC_VARIABLES) {}
+              CLARIVUE10_MEASUREMENT_TIME_MS, CLARIVUE10_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the Campbell ClariVUE10 object
      */

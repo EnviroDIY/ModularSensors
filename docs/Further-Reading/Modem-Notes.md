@@ -29,7 +29,7 @@ If you are having trouble, please see the pages for the specific modems and the 
 | Digi XBee3 LTE Cat 1 AT&T (Telit LE866A1-NA)  |           DigiXBeeCellularTransparent            |
 |              Digi XBee S6B WiFi               |                   DigiXBeeWifi                   |
 |               Espressif ESP8266               |                 EspressifESP8266                 |
-|                Espressif ESP32                |                 EspressifESP32                   |
+|                Espressif ESP32                |                  EspressifESP32                  |
 |                 Quectel BG96                  |                   QuectelBG96                    |
 |       Mikroe LTE IOT 2 Click (_BG96_)¹        |                   QuectelBG96                    |
 |         Dragino NB IOT Bee (_BG96_)¹          |                   QuectelBG96                    |

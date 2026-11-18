@@ -47,37 +47,15 @@
 //==============================================================
 // Time-stamp configurations
 //==============================================================
-#if !defined(MS_LOGGER_EPOCH) || defined(DOXYGEN)
-/**
- * @def MS_LOGGER_EPOCH
- * @brief The epoch start to use for the logger
- */
-#define MS_LOGGER_EPOCH epochStart::unix_epoch
+#if defined(MS_LOGGER_EPOCH)
+#pragma message( \
+    "MS_LOGGER_EPOCH is deprecated and ignored; the logger always uses Unix internally.  Use the explicit epoch parameters of loggerClock and EpochTime for alternate epoch conversions.")
 #endif
 
-#if !defined(EARLIEST_SANE_UNIX_TIMESTAMP) || defined(DOXYGEN)
-/**
- * @def EARLIEST_SANE_UNIX_TIMESTAMP
- * @brief The earliest unix timestamp that can be considered sane.
- *
- * January 1, 2025
- */
-#define EARLIEST_SANE_UNIX_TIMESTAMP 1735689600
-#endif
-
-#if !defined(LATEST_SANE_UNIX_TIMESTAMP) || defined(DOXYGEN)
-/**
- * @def LATEST_SANE_UNIX_TIMESTAMP
- * @brief The latest unix timestamp that can be considered sane.
- *
- * January 1, 2035
- */
-#define LATEST_SANE_UNIX_TIMESTAMP 2051222400
-#endif
-// Static assert to validate timestamp bounds relationship
-static_assert(EARLIEST_SANE_UNIX_TIMESTAMP < LATEST_SANE_UNIX_TIMESTAMP,
-              "EARLIEST_SANE_UNIX_TIMESTAMP must be less than "
-              "LATEST_SANE_UNIX_TIMESTAMP");
+// NOTE: `EARLIEST_SANE_UNIX_TIMESTAMP` and `LATEST_SANE_UNIX_TIMESTAMP` are
+// deprecated within the ModularSensors config.  You must define them as global
+// build flags that can be used by both ModularSensors and the EpochTime
+// dependency.
 //==============================================================
 
 
@@ -313,6 +291,11 @@ static_assert(MS_DEFAULT_ADS1X15_ADDRESS == 0x48 ||
 // NOTE: This single setting applies to all SDI-12 sensors; it cannot be set on
 // a per-sensor basis.
 // #define MS_SDI12_NO_CRC_CHECK
+
+
+// For the InSitu RDO sensor, disable reporting of the O2 partial pressure, if
+// needed.
+// #define INSITU_RDO_NO_O2_PARTIAL_PRESSURE
 //==============================================================
 
 
@@ -545,6 +528,66 @@ static_assert(MS_AWS_IOT_MAX_CONNECTION_TIME > 0 &&
  * URLs or upload filenames.
  */
 // #define MS_S3PRESIGNED_PREVENT_REUSE
+//==============================================================
+
+
+//==============================================================
+// NIST Time Protocol (RFC-868) Configuration
+//==============================================================
+#if !defined(NIST_TIME_PROTOCOL_HOST) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_HOST
+ * @brief The host for the NIST Time Protocol (RFC-868)
+ */
+#define NIST_TIME_PROTOCOL_HOST "time.nist.gov"
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_PORT) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_PORT
+ * @brief The port for the NIST Time Protocol (RFC-868)
+ */
+#define NIST_TIME_PROTOCOL_PORT 37
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_TIMEOUT) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_TIMEOUT
+ * @brief Wait up to this many milliseconds for the NIST Time Protocol
+ * (RFC-868) response
+ */
+#define NIST_TIME_PROTOCOL_TIMEOUT 2500
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_BYTES) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_BYTES
+ * @brief The NIST Time Protocol (RFC-868) returns this many bytes
+ */
+#define NIST_TIME_PROTOCOL_BYTES 4
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_SPACING) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_SPACING
+ * @brief The NIST Time Protocol (RFC-868) requires at least this many
+ * milliseconds between requests
+ */
+#define NIST_TIME_PROTOCOL_SPACING 4000
+#endif
+
+#if !defined(NIST_TIME_PROTOCOL_RETRIES) || defined(DOXYGEN)
+/**
+ * @def NIST_TIME_PROTOCOL_RETRIES
+ * @brief Retry up to this many times to get a valid NIST Time Protocol
+ * (RFC-868) response
+ */
+#define NIST_TIME_PROTOCOL_RETRIES 12
+#endif
+// Static assert to validate NIST Time Protocol retry count is reasonable
+static_assert(NIST_TIME_PROTOCOL_RETRIES >= 0 &&
+                  NIST_TIME_PROTOCOL_RETRIES <= 255,
+              "NIST_TIME_PROTOCOL_RETRIES must be between 0 and 255");
 //==============================================================
 
 

@@ -71,6 +71,10 @@
  * When creating a logger, the order of variables in the array determines the
  * order the values will be written to the data file.
  *
+ * The application owns the variable pointer array and every Variable object
+ * referenced by it.  The array and all referenced variables must outlive this
+ * VariableArray object.
+ *
  * @ingroup base_classes
  *
  */
@@ -82,7 +86,9 @@ class VariableArray {
      *
      * @param variableCount The number of variables in the array
      * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects.
+     * pointers may be to calculated or measured variable objects.  The
+     * application retains ownership of the array and variables, and all must
+     * outlive this object.  No pointer in the array may be nullptr.
      * @param uuids An array of UUIDs.  These are linked 1-to-1 with the
      * variables by array position.
      */
@@ -93,7 +99,9 @@ class VariableArray {
      *
      * @param variableCount The number of variables in the array
      * @param variableList An array of pointers to variable objects.  The
-     * pointers may be to calculated or measured variable objects.
+     * pointers may be to calculated or measured variable objects.  The
+     * application retains ownership of the array and variables, and all must
+     * outlive this object.  No pointer in the array may be nullptr.
      */
     VariableArray(uint8_t variableCount, Variable* variableList[]);
     /**
@@ -123,9 +131,13 @@ class VariableArray {
      * any value given in the constructor.
      * @param variableList An array of pointers to variable objects.  The
      * pointers may be to calculated or measured variable objects.  Supersedes
-     * any value given in the constructor.
+     * any value given in the constructor.  The application retains ownership
+     * of the array and variables, and all must outlive this object.  No pointer
+     * in the array may be nullptr.
+     * @return True if the variable list and UUIDs are valid and the complete
+     * sensor list was populated.
      */
-    void begin(uint8_t variableCount, Variable* variableList[]);
+    bool begin(uint8_t variableCount, Variable* variableList[]);
     /**
      * @brief Begins the VariableArray.  Supplies a variable array and UUIDs,
      * checks the validity of all UUID and outputs the results.
@@ -134,17 +146,24 @@ class VariableArray {
      * any value given in the constructor.
      * @param variableList An array of pointers to variable objects.  The
      * pointers may be to calculated or measured variable objects.  Supersedes
-     * any value given in the constructor.
+     * any value given in the constructor.  The application retains ownership
+     * of the array and variables, and all must outlive this object.  No pointer
+     * in the array may be nullptr.
      * @param uuids An array of UUIDs.  These are linked 1-to-1 with the
      * variables by array position.
+     * @return True if the variable list and UUIDs are valid and the complete
+     * sensor list was populated.
      */
-    void begin(uint8_t variableCount, Variable* variableList[],
+    bool begin(uint8_t variableCount, Variable* variableList[],
                const char* uuids[]);
     /**
      * @brief Begins the VariableArray.  Checks the validity of all UUIDs and
      * outputs the results.
+     *
+     * @return True if the variable list and UUIDs are valid and the complete
+     * sensor list was populated.
      */
-    void begin();
+    bool begin();
 
     /**
      * @brief Pointer to the array of variable pointers.
@@ -307,6 +326,14 @@ class VariableArray {
     uint8_t _sensorCount;
 
  private:
+    /**
+     * @brief Check that the variable list exists and contains no null pointers.
+     *
+     * @param reportErrors True to print debugging information for invalid
+     * input.
+     * @return True if the variable list can be safely dereferenced.
+     */
+    bool validateVariableList(bool reportErrors = false);
     /**
      * @brief Check if the current variable is the last variable that the sensor
      * will return.

@@ -10,24 +10,23 @@
 
 // Included Dependencies
 #include "SIMComSIM7080.h"
-#include "LoggerModemMacros.h"
 
 // Constructor
-SIMComSIM7080::SIMComSIM7080(Stream* modemStream, int8_t powerPin,
+SIMComSIM7080::SIMComSIM7080(TinyGsmSim7080& sim7080Modem, int8_t powerPin,
                              int8_t statusPin, int8_t modemSleepRqPin,
                              const char* apn)
-    : loggerModem(powerPin, statusPin, SIM7080_STATUS_LEVEL, modemSleepRqPin,
-                  SIM7080_RESET_LEVEL, SIM7080_RESET_PULSE_MS, modemSleepRqPin,
-                  SIM7080_WAKE_LEVEL, SIM7080_WAKE_PULSE_MS,
-                  SIM7080_STATUS_TIME_MS, SIM7080_DISCONNECT_TIME_MS,
-                  SIM7080_WAKE_DELAY_MS, SIM7080_AT_RESPONSE_TIME_MS),
-#ifdef MS_SIMCOMSIM7080_DEBUG_DEEP
-      _modemATDebugger(*modemStream, MS_SERIAL_OUTPUT),
-      gsmModem(_modemATDebugger),
-#else
-      gsmModem(*modemStream),
-#endif
-      _apn(apn) {
+    : loggerModemImpl<TinyGsmSim7080, false>(
+          sim7080Modem, powerPin, statusPin, SIM7080_STATUS_LEVEL,
+          modemSleepRqPin, SIM7080_RESET_LEVEL, SIM7080_RESET_PULSE_MS,
+          modemSleepRqPin, SIM7080_WAKE_LEVEL, SIM7080_WAKE_PULSE_MS,
+          SIM7080_STATUS_TIME_MS, SIM7080_DISCONNECT_TIME_MS,
+          SIM7080_WAKE_DELAY_MS, SIM7080_AT_RESPONSE_TIME_MS),
+
+      _apn(apn) {}
+
+
+bool SIMComSIM7080::connectWithCredentials() {
+    return gsmModem.dataConnect(_apn, "", "");
 }
 
 
@@ -48,10 +47,10 @@ bool SIMComSIM7080::extraModemSetup() {
     // Enable the netlight indicator
     gsmModem.sendAT(F("+CNETLIGHT=1"));
     gsmModem.waitResponse();
-    // Enable netlight indication of GPRS status
+    // Enable netlight indication of cellular data status
     // Enable, the netlight will be forced to enter into 64ms on/300ms off
-    // blinking state in GPRS data transmission service.  Otherwise, the
-    // netlight state is not restricted.
+    // blinking state in data transmission service.  Otherwise, the netlight
+    // state is not restricted.
     gsmModem.sendAT(F("+CNETLIGHT=1"));
     gsmModem.waitResponse();
 
@@ -62,23 +61,6 @@ bool SIMComSIM7080::extraModemSetup() {
     return success;
 }
 
-MS_IS_MODEM_AWAKE(SIMComSIM7080);
-MS_MODEM_WAKE(SIMComSIM7080);
-
-MS_MODEM_CONNECT_INTERNET(SIMComSIM7080);
-MS_MODEM_DISCONNECT_INTERNET(SIMComSIM7080);
-MS_MODEM_IS_INTERNET_AVAILABLE(SIMComSIM7080);
-
-MS_MODEM_CREATE_CLIENT(SIMComSIM7080, Sim7080);
-MS_MODEM_DELETE_CLIENT(SIMComSIM7080, Sim7080);
-MS_MODEM_CREATE_SECURE_CLIENT(SIMComSIM7080, Sim7080);
-MS_MODEM_DELETE_SECURE_CLIENT(SIMComSIM7080, Sim7080);
-
-MS_MODEM_GET_NIST_TIME(SIMComSIM7080, Sim7080);
-
-MS_MODEM_GET_MODEM_SIGNAL_QUALITY(SIMComSIM7080);
-MS_MODEM_GET_MODEM_BATTERY_DATA(SIMComSIM7080);
-MS_MODEM_GET_MODEM_TEMPERATURE_DATA(SIMComSIM7080);
 
 // Create the wake and sleep methods for the modem
 // These can be functions of any type and must return a boolean
@@ -114,7 +96,7 @@ bool SIMComSIM7080::modemSleepFxn() {
         // Easiest to just go to sleep with the AT command rather than using
         // pins
         MS_DBG(F("Asking SIM7080 to power down"));
-        bool res = gsmModem.poweroff();
+        bool res = gsmModem.powerOff();
         gsmModem.stream.flush();
         return res;
     } else {  // DON'T go to sleep if we can't wake up!

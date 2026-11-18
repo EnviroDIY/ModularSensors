@@ -9,7 +9,7 @@
  */
 
 #include "AWS_IoT_Publisher.h"
-#include <TinyGsmEnums.h>
+#include <mixins/TinyGsmSSL.tpp>
 
 
 // ============================================================================
@@ -26,54 +26,19 @@ const char* AWS_IoT_Publisher::timestampTag       = "\"timestamp\":\"";
 
 // Constructors
 // Primary constructor - handles full initialization with all parameters
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
+AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client& inClient,
                                      const char* awsIoTEndpoint,
-                                     const char* caCertName,
-                                     const char* clientCertName,
-                                     const char* clientKeyName,
                                      const char* samplingFeatureUUID)
     : dataPublisher(baseLogger, inClient) {
     if (awsIoTEndpoint) setEndpoint(awsIoTEndpoint);
-    if (caCertName) setCACertName(caCertName);
-    if (clientCertName) setClientCertName(clientCertName);
-    if (clientKeyName) setClientKeyName(clientKeyName);
     if (samplingFeatureUUID && _baseLogger) {
         _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
     }
     init();
 }
-
-
 // Delegating constructors
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
-                                     const char* awsIoTEndpoint,
-                                     const char* caCertName,
-                                     const char* clientCertName,
-                                     const char* clientKeyName,
-                                     const char* samplingFeatureUUID)
-    : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint, caCertName,
-                        clientCertName, clientKeyName, samplingFeatureUUID) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger&     baseLogger,
-                                     const char* awsIoTEndpoint,
-                                     const char* caCertName,
-                                     const char* clientCertName,
-                                     const char* clientKeyName)
-    : AWS_IoT_Publisher(baseLogger, nullptr, awsIoTEndpoint, caCertName,
-                        clientCertName, clientKeyName, nullptr) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient,
-                                     const char* awsIoTEndpoint,
-                                     const char* samplingFeatureUUID)
-    : AWS_IoT_Publisher(baseLogger, inClient, awsIoTEndpoint, nullptr, nullptr,
-                        nullptr, samplingFeatureUUID) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client* inClient)
-    : AWS_IoT_Publisher(baseLogger, inClient, nullptr, nullptr, nullptr,
-                        nullptr, nullptr) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger)
-    : AWS_IoT_Publisher(baseLogger, nullptr, nullptr, nullptr, nullptr, nullptr,
-                        nullptr) {}
-AWS_IoT_Publisher::AWS_IoT_Publisher() : dataPublisher() {
-    init();
-}
+AWS_IoT_Publisher::AWS_IoT_Publisher(Logger& baseLogger, Client& inClient)
+    : AWS_IoT_Publisher(baseLogger, inClient, nullptr, nullptr) {}
 
 
 void AWS_IoT_Publisher::init() {
@@ -93,32 +58,6 @@ void AWS_IoT_Publisher::init() {
 
 void AWS_IoT_Publisher::setEndpoint(const char* awsIoTEndpoint) {
     _awsIoTEndpoint = awsIoTEndpoint;
-}
-
-
-void AWS_IoT_Publisher::setCACertName(const char* caCertName) {
-    _caCertName = caCertName;
-}
-
-
-void AWS_IoT_Publisher::setClientCertName(const char* clientCertName) {
-    _clientCertName = clientCertName;
-}
-
-
-void AWS_IoT_Publisher::setClientKeyName(const char* clientKeyName) {
-    _clientKeyName = clientKeyName;
-}
-
-// Sets all AWS IoT Core parameters
-void AWS_IoT_Publisher::setAWSIoTParams(const char* awsIoTEndpoint,
-                                        const char* caCertName,
-                                        const char* clientCertName,
-                                        const char* clientKeyName) {
-    setEndpoint(awsIoTEndpoint);
-    setCACertName(caCertName);
-    setClientCertName(clientCertName);
-    setClientKeyName(clientKeyName);
 }
 
 void AWS_IoT_Publisher::setDataPublishTopic(const char* topic) {
@@ -175,63 +114,8 @@ void AWS_IoT_Publisher::closeConnection() {
     _waitForSubs = false;
 }
 
-
-// A way to set members in the begin to use with a bare constructor
-void AWS_IoT_Publisher::begin(Logger& baseLogger, Client* inClient,
-                              const char* awsIoTEndpoint,
-                              const char* samplingFeatureUUID) {
-    setEndpoint(awsIoTEndpoint);
-    dataPublisher::begin(baseLogger, inClient);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-}
-void AWS_IoT_Publisher::begin(Logger& baseLogger, const char* awsIoTEndpoint,
-                              const char* caCertName,
-                              const char* clientCertName,
-                              const char* clientKeyName,
-                              const char* samplingFeatureUUID) {
-    setEndpoint(awsIoTEndpoint);
-    setCACertName(caCertName);
-    setClientCertName(clientCertName);
-    setClientKeyName(clientKeyName);
-    dataPublisher::begin(baseLogger);
-    _baseLogger->setSamplingFeatureUUID(samplingFeatureUUID);
-}
-
-Client* AWS_IoT_Publisher::createClient() {
-    if (_baseModem == nullptr) {
-        PRINTOUT(F("ERROR! No web client assigned and cannot access a "
-                   "logger modem to create one!"));
-        return nullptr;
-    }
-    if (_caCertName == nullptr || _clientCertName == nullptr ||
-        _clientKeyName == nullptr) {
-        PRINTOUT(F("Cannot create a new AWS secure client without certificate "
-                   "names!"));
-        return nullptr;
-    }
-    MS_DBG(F("Creating a new TinyGsmSecureClient with default socket number."));
-    MS_DBG(F("Using CA cert:"), _caCertName);
-    MS_DBG(F("Using client cert:"), _clientCertName);
-    MS_DBG(F("Using client key:"), _clientKeyName);
-    Client* newClient = _baseModem->createSecureClient(
-        SSLAuthMode::MUTUAL_AUTHENTICATION, SSLVersion::TLS1_3, _caCertName,
-        _clientCertName, _clientKeyName);
-    if (newClient == nullptr) {
-        PRINTOUT(F("Failed to create a new secure client!"));
-        return nullptr;
-    }
-    return newClient;
-}
-void AWS_IoT_Publisher::deleteClient(Client* client) {
-    if (_baseModem != nullptr) {
-        MS_DBG(F("Attempting to delete the client"));
-        return _baseModem->deleteSecureClient(client);
-    }
-}
-
-
 // This sends the data to AWS IoT Core
-int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
+int16_t AWS_IoT_Publisher::publishData(Client& outClient, bool) {
     bool retVal = false;
 
     MS_DBG(F("Preparing to publish data to AWS IoT endpoint"), getEndpoint());
@@ -266,7 +150,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     // we're going to give PubSubClient the address of the txBuffer to send it
     // as a char*.
     // The txBuffer is used for the **payload** only
-    txBufferInit(outClient);
+    txBufferInit(&outClient);
 
     // put the start of the JSON into the outgoing response_buffer
     txBufferAppend('{');
@@ -282,8 +166,9 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 
     // add the timestamp tag
     txBufferAppend(timestampTag);
-    txBufferAppend(
-        Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime).c_str());
+    char timestamp[26] = {'\0'};
+    Logger::formatDateTime_ISO8601(timestamp, Logger::markedLocalUnixTime);
+    txBufferAppend(timestamp);
     txBufferAppend('"');
     txBufferAppend(',');
 
@@ -308,7 +193,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     MS_DBG(F("strlen on buffer:"), strnlen(txBuffer, MS_SEND_BUFFER_SIZE));
 
     // Set the client connection parameters
-    _mqttClient.setClient(*outClient);
+    _mqttClient.setClient(outClient);
     _mqttClient.setServer(_awsIoTEndpoint, mqttPort);
     // NOTE: The MS_MQTT_MAX_PACKET_SIZE must be bigger than the maximum
     // expected incoming *or* outgoing message size. Incoming pre-signed S3 URLs
@@ -320,7 +205,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
     // long as the client is connected, it must be connected to the right place.
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
-    if (outClient->connected()) { outClient->stop(); }
+    if (outClient.connected()) { outClient.stop(); }
 
     // Make the MQTT connection
     MS_DBG(F("Opening MQTT Connection to IoT Core"));
@@ -405,7 +290,7 @@ int16_t AWS_IoT_Publisher::publishData(Client* outClient, bool) {
 
 
 // This sends the data to AWS IoT Core
-int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
+int16_t AWS_IoT_Publisher::publishMetadata(Client& outClient) {
     bool retVal = false;
 
     MS_DBG(F("Preparing to publish metadata to AWS IoT endpoint"),
@@ -422,10 +307,10 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     MS_DBG(F("Topic ["), strlen(use_topic), F("]:"), use_topic);
 
     // The txBuffer is used for the **payload** only
-    txBufferInit(outClient);
+    txBufferInit(&outClient);
 
     // Set the client connection parameters
-    _mqttClient.setClient(*outClient);
+    _mqttClient.setClient(outClient);
     _mqttClient.setServer(_awsIoTEndpoint, mqttPort);
     // NOTE: The MS_MQTT_MAX_PACKET_SIZE must be bigger than the maximum
     // expected incoming *or* outgoing message size.
@@ -436,7 +321,7 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
     // long as the client is connected, it must be connected to the right place.
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
-    if (outClient->connected()) { outClient->stop(); }
+    if (outClient.connected()) { outClient.stop(); }
 
     // Make the MQTT connection
     MS_DBG(F("Opening MQTT Connection to IoT Core"));
@@ -475,7 +360,7 @@ int16_t AWS_IoT_Publisher::publishMetadata(Client* outClient) {
             snprintf(varTopicBuffer, strlen(use_topic) + 12, "%s/variable%.2u",
                      use_topic, i);
 
-            txBufferInit(outClient);
+            txBufferInit(&outClient);
             txBufferAppend("{\"variable_number\":");
             itoa(i, num_buf, 10);
             txBufferAppend(num_buf);

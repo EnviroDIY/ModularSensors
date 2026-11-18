@@ -23,41 +23,6 @@
 // Included Dependencies
 #include <Arduino.h>
 
-// Helpers for strings stored in flash
-// These are blatantly copied from the TinyGSM library
-/**
- * @def TINY_GSM_PROGMEM
- * @brief A macro to use to put strings into flash memory for AVR boards but not
- * for other boards that don't support it.
- *
- * @typedef GsmConstStr
- * @brief A type for a string stored in flash memory for AVR boards but not for
- * boards that don't support it.
- *
- * @def GFP(x)
- * @brief A macro to convert a string into a __FlashStringHelper (aka
- * GsmConstStr) for AVR boards but not for other boards that don't support it.
- * @param x The string to convert
- *
- * @def GF(x)
- * @brief A macro to store string in flash memory for AVR boards but not for
- * other boards that don't support it.
- * @param x The string to store in flash memory
- */
-#if (defined(__AVR__) || defined(ARDUINO_ARCH_AVR)) &&            \
-    !defined(__AVR_ATmega4809__) && !defined(TINY_GSM_PROGMEM) && \
-    !defined(GFP) && !defined(GF)
-#define TINY_GSM_PROGMEM PROGMEM
-typedef const __FlashStringHelper* GsmConstStr;
-#define GFP(x) (reinterpret_cast<GsmConstStr>(x))
-#define GF(x) F(x)
-#elif !defined(TINY_GSM_PROGMEM) && !defined(GFP) && !defined(GF)
-#define TINY_GSM_PROGMEM
-typedef const char* GsmConstStr;
-#define GFP(x) x
-#define GF(x) x
-#endif
-
 /**
  * @def MS_DEFAULT_OUTPUT
  * @brief The "default" serial output based on defines within the board

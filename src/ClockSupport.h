@@ -37,6 +37,9 @@
 #include <Arduino.h>
 #include <time.h>
 
+// Include the EpochTime library
+#include <EpochTime.h>
+
 // Validate that exactly one clock has been selected (should be set by
 // KnownProcessors.h)
 #if (defined(MS_USE_RV8803) + defined(MS_USE_DS3231) + \
@@ -81,243 +84,12 @@
 #include <RTCZero.h>
 #endif
 
-#ifndef EPOCH_NIST_TO_UNIX
-/**
- * @brief The difference in seconds between the epoch value returned by the NIST
- * Network Time Protocol and the Unix epoch
- *
- * The NIST Network Time Protocol (RFC-1305 and later versions) and Time
- * Protocol (RFC-868) both return a uint32_t which is the number of seconds from
- * January 1, 1900.  This is 2208988800 seconds behind the UNIX epoch.
- *
- * The NIST epoch will roll over and cease to work for processors with a
- * uint32_t time_t on February 7, 2036 6:28:15 AM.
- */
-#define EPOCH_NIST_TO_UNIX 2208988800
-#endif
-#ifndef EPOCH_UNIX_TO_Y2K
-/**
- * @brief The epoch starting Jan 1, 2000, as some RTC's and Arduinos do
- * (946684800s ahead of UNIX epoch)
- */
-#define EPOCH_UNIX_TO_Y2K 946684800
-#endif
-#ifndef EPOCH_UNIX_TO_GPS
-/**
- * @brief The GPS epoch starting Jan 5, 1980 (was 315964800s ahead of UNIX epoch
- * at founding, has drifted farther apart due to leap seconds)
- */
-#define EPOCH_UNIX_TO_GPS 315964800
-#endif
-#ifndef NUMBER_LEAP_SECONDS
-/**
- * @brief The number of announced leap seconds as of February 24, 2025
- */
-#define NUMBER_LEAP_SECONDS 18
-#endif
-#ifndef LEAP_SECONDS
-/**
- * @brief The GPS epoch equivalent for each of the announced leap seconds as of
- * February 24, 2025
- */
-#define LEAP_SECONDS                                                     \
-    {46828800,  78364801,  109900802, 173059203,  252028804,  315187205, \
-     346723206, 393984007, 425520008, 457056009,  504489610,  551750411, \
-     599184012, 820108813, 914803214, 1025136015, 1119744016, 1167264017}
-#endif
-
-/// @brief The number of seconds in a day
-#define SECONDS_IN_DAY 86400L
-
-
-/**
- * @brief Set the epoch start value.
- *
- * @warning 8-bit AVR processors use a uint32_t for time_t. Given the start
- * of the first epoch here is 1900, this will roll over and cease to work
- * for processors with a uint32_t time_t on February 7, 2036 6:28:15 AM
- *
- * @note: for AVR boards time_t is a typedef for uint32_t, defined in time.h For
- * SAMD time_t is a typedef for __int_least64_t _timeval.h implicit cast to
- * time_t
- */
-enum class epochStart : time_t {
-    unix_epoch =
-        EPOCH_NIST_TO_UNIX,  ///< Use a Unix epoch, starting Jan 1, 1970.
-                             ///< This is the default for this library
-    y2k_epoch = EPOCH_NIST_TO_UNIX +
-        EPOCH_UNIX_TO_Y2K,  ///< Use an epoch starting Jan 1, 2000, as
-                            ///< some RTC's and Arduinos do (946684800s
-                            ///< ahead of UNIX epoch)
-    gps_epoch = EPOCH_NIST_TO_UNIX +
-        EPOCH_UNIX_TO_GPS,  ///< Use the GPS epoch starting Jan 5, 1980
-                            ///< (was 315964800s ahead of UNIX epoch at
-                            ///< founding, has drifted farther apart due
-                            ///< to leap seconds)
-    nist_epoch = 0  ///< Use the epoch starting Jan 1, 1900 as returned by
-                    ///< the NIST Network Time Protocol (RFC-1305 and later
-                    ///< versions) and Time Protocol (RFC-868) (2208988800
-                    ///< behind the UNIX epoch)
-};
-
-
-/**
- * @brief A class for dealing with different definitions of the start of the
- * epoch.
- *
- * The functions for converting between GSP and Unix epoch - taking leap
- * seconds into account - were converted from the php functions available at
- * https://www.andrews.edu/~tzs/timeconv/timealgorithm.html. From that site:
- *
- * > [W]hile there was an offset of 315964800 seconds between Unix and GPS
- * > time when GPS time began, that offset changes each time there is a leap
- * > second. GPS time labels each second uniquely including leap seconds while
- * > Unix time does not, preferring to count a constant number of seconds a
- * > day including those containing leap seconds.
- */
-class epochTime {
- public:
-    /**
-     * @brief Constructor, requires thse unix offset value as input.
-     *
-     * @param timestamp A timestamp - in seconds since the start of the
-     * given epoch.
-     * @param epoch The start if the epoch for the timestamp.
-     */
-    epochTime(time_t timestamp, epochStart epoch = epochStart::unix_epoch);
-    /**
-     * @brief Deleted bool conversion operator
-     *
-     * The bool conversion operator allows an object of this class to be
-     * converted into a boolean. Deleting this prevents anyone from calling
-     * `if(epochStart)`
-     *
-     * @see
-     * https://stackoverflow.com/questions/4600295/what-is-the-meaning-of-operator-bool-const
-     */
-    explicit operator bool() const = delete;
-
-    /**
-     * @brief Equality comparison operator
-     *
-     * @param a Another epochStart object
-     * @return True if the objects have the same epoch start
-     */
-    bool operator==(epochTime a) const {
-        return _unixTimestamp == a._unixTimestamp;
-    }
-    /**
-     * @brief In-equality comparison operator
-     *
-     * @param a Another epochStart object
-     * @return True if the objects have the a different epoch start
-     */
-    bool operator!=(epochTime a) const {
-        return _unixTimestamp != a._unixTimestamp;
-    }
-
-    /**
-     * @brief Static function to convert between any two timestamps
-     * @param in_timestamp The timestamp to convert - in seconds since the start
-     * of the input epoch.
-     * @param in_epoch The starting epoch
-     * @param out_epoch The ending epoch
-     * @return The equivalent timestamp relative to the requested epoch
-     */
-    static time_t convert_epoch(time_t in_timestamp, epochStart in_epoch,
-                                epochStart out_epoch);
-
-    /**
-     * @brief Get the timestamp of an epochTime object in a different epoch
-     *
-     * @param in_time The input epochTime object
-     * @param out_epoch The ending epoch
-     * @return The equivalent timestamp relative to the requested epoch
-     */
-    static time_t convert_epoch(epochTime in_time, epochStart out_epoch);
-
-#ifndef DOXYGEN
-    // Delete functions to avoid implicit conversions
-    // https://stackoverflow.com/questions/12877546/how-do-i-avoid-implicit-conversions-on-non-constructing-functions
-    template <class T>
-    static time_t convert_epoch(T, epochStart in_epoch,
-                                epochStart out_epoch) = delete;  // C++11
-    template <class T>
-    static time_t convert_epoch(T, epochStart out_epoch) = delete;  // C++11
-#endif
-
-    /**
-     * @brief Convert Unix Time to GPS Time
-     *
-     * @param unixTime A unix epoch timestamp
-     * @return The equivalent GPS epoch timestamp
-     */
-    static time_t unix2gps(time_t unixTime);
-    /**
-     * @brief Convert GPS Time to Unix Time
-     *
-     * @param gpsTime A GPS epoch timestamp
-     * @return The equivalent Unix epoch timestamp
-     */
-    static time_t gps2unix(time_t gpsTime);
-
-#if defined(MS_CLOCKSUPPORT_DEBUG) || defined(MS_CLOCKSUPPORT_DEBUG_DEEP)
-    /**
-     * @brief Gets a string name for the epoch
-     *
-     * @param epoch The epoch to get the name of
-     * @return The name for the epoch
-     */
-    static String printEpochName(epochStart epoch);
-    /**
-     * @brief Gets a string for the start date of the epoch
-     *
-     * @return The starting date, in ISO8601
-     */
-    static String printEpochStart(epochStart epoch);
-#endif
-
- private:
-    /**
-     * @brief Internal reference to the timestamp IN UNIX EPOCH
-     */
-    time_t _unixTimestamp;
-
- private:
-    /**
-     * @brief Array of leap seconds as of February 24, 2025
-     */
-    static const uint32_t leapSeconds[NUMBER_LEAP_SECONDS];
-
-    /**
-     * @brief Test to see if a GPS second is a leap second
-     *
-     * @param gpsTime A timestamp in the GPS epoch
-     * @return True if the time is a leap second
-     */
-    static bool isLeap(uint32_t gpsTime);
-
-    /**
-     * @brief Count number of leap seconds that have passed between the start of
-     * the GPS epoch and the given time
-     *
-     * @param gpsTime A timestamp in the GPS epoch
-     * @param unix2gps True if the input time is in Unix epoch, false if it is
-     * GPS epoch
-     * @return The number of leap seconds that have passed between the start of
-     * the GPS epoch and the given time
-     */
-    static int8_t countLeaps(uint32_t gpsTime, bool unix2gps);
-};
-
 
 /**
  * @brief A class for the clock attached to the logger.
  *
  * @note This is effectively a static class, with all static functions and a
  * deleted constructor.
- *
- * @todo Support half/quarter hour time zones
  *
  * Dealing with time is **hard**! This library only supports the bare minimum of
  * what I think is necessary to get the logger's clock working and to convert
@@ -362,14 +134,19 @@ class loggerClock {
      * @note I VERY, VERY STRONGLY RECOMMEND SETTING THE RTC IN UTC
      * (i.e., offset = 0)
      *
-     * @param offsetHours The offset of the real-time clock (RTC) from UTC in
+     * @param offsetSeconds The offset of the real-time clock (RTC) from UTC in
      * hours
-     */
-    static void setRTCOffset(int8_t offsetHours);
-    /**
-     * @brief Get the of the real-time clock (RTC) from UTC in hours.
      *
-     * @return The offset of the real-time clock (RTC) from UTC in hours
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
+     */
+    static void setRTCOffset(int32_t offsetSeconds);
+    /**
+     * @brief Get the offset of the real-time clock (RTC) from UTC in **hours**.
+     *
+     * @return The offset of the real-time clock (RTC) from UTC in **hours**
      */
     static int8_t getRTCOffset();
 
@@ -377,13 +154,19 @@ class loggerClock {
      * @brief Get the current Universal Coordinated Time (UTC) epoch time from
      * the RTC.
      *
-     * @param utcOffset The offset from UTC to return the epoch time in.
+     * @param utcOffsetSeconds The offset **in seconds** from UTC to return the
+     * epoch time in.
      * @param epoch The type of epoch to use (i.e., the standard for the start
      * of the epoch).
      *
      * @return The number of seconds from the start of the given epoch.
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static time_t getNowAsEpoch(int8_t utcOffset, epochStart epoch);
+    static time_t getNowAsEpoch(int32_t utcOffsetSeconds, epochStart epoch);
 
     /**
      * @brief Get the current epoch time from the RTC and return it as
@@ -397,85 +180,27 @@ class loggerClock {
      * @param day [out] Reference to a variable where the day will be stored
      * @param month [out] Reference to a variable where the month will be stored
      * @param year [out] Reference to a variable where the year will be stored
-     * @param tz_offset [in] The time zone offset from UTC in hours
+     * @param tz_offset_s [in] The time zone offset from UTC in **seconds**
      *
      * @note The tz_offset is an input parameter - you need to set the timezone
      * that you want the other parts to be set in!
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
     static void getNowAsParts(int8_t& seconds, int8_t& minutes, int8_t& hours,
                               int8_t& day, int8_t& month, int16_t& year,
-                              uint8_t tz_offset);
-
-    /**
-     * @brief Convert an epoch time (seconds since a fixed epoch start) into a
-     * ISO8601 formatted string.
-     *
-     * Code modified from parts of the SparkFun RV-8803 library.
-     *
-     * @param epochSeconds The number of seconds since the start of the given
-     * epoch.
-     * @param epochSecondsUTCOffset The offset of the input epoch time from
-     * UTC in hours.
-     * @param epoch The epoch of the input epoch time.
-     * @return An ISO8601 formatted String.
-     */
-    static String formatDateTime_ISO8601(time_t     epochSeconds,
-                                         int8_t     epochSecondsUTCOffset,
-                                         epochStart epoch);
-    /**
-     * @brief Convert an epochTime object into a ISO8601 formatted string.
-     *
-     * @param in_time An epochTime object
-     * @param epochSecondsUTCOffset The offset of the input epoch time from
-     * UTC in hours.
-     * @return An ISO8601 formatted String.
-     */
-    static String formatDateTime_ISO8601(epochTime in_time,
-                                         int8_t    epochSecondsUTCOffset);
-
-    /**
-     * @brief Convert an epoch time into a character string based on the input
-     * strftime format string and put it into the given buffer.
-     *
-     * @note This function DOES NOT SUPPORT TIMEZONES. Do not use the %z or %Z
-     * inputs!
-     *
-     * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible
-     * formatting strings.
-     *
-     * @param buffer A buffer to put the finished string into. Make sure that
-     * the buffer is big enough to hold all of the characters!
-     * @param fmt The strftime format string.
-     * @param epochSeconds The number of seconds since the start of the given
-     * epoch in the given offset from UTC.
-     * @param epoch The epoch of the input epoch time.
-     */
-    static void formatDateTime(char* buffer, const char* fmt,
-                               time_t epochSeconds, epochStart epoch);
-    /**
-     * @brief Convert an epoch time into a character string based on the input
-     * strftime format string and put it into the given buffer.
-     *
-     * @note This function DOES NOT SUPPORT TIMEZONES. Do not use the %z or %Z
-     * inputs!
-     *
-     * @see https://en.cppreference.com/w/cpp/chrono/c/strftime for possible
-     * formatting strings.
-     *
-     * @param buffer A buffer to put the finished string into. Make sure that
-     * the buffer is big enough to hold all of the characters!
-     * @param fmt The strftime format string.
-     * @param in_time An epochTime object
-     */
-    static void formatDateTime(char* buffer, const char* fmt,
-                               epochTime in_time);
+                              int32_t tz_offset_s);
 
     /**
      * @brief Verify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
      * @param ts The number of seconds since the start of the given epoch.
-     * @param utcOffset The offset of the epoch time from UTC.
+     * @param utcOffsetSeconds The offset of the epoch time from UTC **in
+     * seconds**.
      * @param epoch The type of epoch to use (i.e., the standard for the start
      * of the epoch).
      *
@@ -488,14 +213,19 @@ class loggerClock {
      * @note Changed behavior: Previously returned true only when clock was
      * actually written. Now returns true when clock is at/within tolerance,
      * regardless of whether it was written.
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static bool setRTClock(time_t ts, int8_t utcOffset, epochStart epoch);
+    static bool setRTClock(time_t ts, int32_t utcOffsetSeconds,
+                           epochStart epoch);
     /**
      * @brief Verify that the input value is sane and if so sets the real time
      * clock to the given time.
      *
      * @param in_time An epochTime object
-     * @param utcOffset The offset of the epoch time from UTC.
      *
      * @return True if the input timestamp passes sanity checks **and**
      * the clock is now at or within tolerance (±5 seconds) of the target time.
@@ -506,65 +236,50 @@ class loggerClock {
      * @note Changed behavior: Previously returned true only when clock was
      * actually written. Now returns true when clock is at/within tolerance,
      * regardless of whether it was written.
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static bool setRTClock(epochTime in_time, int8_t utcOffset);
+    static bool setRTClock(epochTime in_time);
 
     /**
      * @brief Check that the current time on the RTC is within a "sane" range.
      *
-     * To be sane the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
-     * #LATEST_SANE_UNIX_TIMESTAMP.
+     * To be sane the clock must be between EARLIEST_SANE_UNIX_TIMESTAMP and
+     * LATEST_SANE_UNIX_TIMESTAMP.  These defines are set in the EpochTime
+     * library or as **global** build flags.  They cannot be configured within
+     * the ModularSensors config.
      *
      * @return True if the current time on the RTC passes sanity range
      * checking
      */
     static bool isRTCSane();
-    /**
-     * @brief Check that a given epoch time (seconds since 1970) is within a
-     * "sane" range.
-     *
-     * To be sane, the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
-     * #LATEST_SANE_UNIX_TIMESTAMP.
-     *
-     * @param ts The timestamp to check (in seconds since the start of the given
-     * epoch).
-     * @param utcOffset The offset of the epoch time from UTC in hours.
-     * @param epoch The type of epoch to use (i.e., the standard for the start
-     * of the epoch).
-     * @return True if the given time passes sanity range checking.
-     */
-    static bool isEpochTimeSane(time_t ts, int8_t utcOffset, epochStart epoch);
-    /**
-     * @brief Check that a given epoch time (an epochTime object) is within a
-     * "sane" range.
-     *
-     * To be sane, the clock must be between #EARLIEST_SANE_UNIX_TIMESTAMP and
-     * #LATEST_SANE_UNIX_TIMESTAMP.
-     *
-     * @param in_time An epochTime object
-     * @param utcOffset The offset of the epoch time from UTC in hours.
-     * @return True if the given time passes sanity range checking.
-     */
-    static bool isEpochTimeSane(epochTime in_time, int8_t utcOffset);
 
     /**
      * @brief Set an alarm to fire a clock interrupt at a specific epoch time
      *
      * @param ts The timestamp for the next interrupt - in seconds from the
      * start of the input epoch.
-     * @param utcOffset The offset of the epoch time from UTC in hours.
+     * @param utcOffsetSeconds The offset of the epoch time from UTC **in
+     * seconds**.
      * @param epoch The type of epoch to use (i.e., the standard for the start
      * of the epoch).
+     *
+     * @important Releases up to 0.37.0 used hours instead of seconds for the
+     * UTC offset.  This fuction attempts to preserve backwards compatibility by
+     * assuming any offset of magnitude <= 24 is in hours and converts it to
+     * seconds.
      */
-    static void setNextRTCInterrupt(time_t ts, int8_t utcOffset,
+    static void setNextRTCInterrupt(time_t ts, int32_t utcOffsetSeconds,
                                     epochStart epoch);
     /**
      * @brief Set an alarm to fire a clock interrupt at a specific epoch time
      *
-     * @param in_time An epochTime object
-     * @param utcOffset The offset of the epoch time from UTC in hours.
+     * @param in_time An epochTime object representing the next interrupt time
      */
-    static void setNextRTCInterrupt(epochTime in_time, int8_t utcOffset);
+    static void setNextRTCInterrupt(epochTime in_time);
 
     /**
      * @brief Enable 1 minute interrupts on the RTC
@@ -604,72 +319,12 @@ class loggerClock {
      */
     static void begin();
 
-    /**
-     * @brief Get the epoch start for the processor/Arduino core as an
-     * epochStart object
-     *
-     * @return The epoch start for the processor/Arduino core
-     */
-    static epochStart getCoreEpochStart() {
-        return loggerClock::_core_epoch;
-    }
-    /**
-     * @brief Get the timezone offset for the processor/Arduino core in seconds
-     * from UTC
-     *
-     * @return The timezone offset for the processor/Arduino core in seconds
-     * from UTC
-     */
-    static int32_t getCoreTimeZone() {
-        return loggerClock::_core_tz;
-    }
-    /**
-     * @brief Get the epoch start for the RTC as an epochStart object
-     *
-     * @return The epoch start for the RTC
-     */
-    static epochStart getRTCEpochStart() {
-        return loggerClock::_rtcEpoch;
-    }
-
  protected:
 
     /**
-     * @brief Figure out what epoch start is defined for the Arduino core used
-     * by the processor.
-     *
-     * The real time clock libraries mostly document this, but the cores for the
-     * various Arduino processors don't. The time.h file is not much more than a
-     * stub.
-     *
-     * @return The start of the epoch
+     * @brief The static offset of the real time clock from UTC in **seconds**
      */
-    static epochStart getProcessorEpochStart();
-
-    /**
-     * @brief Figure out the timezone offset defined for the Arduino core used
-     * by the processor.
-     *
-     * @return The timezone offset in seconds from UTC
-     */
-    static int32_t getProcessorTimeZone();
-
-    /**
-     * @brief The start of the epoch for the processor core's internal time.h
-     * library.
-     */
-    static epochStart _core_epoch;
-
-    /**
-     * @brief The timezone used by the processor core's internal time.h library,
-     * in seconds from UTC.
-     */
-    static int32_t _core_tz;
-
-    /**
-     * @brief The static offset data of the real time clock from UTC in hours
-     */
-    static int8_t _rtcUTCOffset;
+    static int32_t _rtcOffsetSeconds;
     /**
      * @brief The start of the epoch for the RTC (or the RTC's library).
      */
@@ -681,26 +336,27 @@ class loggerClock {
      *
      * @param ts The input epoch time - in seconds since the start of the input
      * epoch.
-     * @param utcOffset The offset of the input epoch time from UTC in hours.
+     * @param utcOffsetSeconds The offset of the input epoch time from UTC in
+     * seconds.
      * @param epoch The type of epoch of the input timestamp
      * @return A timestamp converted to the epoch and timezone used internally
      * by the RTC
      */
-    static inline time_t tsToRawRTC(time_t ts, int8_t utcOffset,
+    static inline time_t tsToRawRTC(time_t ts, int32_t utcOffsetSeconds,
                                     epochStart epoch);
     /**
      * @brief Convert a timestamp from the RTC's internal epoch and UTC offset
      * to the requested offset and epoch.
      *
-     * @param ts The timestamp in the epoch and timezone used internally by the
-     * RTC.
-     * @param utcOffset The offset of the desired output epoch time from UTC in
-     * hours.
+     * @param rtc_ts The timestamp in the epoch and timezone used internally
+     * by the RTC.
+     * @param utcOffsetSeconds The offset of the desired output epoch time from
+     * UTC in seconds.
      * @param epoch The type of epoch of the output timestamp
      * @return A timestamp converted from the epoch and timezone used internally
      * by the RTC to the requested epoch and offset
      */
-    static inline time_t tsFromRawRTC(time_t ts, int8_t utcOffset,
+    static inline time_t tsFromRawRTC(time_t rtc_ts, int32_t utcOffsetSeconds,
                                       epochStart epoch);
 
     /**

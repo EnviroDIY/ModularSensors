@@ -79,13 +79,14 @@ const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
                                      // status (-1 if unconnected)
 
 // Network connection information
-const char* apn = "YourAPN";  // The APN for the gprs connection
+const char* apn = "YourAPN";  // The APN for cellular connection
 
-DigiXBeeCellularTransparent modemXBCT(&modemSerial, modemVccPin, modemStatusPin,
-                                      useCTSforStatus, modemResetPin,
-                                      modemSleepRqPin, apn);
-// Create an extra reference to the modem by a generic name
-DigiXBeeCellularTransparent modem = modemXBCT;
+// Create a TinyGsm modem
+TinyGsmXBee gsmModem(modemSerial);
+// Create a loggerModem object
+DigiXBeeCellularTransparent modem(gsmModem, modemVccPin, modemStatusPin,
+                                  useCTSforStatus, modemResetPin,
+                                  modemSleepRqPin, apn);
 /** End [digi_xbee_cellular_transparent] */
 
 
@@ -233,10 +234,14 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
-// Create a data publisher for the Monitor My Watershed POST endpoint
 #include <publishers/MonitorMyWatershedPublisher.h>
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
-                                          samplingFeature);
+// Create a client for Monitor My Watershed - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsmXBee::GsmClientXBee mmwClient(gsmModem);
+// Create a data publisher for the Monitor My Watershed POST endpoint
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
+                                          registrationToken, samplingFeature);
 /** End [publishers] */
 
 
@@ -335,7 +340,7 @@ void setup() {
     for (uint8_t i = 0; i < 5; i++) {
         // Wait the required guard time before entering command mode
         delay(1010);
-        modem.gsmModem.streamWrite(GF("+++"));  // enter command mode
+        modem.gsmModem.streamPrint(GF("+++"));  // enter command mode
         if (modem.gsmModem.waitResponse(2000, GF("OK\r")) == 1) break;
     }
     // Carrier Profile - 0 = Automatic selection

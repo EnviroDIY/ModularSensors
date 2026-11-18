@@ -338,8 +338,15 @@ bool Sensor::startSingleMeasurement() {
 }
 
 
-void Sensor::registerVariable(int sensorVarNum, Variable* var) {
+bool Sensor::registerVariable(int sensorVarNum, Variable* var) {
+    if (sensorVarNum < 0 || sensorVarNum >= _numReturnedValues ||
+        sensorVarNum >= MAX_NUMBER_VARS) {
+        MS_DBG(F("Cannot register variable at invalid sensor result index"),
+               sensorVarNum, F("for"), getSensorNameAndLocation());
+        return false;
+    }
     variables[sensorVarNum] = var;
+    return true;
 }
 
 void Sensor::notifyVariables() {
@@ -422,7 +429,7 @@ void Sensor::verifyAndAddMeasurementResult(uint8_t resultNumber,
     bool prevResultGood = (sensorValues[resultNumber] != MS_INVALID_VALUE &&
                            !isnan(sensorValues[resultNumber]));
     bool newResultGood  = (resultValue != MS_INVALID_VALUE &&
-                          !isnan(resultValue));
+                           !isnan(resultValue));
     // If the new result is good and there was were only bad results, set the
     // result value as the new result and add 1 to the good result total
     if (!prevResultGood && newResultGood) {

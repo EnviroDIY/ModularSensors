@@ -27,7 +27,7 @@ const int   ThingSpeakPublisher::mqttPort            = 1883;
 
 // Constructors
 // Primary constructor with all MQTT parameters and client
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client& inClient,
                                          const char* thingSpeakClientName,
                                          const char* thingSpeakMQTTUser,
                                          const char* thingSpeakMQTTPassword,
@@ -38,27 +38,12 @@ ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient,
     if (thingSpeakMQTTPassword) setPassword(thingSpeakMQTTPassword);
     if (thingSpeakChannelID) setChannelID(thingSpeakChannelID);
 }
-
 // Delegating constructors
-ThingSpeakPublisher::ThingSpeakPublisher(Logger&     baseLogger,
-                                         const char* thingSpeakClientName,
-                                         const char* thingSpeakMQTTUser,
-                                         const char* thingSpeakMQTTPassword,
-                                         const char* thingSpeakChannelID)
-    : ThingSpeakPublisher(baseLogger, nullptr, thingSpeakClientName,
-                          thingSpeakMQTTUser, thingSpeakMQTTPassword,
-                          thingSpeakChannelID) {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client* inClient)
+ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger, Client& inClient)
     : ThingSpeakPublisher(
           baseLogger, inClient, static_cast<const char*>(nullptr),
           static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
           static_cast<const char*>(nullptr)) {}
-ThingSpeakPublisher::ThingSpeakPublisher(Logger& baseLogger)
-    : ThingSpeakPublisher(
-          baseLogger, nullptr, static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr), static_cast<const char*>(nullptr),
-          static_cast<const char*>(nullptr)) {}
-ThingSpeakPublisher::ThingSpeakPublisher() : dataPublisher() {}
 
 
 void ThingSpeakPublisher::setMQTTClient(const char* thingSpeakClientName) {
@@ -95,30 +80,8 @@ void ThingSpeakPublisher::setThingSpeakParams(
     setChannelID(thingSpeakChannelID);
 }
 
-
-// A way to set members in the begin to use with a bare constructor
-void ThingSpeakPublisher::begin(Logger& baseLogger, Client* inClient,
-                                const char* thingSpeakClientName,
-                                const char* thingSpeakMQTTUser,
-                                const char* thingSpeakMQTTPassword,
-                                const char* thingSpeakChannelID) {
-    setThingSpeakParams(thingSpeakClientName, thingSpeakMQTTUser,
-                        thingSpeakMQTTPassword, thingSpeakChannelID);
-    dataPublisher::begin(baseLogger, inClient);
-}
-void ThingSpeakPublisher::begin(Logger&     baseLogger,
-                                const char* thingSpeakClientName,
-                                const char* thingSpeakMQTTUser,
-                                const char* thingSpeakMQTTPassword,
-                                const char* thingSpeakChannelID) {
-    setThingSpeakParams(thingSpeakClientName, thingSpeakMQTTUser,
-                        thingSpeakMQTTPassword, thingSpeakChannelID);
-    dataPublisher::begin(baseLogger);
-}
-
-
 // This sends the data to ThingSpeak
-int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
+int16_t ThingSpeakPublisher::publishData(Client& outClient, bool) {
     // Validate required MQTT parameters before proceeding
     if (_thingSpeakChannelID == nullptr || strlen(_thingSpeakChannelID) == 0) {
         MS_DBG(F("ERROR: ThingSpeak Channel ID is required but not set!"));
@@ -161,7 +124,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
     MS_DBG(F("Topic ["), strlen(topicBuffer), F("]:"), topicBuffer);
 
     // Set the client connection parameters
-    _mqttClient.setClient(*outClient);
+    _mqttClient.setClient(outClient);
     _mqttClient.setServer(mqttServer, mqttPort);
 
     // Make sure any previous TCP connections are closed
@@ -170,7 +133,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
     // Closing any stray client sockets here ensures that a new client socket
     // is opened to the right place.
     // client is connected when a different socket is open
-    if (outClient->connected()) { outClient->stop(); }
+    if (outClient.connected()) { outClient.stop(); }
 
     // Make the MQTT connection
     // Note:  the client id and the user name do not mean anything for
@@ -182,11 +145,11 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
         MS_DBG(F("MQTT connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
 
         // The txBuffer is used for the **payload** only
-        txBufferInit(outClient);
+        txBufferInit(&outClient);
         txBufferAppend("created_at=");
-        txBufferAppend(
-            Logger::formatDateTime_ISO8601(Logger::markedLocalUnixTime)
-                .c_str());
+        char timestamp[26] = {'\0'};
+        Logger::formatDateTime_ISO8601(timestamp, Logger::markedLocalUnixTime);
+        txBufferAppend(timestamp);
 
         char tempBuffer[2] = "";  // for the field number
         for (uint8_t i = 0; i < numFields; i++) {
@@ -224,7 +187,7 @@ int16_t ThingSpeakPublisher::publishData(Client* outClient, bool) {
 }
 
 // This updates your channel field names on ThingSpeak
-int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
+int16_t ThingSpeakPublisher::publishMetadata(Client& outClient) {
     if (!_thingSpeakAPIKey) {
         PRINTOUT(F("No ThingSpeak REST API key set!"));
         return -2;
@@ -239,9 +202,9 @@ int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
     // Open a TCP/IP connection to ThingSpeak
     MS_DBG(F("Connecting client"));
     MS_START_DEBUG_TIMER;
-    if (outClient->connect(apiHost, apiPort)) {
+    if (outClient.connect(apiHost, apiPort)) {
         MS_DBG(F("Client connected after"), MS_PRINT_DEBUG_TIMER, F("ms"));
-        txBufferInit(outClient);
+        txBufferInit(&outClient);
 
         // copy the initial put header into the tx buffer
         txBufferAppend(putHeader);
@@ -276,15 +239,15 @@ int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
 
         // Wait 10 seconds for a response from the server
         uint32_t start = millis();
-        while ((millis() - start) < 10000L && outClient->connected() &&
-               outClient->available() < 12) {
+        while ((millis() - start) < 10000L && outClient.connected() &&
+               outClient.available() < 12) {
             delay(10);
         }
 
         // Read only the first 12 characters of the response
         // We're only reading as far as the http code, anything beyond that
         // we don't care about.
-        did_respond = outClient->readBytes(tempBuffer, 12);
+        did_respond = outClient.readBytes(tempBuffer, 12);
         // Process the HTTP response code
         // The first 9 characters should be "HTTP/1.1 "
         if (did_respond >= 12) {
@@ -304,8 +267,8 @@ int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
         // throw the rest of the response into the tx buffer so we can debug it
         txBufferInit(nullptr);
         txBufferAppend(tempBuffer, 12, true);
-        while (outClient->available()) {
-            char c = outClient->read();
+        while (outClient.available()) {
+            char c = outClient.read();
             txBufferAppend(c);
         }
         txBufferFlush();
@@ -314,7 +277,7 @@ int16_t ThingSpeakPublisher::publishMetadata(Client* outClient) {
         // Close the TCP/IP connection
         MS_DBG(F("Stopping client"));
         MS_RESET_DEBUG_TIMER;
-        outClient->stop();
+        outClient.stop();
         MS_DBG(F("Client stopped after"), MS_PRINT_DEBUG_TIMER, F("ms"));
     } else {
         PRINTOUT(F("\n -- Unable to Establish Connection to ThingSpeak --"));

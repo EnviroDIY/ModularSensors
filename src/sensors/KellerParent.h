@@ -179,7 +179,7 @@
  * @ingroup keller_group
  */
 class KellerParent : public Sensor {
- public:
+ protected:
     /**
      * @brief Construct a new Keller Parent object.  This is only intended to be
      * used within this library.
@@ -228,6 +228,8 @@ class KellerParent : public Sensor {
                  uint8_t numVariables = 3, uint32_t warmUpTime_ms = 500,
                  uint32_t stabilizationTime_ms = 5000,
                  uint32_t measurementTime_ms   = 1500);
+
+ public:
     /**
      * @brief Destroy the Keller Parent object - no action taken
      */

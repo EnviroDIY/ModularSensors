@@ -20,8 +20,8 @@
  * @section modem_esp8266_notes Introduction
  *
  * The ESP8266 is an older Espressif module, but still widely and cheaply
- * available. This library does not support the "NON-OS" based AT commands.
- * Update to the final release for the ESP8266.
+ * available. This library is written for ESP8266 AT firmware version 2.3.0.0 or
+ * higher.
  *
  * @section modem_esp8266_dfrobot DFRobot ESPBee
  *
@@ -67,10 +67,8 @@
 #define MS_DEBUGGING_DEEP "EspressifESP8266"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
-#define TINY_GSM_MODEM_ESP8266
+/// The modem type for the underlying TinyGSM library.
+// #define TINY_GSM_MODEM_ESP8266
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -79,12 +77,9 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientESP8266.h"
+#include <modems/TinyGsmClientESP8266.h>
 #include "Espressif.h"
 
-#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_esp8266 */
 /**@{*/
@@ -97,75 +92,42 @@
  * @warning Light sleep modes on the ESP8266 may not function as expected (or at
  * all).
  */
-class EspressifESP8266 : public Espressif {
+class EspressifESP8266 : public Espressif<TinyGsmESP8266> {
  public:
     // Constructors/Destructor
     /**
      * @brief Construct a new Espressif ESP8266 object.
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param esp8266Modem A TinyGsmESP8266 instance.
+     * @param powerPin @copydoc _powerPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This is the ESP's `RSTB/DIO16` pin.
      * @param ssid The wifi network ID.
      * @param pwd The wifi network password, **assuming WPA2**.
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin  On Espressif modules,
+     * the sleep request pin *only applies to light sleep*.  You cannot select a
+     * pin to wake from deep sleep.  The only pin that can wake from deep sleep
+     * is the reset pin, which is handled by the `modemResetPin`
+     * parameter.
+     * @param espSleepRqPin the Espressif sleep request pin for light sleep.
+     * This is a GPIO on the Espressif module, not a pin on the MCU.
      *
      * @see loggerModem::loggerModem
      */
-    EspressifESP8266(Stream* modemStream, int8_t powerPin, int8_t modemResetPin,
-                     const char* ssid, const char* pwd);
+    EspressifESP8266(TinyGsmESP8266& esp8266Modem, int8_t powerPin,
+                     int8_t modemResetPin, const char* ssid, const char* pwd,
+                     int8_t modemSleepRqPin = -1, int8_t espSleepRqPin = -1);
     /**
      * @brief Destroy the Espressif ESP8266 object - no action taken
      */
     ~EspressifESP8266() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
-#ifdef MS_ESPRESSIFESP8266_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmESP8266 gsmModem;
-
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
-    bool extraModemSetup() override;
-    bool isModemAwake() override;
 };
 /**@}*/
 #endif  // SRC_MODEMS_ESPRESSIFESP8266_H_

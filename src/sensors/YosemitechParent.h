@@ -147,7 +147,7 @@
  */
 /* clang-format on */
 class YosemitechParent : public Sensor {
- public:
+ protected:
     /**
      * @brief Construct a new Yosemitech Parent object.  This is only intended
      * to be used within this library.
@@ -204,6 +204,8 @@ class YosemitechParent : public Sensor {
                      uint32_t stabilizationTime_ms = 20000,
                      uint32_t measurementTime_ms   = 2000,
                      uint8_t  incCalcValues        = 0);
+
+ public:
     /**
      * @brief Destroy the Yosemitech Parent object - no action taken
      */

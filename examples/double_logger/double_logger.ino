@@ -80,11 +80,11 @@ const int8_t modemLEDPin = redLED;   // MCU pin connected an LED to show modem
 const char* wifiId  = "YourWiFiSSID";  // The WiFi access point
 const char* wifiPwd = "YourWiFiPassword";       // The WiFi password
 
-DigiXBeeWifi modemXBWF(&modemSerial, modemVccPin, modemStatusPin,
-                       useCTSforStatus, modemResetPin, modemSleepRqPin, wifiId,
-                       wifiPwd);
-// Create an extra reference to the modem by a generic name
-DigiXBeeWifi modem = modemXBWF;
+// Create a TinyGsm modem
+TinyGsmXBee gsmModem(modemSerial);
+// Create a loggerModem object
+DigiXBeeWifi modem(gsmModem, modemVccPin, modemStatusPin, useCTSforStatus,
+                   modemResetPin, modemSleepRqPin, wifiId, wifiPwd);
 /** End [xbee_wifi] */
 
 
@@ -221,8 +221,14 @@ void setup() {
     // Begin the variable array[s], logger[s], and publisher[s]
     array1min.begin(variableCount1min, variableList_at1min);
     array5min.begin(variableCount5min, variableList_at5min);
-    logger1min.begin(LoggerID, 1, &array1min);
-    logger5min.begin(LoggerID, 5, &array5min);
+    logger1min.setLoggerID(LoggerID);
+    logger1min.setLoggingInterval(1);
+    logger1min.setVariableArray(&array1min);
+    logger5min.setLoggerID(LoggerID);
+    logger5min.setLoggingInterval(5);
+    logger5min.setVariableArray(&array5min);
+    logger1min.begin();
+    logger5min.begin();
     logger1min.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,
                              greenLED);
     logger5min.setLoggerPins(wakePin, sdCardSSPin, sdCardPwrPin, buttonPin,

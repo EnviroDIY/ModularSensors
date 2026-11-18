@@ -60,8 +60,8 @@ bool ANBpH::setup() {
 
     // Confirm Modbus Address
     MS_DBG(F("Selected modbus address:"));
-    MS_DBG(F("- Decimal: "), String(_modbusAddress, DEC));
-    MS_DBG(F("- Hexidecimal: "), _modbusAddress < 16 ? F("0x0") : F("0x"),
+    MS_DBG(F("- Decimal:"), String(_modbusAddress, DEC));
+    MS_DBG(F("- Hexidecimal:"), _modbusAddress < 16 ? F("0x0") : F("0x"),
            String(_modbusAddress, HEX));
 
     MS_DEEP_DBG(F("Waiting for warm-up..."));
@@ -592,15 +592,15 @@ bool ANBpH::setSensorRTC() {
             F("Current logger time is not sane, so not setting sensor RTC!"));
         return true;
     }
-
-    int8_t  seconds   = -1;
-    int8_t  minutes   = -1;
-    int8_t  hours     = -1;
-    int8_t  day       = -1;
-    int8_t  month     = -1;
-    int16_t year      = -1;
-    uint8_t tz_offset = 0;  // Neutral value, will be overwritten by getNowParts
-    Logger::getNowParts(seconds, minutes, hours, day, month, year, tz_offset);
+    // Neutral values, will be overwritten by getNowParts
+    int8_t  seconds     = -1;
+    int8_t  minutes     = -1;
+    int8_t  hours       = -1;
+    int8_t  day         = -1;
+    int8_t  month       = -1;
+    int16_t year        = -1;
+    int32_t tz_offset_s = 0;
+    Logger::getNowParts(seconds, minutes, hours, day, month, year, tz_offset_s);
 #if defined(MS_ANB_SENSORS_PH_DEBUG_DEEP)
     char time_buff_l[20] = {'\0'};
     sprintf(time_buff_l, "%04d-%02d-%02d %02d:%02d:%02d", year & 0x1FFF,

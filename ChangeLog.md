@@ -125,7 +125,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - *Renamed* the EnviroDIYPublisher to MonitorMyWatershedPublisher.
   This reflects changes to the website from years ago.
-  There is a shell file and typedef to maintain backwards compatibility.
+  There is a stub file and typedef to maintain backwards compatibility.
 
 #### All Publishers
 
@@ -134,6 +134,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 #### Loggers and Variable Arrays
 
+- **BREAKING** Reduced the `Logger` constructor matrix to the default constructor
+  and `Logger(const char*, int16_t, VariableArray*)`.
+  Use the logger setters for staged configuration when the variable array is not available at construction.
+- **BREAKING** Changed `Logger::begin()` to return `bool`.
+  It now returns `false` without performing hardware initialization when no variable array is attached.
+- Initialized the logger's internal variable-array pointer to `nullptr` so a
+  default-constructed logger has a deterministic incomplete state.
+- Added `Logger::syncRTC(Client&)` to synchronize the real-time clock with a caller-owned Arduino Client on an already-connected network.
+- Corrected `Logger::getNowLocalEpoch()`, `Logger::getNowUTCEpoch()`, `Logger::markedLocalUnixTime`, and `Logger::markedUTCUnixTime` to always use the Unix epoch as documented, even when the deprecated `MS_LOGGER_EPOCH` macro is set to another epoch.
+- Replaced Logger's manual timestamp slicing, CSV timestamp mutation, UTC-offset formatting, and calendar-part conversion with EpochTime 1.3.0 utilities.
+  CSV headers now correctly represent fractional-hour offsets such as `UTC+05:30`.
 - Made the enabling and disabling of the watchdog the very first and very last steps of sleep to keep the watchdog enabled through the whole getting ready for bed and waking up process.
 - Re-wrote most of the logic for looping variables within the complete update function of the VariableArray.
 - Re-wrote some of the logic of the `completeUpdate()` function.
@@ -146,6 +157,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 #### Library-Wide
 
+- **BREAKING** Extracted time handling code into a new separate EpochTime library.
+  - The `epochStart` enum and `epochTime` class have been moved from `ClockSupport.h` to the standalone `EpochTime` library.
+  - Time formatting and validation utilities previously in `loggerClock` are now available in the new `TimeUtils` static class.
+  - The `loggerClock` class now focuses exclusively on RTC-specific operations.
+  - Code using `epochTime` or `epochStart` must now explicitly include `<EpochTime.h>`.
+  - Functions moved to `TimeUtils`: `formatISO8601()`, `formatDateTime()`, `isTimeSane()`, `convertEpoch()`, `getCoreEpochStart()`, `getCoreTimeZone()`.
 - Bumped several dependencies - including crucial bug fixes to SensorModbusMaster.
 - Applied many suggestions from CodeRabbit AI.
 - Moved outdated examples to a new "Outdated" folder, with a subfolder for the DRWI examples
@@ -217,6 +234,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Removed
 
+- **Potentially Breaking** Made the constructors for the internal `SDI12Sensors`, `AtlasParent`, `GroPointParent`, `KellerParent`, and `YosemitechParent` sensor parent classes protected.
+  They remain available to specialized sensor subclasses but can no longer be instantiated directly.
+- **Potentially Breaking** Removed the unused configurable extra wake delay from SDI-12 sensor constructors and sensor definitions.
+  `SDI12Recorder` now owns protocol wake timing, and every bundled sensor had used the default delay.
 - **Potentially Breaking** Constructors for sensor-associated variables that don't include a pointer to the sensor.
   You now *must* create the sensor instance before creating the variable and tie the variable to the sensor when creating the variable.
   This functionality was never used in any examples and is unlikely to affect any users.

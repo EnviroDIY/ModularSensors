@@ -78,12 +78,12 @@ const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
                                     // status
 
 // Network connection information
-const char* apn = "YourAPN";  // APN for GPRS connection
+const char* apn = "YourAPN";  // APN for cellular connection
 
-// Create the modem object
-Sodaq2GBeeR6 modem2GB(&modemSerial, modemVccPin, modemStatusPin, apn);
-// Create an extra reference to the modem by a generic name
-Sodaq2GBeeR6 modem = modem2GB;
+// Create a TinyGsm modem
+TinyGsmSim800 gsmModem(modemSerial);
+// Create a loggerModem object
+Sodaq2GBeeR6 modem(gsmModem, modemVccPin, modemStatusPin, apn);
 
 // Create RSSI and signal strength variable pointers for the modem
 Variable* modemRSSI =
@@ -346,6 +346,7 @@ Logger dataLogger(LoggerID, loggingInterval, &varArray);
 //  Creating Data Publisher[s]
 // ==========================================================================
 /** Start [publishers] */
+#include <publishers/MonitorMyWatershedPublisher.h>
 // A Publisher to Monitor My Watershed
 // Device registration and sampling feature information can be obtained after
 // registration at https://monitormywatershed.org
@@ -354,10 +355,13 @@ const char* registrationToken =
 const char* samplingFeature =
     "12345678-abcd-1234-ef00-1234567890ab";  // Sampling feature UUID
 
+// Create a client for Monitor My Watershed - this does not need to be secured
+// This client can be shared with any other publishers that do not need an
+// encrypted connection.
+TinyGsmSim800::GsmClientSim800 mmwClient(gsmModem);
 // Create a data publisher for the Monitor My Watershed POST endpoint
-#include <publishers/MonitorMyWatershedPublisher.h>
-MonitorMyWatershedPublisher MonitorMWPost(dataLogger, registrationToken,
-                                          samplingFeature);
+MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
+                                          registrationToken, samplingFeature);
 /** End [publishers] */
 
 

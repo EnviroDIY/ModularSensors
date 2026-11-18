@@ -12,9 +12,9 @@
 #include "MeterTeros11.h"
 
 
-bool MeterTeros11::getResults(bool verify_crc) {
+bool MeterTeros11::getResults() {
     // run the parent getResults method
-    bool success = SDI12Sensors::getResults(verify_crc);
+    bool success = SDI12Sensors::getResults();
 
     // pull the raw count and temperature values from the buffer that getResults
     // filled

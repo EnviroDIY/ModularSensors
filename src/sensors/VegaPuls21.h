@@ -99,9 +99,6 @@
  * getting a result after about 5800-6000 ms.
  */
 #define VEGAPULS21_MEASUREMENT_TIME_MS 6050
-/// @brief Extra wake time required for an SDI-12 sensor between the "break"
-/// and the time the command is sent.  The VEGA PULS 21 requires no extra time.
-#define VEGAPULS21_EXTRA_WAKE_TIME_MS 0
 /**@}*/
 
 /**
@@ -288,8 +285,7 @@ class VegaPuls21 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "VEGAPULS C 21", VEGAPULS21_NUM_VARIABLES,
               VEGAPULS21_WARM_UP_TIME_MS, VEGAPULS21_STABILIZATION_TIME_MS,
-              VEGAPULS21_MEASUREMENT_TIME_MS, VEGAPULS21_EXTRA_WAKE_TIME_MS,
-              VEGAPULS21_INC_CALC_VARIABLES) {}
+              VEGAPULS21_MEASUREMENT_TIME_MS, VEGAPULS21_INC_CALC_VARIABLES) {}
     /**
      * @copydoc VegaPuls21::VegaPuls21
      */
@@ -299,8 +295,7 @@ class VegaPuls21 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "VEGAPULS C 21", VEGAPULS21_NUM_VARIABLES,
               VEGAPULS21_WARM_UP_TIME_MS, VEGAPULS21_STABILIZATION_TIME_MS,
-              VEGAPULS21_MEASUREMENT_TIME_MS, VEGAPULS21_EXTRA_WAKE_TIME_MS,
-              VEGAPULS21_INC_CALC_VARIABLES) {}
+              VEGAPULS21_MEASUREMENT_TIME_MS, VEGAPULS21_INC_CALC_VARIABLES) {}
     /**
      * @copydoc VegaPuls21::VegaPuls21
      */
@@ -310,8 +305,7 @@ class VegaPuls21 : public SDI12Sensors {
               SDI12address, powerPin, dataPin, measurementsToAverage,
               "VEGAPULS C 21", VEGAPULS21_NUM_VARIABLES,
               VEGAPULS21_WARM_UP_TIME_MS, VEGAPULS21_STABILIZATION_TIME_MS,
-              VEGAPULS21_MEASUREMENT_TIME_MS, VEGAPULS21_EXTRA_WAKE_TIME_MS,
-              VEGAPULS21_INC_CALC_VARIABLES) {}
+              VEGAPULS21_MEASUREMENT_TIME_MS, VEGAPULS21_INC_CALC_VARIABLES) {}
     /**
      * @brief Destroy the VEGAPULS C 21 object
      */

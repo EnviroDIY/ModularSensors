@@ -220,7 +220,10 @@ void setup() {
 
     // Begin the variable array[s], logger[s], and publisher[s]
     varArray.begin(variableCount, variableList);
-    dataLogger.begin(LoggerID, loggingInterval, &varArray);
+    dataLogger.setLoggerID(LoggerID);
+    dataLogger.setLoggingInterval(loggingInterval);
+    dataLogger.setVariableArray(&varArray);
+    dataLogger.begin();
 
     // Set up the sensors
     Serial.println(F("Setting up sensors..."));

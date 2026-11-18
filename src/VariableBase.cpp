@@ -31,7 +31,7 @@ Variable::Variable(Sensor* parentSense, uint8_t sensorVarNum,
     if (varUnit) setVarUnit(varUnit);
     if (varName) setVarName(varName);
     setResolution(decimalResolution);
-    if (parentSense) attachSensor(parentSense);
+    attachSensor(parentSense);
 }
 
 // The constructor for a calculated variable with UUID - that is, one whose
@@ -40,7 +40,7 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
                    const char* varName, const char* varUnit,
                    const char* varCode, const char* uuid)
     : parentSensor(nullptr),
-      isCalculated(false),
+      isCalculated(true),
       _currentValue(MS_INVALID_VALUE),
       _calcFxn(nullptr),
       _sensorVarNum(0) {
@@ -49,16 +49,24 @@ Variable::Variable(float (*calcFxn)(), uint8_t decimalResolution,
     if (varUnit) setVarUnit(varUnit);
     if (varName) setVarName(varName);
     setResolution(decimalResolution);
-    if (calcFxn) setCalculation(calcFxn);
+    setCalculation(calcFxn);
 }
 
 
 // This notifies the parent sensor that it has an observing variable
 // This function should never be called for a calculated variable
 void Variable::attachSensor(Sensor* parentSense) {
-    if (!isCalculated) {
+    if (isCalculated) { return; }
+    if (parentSense == nullptr) {
+        MS_DBG(F("Cannot attach variable"), getVarCode(),
+               F("to a null parent sensor!"));
+        return;
+    }
+    if (parentSense->registerVariable(_sensorVarNum, this)) {
         parentSensor = parentSense;
-        parentSensor->registerVariable(_sensorVarNum, this);
+    } else {
+        MS_DBG(F("Cannot attach variable"), getVarCode(),
+               F("at invalid sensor result index"), _sensorVarNum);
     }
 }
 
@@ -103,8 +111,13 @@ String Variable::getParentSensorNameAndLocation() {
 
 // This ties a calculated variable to its calculation function
 void Variable::setCalculation(float (*calcFxn)()) {
+    if (calcFxn == nullptr) {
+        MS_DBG(F("Cannot set a null calculation function for variable"),
+               getVarCode());
+        return;
+    }
     _calcFxn     = calcFxn;
-    isCalculated = (calcFxn != nullptr);
+    isCalculated = true;
 }
 
 

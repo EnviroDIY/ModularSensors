@@ -123,10 +123,8 @@
 #define MS_DEBUGGING_STD "SodaqUBeeR410M"
 #endif
 
-/**
- * @brief The modem type for the underlying TinyGSM library.
- */
-#define TINY_GSM_MODEM_SARAR4
+/// The modem type for the underlying TinyGSM library.
+// #define TINY_GSM_MODEM_SARAR4
 
 // Include the debugger
 #include "ModSensorDebugger.h"
@@ -135,12 +133,9 @@
 #undef MS_DEBUGGING_DEEP
 
 // Include other in-library and external dependencies
-#include "TinyGsmClientSaraR4.h"
-#include "LoggerModem.h"
+#include <modems/TinyGsmClientSaraR4.h>
+#include "LoggerModemImpl.h"
 
-#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-#include <StreamDebugger.h>
-#endif
 
 /** @ingroup modem_ubee_ltem */
 /**@{*/
@@ -221,137 +216,71 @@
  * u-blox SARA R410M LTE-M cellular module.  This can be also used for any other
  * breakout of the u-blox R4 or N4 series modules.
  */
-class SodaqUBeeR410M : public loggerModem {
+class SodaqUBeeR410M : public loggerModemImpl<TinyGsmSaraR4, false> {
  public:
-#if F_CPU == 8000000L
     /**
      * @brief Construct a new Sodaq UBee R410M object
      *
-     * The constructor initializes all of the provided member variables,
+     * The constructor initializes all of the provided member variables and
      * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
+     * module.
      *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
+     * @param saraR4Modem A TinyGsmSaraR4 instance.
+     * @param powerPin @copydoc _powerPin
      * For the Sodaq UBee, this is the pin labeled `ON/OFF`; pin 9 on the bee
      * socket.  The fact that this pin controls the power to the u-blox module
      * is not clear in the Sodaq documentation.
-     * @param statusPin @copydoc loggerModem::_statusPin
+     * @param statusPin @copydoc _statusPin
      * This is the pin labeled `V_INT` in the u-blox integration guide.  It is
      * (misleadingly) called `CTS` in some of the Sodaq UBee documentation
      * because Sodaq wired the `V_INT` from the u-blox to the pin usually
      * reserved for `CTS` on the bee socket.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
+     * @param modemResetPin @copydoc _modemResetPin
      * This is the pin labeled `RESET_N` in both u-blox and Sodaq documentation.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
+     * @param modemSleepRqPin @copydoc _modemSleepRqPin
      * This is the pin labeled `PWR_ON` in both u-blox and Sodaq
      * documentation.
      * @param apn The Access Point Name (APN) for the SIM card.
      *
      * @note The SARA R410N DOES NOT save baud rate to non-volatile memory.
      * After every power loss, the module will return to the default baud rate
-     * of 115200.  This library attempts to compensate by sending a baud rate
-     * change command in the wake function.  Because of this, 8MHz boards, LIKE
-     * THE MAYFLY, *MUST* use a HardwareSerial instance as modemSerial.  This
-     * requirement does not exist for 16MHz (and faster) boards.  For those, any
-     * Stream instance may be used.
+     * of 115200. This library attempts to compensate by sending a baud rate
+     * change command in the wake function. Because of this, 8MHz boards, LIKE
+     * THE MAYFLY, *MUST* construct saraR4Modem with a HardwareSerial instance.
+     * This requirement does not exist for 16MHz (and faster) boards. For those,
+     * any Stream instance may be used.
      *
      * @see loggerModem::loggerModem
      */
-    SodaqUBeeR410M(HardwareSerial* modemStream, int8_t powerPin,
+    SodaqUBeeR410M(TinyGsmSaraR4& saraR4Modem, int8_t powerPin,
                    int8_t statusPin, int8_t modemResetPin,
                    int8_t modemSleepRqPin, const char* apn);
-#else
-    /**
-     * @brief Construct a new Sodaq UBee R410M object
-     *
-     * The constructor initializes all of the provided member variables,
-     * constructs a loggerModem parent class with the appropriate timing for the
-     * module, calls the constructor for a TinyGSM modem on the provided
-     * modemStream, and creates a TinyGSM Client linked to the modem.
-     *
-     * @param modemStream The Arduino stream instance for serial communication.
-     * @param powerPin @copydoc loggerModem::_powerPin
-     * _For the Sodaq UBee, this is the pin labeled `ON/OFF`; pin 9 on the bee
-     * socket._  The fact that this pin controls the power to the u-blox module
-     * is not clear in the Sodaq documentation.
-     * @param statusPin @copydoc loggerModem::_statusPin
-     * This is the pin labeled `V_INT` in the u-blox integration guide.  It is
-     * (misleadingly) called `CTS` in some of the Sodaq UBee documentation
-     * because Sodaq wired the `V_INT` from the u-blox to the pin usually
-     * reserved for `CTS` on the bee socket.
-     * @param modemResetPin @copydoc loggerModem::_modemResetPin
-     * This is the pin labeled `RESET_N` in both u-blox and Sodaq documentation.
-     * @param modemSleepRqPin @copydoc loggerModem::_modemSleepRqPin
-     * This is the pin labeled `PWR_ON` in both u-blox and Sodaq
-     * documentation.
-     * @param apn The Access Point Name (APN) for the SIM card.
-     *
-     * @see loggerModem::loggerModem
-     */
-    SodaqUBeeR410M(Stream* modemStream, int8_t powerPin, int8_t statusPin,
-                   int8_t modemResetPin, int8_t modemSleepRqPin,
-                   const char* apn);
-#endif
     /**
      * @brief Destroy the Sodaq UBee R410M object - no action needed
      */
     ~SodaqUBeeR410M() override = default;
 
-    bool modemWake() override;
-
-    bool connectInternet(uint32_t maxConnectionTime = 50000L) override;
-    void disconnectInternet() override;
-
-    Client* createClient() override;
-    void    deleteClient(Client* client) override;
-    Client* createSecureClient() override;
-    void    deleteSecureClient(Client* client) override;
-    Client* createSecureClient(SSLAuthMode sslAuthMode,
-                               SSLVersion  sslVersion     = SSLVersion::TLS1_2,
-                               const char* CAcertName     = nullptr,
-                               const char* clientCertName = nullptr,
-                               const char* clientKeyName  = nullptr) override;
-    Client* createSecureClient(
-        const char* pskIdent, const char* psKey,
-        SSLVersion sslVersion = SSLVersion::TLS1_2) override;
-    Client* createSecureClient(
-        const char* pskTableName,
-        SSLVersion  sslVersion = SSLVersion::TLS1_2) override;
-
-    uint32_t getNISTTime() override;
-
-    bool  getModemSignalQuality(int16_t& rssi, int16_t& percent) override;
-    bool  getModemBatteryStats(int8_t& chargeState, int8_t& percent,
-                               int16_t& milliVolts) override;
-    float getModemChipTemperature() override;
-
-    bool modemHardReset() override;
-
-#ifdef MS_SODAQUBEER410M_DEBUG_DEEP
-    StreamDebugger _modemATDebugger;
-#endif
-
-    /**
-     * @brief Public reference to the TinyGSM modem.
-     */
-    TinyGsmSaraR4 gsmModem;
 
 #if F_CPU == 8000000L
     /**
      * @brief The HardwareSerial instance used for communication between the MCU
      * and the modem.
+     *
+     * We need to keep the pointer to the HardwareSerial instance on slow
+     * processors so that we can drop the default baud rate on the SARA R410M.
+     * For processors above 8MHz, we don't need to change the baud rate so we
+     * don't need the pointer to the serial instance.
      */
     HardwareSerial* _modemSerial;
 #endif
 
  protected:
-    bool isInternetAvailable() override;
     bool modemSleepFxn() override;
     bool modemWakeFxn() override;
     bool extraModemSetup() override;
-    bool isModemAwake() override;
+    bool connectWithCredentials() override;
+
+    bool modemHardResetImpl() override;
 
  private:
     const char* _apn;  ///< Internal reference to the cellular APN

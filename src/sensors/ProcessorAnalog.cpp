@@ -95,8 +95,8 @@ float ProcessorAnalogReader::calculateAnalogResolutionVolts() {
 
     if (resolutionBits == 0 || resolutionBits >= 32 ||
         fullScaleRangeVolts <= 0.0f) {
-        MS_DBG(F("Invalid ADC configuration - bits: "), resolutionBits,
-               F(", supply voltage: "), fullScaleRangeVolts, F("V"));
+        MS_DBG(F("Invalid ADC configuration - bits:"), resolutionBits,
+               F(", supply voltage:"), fullScaleRangeVolts, F("V"));
         return MS_INVALID_VALUE;
     }
 
@@ -108,10 +108,10 @@ float ProcessorAnalogReader::calculateAnalogResolutionVolts() {
         static_cast<float>(totalCodes);
 
     MS_DBG(F("Processor ADC resolution calculation:"));
-    MS_DBG(F("  ADC resolution: "), resolutionBits, F(" bits"));
-    MS_DBG(F("  Supply voltage: "), fullScaleRangeVolts, F("V"));
-    MS_DBG(F("  Total codes: "), totalCodes);
-    MS_DBG(F("  Voltage resolution: "), resolutionVolts, F("V/LSB"));
+    MS_DBG(F("  ADC resolution:"), resolutionBits, F("bits"));
+    MS_DBG(F("  Supply voltage:"), fullScaleRangeVolts, F("V"));
+    MS_DBG(F("  Total codes:"), totalCodes);
+    MS_DBG(F("  Voltage resolution:"), resolutionVolts, F("V/LSB"));
 
     return resolutionVolts;
 }
@@ -169,8 +169,8 @@ bool ProcessorAnalog::addSingleMeasurementResult() {
     MS_DBG(getSensorNameAndLocation(), F("is reporting:"));
 
     float resultValue = MS_INVALID_VALUE;
-    bool  success     = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
-                                                                     resultValue);
+    bool  success = _analogVoltageReader->readVoltageSingleEnded(_dataPin,
+                                                                 resultValue);
 
     if (success) {
         verifyAndAddMeasurementResult(PROCESSOR_ANALOG_VAR_NUM, resultValue);
