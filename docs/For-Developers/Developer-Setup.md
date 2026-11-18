@@ -141,7 +141,7 @@ lib_deps =
     adafruit/Adafruit SHT4x Library@^1.0.5
     paulstoffregen/OneWire@^2.3.8
     milesburton/DallasTemperature@^4.0.6
-    envirodiy/SDI-12@^3.0.0
+    envirodiy/SDI-12@^3.1.0
     SDI-12_ExtInts=https://github.com/EnviroDIY/Arduino-SDI-12#ExtInts
     northernwidget/MS5803@^0.1.2
     Tally_Library_I2C=https://github.com/EnviroDIY/Tally_Library.git#Dev_I2C
