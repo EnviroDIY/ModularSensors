@@ -662,8 +662,8 @@ EspressifESP8266 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 #elif defined(BUILD_MODEM_ESPRESSIF_ESP32)
 #define BUILD_HAS_MODEM
 /** Start [espressif_esp32] */
-// For almost anything based on the Espressif ESP8266 using the
-// AT command firmware
+// For almost anything based on the Espressif ESP32 using the AT command
+// firmware
 #include <modems/EspressifESP32.h>
 
 // Type alias for easier use of the TinyGSM ESP32 classes
@@ -860,7 +860,7 @@ SIMComSIM7000 modem(gsmModem, modemVccPin, modemStatusPin, modemResetPin,
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
 
-// Type alias for easier use of the TinyGSM SIMCom SIM7080 classes
+// Type alias for easier use of the TinyGSM SIMCom SIM7080
 using TinyGsm = TinyGsmSim7080;
 
 // NOTE: Extra hardware and software serial ports are created in the "Settings
@@ -4193,12 +4193,15 @@ void setup() {
              F("baud.  This will fail if the baud is mismatched.."));
     modemSerial.begin(modemBaud);
     modem.modemWake();  // NOTE:  This will also set up the modem
-    // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
+    // WARNING: PLEASE REMOVE BAUD RATE DETECTION/FORCING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
+        // If the AT command test fails, chances are it's a baud rate issue. Try
+        // to detect the baud rate and force the baud rate to the correct one.
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
     }
+    modem.gsmModem.setDefaultBaud(static_cast<uint32_t>(modemBaud));
 /** End [setup_esp] */
 #endif
 
@@ -4216,12 +4219,15 @@ void setup() {
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
     PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
-    // WARNING: PLEASE REMOVE AUTOBAUDING FOR PRODUCTION CODE!
+    // WARNING: PLEASE REMOVE BAUD RATE DETECTION/FORCING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
+        // If the AT command test fails, chances are it's a baud rate issue. Try
+        // to detect the baud rate and force the baud rate to the correct one.
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
     }
+    modem.gsmModem.setBaud(static_cast<uint32_t>(modemBaud));
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic
                                          // 13 GSM only
@@ -4307,8 +4313,9 @@ void setup() {
     /** Start [setup_clock] */
     // Sync the clock if it isn't valid or we have battery to spare
     if (getBatteryVoltage() > 3.55 || !loggerClock::isRTCSane()) {
-        // Set up the modem, synchronize the RTC with NIST, and publish
-        // configuration information to publishers that support it.
+        // Set up the modem, synchronize the RTC with NIST, publish
+        // configuration information to publishers that support it, and put the
+        // modem back to sleep.
         dataLogger.makeInitialConnections();
     }
     /** End [setup_clock] */
@@ -4342,8 +4349,8 @@ void setup() {
 // ==========================================================================
 #ifndef BUILD_TEST_COMPLEX_LOOP
 // #if defined(BUILD_TEST_SIMPLE_LOOP)
-// Use this short loop for simple data logging and sending
 /** Start [simple_loop] */
+// Use this short loop for simple data logging and sending
 void loop() {
     // Note:  Please change these battery voltages to match your battery
     // At very low battery, just go back to sleep
@@ -4377,7 +4384,6 @@ void loop() {
     }
 #endif
 }
-
 /** End [simple_loop] */
 
 #else

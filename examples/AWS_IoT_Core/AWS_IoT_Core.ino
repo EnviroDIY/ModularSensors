@@ -63,14 +63,26 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 115200;  // Baud rate for debugging
-const int8_t  greenLED   = 8;       // Pin for the green LED
-const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (i.e., button pin)
-const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+const int32_t serialBaud    = 115200L;  // Baud rate for debugging
+const int8_t  greenLED      = 8;        // Pin for the green LED
+const int8_t  redLED        = 9;        // Pin for the red LED
+const int8_t  buttonPin     = 21;  // Pin for debugging mode (i.e., button pin)
+uint8_t       buttonPinMode = INPUT;  // mode for debugging pin
+// NOTE: On the Mayfly (and Stonefly), pin 21 is tied to a button that pulls the
+// pin HIGH when pressed and an external pull-down that keeps the pin LOW when
+// the button is not pressed. We want the pin mode to be INPUT - i.e., floating
+// internally and pulled down externally until the button is pressed.  AVR
+// processors like the 1284P on the Mayfly do not have internal pull-down
+// resistors - they do not have an INPUT_PULLDOWN mode like SAMD processors.
+const int8_t wakePin     = 31;  // MCU interrupt/alarm pin to wake from sleep
+uint8_t      wakePinMode = INPUT_PULLUP;  // mode for wake pin
+// Mayfly 0.x, 1.x D31 = A7
+// NOTE: On the Mayfly, pin D31=A7 is tied directly to the RTC INT/SQW pin
+// on the onboard DS3231 RTC.  The interrupt from the DS3231 will pull the pin
+// DOWN, so we want the pin mode to be INPUT_PULLUP - i.e., pulled up until the
+// RTC pulls it down.
 // Set the wake pin to -1 if you do not want the main processor to sleep.
-// In a SAMD system where you are using the built-in rtc, set wakePin to 1
+// In a SAMD system where you are using the built-in RTC, set the wakePin to 1.
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t flashSSPin     = 20;  // onboard flash chip select/slave select pin
@@ -148,6 +160,7 @@ ProcessorStats mcuBoard(mcuBoardVersion, 5);
 // ==========================================================================
 /** Start [everlight_alspt19] */
 #include <sensors/EverlightALSPT19.h>
+#include <sensors/ProcessorAnalog.h>
 
 // NOTE: Use -1 for any pins that don't apply or aren't being used.
 const int8_t alsPower = sensorPowerPin;  // Power pin
@@ -351,13 +364,10 @@ void setup() {
     greenRedFlash(3, 35);
     /** End [setup_flashing_led] */
 
-    /** Start [setup_prints] */
-    // Start the primary serial connection
-    Serial.begin(serialBaud);
-#if defined(MS_2ND_OUTPUT)
-    MS_2ND_OUTPUT.begin(serialBaud);
-#endif
-    greenRedFlash(5, 50);
+    // IMMEDIATELY set up the watchdog timer for 5 minutes
+    // The watchdog interval will be reset in the data logger's begin()
+    // function.
+    extendedWatchDog::setupWatchDog(static_cast<uint32_t>(5 * 60));
 
 /** Start [setup_wait] */
 // Wait for USB connection to be established by PC
@@ -368,6 +378,14 @@ void setup() {
     greenRedFlash(3, 10);
 #endif
     /** End [setup_wait] */
+
+    /** Start [setup_prints] */
+    // Start the primary serial connection
+    Serial.begin(serialBaud);
+#if defined(MS_2ND_OUTPUT)
+    MS_2ND_OUTPUT.begin(serialBaud);
+#endif
+    greenRedFlash(5, 50);
 
     // Print a start-up note to the first serial port
     PRINTOUT("\n\n\n=============================");
@@ -450,11 +468,15 @@ void setup() {
              F("baud.  This will fail if the baud is mismatched.."));
     modemSerial.begin(modemBaud);
     modem.modemWake();  // NOTE:  This will also set up the modem
+    // WARNING: PLEASE REMOVE BAUD RATE DETECTION/FORCING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
+        // If the AT command test fails, chances are it's a baud rate issue. Try
+        // to detect the baud rate and force the baud rate to the correct one.
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
     }
+    modem.gsmModem.setDefaultBaud(static_cast<uint32_t>(modemBaud));
 /** End [setup_esp] */
 #endif
 
@@ -464,7 +486,10 @@ void setup() {
     modem.setModemResetLevel(HIGH);  // ModuleFun Bee inverts the signal
     PRINTOUT(F("Waking modem and setting Cellular Carrier Options..."));
     modem.modemWake();  // NOTE:  This will also set up the modem
+    // WARNING: PLEASE REMOVE BAUD RATE DETECTION/FORCING FOR PRODUCTION CODE!
     if (!modem.gsmModem.testAT()) {
+        // If the AT command test fails, chances are it's a baud rate issue. Try
+        // to detect the baud rate and force the baud rate to the correct one.
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
@@ -488,7 +513,7 @@ void setup() {
         // Set up the modem, synchronize the RTC with NIST, publish
         // configuration information to publishers that support it, and put the
         // modem back to sleep.
-        dataLogger.syncRTC();
+        dataLogger.makeInitialConnections();
     }
     /** End [setup_clock] */
 

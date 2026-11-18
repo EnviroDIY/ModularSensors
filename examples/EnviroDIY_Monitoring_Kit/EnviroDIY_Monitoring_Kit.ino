@@ -46,6 +46,9 @@
 //  Data Logging Options
 // ==========================================================================
 /** Start [logging_options] */
+// The name of this program file - this is used only for console printouts at
+// start-up
+const char* sketchName = "EnviroDIY_Monitoring_Kit.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char* LoggerID = "YourLoggerID";
 // How frequently (in minutes) to log data
@@ -126,9 +129,6 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 //  Logger Pins and Options
 // ==========================================================================
 /** Start [logger_pins] */
-// The name of this program file - this is used only for console printouts at
-// start-up
-const char* sketchName = "EnviroDIY_Monitoring_Kit.ino";
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
@@ -152,6 +152,8 @@ const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
 // ==========================================================================
 /** Start [loggers] */
 // Create a new logger instance
+// NOTE: We haven't configured the logger here! We will need to call the
+// parameter setters and various pin assignment functions in the setup!
 Logger dataLogger;
 /** End [loggers] */
 
@@ -163,12 +165,8 @@ Logger dataLogger;
 /** Start [espressif_esp32] */
 #include <modems/EspressifESP32.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM ESP32 classes
-typedef TinyGsmESP32                        TinyGsm;
-typedef TinyGsmESP32::GsmClientESP32        TinyGsmClient;
-typedef TinyGsmESP32::GsmClientSecureESP32  TinyGsmClientSecure;
-typedef TinyGsmESP32::GsmSecureContextESP32 TinyGsmSecureContext;
-typedef ESP32RegStatus                      RegStatus;
+// Type alias for easier use of the TinyGSM ESP32 classes
+using TinyGsm = TinyGsmESP32;
 
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
@@ -200,13 +198,8 @@ EspressifESP32 modem(gsmModem, modemVccPin, modemResetPin, wifiId, wifiPwd);
 // For almost anything based on the SIMCom SIM7080G
 #include <modems/SIMComSIM7080.h>
 
-// set up some helpful typedefs for easier usage of the TinyGSM SimCom SIM7080
-// classes
-typedef TinyGsmSim7080                          TinyGsm;
-typedef TinyGsmSim7080::GsmClientSim7080        TinyGsmClient;
-typedef TinyGsmSim7080::GsmClientSecureSim7080  TinyGsmClientSecure;
-typedef TinyGsmSim7080::GsmSecureContextSim7080 TinyGsmSecureContext;
-typedef Sim70xxRegStatus                        RegStatus;
+// Type alias for easier use of the TinyGSM SIMCom SIM7080
+using TinyGsm = TinyGsmSim7080;
 
 // Create a reference to the serial port for the modem
 HardwareSerial& modemSerial = Serial1;  // Use hardware serial if possible
@@ -215,7 +208,7 @@ const int32_t modemBaud = 57600;  //  SIM7080 does auto-bauding by default, but
 
 // Modem Pins - Describe the physical pin connection of your modem to your board
 // NOTE:  Use -1 for pins that do not apply
-const int8_t modemVccPin     = 18;
+const int8_t modemVccPin     = 18;  // MCU pin controlling modem power
 const int8_t modemStatusPin  = 19;  // MCU pin used to read modem status
 const int8_t modemSleepRqPin = 23;  // MCU pin for modem sleep/wake request
 const int8_t modemLEDPin = redLED;  // MCU pin connected an LED to show modem
@@ -347,7 +340,7 @@ VariableArray varArray(variableCount, variableList, UUIDs);
 // Create a client for Monitor My Watershed - this does not need to be secured
 // This client can be shared with any other publishers that do not need an
 // encrypted connection.
-TinyGsmClient mmwClient(gsmModem);
+TinyGsm::TinyGsmClient mmwClient(gsmModem);
 // Create a data publisher for the Monitor My Watershed POST endpoint
 MonitorMyWatershedPublisher MonitorMWPost(dataLogger, mmwClient,
                                           registrationToken);
@@ -365,6 +358,7 @@ void greenRedFlash(uint8_t numFlash = 4, uint8_t rate = 75) {
     digitalWrite(greenLED, LOW);
     pinMode(redLED, OUTPUT);
     digitalWrite(redLED, LOW);
+    // Flash the lights
     for (uint8_t i = 0; i < numFlash; i++) {
         digitalWrite(greenLED, HIGH);
         digitalWrite(redLED, LOW);
@@ -385,6 +379,7 @@ float getBatteryVoltage() {
     }
     return mcuBoard.sensorValues[PROCESSOR_BATTERY_VAR_NUM];
 }
+/** End [working_functions] */
 
 
 // ==========================================================================
@@ -393,11 +388,27 @@ float getBatteryVoltage() {
 void setup() {
     /** Start [setup_flashing_led] */
     // Blink the LEDs to show the board is on and starting up
-    greenRedFlash(3, 35);
+    greenRedFlash(3, 100);
     /** End [setup_flashing_led] */
+
+    // IMMEDIATELY set up the watchdog timer for 5 minutes
+    // The watchdog interval will be reset in the data logger's begin()
+    // function.
+    extendedWatchDog::setupWatchDog(static_cast<uint32_t>(5 * 60));
+
+/** Start [setup_wait] */
+// Wait for USB connection to be established by PC
+// NOTE:  Only use this when debugging - if not connected to a PC, this adds an
+// unnecessary startup delay
+#if defined(SERIAL_PORT_USBVIRTUAL)
+    while (!SERIAL_PORT_USBVIRTUAL && (millis() < 10000L)) { delay(10); }
+    greenRedFlash(3, 10);
+#endif
+    /** End [setup_wait] */
+
+    /** Start [setup_prints] */
     // Start the primary serial connection
     Serial.begin(serialBaud);
-
     greenRedFlash(5, 50);
 
     // Print a start-up note to the first serial port
@@ -461,6 +472,7 @@ void setup() {
     PRINTOUT(F("Setting logger time zone"));
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
+    PRINTOUT(F("Setting RTC time zone"));
     loggerClock::setRTCOffset(0);
 
 #if defined(USE_CELLULAR_BEE) || defined(USE_WIFI_BEE)
@@ -502,6 +514,7 @@ void setup() {
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
     }
+    modem.gsmModem.setDefaultBaud(static_cast<uint32_t>(modemBaud));
 /** End [setup_esp] */
 #endif
 
@@ -519,6 +532,7 @@ void setup() {
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
     }
+    modem.gsmModem.setBaud(static_cast<uint32_t>(modemBaud));
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic
                                          // 13 GSM only

@@ -40,14 +40,26 @@ const int8_t timeZone = -5;  // Eastern Standard Time
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 115200;  // Baud rate for debugging
-const int8_t  greenLED   = 8;       // Pin for the green LED
-const int8_t  redLED     = 9;       // Pin for the red LED
-const int8_t  buttonPin  = 21;      // Pin for debugging mode (i.e., button pin)
-const int8_t  wakePin    = 31;  // MCU interrupt/alarm pin to wake from sleep
-// Mayfly 0.x D31 = A7
+const int32_t serialBaud    = 115200;  // Baud rate for debugging
+const int8_t  greenLED      = 8;       // Pin for the green LED
+const int8_t  redLED        = 9;       // Pin for the red LED
+const int8_t  buttonPin     = 21;  // Pin for debugging mode (i.e., button pin)
+uint8_t       buttonPinMode = INPUT;  // mode for debugging pin
+// NOTE: On the Mayfly (and Stonefly), pin 21 is tied to a button that pulls the
+// pin HIGH when pressed and an external pull-down that keeps the pin LOW when
+// the button is not pressed. We want the pin mode to be INPUT - i.e., floating
+// internally and pulled down externally until the button is pressed.  AVR
+// processors like the 1284P on the Mayfly do not have internal pull-down
+// resistors - they do not have an INPUT_PULLDOWN mode like SAMD processors.
+const int8_t wakePin     = 31;  // MCU interrupt/alarm pin to wake from sleep
+uint8_t      wakePinMode = INPUT_PULLUP;  // mode for wake pin
+// Mayfly 0.x, 1.x D31 = A7
+// NOTE: On the Mayfly, pin D31=A7 is tied directly to the RTC INT/SQW pin
+// on the onboard DS3231 RTC.  The interrupt from the DS3231 will pull the pin
+// DOWN, so we want the pin mode to be INPUT_PULLUP - i.e., pulled up until the
+// RTC pulls it down.
 // Set the wake pin to -1 if you do not want the main processor to sleep.
-// In a SAMD system where you are using the built-in rtc, set wakePin to 1
+// In a SAMD system where you are using the built-in RTC, set the wakePin to 1.
 const int8_t sdCardPwrPin   = -1;  // MCU SD card power pin
 const int8_t sdCardSSPin    = 12;  // SD card chip select/slave select pin
 const int8_t sensorPowerPin = 22;  // MCU pin controlling main sensor power
