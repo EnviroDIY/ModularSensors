@@ -14,11 +14,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - [ChangeLog](#changelog)
   - [Unreleased](#unreleased)
+  - [0.38.0-rc.1](#0380-rc1)
   - [0.37.0](#0370)
   - [0.36.0](#0360)
   - [0.35.1](#0351)
   - [0.35.0](#0350)
-  - [\[0.34.1\]](#0341)
+  - [0.34.1](#0341)
   - [0.34.0](#0340)
   - [0.33.4](#0334)
   - [0.33.3](#0333)
@@ -35,7 +36,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - [0.28.5 - 2021-05-11](#0285---2021-05-11)
   - [0.28.4 - 2021-05-05](#0284---2021-05-05)
   - [0.28.3 - 2021-03-24](#0283---2021-03-24)
-  - [\[0.28.01\] - 2021-02-10](#02801---2021-02-10)
+  - [0.28.01 - 2021-02-10](#02801---2021-02-10)
   - [0.28.0 - 2021-02-10](#0280---2021-02-10)
   - [0.27.8 - 2021-01-19](#0278---2021-01-19)
   - [0.27.7 - 2021-01-19](#0277---2021-01-19)
@@ -61,16 +62,28 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - [0.6.10 - 2018-02-26](#0610---2018-02-26)
   - [0.6.9 - 2018-02-26](#069---2018-02-26)
   - [0.5.4-beta - 2018-01-18](#054-beta---2018-01-18)
-  - [\[0.3.0\]-beta - 2017-06-07](#030-beta---2017-06-07)
-  - [\[0.2.5\]-beta - 2017-05-31](#025-beta---2017-05-31)
-  - [\[0.2.4\]-beta - 2017-05-17](#024-beta---2017-05-17)
-  - [\[0.2.2\]-beta - 2017-05-09](#022-beta---2017-05-09)
+  - [0.3.0-beta - 2017-06-07](#030-beta---2017-06-07)
+  - [0.2.5-beta - 2017-05-31](#025-beta---2017-05-31)
+  - [0.2.4-beta - 2017-05-17](#024-beta---2017-05-17)
+  - [0.2.2-beta - 2017-05-09](#022-beta---2017-05-09)
 
 <!--! @endif -->
 
 ***
 
 ## [Unreleased]
+
+### Changed
+
+### Added
+
+### Removed
+
+### Fixed
+
+***
+
+## [0.38.0-rc.1]
 
 ### Changed
 
@@ -380,8 +393,10 @@ It also allows PlatformIO users to avoid the time-consuming re-compile of all th
 
 - Tested and brought the SAMD51 processor to full functionality.
   - While the SAMD51 was nominally supported previously, it was not functional with the latest boot loaders and core for the SAMD51.
-- Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol. The older protocol was deprecated and non-functional.
-  - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number. The MQTT key and channel key are no longer used.
+- Updated the ThingSpeak publisher to the current ThingSpeak MQTT protocol.
+  The older protocol was deprecated and non-functional.
+  - This requires a user name, password, and client ID for the MQTT connection in addition to the channel number.
+    The MQTT key and channel key are no longer used.
 - Ensure that the SDI-12 object is always ended.
 - Fixed some timing issues discovered when implementing the status bit checking functions.
 
@@ -440,7 +455,8 @@ Fixed clock configuration for SAMD21
 
 ### Changed
 
-- **BREAKING** Refactored how the publisher transmit buffer works. This will require adjustment to custom data publishers.
+- **BREAKING** Refactored how the publisher transmit buffer works.
+  This will require adjustment to custom data publishers.
 - Update GitHub actions
 - Remove date from copyright for easier tracking
 - Turn modem off at end of setup, regardless of time
@@ -571,7 +587,7 @@ Fixed clock configuration for SAMD21
     We recommend a logger's real time clock always be set in UTC and then localized for printing and storing data.
 - **Breaking:** Renamed the function `setNowEpoch(uint32_t)` to `setNowUTCEpoch(uint32_t)`.
   - Although public, this was never intended to be used externally.
-- **Breaking:** Renamed the YosemiTech Y550 COD sensor as Y551. See below.
+- **Breaking:** Renamed the YosemiTech Y550 COD sensor as Y551.
 - **Potentially Breaking:** Changed the default "button" interrupt pin mode from `INPUT_PULLUP` to `INPUT` and created optional arguments to the `setTestingModePin` and `setLoggerPins` functions to specify the pin mode and pull-up resistor state.
   - `INPUT` is the proper mode for the Mayfly.
     The Mayfly has an external pull *down* on the button pin with the button being active high.
@@ -597,9 +613,12 @@ Fixed clock configuration for SAMD21
 ### Added
 
 - **Sensor** Added support for the [YosemiTech Y551 COD Sensor](http://en.yosemitech.com/aspcms/product/2020-5-8/94.html), which makes a UV254 light absorption and translates it to estimates of Chemical Oxygen Demand (COD) (or Total Organic Carbon (TOC)) and Turbidity.
-  - NOTE that this upgrade removes the earlier Y550 from the library, as it was never tested and is no longer available form YosemiTech. If anyone has a Y550 sensor, the Y551 commands should work. Let us know if they don't.
+  - NOTE that this upgrade removes the earlier Y550 from the library, as it was never tested and is no longer available form YosemiTech.
+    If anyone has a Y550 sensor, the Y551 commands should work.
+    Let us know if they don't.
 - **Sensor** Added support for the [YosemiTech Y560 Ammonium Probe](http://en.yosemitech.com/aspcms/product/2020-4-23/61.html), which is a mini sonde for three Ion Selective Electrode (ISE) sensors (pH, NH4+, K+) that together are used to provide a corrected estimate of total ammonium nitrogen (NH4_N) in mg/L.
-  - NOTE that this release only includes outputs for NH4_N, pH, and temperature. A future release will also include estimates of potassium (K) and raw potential values from each of the electrodes.
+  - NOTE that this release only includes outputs for NH4_N, pH, and temperature.
+    A future release will also include estimates of potassium (K) and raw potential values from each of the electrodes.
 - **Sensor** Added support for the SDI-12 In-Situ [Level TROLL 400, 500 & 700 Data Loggers](https://in-situ.com/pub/media/support/documents/LevelTROLL_SS.pdf)
 - **Sensor** Added support for the Sensirion SHT40 relative humidity and temperature sensor
 - **Sensor** Added support for the Everlight ALS-PT19 ambient light sensor
@@ -626,7 +645,8 @@ Previously, they would not have.
 
 ### Added
 
-- **Board:** Adds 1.0 and 1.1 as valid version numbers for the Mayfly. Does not yet support any new features of those boards.
+- **Board:** Adds 1.0 and 1.1 as valid version numbers for the Mayfly.
+  Does not yet support any new features of those boards.
 - Add a new parameter (internal variable) to the sensor base class for the number of internally calculated variables.
   These are used for values that we would always calculate for a sensor and depend only on the raw results of that single sensor.
 This is separate from any calculated variables that are created on-the-fly and depend on multiple other sensors.
@@ -888,7 +908,8 @@ Styling & Doxygen Code Documentation
 
 ### Fixed
 
-- Fixed issue where the Digi XBee LTE-M modem did not wake during normal logging mode to transmit data to the publisher. See <https://github.com/EnviroDIY/ModularSensors/pull/309#commitcomment-39786167>
+- Fixed issue where the Digi XBee LTE-M modem did not wake during normal logging mode to transmit data to the publisher.
+  See <https://github.com/EnviroDIY/ModularSensors/pull/309#commitcomment-39786167>
 
 For more details, see [Pull Request #309: The style sheet](https://github.com/EnviroDIY/ModularSensors/pull/309)
 
@@ -1291,7 +1312,7 @@ Uniformity of missing values, averaging for all sensors
 
 ***
 
-## [0.3.0]-beta - 2017-06-07
+## [0.3.0-beta] - 2017-06-07
 
 Beta Release
 
@@ -1307,7 +1328,7 @@ Beta Release
 
 ***
 
-## [0.2.5]-beta - 2017-05-31
+## [0.2.5-beta] - 2017-05-31
 
 Improved setup functions
 
@@ -1317,7 +1338,7 @@ Improved setup functions
 
 ***
 
-## [0.2.4]-beta - 2017-05-17
+## [0.2.4-beta] - 2017-05-17
 
 Another beta release
 
@@ -1337,7 +1358,7 @@ Another beta release
 
 ***
 
-## [0.2.2]-beta - 2017-05-09
+## [0.2.2-beta] - 2017-05-09
 
 Initial release
 
@@ -1345,11 +1366,13 @@ Our first release of the modular sensors library to support easily logging data 
 
 ***
 
-[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.37.0...HEAD
+[Unreleased]: https://github.com/EnviroDIY/ModularSensors/compare/v0.38.0-rc.1...HEAD
+[0.38.0-rc.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.38.0-rc.1
 [0.37.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.37.0
 [0.36.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.36.0
 [0.35.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.1
 [0.35.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.35.0
+[0.34.1]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.34.1
 [0.34.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.34.0
 [0.33.4]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.4
 [0.33.3]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.33.3
@@ -1366,6 +1389,7 @@ Our first release of the modular sensors library to support easily logging data 
 [0.28.5]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.5
 [0.28.4]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.4
 [0.28.3]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.3
+[0.28.01]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.01
 [0.28.0]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.28.0
 [0.27.8]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.8
 [0.27.7]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.27.7
@@ -1391,6 +1415,10 @@ Our first release of the modular sensors library to support easily logging data 
 [0.6.10]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.10
 [0.6.9]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.6.9
 [0.5.4-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/0.5.4-beta
+[0.3.0-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.3.0-beta
+[0.2.5-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.5-beta
+[0.2.4-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.4-beta
+[0.2.2-beta]: https://github.com/EnviroDIY/ModularSensors/releases/tag/v0.2.2-beta
 
 <!--! @tableofcontents{HTML:1} -->
 
