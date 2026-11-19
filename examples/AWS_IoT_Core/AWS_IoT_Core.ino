@@ -45,8 +45,7 @@
 static const char AWS_IOT_ENDPOINT[] TINY_GSM_PROGMEM =
     "YOUR_ENDPOINT-ats.iot.YOUR_REGION.amazonaws.com";
 #define THING_NAME "YOUR_THING_NAME"
-// The name of this program file - this is used only for console printouts at
-// start-up
+// The name of this program file - used only for console printouts at start-up
 const char* sketchName = "AWS_IoT_Core.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 // NOTE: Your LoggerID will be used as your Thing Name, primary topic, and

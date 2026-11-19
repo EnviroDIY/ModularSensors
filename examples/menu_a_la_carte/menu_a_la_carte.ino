@@ -316,8 +316,7 @@ void SERCOM1_3_Handler() {
 //  Data Logging Options
 // ==========================================================================
 /** Start [logging_options] */
-// The name of this program file - this is used only for console printouts at
-// start-up
+// The name of this program file - used only for console printouts at start-up
 const char* sketchName = "menu_a_la_carte.ino";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 // This is also used as the Thing Name, MQTT Client ID, and topic for AWS IOT
@@ -329,9 +328,17 @@ const char* LoggerID = "your_logger_id";
 const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";
 // How frequently (in minutes) to log data
 const int8_t loggingInterval = 15;
+// How many 1=minute intervals to log at start-up
+const uint8_t startupLoggingIntervals = 15;
 // Your logger's timezone.
 const int8_t timeZone = -5;  // Eastern Standard Time
 // NOTE:  Daylight savings time will not be applied!  Please use standard time!
+/** End [logging_options] */
+
+// ==========================================================================
+//  Logger Pins and Options
+// ==========================================================================
+/** Start [logger_pins] */
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
@@ -411,7 +418,7 @@ const int8_t sensorPowerPin = -1;  // MCU pin controlling main sensor power
 const int8_t relayPowerPin = -1;  // MCU pin controlling an optional power relay
 const int8_t sdi12DataPin  = 3;
 #endif
-/** End [logging_options] */
+/** End [logger_pins] */
 
 
 // ==========================================================================
@@ -4114,8 +4121,9 @@ void setup() {
     // set the logging interval
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
-    PRINTOUT(F("Setting number of initial 1 minute intervals to 10"));
-    dataLogger.setStartupMeasurements(10);
+    PRINTOUT(F("Setting number of initial 1 minute intervals to"),
+             startupLoggingIntervals);
+    dataLogger.setStartupMeasurements(startupLoggingIntervals);
     // Attach the variable array to the logger
     PRINTOUT(F("Attaching the variable array"));
     dataLogger.setVariableArray(&varArray);
@@ -4129,7 +4137,7 @@ void setup() {
     PRINTOUT(F("Setting logger time zone"));
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    PRINTOUT(F("Setting RTC time zone"));
+    PRINTOUT(F("Setting RTC time zone to UTC"));
     loggerClock::setRTCOffset(0);
 
 #if !defined(BUILD_MODEM_NO_MODEM) && defined(BUILD_HAS_MODEM)
@@ -4188,8 +4196,7 @@ void setup() {
 #if (defined BUILD_MODEM_ESPRESSIF_ESP8266 || \
      defined BUILD_MODEM_ESPRESSIF_ESP32)
     /** Start [setup_esp] */
-    PRINTOUT(F("Waking the modem.."));
-    PRINTOUT(F("Attempting to begin modem communication at"), modemBaud,
+    PRINTOUT(F("Attempting to set up a modem at"), modemBaud,
              F("baud.  This will fail if the baud is mismatched.."));
     modemSerial.begin(modemBaud);
     modem.modemWake();  // NOTE:  This will also set up the modem
@@ -4200,8 +4207,8 @@ void setup() {
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
+        modem.gsmModem.setDefaultBaud(static_cast<uint32_t>(modemBaud));
     }
-    modem.gsmModem.setDefaultBaud(static_cast<uint32_t>(modemBaud));
 /** End [setup_esp] */
 #endif
 
@@ -4226,8 +4233,8 @@ void setup() {
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
+        modem.gsmModem.setBaud(static_cast<uint32_t>(modemBaud));
     }
-    modem.gsmModem.setBaud(static_cast<uint32_t>(modemBaud));
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic
                                          // 13 GSM only

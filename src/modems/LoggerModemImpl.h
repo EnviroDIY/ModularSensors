@@ -287,7 +287,8 @@ class loggerModemImpl
                 MS_DBG(F("... modem responded after"), MS_PRINT_DEBUG_TIMER,
                        F("milliseconds."));
             } else {
-                MS_DBG(F("... modem did not respond!"));
+                PRINTOUT(F("Modem did not respond to AT commands during setup "
+                           "attempt!"));
                 return false;
             }
         }
@@ -304,7 +305,7 @@ class loggerModemImpl
             MS_DBG(F("Modem init complete after"), MS_PRINT_DEBUG_TIMER,
                    F("milliseconds."));
         } else {
-            MS_DBG(F("Modem init failed!"));
+            PRINTOUT(F("Modem init failed during setup attempt!"));
             return false;
         }
 
@@ -312,18 +313,22 @@ class loggerModemImpl
         _modemHwVersion    = gsmModem.getModemModel();
         _modemFwVersion    = gsmModem.getModemRevision();
         _modemSerialNumber = gsmModem.getModemSerialNumber();
-        MS_DBG(F("Modem HW:"), _modemHwVersion);
-        MS_DBG(F("Modem FW:"), _modemFwVersion);
-        MS_DBG(F("Modem SN:"), _modemSerialNumber);
 
         // Perform extra modem-specific setup
         success &= extraModemSetup();
+        if (!success) {
+            PRINTOUT(F("Extra modem-specific setup failed!"));
+            PRINTOUT(F("Modem is assumed to be a"), getModemName());
+            return false;
+        }
 
         if (success) {
             _hasBeenSetup = true;
-            MS_DBG(F("... setup complete!  It's a"), getModemName());
-        } else {
-            MS_DBG(F("... setup failed!  It's a"), getModemName());
+            PRINTOUT(F("Successfully setup a"), getModemName());
+            PRINTOUT("Modem InfoString:", modem.getModemInfo());
+            PRINTOUT(F("Modem HW:"), _modemHwVersion);
+            PRINTOUT(F("Modem FW:"), _modemFwVersion);
+            PRINTOUT(F("Modem SN:"), _modemSerialNumber);
         }
 
         return success;

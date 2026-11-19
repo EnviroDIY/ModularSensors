@@ -43,23 +43,6 @@
 
 
 // ==========================================================================
-//  Data Logging Options
-// ==========================================================================
-/** Start [logging_options] */
-// The name of this program file - this is used only for console printouts at
-// start-up
-const char* sketchName = "EnviroDIY_Monitoring_Kit.ino";
-// Logger ID, also becomes the prefix for the name of the data file on SD card
-const char* LoggerID = "YourLoggerID";
-// How frequently (in minutes) to log data
-const int8_t loggingInterval = 15;
-// Your logger's timezone.
-const int8_t timeZone = -5;  // Eastern Standard Time
-// NOTE:  Daylight savings time will not be applied!  Please use standard time!
-/** End [logging_options] */
-
-
-// ==========================================================================
 //  UUIDs and Registration Tokens for Monitor My Watershed
 // ==========================================================================
 /** Start [monitor_mw_uuids] */
@@ -124,6 +107,23 @@ const char* samplingFeature = "12345678-abcd-1234-ef00-1234567890ab";  // Sampli
 #include <ModularSensors.h>
 /** End [includes] */
 
+
+// ==========================================================================
+//  Data Logging Options
+// ==========================================================================
+/** Start [logging_options] */
+// The name of this program file - used only for console printouts at start-up
+const char* sketchName = "EnviroDIY_Monitoring_Kit.ino";
+// Logger ID, also becomes the prefix for the name of the data file on SD card
+const char* LoggerID = "YourLoggerID";
+// How frequently (in minutes) to log data
+const int8_t loggingInterval = 15;
+// How many 1=minute intervals to log at start-up
+const uint8_t startupLoggingIntervals = 15;
+// Your logger's timezone.
+const int8_t timeZone = -5;  // Eastern Standard Time
+// NOTE:  Daylight savings time will not be applied!  Please use standard time!
+/** End [logging_options] */
 
 // ==========================================================================
 //  Logger Pins and Options
@@ -256,16 +256,10 @@ MaximDS3231 ds3231(1);
 /** Start [everlight_alspt19] */
 #include <sensors/EverlightALSPT19.h>
 
-// NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t  alsPower      = sensorPowerPin;  // Power pin
-const int8_t  alsData       = A4;              // The ALS PT-19 data pin
-const int8_t  alsSupply     = 3.3;  // The ALS PT-19 supply power voltage
-const int8_t  alsResistance = 10;   // The ALS PT-19 loading resistance (in kΩ)
-const uint8_t alsNumberReadings = 10;
-
 // Create a Everlight ALS-PT19 sensor object
-EverlightALSPT19 alsPt19(alsPower, alsData, alsSupply, alsResistance,
-                         alsNumberReadings);
+// For an EnviroDIY Mayfly, you can use the abbreviated version
+const uint8_t    alsNumberReadings = 10;
+EverlightALSPT19 alsPt19(alsNumberReadings);
 /** End [everlight_alspt19] */
 
 
@@ -457,8 +451,9 @@ void setup() {
     // set the logging interval
     PRINTOUT(F("Setting logging interval to"), loggingInterval, F("minutes"));
     dataLogger.setLoggingInterval(loggingInterval);
-    PRINTOUT(F("Setting number of initial 1 minute intervals to 10"));
-    dataLogger.setStartupMeasurements(10);
+    PRINTOUT(F("Setting number of initial 1 minute intervals to"),
+             startupLoggingIntervals);
+    dataLogger.setStartupMeasurements(startupLoggingIntervals);
     // Attach the variable array to the logger
     PRINTOUT(F("Attaching the variable array"));
     dataLogger.setVariableArray(&varArray);
@@ -472,7 +467,7 @@ void setup() {
     PRINTOUT(F("Setting logger time zone"));
     Logger::setLoggerTimeZone(timeZone);
     // It is STRONGLY RECOMMENDED that you set the RTC to be in UTC (UTC+0)
-    PRINTOUT(F("Setting RTC time zone"));
+    PRINTOUT(F("Setting RTC time zone to UTC"));
     loggerClock::setRTCOffset(0);
 
 #if defined(USE_CELLULAR_BEE) || defined(USE_WIFI_BEE)
@@ -513,8 +508,8 @@ void setup() {
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
+        modem.gsmModem.setDefaultBaud(static_cast<uint32_t>(modemBaud));
     }
-    modem.gsmModem.setDefaultBaud(static_cast<uint32_t>(modemBaud));
 /** End [setup_esp] */
 #endif
 
@@ -531,8 +526,8 @@ void setup() {
         PRINTOUT(F("Attempting to force the modem baud rate."));
         modem.gsmModem.forceModemBaud(modemSerial,
                                       static_cast<uint32_t>(modemBaud));
+        modem.gsmModem.setBaud(static_cast<uint32_t>(modemBaud));
     }
-    modem.gsmModem.setBaud(static_cast<uint32_t>(modemBaud));
     modem.gsmModem.setNetworkMode(38);   // set to LTE only
                                          // 2 Automatic
                                          // 13 GSM only
